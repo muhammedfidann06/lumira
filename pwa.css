@@ -185,7 +185,7 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 
 /* --------------------------------------------------------- FAVORİ YILDIZI */
 #favBtn{
-  position:absolute; top:10px; right:12px; z-index:6;
+  position:absolute; top:10px; left:12px; z-index:6;
   width:34px; height:34px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   font-size:15px; cursor:pointer; border:1px solid rgba(255,210,59,.28);
@@ -322,7 +322,14 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
   0%,100%{background-position:0% 50%;}
   50%{background-position:100% 50%;}
 }
-.brand-i{position:relative; display:inline-block;}
+.brand-i{
+  position:relative; display:inline;
+  /* Safari/WebKit'te üst öğedeki -webkit-background-clip:text iç içe geçmiş
+     öğeye uygulanmadığı için "İ" harfi kayboluyordu. Bu yüzden harf, gradyanın
+     o noktadaki tonuyla düz renk veriliyor — her tarayıcıda görünür. */
+  color:#a98cff; -webkit-text-fill-color:#a98cff;
+  filter:drop-shadow(0 0 14px rgba(150,120,255,.5));
+}
 .brand-spark{
   position:absolute; left:50%; top:-.62em; transform:translateX(-50%);
   font-size:.42em; font-style:normal;
@@ -364,3 +371,25 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
     animation:none !important;
   }
 }
+
+/* --------------------------------------------------- kayan yıldız (sky.js yerine)
+   "Sonraki" düğmesine basınca ekranın üstünden ince bir ışık çizgisi geçer. */
+.pwa-shoot{
+  position:fixed; z-index:3; pointer-events:none;
+  width:2px; height:2px; border-radius:50%;
+  background:#eaf6ff;
+  box-shadow:0 0 8px 2px rgba(200,230,255,.9), 0 0 22px 6px rgba(120,180,255,.45);
+  animation:pwaShoot 1.05s cubic-bezier(.2,.6,.3,1) forwards;
+}
+.pwa-shoot::after{
+  content:''; position:absolute; right:2px; top:50%;
+  width:110px; height:1.4px; transform:translateY(-50%);
+  background:linear-gradient(90deg, transparent, rgba(190,225,255,.85));
+  border-radius:99px;
+}
+@keyframes pwaShoot{
+  0%{opacity:0; transform:translate(0,0) rotate(18deg) scale(.6);}
+  12%{opacity:1;}
+  100%{opacity:0; transform:translate(320px,120px) rotate(18deg) scale(1);}
+}
+@media (prefers-reduced-motion:reduce){ .pwa-shoot{display:none !important;} }

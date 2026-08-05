@@ -58,6 +58,11 @@ function G(name) {
   try { return new Function('try{return typeof ' + name + '!=="undefined"?' + name + ':null}catch(e){return null}')(); }
   catch (e) { return null; }
 }
+/* ...ve onlara güvenli yazma (idx gibi) */
+function setG(name, val) {
+  try { new Function('v', 'try{' + name + '=v}catch(e){}')(val); return true; }
+  catch (e) { return false; }
+}
 function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
 
 /* -------------------------------------------------------------- TOAST --- */
@@ -863,35 +868,77 @@ function saveResume() {
   var tab = $('tabQuiz') && $('tabQuiz').classList.contains('active') ? 'quiz'
           : ($('tabPersonal') && $('tabPersonal').classList.contains('active') ? 'personal' : 'cards');
   var lvEl = qs('.level-opt.active');
+  var card = currentCard();
+  var deck = G('deck');
+  var idx = G('idx');
+  if (!card) return;
   store(RESUME_KEY, {
     tab: tab,
     lang: activeLangCode(),
     level: lvEl ? lvEl.textContent.trim() : null,
-    word: (currentCard() || {}).w || null,
+    cat: ($('cardCat') ? $('cardCat').textContent.trim() : null),
+    idx: (typeof idx === 'number' ? idx : 0),
+    total: (deck && deck.length) || 0,
+    word: card.w || null,
     at: Date.now()
   });
 }
+
+/* Kart sırasını gerçekten geri yükler: idx'i yazar ve kartı yeniden çizer. */
+function applyResume(r) {
+  var deck = G('deck');
+  var render = G('renderCard');
+  if (!deck || !deck.length || typeof render !== 'function') return false;
+
+  var target = -1;
+  /* Önce kelimeyi ara (deste karıştırılmış olabilir), bulamazsan sırayı kullan */
+  if (r.word) {
+    for (var i = 0; i < deck.length; i++) {
+      if (deck[i] && deck[i].w === r.word) { target = i; break; }
+    }
+  }
+  if (target < 0 && typeof r.idx === 'number' && r.idx < deck.length) target = r.idx;
+  if (target < 0) return false;
+
+  setG('idx', target);
+  setG('flipped', false);
+  var cardEl = $('card');
+  if (cardEl) cardEl.classList.remove('flipped');
+  try { render(); } catch (e) { logError(e); return false; }
+  try { var sc = G('saveCardPosition'); if (typeof sc === 'function') sc(); } catch (e) {}
+  return true;
+}
+
 function offerResume() {
   var r = store(RESUME_KEY);
-  if (!r || !r.at) return;
+  if (!r || !r.at || !r.word) return;
   var params = new URLSearchParams(location.search);
   if (params.get('tab') || params.get('action')) return;   /* kısayolla açıldıysa karışmasın */
-  if (Date.now() - r.at > 14 * 86400000) return;
-  if (r.lang === 'de' && r.tab === 'cards' && !r.word) return;
+  if (Date.now() - r.at > 30 * 86400000) return;
+  /* İlk karttaysa hatırlatmaya gerek yok */
+  if (r.tab === 'cards' && (r.idx || 0) === 0) return;
 
-  toast('📖 ' + (r.word ? '"' + escapeHtml(r.word) + '"' : 'Son çalışman') + ' — kaldığın yerden devam?', {
+  var pos = (typeof r.idx === 'number' && r.total) ? ' · ' + (r.idx + 1) + '/' + r.total : '';
+  toast('📖 "' + escapeHtml(r.word) + '"' + pos + ' — kaldığın yerden devam?', {
     action: 'Devam',
-    duration: 8000,
+    duration: 11000,
     onAction: function () {
       var lo = qs('.lang-opt[data-lang="' + r.lang + '"]');
-      if (lo && !lo.classList.contains('active')) lo.click();
+      var switched = false;
+      if (lo && !lo.classList.contains('active')) { lo.click(); switched = true; }
       if (r.level) {
         var lv = Array.prototype.slice.call(document.querySelectorAll('.level-opt'))
           .filter(function (e) { return e.textContent.trim() === r.level; })[0];
-        if (lv && !lv.classList.contains('active')) lv.click();
+        if (lv && !lv.classList.contains('active')) { lv.click(); switched = true; }
       }
-      if (r.tab === 'quiz' && $('tabQuiz')) $('tabQuiz').click();
-      if (r.tab === 'personal' && $('tabPersonal')) $('tabPersonal').click();
+      if (r.tab === 'quiz' && $('tabQuiz')) { $('tabQuiz').click(); return; }
+      if (r.tab === 'personal' && $('tabPersonal')) { $('tabPersonal').click(); return; }
+
+      /* Dil/seviye değiştiyse deste yeniden kurulur — kısa bir nefes al */
+      setTimeout(function () {
+        if (applyResume(r)) toast('✅ ' + r.word + ' kartına dönüldü', { kind: 'good' });
+        else toast('Bu kart artık listede yok', { kind: 'bad' });
+      }, switched ? 420 : 60);
     }
   });
 }
@@ -1100,6 +1147,25 @@ function openSettings() {
 function pad(n) { return String(n).padStart(2, '0'); }
 
 /* ============================================================ BAŞLAT ==== */
+
+/* Eksik kalan efekt: "Sonraki" düğmesinin işleyicisi sky.js'teki
+   spawnShootingStar()'ı çağırıyordu. O dosya kaldırıldığı için her tıklamada
+   ReferenceError atıyor ve HEMEN ARDINDAKİ saveCardPosition() çalışmıyordu
+   (kart konumu bu yüzden hiç kaydedilmiyordu). Hafif bir sürüm burada. */
+if (typeof window.spawnShootingStar !== 'function') {
+  window.spawnShootingStar = function () {
+    try {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var s = document.createElement('div');
+      s.className = 'pwa-shoot';
+      s.style.left = (Math.random() * 55 + 20) + 'vw';
+      s.style.top  = (Math.random() * 22 + 6) + 'vh';
+      document.body.appendChild(s);
+      setTimeout(function () { s.remove(); }, 1200);
+    } catch (e) {}
+  };
+}
+
 function boot() {
   try {
     /* açılış sayacı */
@@ -1120,9 +1186,13 @@ function boot() {
     setTimeout(setupFavButton, 1200);
     setTimeout(function () { updateWidgetData(pickDailyWord()); }, 3000);
 
-    /* Kaldığın yeri kaydet */
-    ['click', 'visibilitychange'].forEach(function (ev) {
-      document.addEventListener(ev, function () { try { saveResume(); } catch (e) {} }, true);
+    /* Kaldığın yeri kaydet — tıklama işleyicileri bittikten SONRA çalışsın,
+       yoksa idx bir adım geride kaydedilir. */
+    document.addEventListener('click', function () {
+      setTimeout(function () { try { saveResume(); } catch (e) {} }, 120);
+    }, false);
+    document.addEventListener('visibilitychange', function () {
+      try { saveResume(); } catch (e) {}
     });
     addEventListener('pagehide', saveResume);
 
