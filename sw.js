@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.0.5';
+const CACHE_VERSION = 'v1.0.7';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -41,6 +41,7 @@ const SHELL = [
   './vocab-core.js',
   './scene-bg.jpg',
   './icon-192.png',
+  './splash-logo.png',
   './icon-512.png',
   './icon-maskable-192.png',
   './apple-touch-icon.png',
@@ -126,11 +127,33 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* 5) Kendi js/css dosyalarımız */
+  /* 5) Kendi kod dosyalarımız (js/css) — ÖNCE AĞ.
+     Eskiden "önbellekten ver, arkada tazele" idi; bu yüzden bir düzeltme
+     yayınlandığında kullanıcı eski kodu bir açılış daha görüyordu. Dosyalar
+     küçük olduğu için ağ öncelikli olması daha doğru; çevrimdışında yine
+     önbellekten gelir. */
+  if (url.origin === self.location.origin && /\.(js|css)$/i.test(url.pathname)) {
+    event.respondWith(networkFirst(req, SHELL_CACHE));
+    return;
+  }
+
+  /* 6) Kalan her şey */
   if (url.origin === self.location.origin) {
     event.respondWith(staleWhileRevalidate(req, SHELL_CACHE));
   }
 });
+
+async function networkFirst(req, cacheName) {
+  const cache = await caches.open(cacheName);
+  try {
+    const res = await fetch(req);
+    if (res && res.ok) cache.put(req, res.clone()).catch(() => {});
+    return res;
+  } catch (e) {
+    const hit = await cache.match(req, { ignoreVary: true });
+    return hit || Response.error();
+  }
+}
 
 async function handleNavigate(event) {
   const cache = await caches.open(SHELL_CACHE);

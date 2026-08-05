@@ -276,9 +276,13 @@ function probeConnection(cb) {
 }
 function refreshOnlineState() {
   probeConnection(function (ok) {
-    setOffline(!ok);
-    if (ok && wasOffline) toast('🌐 Bağlantı geri geldi', { kind: 'good' });
-    wasOffline = !ok;
+    /* Rozet YALNIZCA iki kanıt birden varken çıkar:
+       hem tarayıcı "bağlantı yok" diyecek, hem de sunucuya atılan istek
+       başarısız olacak. Tek başına navigator.onLine iOS'ta yanılıyor. */
+    var offline = (ok === false) && (navigator.onLine === false);
+    setOffline(offline);
+    if (!offline && wasOffline) toast('🌐 Bağlantı geri geldi', { kind: 'good' });
+    wasOffline = offline;
   });
 }
 function setOffline(on) {
@@ -1152,7 +1156,7 @@ function openSettings() {
       b.appendChild(ins);
     }
 
-    var upd = row('🔄', 'Güncellemeleri denetle', 'Sürüm: ' + (store('pwa_version') || 'v1.0.0'));
+    var upd = row('🔄', 'Güncellemeleri denetle', 'Sürüm: ' + (window.PWA && window.PWA.version ? window.PWA.version : 'v1.0.0'));
     upd.onclick = function () {
       if (!swReg) { toast('Service Worker yok'); return; }
       toast('Denetleniyor…');
@@ -1163,6 +1167,10 @@ function openSettings() {
       }).catch(function () { toast('Denetlenemedi', { kind: 'bad' }); });
     };
     b.appendChild(upd);
+
+    var net = row('📶', 'Bağlantı durumunu denetle', 'Çevrimdışı uyarısı yanlışsa buraya bak');
+    net.onclick = function () { refreshOnlineState(); window.PWA.netStatus(); };
+    b.appendChild(net);
 
     var bug = row('🐞', 'Hata raporu', 'Sorun mu var? Rapor gönder');
     bug.onclick = openErrorReport;
@@ -1274,6 +1282,13 @@ window.PWA = {
   favorites: favs,
   addFavorite: addFavorite,
   logError: logError,
+  netStatus: function () {
+    probeConnection(function (ok) {
+      toast('navigator.onLine: ' + navigator.onLine + ' · sunucu testi: ' + (ok ? 'başarılı' : 'başarısız'), { duration: 7000 });
+    });
+    return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
+  },
+  version: 'pwa.js 1.0.7',
   isStandalone: function () { return isStandalone; }
 };
 

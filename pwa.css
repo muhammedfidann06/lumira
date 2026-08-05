@@ -229,18 +229,26 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 @keyframes pwaVtIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
 
 /* ------------------------------------------------------ çevrimdışı rozeti */
+/* Gizliyken SADECE yukarı kaydırmak yetmiyordu: iOS'ta çentik boşluğu
+   (safe-area-inset-top ~59px) yüzünden rozet ekranın en üstünde görünmeye
+   devam ediyordu. Artık gerçekten gizleniyor. */
 #pwa-offline{
   position:fixed; z-index:9300;
   top:calc(8px + env(safe-area-inset-top)); left:50%;
-  transform:translate(-50%,-160%);
+  transform:translate(-50%,-14px);
+  opacity:0; visibility:hidden;
   padding:7px 14px; border-radius:999px;
   font-size:11.5px; font-weight:800; letter-spacing:.03em;
   color:#ffd7dd; background:rgba(60,12,26,.9);
   border:1px solid rgba(255,95,122,.45);
   -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
-  transition:transform .36s cubic-bezier(.22,1,.36,1);
+  transition:transform .36s cubic-bezier(.22,1,.36,1),
+             opacity .28s ease, visibility .28s;
 }
-#pwa-offline.in{transform:translate(-50%,0);}
+#pwa-offline.in{
+  transform:translate(-50%,0);
+  opacity:1; visibility:visible;
+}
 
 @media (prefers-reduced-motion:reduce){
   .pwa-toast,.pwa-sheet,#pwa-install,#pwa-offline{transition:none !important;}
@@ -263,18 +271,18 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 
 /* ---- logo ve arkasındaki ışık ---- */
 .brand-mark-wrap{
-  position:relative; width:112px; height:112px;
+  position:relative; width:118px; height:118px;
   display:flex; align-items:center; justify-content:center;
   margin-bottom:20px;
 }
 .brand-mark{
   position:relative; z-index:3;
-  width:112px; height:112px; border-radius:28px;
-  box-shadow:
-    0 18px 44px rgba(0,0,0,.55),
-    0 0 30px rgba(79,232,255,.22),
-    0 0 60px rgba(155,123,255,.20),
-    inset 0 0 0 1px rgba(180,215,255,.16);
+  width:118px; height:118px;
+  /* Kenarları saydama geçen bir görsel kullanılıyor: kutu gölgesi ya da
+     köşe yuvarlaması YOK, yoksa logonun koyu zemini çerçeve gibi görünüyor. */
+  border-radius:0; box-shadow:none;
+  filter:drop-shadow(0 10px 26px rgba(0,0,0,.5))
+         drop-shadow(0 0 22px rgba(120,180,255,.30));
   animation:brandFloat 5.6s ease-in-out infinite;
 }
 @keyframes brandFloat{
@@ -292,18 +300,6 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
   0%,100%{opacity:.62; transform:scale(.94);}
   50%{opacity:1; transform:scale(1.08);}
 }
-.brand-ring{
-  position:absolute; z-index:2; inset:-16px; border-radius:50%;
-  border:1px solid rgba(140,200,255,.28);
-  box-shadow:0 0 22px rgba(79,232,255,.22), inset 0 0 22px rgba(155,123,255,.14);
-  animation:brandRing 7s linear infinite;
-}
-@keyframes brandRing{
-  0%{transform:rotate(0deg) scale(1); opacity:.75;}
-  50%{opacity:.35;}
-  100%{transform:rotate(360deg) scale(1.04); opacity:.75;}
-}
-
 /* ---- LUMIRA yazısı ---- */
 .brand-name{
   position:relative; margin:0;
@@ -323,25 +319,11 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
   50%{background-position:100% 50%;}
 }
 .brand-i{
-  position:relative; display:inline;
-  /* Safari/WebKit'te üst öğedeki -webkit-background-clip:text iç içe geçmiş
-     öğeye uygulanmadığı için "İ" harfi kayboluyordu. Bu yüzden harf, gradyanın
-     o noktadaki tonuyla düz renk veriliyor — her tarayıcıda görünür. */
+  /* Safari, üst öğedeki gradyan-metin kırpmasını iç içe geçmiş öğeye
+     uygulamadığı için "İ" kayboluyordu; düz renk verilerek çözüldü. */
   color:#a98cff; -webkit-text-fill-color:#a98cff;
   filter:drop-shadow(0 0 14px rgba(150,120,255,.5));
 }
-.brand-spark{
-  position:absolute; left:50%; top:-.62em; transform:translateX(-50%);
-  font-size:.42em; font-style:normal;
-  color:#dcefff; -webkit-text-fill-color:#dcefff;
-  filter:drop-shadow(0 0 8px rgba(155,200,255,.95)) drop-shadow(0 0 18px rgba(155,123,255,.7));
-  animation:sparkTwinkle 2.4s ease-in-out infinite;
-}
-@keyframes sparkTwinkle{
-  0%,100%{opacity:.55; transform:translateX(-50%) scale(.82) rotate(0deg);}
-  50%{opacity:1; transform:translateX(-50%) scale(1.18) rotate(20deg);}
-}
-
 /* ---- "DİL KARTLARI" çizgili alt başlık ---- */
 .brand-rule{
   display:flex; align-items:center; justify-content:center; gap:12px;
@@ -363,11 +345,11 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 }
 
 @media (max-width:360px){
-  .brand-mark-wrap,.brand-mark{width:92px; height:92px;}
+  .brand-mark-wrap,.brand-mark{width:98px; height:98px;}
   .brand-rule span{letter-spacing:.26em; font-size:10.5px;}
 }
 @media (prefers-reduced-motion:reduce){
-  .splash-brand,.brand-mark,.brand-halo,.brand-ring,.brand-name,.brand-spark{
+  .splash-brand,.brand-mark,.brand-halo,.brand-name{
     animation:none !important;
   }
 }
