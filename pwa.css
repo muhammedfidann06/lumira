@@ -393,3 +393,83 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
   100%{opacity:0; transform:translate(320px,120px) rotate(18deg) scale(1);}
 }
 @media (prefers-reduced-motion:reduce){ .pwa-shoot{display:none !important;} }
+
+/* ============================================================================
+   KAYDIRMA VE YAKINLAŞTIRMA DÜZELTMELERİ
+   Bu blok en sonda durmalı: diğer tüm kuralları bilinçli olarak ezer.
+   ========================================================================== */
+
+/* --- 1) Metin kendiliğinden büyümesin --------------------------------------
+   iOS Safari, dar sütunlarda yazıyı otomatik şişirir ("text inflation").
+   Sayfanın kendiliğinden büyümesinin baş sebebi budur. */
+html{
+  -webkit-text-size-adjust:100%;
+  -moz-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+/* --- 2) Gövde kaydırmayı kilitlemesin --------------------------------------
+   body üzerindeki overflow-x:hidden, iOS'ta gövdeyi ayrı bir kaydırma kabına
+   çevirip dikey kaydırmayı zorlaştırıyordu. clip, kaydırma kabı oluşturmaz. */
+html{overflow-x:hidden;}
+body{
+  overflow:visible;                 /* body'de overflow YOK: kaydırma serbest */
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+}
+/* Kapalı açılış ekranı dokunmaları yakalamasın */
+#splash.hidden{pointer-events:none !important;}
+
+/* --- 3) Alanlara dokununca yakınlaştırma olmasın ---------------------------
+   iOS, yazı boyutu 16px'in altındaki alanlara odaklanınca sayfayı büyütür ve
+   geri küçültmez. 16px bunu tamamen engeller. */
+input, select, textarea{font-size:16px !important;}
+
+/* --- 4) Çift dokunma yakınlaştırması yalnızca düğmelerde kapalı ------------
+   Böylece parmakla yakınlaştırma (ve gerekirse küçültme) serbest kalır. */
+button, a, .chip, .opt, .tab, .level-opt, .lang-opt, .ctrl,
+.card, .speak-icon-btn, .sound-btn, .cat-trigger, .cat-close,
+#favBtn, #pwa-fab, .pwa-row, .lb-row{
+  touch-action:manipulation;
+}
+
+/* --- 5) Kaydırma akıcılığı -------------------------------------------------
+   Arka planı bulanıklaştıran (backdrop-filter) katmanlar telefonda her karede
+   yeniden hesaplanır ve kaydırmayı tutuklaştırır. Küçük öğelerden tamamen
+   kaldırıldı, büyük panellerde bulanıklık düşürüldü. */
+.chip, .opt, .ctrl, .score-pill, .tab, .level-opt{
+  -webkit-backdrop-filter:none !important;
+          backdrop-filter:none !important;
+  background-color:rgba(13,17,34,.42);
+}
+.face,
+#quizView .quiz-card,
+.quiz-card{
+  -webkit-backdrop-filter:blur(9px) !important;
+          backdrop-filter:blur(9px) !important;
+}
+
+/* Kaydırma sürerken süslemeler duraklatılır — parmağın altındaki her kare
+   kazanılır. Kaydırma bitince kendiliğinden geri gelir. */
+html.is-scrolling .flutter,
+html.is-scrolling .flutter .wing,
+html.is-scrolling .steam path,
+html.is-scrolling .lang-opt.active,
+html.is-scrolling .brand-halo,
+html.is-scrolling .brand-ring,
+html.is-scrolling .brand-mark,
+html.is-scrolling .brand-name{
+  animation-play-state:paused !important;
+}
+html.is-scrolling #grain{opacity:0 !important;}
+html.is-scrolling .face,
+html.is-scrolling .quiz-card{
+  -webkit-backdrop-filter:none !important;
+          backdrop-filter:none !important;
+  background-color:rgba(11,15,32,.72);
+}
+
+/* --- 6) Sabit katmanlar dokunmayı yutmasın -------------------------------- */
+#pwa-offline, #pwa-toasts, #grade, #grain, #scene-bg, #fg-desk, #sky-fx{
+  pointer-events:none;
+}

@@ -219,9 +219,23 @@ function setupShell() {
   /* Durum çubuğu / gezinme çubuğu rengi — splash koyu, uygulama koyu */
   setThemeColor('#04050a');
 
-  /* iOS: iki parmakla yakınlaştırmayı kapat.
-     (Çift dokunma engellenmiyor — kartı hızlı çevirmeyi bozuyordu.) */
-  document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+  /* Yakınlaştırma artık viewport meta etiketiyle kilitli.
+     gesturestart engellenmiyor: engellendiğinde, sayfa bir şekilde büyüdüğünde
+     kullanıcı parmakla GERİ KÜÇÜLTEMİYORDU. */
+
+  /* Kaydırma sürerken süslemeleri duraklat (pwa.css'teki .is-scrolling) */
+  var scrollTimer = null, scrolling = false;
+  addEventListener('scroll', function () {
+    if (!scrolling) {
+      scrolling = true;
+      document.documentElement.classList.add('is-scrolling');
+    }
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function () {
+      scrolling = false;
+      document.documentElement.classList.remove('is-scrolling');
+    }, 160);
+  }, { passive: true });
 
   /* Standalone modda dış bağlantılar tarayıcıda açılsın (uygulamadan çıkmasın) */
   if (isStandalone) {
