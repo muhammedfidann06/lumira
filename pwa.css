@@ -455,3 +455,41 @@ button, a, .chip, .opt, .tab, .level-opt, .lang-opt, .ctrl,
 #pwa-offline, #pwa-toasts, #grade, #grain, #scene-bg, #fg-desk, #sky-fx{
   pointer-events:none;
 }
+
+/* ============================================================================
+   KATEGORİ PANELİ — kaydırma düzeltmesi
+   Panel sabit (fixed) bir katmanın içinde olduğu için iOS'ta kaydırma yalnızca
+   uygun dokunma kuralları verildiğinde çalışıyor. Ayrıca 68vh, iOS'ta tarayıcı
+   çubuklarını hesaba katmadığından panelin alt kısmı ekranın dışında kalıyor
+   ve içerik ulaşılamaz görünüyordu.
+   ========================================================================== */
+.cat-overlay{
+  align-items:flex-end;
+  overscroll-behavior:contain;
+}
+.cat-panel{
+  max-height:72vh;
+  max-height:72dvh;                    /* iOS: çubuklar hariç gerçek yükseklik */
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch;    /* iOS'ta ivmeli kaydırma */
+  overscroll-behavior:contain;         /* kaydırma arkadaki sayfaya taşmasın */
+  touch-action:pan-y;                  /* dikey kaydırma her zaman serbest */
+  padding-bottom:calc(26px + env(safe-area-inset-bottom)) !important;
+  scrollbar-width:thin;
+}
+/* Başlık kaydırırken kaybolmasın */
+.cat-panel-header{
+  position:sticky; top:-18px; z-index:2;
+  background:linear-gradient(180deg, rgba(14,19,40,.98) 70%, rgba(14,19,40,0));
+  margin:-18px -16px 12px !important;
+  padding:18px 16px 10px !important;
+}
+/* Çipler kaydırmayı yutmasın: dokunma dikey kaydırmaya izin versin */
+.cat-grid{touch-action:pan-y;}
+.cat-grid .chip{touch-action:manipulation;}
+
+/* Aynı sorun bilgi panellerinde de olmasın */
+.info-card{
+  max-height:80dvh; overflow-y:auto;
+  -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y;
+}
