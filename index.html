@@ -2,22 +2,69 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M HAMZA | Dil Kartları</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Lumira | Dil Kartları</title>
+<meta name="description" content="6 dilde binlerce kelime kartı, quiz, seslendirme ve kişisel ilerleme takibi. Çevrimdışı çalışır.">
+<meta name="application-name" content="Dil Kartları">
+<meta name="author" content="Lumira">
+<meta name="color-scheme" content="dark">
+<meta name="format-detection" content="telephone=no">
 
-<link rel="manifest" href="manifest.json">
-
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-
-<meta name="theme-color" content="#050710">
-
+<!-- ===================== PWA · MANIFEST ===================== -->
 <link rel="manifest" href="./manifest.json">
+
+<!-- ===================== İKONLAR ===================== -->
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+
+<!-- ===================== DURUM / GEZİNME ÇUBUĞU ===================== -->
 <meta name="theme-color" content="#04050a">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#04050a">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#04050a">
+<meta name="background-color" content="#04050a">
+<meta name="msapplication-TileColor" content="#04050a">
+<meta name="msapplication-TileImage" content="./icon-144.png">
+<meta name="msapplication-navbutton-color" content="#04050a">
+
+<!-- ===================== ANDROID / CHROME ===================== -->
 <meta name="mobile-web-app-capable" content="yes">
+
+<!-- ===================== iOS PWA ===================== -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Kelime Kartları">
+<meta name="apple-mobile-web-app-title" content="Dil Kartları">
+<link rel="apple-touch-startup-image" href="ios/splash-1290x2796.jpg" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-1179x2556.jpg" media="(device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-1284x2778.jpg" media="(device-width:428px) and (device-height:926px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-1170x2532.jpg" media="(device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-1125x2436.jpg" media="(device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-1242x2688.jpg" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-828x1792.jpg" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-750x1334.jpg" media="(device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-1620x2160.jpg" media="(device-width:810px) and (device-height:1080px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-1668x2388.jpg" media="(device-width:834px) and (device-height:1194px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-2048x2732.jpg" media="(device-width:1024px) and (device-height:1366px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="ios/splash-1536x2048.jpg" media="(device-width:768px) and (device-height:1024px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
+
+<!-- ===================== PAYLAŞIM ÖNİZLEMESİ ===================== -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lumira">
+<meta property="og:title" content="Lumira | Dil Kartları">
+<meta property="og:description" content="6 dilde kelime kartları, quiz ve seslendirme — çevrimdışı da çalışır.">
+<meta property="og:image" content="./icon-512.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ===================== HIZ ===================== -->
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.gstatic.com">
+<link rel="preload" as="image" href="./scene-bg.jpg">
+<link rel="preload" as="image" href="./icon-192.png">
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -593,8 +640,8 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="sky.css">
 <link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="pwa.css">
 </head>
 <body>
 
@@ -623,7 +670,15 @@
 <div id="splash">
   <canvas id="snowCanvas"></canvas>
   <div class="splash-content">
-    <h1 class="splash-name">DİL KARTLARI</h1>
+    <div class="splash-brand">
+      <div class="brand-mark-wrap">
+        <span class="brand-halo"></span>
+        <span class="brand-ring"></span>
+        <img class="brand-mark" src="icon-192.png" alt="Lumira" width="112" height="112" fetchpriority="high">
+      </div>
+      <h1 class="brand-name">LUM<span class="brand-i">İ<i class="brand-spark">✦</i></span>RA</h1>
+      <div class="brand-rule"><i></i><span>DİL KARTLARI</span><i></i></div>
+    </div>
     <div class="splash-sub">GİRİŞ İÇİN EKRANA TIKLAYIN</div>
     <a class="ig-link" id="igLink" href="https://www.instagram.com/muhammedf.fdn" target="_blank" rel="noopener" onclick="event.stopPropagation()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
@@ -651,7 +706,7 @@
 <div class="app" id="mainApp">
   <div class="top-row">
     <div>
-      <div class="eyebrow">Kelime Kartları</div>
+      <div class="eyebrow">LUMIRA</div>
       <h1>Dil Kartları</h1>
     </div>
     <div class="top-btn-row">
@@ -1850,20 +1905,8 @@ applyFilter();
 </script>
 <script src="progress.js"></script>
 
-<script>
-/* ======================= PWA SERVICE WORKER ======================= */
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js")
-      .then(registration => {
-        console.log("Kelime Kartları PWA aktif:", registration.scope);
-      })
-      .catch(error => {
-        console.error("PWA Service Worker hatası:", error);
-      });
-  });
-}
-</script>
+<!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
+     yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
 
 
 <!-- ===== HAREKET KATMANI =====
@@ -1872,7 +1915,11 @@ if ("serviceWorker" in navigator) {
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js"></script>
 <script defer src="voice.js"></script>
-<script defer src="motion.js"></script>
 <script defer src="theme.js"></script>
+
+<!-- ===================== LUMIRA · PWA KATMANI =====================
+     Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
+     deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
+<script defer src="pwa.js"></script>
 </body>
 </html>

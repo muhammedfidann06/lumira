@@ -1,0 +1,366 @@
+/* ============================================================================
+   pwa.css — Lumira | Dil Kartları
+   Uygulama kabuğu: kenardan kenara (edge-to-edge) yerleşim, bildirim/ayar
+   panelleri, toast, güncelleme çubuğu, favori yıldızı ve sayfa geçişleri.
+   theme.css'ten SONRA yüklenir; mevcut tasarımı bozmaz, sadece üstüne ekler.
+   ========================================================================== */
+
+/* ------------------------------------------------- güvenli alanlar (Android 15+/iOS)
+   Android 16 ve sonrasında uygulamalar zorunlu olarak edge-to-edge çizilir;
+   içerik durum çubuğunun ve gezinme çubuğunun altına kaymasın diye padding
+   env() ile veriliyor. */
+body{
+  padding-top:calc(26px + env(safe-area-inset-top)) !important;
+  padding-left:calc(14px + env(safe-area-inset-left)) !important;
+  padding-right:calc(14px + env(safe-area-inset-right)) !important;
+  padding-bottom:calc(170px + env(safe-area-inset-bottom)) !important;
+  overscroll-behavior-y:none;           /* iOS'ta lastik gibi esneme olmasın */
+}
+#splash{
+  padding-top:calc(56px + env(safe-area-inset-top)) !important;
+  padding-bottom:calc(48px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Uygulama modunda (standalone) metin seçimi kapalı: yerel his */
+html.pwa-standalone body{
+  -webkit-user-select:none; user-select:none;
+  -webkit-touch-callout:none;
+}
+html.pwa-standalone input,
+html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
+
+/* --------------------------------------------------------------- TOAST */
+#pwa-toasts{
+  position:fixed; left:0; right:0;
+  bottom:calc(18px + env(safe-area-inset-bottom));
+  z-index:10000; pointer-events:none;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  padding:0 16px;
+}
+.pwa-toast{
+  pointer-events:auto;
+  max-width:420px; width:fit-content;
+  display:flex; align-items:center; gap:10px;
+  padding:12px 16px; border-radius:14px;
+  font-size:13.5px; font-weight:600; line-height:1.4;
+  color:#eef4ff;
+  background:linear-gradient(160deg, rgba(20,27,54,.94), rgba(11,15,32,.94));
+  border:1px solid rgba(140,190,255,.24);
+  box-shadow:0 12px 34px rgba(0,0,0,.5);
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  transform:translateY(18px); opacity:0;
+  transition:transform .32s cubic-bezier(.22,1,.36,1), opacity .32s ease;
+}
+.pwa-toast.in{transform:none; opacity:1;}
+.pwa-toast .t-act{
+  margin-left:4px; padding:6px 12px; border-radius:999px; border:0;
+  font:inherit; font-size:12.5px; font-weight:800; cursor:pointer;
+  color:#04050a; background:linear-gradient(120deg,#4fe8ff,#9b7bff);
+}
+.pwa-toast.good{border-color:rgba(61,255,160,.4);}
+.pwa-toast.bad{border-color:rgba(255,95,122,.45);}
+
+/* --------------------------------------------------- YÜZEN AKSİYON BUTONU */
+#pwa-fab{
+  position:fixed; z-index:9000;
+  right:calc(14px + env(safe-area-inset-right));
+  bottom:calc(20px + env(safe-area-inset-bottom));
+  width:46px; height:46px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:19px; cursor:pointer; border:1px solid rgba(140,190,255,.28);
+  background:linear-gradient(160deg, rgba(22,30,60,.82), rgba(10,14,30,.82));
+  -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+  box-shadow:0 8px 22px rgba(0,0,0,.45), 0 0 18px rgba(79,232,255,.12);
+  transition:transform .2s cubic-bezier(.22,1.4,.36,1), box-shadow .2s ease;
+  color:#dbe7ff;
+}
+#pwa-fab:active{transform:scale(.9);}
+#pwa-fab.hidden{display:none;}
+#pwa-fab .dotbadge{
+  position:absolute; top:6px; right:6px;
+  width:8px; height:8px; border-radius:50%; background:#ff5fb8;
+  box-shadow:0 0 8px rgba(255,95,184,.9);
+}
+
+/* -------------------------------------------------------- ALT SAYFA (SHEET) */
+.pwa-sheet-backdrop{
+  position:fixed; inset:0; z-index:9500;
+  background:rgba(3,6,16,.62);
+  -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+  opacity:0; transition:opacity .28s ease;
+}
+.pwa-sheet-backdrop.in{opacity:1;}
+.pwa-sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:9600;
+  max-height:86vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  border-radius:22px 22px 0 0;
+  padding:10px 18px calc(26px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg, rgba(19,26,52,.97), rgba(8,11,25,.98));
+  border-top:1px solid rgba(140,190,255,.22);
+  box-shadow:0 -18px 50px rgba(0,0,0,.6);
+  transform:translateY(102%);
+  transition:transform .36s cubic-bezier(.22,1,.36,1);
+}
+.pwa-sheet.in{transform:none;}
+.pwa-sheet .grab{
+  width:40px; height:4px; border-radius:99px; margin:6px auto 14px;
+  background:rgba(190,215,255,.28);
+}
+.pwa-sheet h3{
+  margin:0 0 4px; font-size:16px; font-weight:800; color:#eef4ff;
+  display:flex; align-items:center; gap:8px;
+}
+.pwa-sheet .sheet-sub{margin:0 0 16px; font-size:12.5px; color:#8291b3; line-height:1.55;}
+.pwa-row{
+  display:flex; align-items:center; gap:12px;
+  padding:13px 12px; margin-bottom:8px;
+  border-radius:14px; cursor:pointer;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(140,190,255,.14);
+  transition:background .2s ease, border-color .2s ease, transform .16s ease;
+}
+.pwa-row:active{transform:scale(.985); background:rgba(255,255,255,.07);}
+.pwa-row .ic{font-size:18px; width:24px; text-align:center; flex:0 0 auto;}
+.pwa-row .tx{flex:1 1 auto; min-width:0;}
+.pwa-row .tx b{display:block; font-size:13.5px; font-weight:700; color:#eef4ff;}
+.pwa-row .tx span{display:block; font-size:11.5px; color:#8291b3; margin-top:2px;}
+.pwa-row .val{font-size:12px; font-weight:700; color:#4fe8ff; flex:0 0 auto;}
+
+.pwa-switch{
+  position:relative; flex:0 0 auto;
+  width:42px; height:24px; border-radius:99px;
+  background:rgba(255,255,255,.12); transition:background .24s ease;
+}
+.pwa-switch::after{
+  content:''; position:absolute; top:3px; left:3px;
+  width:18px; height:18px; border-radius:50%; background:#c9d7f5;
+  transition:transform .24s cubic-bezier(.22,1.4,.36,1), background .24s ease;
+}
+.pwa-switch.on{background:linear-gradient(120deg,#4fe8ff,#9b7bff);}
+.pwa-switch.on::after{transform:translateX(18px); background:#04050a;}
+
+.pwa-progress{
+  height:6px; border-radius:99px; overflow:hidden; margin:10px 2px 4px;
+  background:rgba(255,255,255,.08);
+}
+.pwa-progress i{
+  display:block; height:100%; width:0%;
+  background:linear-gradient(90deg,#4fe8ff,#9b7bff,#ff5fb8);
+  transition:width .3s ease;
+}
+.pwa-note{font-size:11px; color:#5d6b8c; line-height:1.6; margin:14px 2px 0;}
+.pwa-time{
+  font:inherit; font-size:13px; font-weight:700; color:#eef4ff;
+  background:rgba(255,255,255,.06); border:1px solid rgba(140,190,255,.2);
+  border-radius:10px; padding:8px 10px;
+}
+
+/* ---------------------------------------------------------- KURULUM AFİŞİ */
+#pwa-install{
+  position:fixed; z-index:9400;
+  left:12px; right:12px;
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; border-radius:18px;
+  background:linear-gradient(160deg, rgba(22,30,62,.96), rgba(10,14,30,.96));
+  border:1px solid rgba(155,123,255,.32);
+  box-shadow:0 16px 44px rgba(0,0,0,.55);
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  transform:translateY(140%); transition:transform .42s cubic-bezier(.22,1,.36,1);
+}
+#pwa-install.in{transform:none;}
+#pwa-install img{width:42px; height:42px; border-radius:12px; flex:0 0 auto;}
+#pwa-install .txt{flex:1 1 auto; min-width:0;}
+#pwa-install .txt b{display:block; font-size:13.5px; color:#eef4ff;}
+#pwa-install .txt span{display:block; font-size:11.5px; color:#8291b3; margin-top:2px;}
+#pwa-install .go{
+  flex:0 0 auto; border:0; cursor:pointer; font:inherit;
+  font-size:12.5px; font-weight:800; padding:10px 16px; border-radius:999px;
+  color:#04050a; background:linear-gradient(120deg,#4fe8ff,#9b7bff);
+}
+#pwa-install .x{
+  flex:0 0 auto; cursor:pointer; color:#6b7a9c; font-size:17px;
+  padding:2px 4px; background:none; border:0;
+}
+
+/* --------------------------------------------------------- FAVORİ YILDIZI */
+#favBtn{
+  position:absolute; top:10px; right:12px; z-index:6;
+  width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; cursor:pointer; border:1px solid rgba(255,210,59,.28);
+  background:rgba(10,14,32,.42);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  transition:transform .2s cubic-bezier(.22,1.4,.36,1), box-shadow .2s ease;
+  color:#ffd23b;
+}
+#favBtn:active{transform:scale(.86);}
+#favBtn.on{
+  box-shadow:0 0 14px rgba(255,210,59,.55), inset 0 0 12px rgba(255,210,59,.2);
+  border-color:rgba(255,210,59,.7);
+  animation:favPop .42s cubic-bezier(.22,1.4,.36,1);
+}
+@keyframes favPop{0%{transform:scale(1);}45%{transform:scale(1.3) rotate(12deg);}100%{transform:scale(1);}}
+
+.fav-item{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 12px; margin-bottom:7px; border-radius:12px;
+  background:rgba(255,255,255,.035); border:1px solid rgba(140,190,255,.12);
+}
+.fav-item .w{flex:1 1 auto; min-width:0;}
+.fav-item .w b{display:block; font-size:14px; color:#eef4ff;}
+.fav-item .w span{display:block; font-size:11.5px; color:#8291b3; margin-top:2px;}
+.fav-item .fl{font-size:16px; flex:0 0 auto;}
+.fav-item .rm{
+  flex:0 0 auto; border:0; background:none; cursor:pointer;
+  color:#6b7a9c; font-size:16px; padding:4px 6px;
+}
+.pwa-empty{text-align:center; color:#5d6b8c; font-size:12.5px; padding:26px 10px;}
+
+/* --------------------------------------------------- SAYFA GEÇİŞLERİ */
+.pwa-fade-in{animation:pwaFade .34s cubic-bezier(.22,1,.36,1);}
+@keyframes pwaFade{
+  from{opacity:0; transform:translateY(10px) scale(.995);}
+  to{opacity:1; transform:none;}
+}
+::view-transition-old(root){animation:pwaVtOut .22s ease forwards;}
+::view-transition-new(root){animation:pwaVtIn .3s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes pwaVtOut{to{opacity:0; transform:translateY(-6px);}}
+@keyframes pwaVtIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+
+/* ------------------------------------------------------ çevrimdışı rozeti */
+#pwa-offline{
+  position:fixed; z-index:9300;
+  top:calc(8px + env(safe-area-inset-top)); left:50%;
+  transform:translate(-50%,-160%);
+  padding:7px 14px; border-radius:999px;
+  font-size:11.5px; font-weight:800; letter-spacing:.03em;
+  color:#ffd7dd; background:rgba(60,12,26,.9);
+  border:1px solid rgba(255,95,122,.45);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  transition:transform .36s cubic-bezier(.22,1,.36,1);
+}
+#pwa-offline.in{transform:translate(-50%,0);}
+
+@media (prefers-reduced-motion:reduce){
+  .pwa-toast,.pwa-sheet,#pwa-install,#pwa-offline{transition:none !important;}
+  .pwa-fade-in,#favBtn.on{animation:none !important;}
+}
+
+/* ============================================================================
+   SPLASH — Lumira marka bloğu
+   Logo · ışık halkası · gradyan "LUMIRA" yazısı · ince çizgili "DİL KARTLARI"
+   ========================================================================== */
+.splash-brand{
+  display:flex; flex-direction:column; align-items:center;
+  margin-bottom:22px;
+  animation:brandIn 1.05s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes brandIn{
+  from{opacity:0; transform:translateY(18px) scale(.94); filter:blur(6px);}
+  to{opacity:1; transform:none; filter:none;}
+}
+
+/* ---- logo ve arkasındaki ışık ---- */
+.brand-mark-wrap{
+  position:relative; width:112px; height:112px;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:20px;
+}
+.brand-mark{
+  position:relative; z-index:3;
+  width:112px; height:112px; border-radius:28px;
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.55),
+    0 0 30px rgba(79,232,255,.22),
+    0 0 60px rgba(155,123,255,.20),
+    inset 0 0 0 1px rgba(180,215,255,.16);
+  animation:brandFloat 5.6s ease-in-out infinite;
+}
+@keyframes brandFloat{
+  0%,100%{transform:translateY(0) rotate(0deg);}
+  50%{transform:translateY(-7px) rotate(-.6deg);}
+}
+.brand-halo{
+  position:absolute; z-index:1; inset:-42px; border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(79,232,255,.30) 0%, rgba(155,123,255,.20) 38%, rgba(255,95,184,.10) 58%, transparent 72%);
+  filter:blur(14px);
+  animation:brandGlow 3.6s ease-in-out infinite;
+}
+@keyframes brandGlow{
+  0%,100%{opacity:.62; transform:scale(.94);}
+  50%{opacity:1; transform:scale(1.08);}
+}
+.brand-ring{
+  position:absolute; z-index:2; inset:-16px; border-radius:50%;
+  border:1px solid rgba(140,200,255,.28);
+  box-shadow:0 0 22px rgba(79,232,255,.22), inset 0 0 22px rgba(155,123,255,.14);
+  animation:brandRing 7s linear infinite;
+}
+@keyframes brandRing{
+  0%{transform:rotate(0deg) scale(1); opacity:.75;}
+  50%{opacity:.35;}
+  100%{transform:rotate(360deg) scale(1.04); opacity:.75;}
+}
+
+/* ---- LUMIRA yazısı ---- */
+.brand-name{
+  position:relative; margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:clamp(38px, 12.5vw, 54px);
+  font-weight:800; letter-spacing:.15em; line-height:1;
+  padding-left:.15em;                       /* letter-spacing dengesi */
+  background:linear-gradient(100deg,#5fd8ff 0%,#7fb0ff 26%,#9b7bff 52%,#c874ff 74%,#ff7ad0 100%);
+  background-size:220% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 16px rgba(120,180,255,.45)) drop-shadow(0 0 42px rgba(155,123,255,.30));
+  animation:brandShimmer 6s ease-in-out infinite;
+}
+@keyframes brandShimmer{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+.brand-i{position:relative; display:inline-block;}
+.brand-spark{
+  position:absolute; left:50%; top:-.62em; transform:translateX(-50%);
+  font-size:.42em; font-style:normal;
+  color:#dcefff; -webkit-text-fill-color:#dcefff;
+  filter:drop-shadow(0 0 8px rgba(155,200,255,.95)) drop-shadow(0 0 18px rgba(155,123,255,.7));
+  animation:sparkTwinkle 2.4s ease-in-out infinite;
+}
+@keyframes sparkTwinkle{
+  0%,100%{opacity:.55; transform:translateX(-50%) scale(.82) rotate(0deg);}
+  50%{opacity:1; transform:translateX(-50%) scale(1.18) rotate(20deg);}
+}
+
+/* ---- "DİL KARTLARI" çizgili alt başlık ---- */
+.brand-rule{
+  display:flex; align-items:center; justify-content:center; gap:12px;
+  margin-top:16px; width:min(300px, 78vw);
+}
+.brand-rule i{
+  flex:1 1 auto; height:1px; display:block;
+  background:linear-gradient(90deg, transparent, rgba(150,200,255,.55));
+}
+.brand-rule i:last-child{
+  background:linear-gradient(90deg, rgba(200,140,255,.55), transparent);
+}
+.brand-rule span{
+  flex:0 0 auto;
+  font-size:11.5px; font-weight:800; letter-spacing:.34em;
+  color:#cfe0ff; text-transform:uppercase;
+  text-shadow:0 0 12px rgba(120,180,255,.6);
+  padding-left:.34em;
+}
+
+@media (max-width:360px){
+  .brand-mark-wrap,.brand-mark{width:92px; height:92px;}
+  .brand-rule span{letter-spacing:.26em; font-size:10.5px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .splash-brand,.brand-mark,.brand-halo,.brand-ring,.brand-name,.brand-spark{
+    animation:none !important;
+  }
+}
