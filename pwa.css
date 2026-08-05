@@ -449,25 +449,11 @@ button, a, .chip, .opt, .tab, .level-opt, .lang-opt, .ctrl,
           backdrop-filter:blur(9px) !important;
 }
 
-/* Kaydırma sürerken süslemeler duraklatılır — parmağın altındaki her kare
-   kazanılır. Kaydırma bitince kendiliğinden geri gelir. */
-html.is-scrolling .flutter,
-html.is-scrolling .flutter .wing,
-html.is-scrolling .steam path,
-html.is-scrolling .lang-opt.active,
-html.is-scrolling .brand-halo,
-html.is-scrolling .brand-ring,
-html.is-scrolling .brand-mark,
-html.is-scrolling .brand-name{
-  animation-play-state:paused !important;
-}
-html.is-scrolling #grain{opacity:0 !important;}
-html.is-scrolling .face,
-html.is-scrolling .quiz-card{
-  -webkit-backdrop-filter:none !important;
-          backdrop-filter:none !important;
-  background-color:rgba(11,15,32,.72);
-}
+/* NOT: Kaydırma sırasında bulanıklığı kapatma / animasyonları duraklatma
+   denemesi geri alındı — kelebekler donuyor, kart tamamen saydamlaşıyordu
+   (theme.css'te .face arka planı zaten "transparent !important" olduğu için
+   bulanıklık kalkınca geriye hiçbir şey kalmıyordu). Akıcılık artışı, aşağıda
+   kalıcı hâle getirilen bulanıklık azaltmasından geliyor. */
 
 /* --- 6) Sabit katmanlar dokunmayı yutmasın -------------------------------- */
 #pwa-offline, #pwa-toasts, #grade, #grain, #scene-bg, #fg-desk, #sky-fx{

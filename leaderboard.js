@@ -53,6 +53,13 @@ function initLeaderboard(){
         firebase.initializeApp(FIREBASE_CONFIG);
         db = firebase.database();
         authSvc = firebase.auth();
+        /* Oturum cihazda kalıcı olsun: uygulama kapanıp açılınca tekrar
+           giriş istenmesin. (Varsayılan zaten LOCAL'dir; bazı tarayıcılarda
+           SESSION'a düştüğü için açıkça belirtiliyor.) */
+        try{
+          authSvc.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .catch(function(e){ console.warn('Oturum kalıcılığı ayarlanamadı:', e); });
+        }catch(e){}
       }catch(e){ console.warn('Firebase başlatılamadı:', e); }
     } else if(!isConfigured){
       console.warn('Liderlik tablosu: FIREBASE_CONFIG henüz doldurulmadı.');
@@ -449,17 +456,41 @@ function initLeaderboard(){
     /* ---------------- BAŞLAT ---------------- */
     listenLeaderboard();
 
+    /* Firebase, kayıtlı oturumu diskten geri yüklerken kısa bir süre geçer.
+       Eskiden LB_checkName bu süre dolmadan çalışıp giriş penceresini açıyordu;
+       kullanıcı zaten girişliyken tekrar giriş istenmesinin sebebi buydu.
+       Artık önce oturum durumunun netleşmesi bekleniyor. */
+    let authResolved = false;
+    let loginCheckPending = false;
+
+    function resolveAuth(user){
+      authResolved = true;
+      if(user){
+        const dn = user.displayName || 'Kullanıcı';
+        startTrackingWithUid(user.uid, dn);
+        hideNameModal();
+      } else if(loginCheckPending){
+        loginCheckPending = false;
+        showNameModal();
+      }
+    }
+
     if(authSvc){
-      authSvc.onAuthStateChanged((user) => {
-        if(user){
-          const dn = user.displayName || 'Kullanıcı';
-          startTrackingWithUid(user.uid, dn);
+      authSvc.onAuthStateChanged(resolveAuth);
+      /* Ağ hiç cevap vermezse (çevrimdışı ilk açılış) sonsuza kadar bekleme */
+      setTimeout(function(){
+        if(!authResolved && !currentUid && loginCheckPending){
+          loginCheckPending = false;
+          showNameModal();
         }
-      });
+      }, 6000);
     }
 
     window.LB_checkName = function(){
-      if(!currentUid){ showNameModal(); }
+      if(currentUid) return;              /* zaten girişli */
+      if(!authSvc){ showNameModal(); return; }   /* Firebase yok: eski davranış */
+      if(authResolved){ showNameModal(); return; }
+      loginCheckPending = true;           /* oturum netleşince karar verilir */
     };
     window.LB_getActiveSeconds = () => activeAccumulated;
     window.LB_isIdle = isIdleNow;

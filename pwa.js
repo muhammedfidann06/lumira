@@ -192,7 +192,7 @@ function registerSW() {
     if (d.type === 'CACHE_PROGRESS') onCacheProgress(d.done, d.total);
     if (d.type === 'CACHE_DONE')     onCacheDone();
     if (d.type === 'NOTIFICATION_OPEN') route(new URL(d.url, location.href).searchParams, true);
-    if (d.type === 'BACK_ONLINE')    setOffline(false);
+    if (d.type === 'BACK_ONLINE')    refreshOnlineState();
   });
 }
 
@@ -223,20 +223,6 @@ function setupShell() {
      gesturestart engellenmiyor: engellendiğinde, sayfa bir şekilde büyüdüğünde
      kullanıcı parmakla GERİ KÜÇÜLTEMİYORDU. */
 
-  /* Kaydırma sürerken süslemeleri duraklat (pwa.css'teki .is-scrolling) */
-  var scrollTimer = null, scrolling = false;
-  addEventListener('scroll', function () {
-    if (!scrolling) {
-      scrolling = true;
-      document.documentElement.classList.add('is-scrolling');
-    }
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(function () {
-      scrolling = false;
-      document.documentElement.classList.remove('is-scrolling');
-    }, 160);
-  }, { passive: true });
-
   /* Standalone modda dış bağlantılar tarayıcıda açılsın (uygulamadan çıkmasın) */
   if (isStandalone) {
     document.addEventListener('click', function (e) {
@@ -248,14 +234,52 @@ function setupShell() {
     });
   }
 
-  /* Çevrimdışı rozeti */
+  /* Çevrimdışı rozeti.
+     navigator.onLine tek başına güvenilmez: iOS'ta uygulama modunda açılışta
+     kısa süre "false" dönebiliyor ve sonra 'online' olayı hiç gelmediği için
+     rozet çevrimiçiyken de asılı kalıyordu. Bu yüzden durum, sunucuya küçük
+     bir istek atılarak GERÇEKTEN doğrulanıyor. */
   var badge = document.createElement('div');
   badge.id = 'pwa-offline';
   badge.textContent = '● ÇEVRİMDIŞI — kayıtlı kartlar açık';
   document.body.appendChild(badge);
-  addEventListener('online',  function () { setOffline(false); toast('🌐 Bağlantı geri geldi', { kind: 'good' }); });
-  addEventListener('offline', function () { setOffline(true); });
-  setOffline(!navigator.onLine);
+
+  addEventListener('online', function () { refreshOnlineState(); });
+  addEventListener('offline', function () { refreshOnlineState(); });
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) refreshOnlineState();
+  });
+  /* Açılışta bir an bekle: ilk saniyede yanlış "çevrimdışı" göstermesin */
+  setTimeout(refreshOnlineState, 1500);
+  setInterval(function () { if (wasOffline) refreshOnlineState(); }, 20000);
+}
+
+/* Service Worker araya girmesin diye adrese __ping ekleniyor;
+   sw.js bu istekleri doğrudan ağa bırakır. */
+var wasOffline = false;
+var probing = false;
+function probeConnection(cb) {
+  if (probing) return;
+  probing = true;
+  var done = false;
+  var finish = function (ok) {
+    if (done) return;
+    done = true; probing = false;
+    cb(ok);
+  };
+  var t = setTimeout(function () { finish(false); }, 5000);
+  try {
+    fetch('./favicon-16.png?__ping=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { clearTimeout(t); finish(!!(r && (r.ok || r.type === 'opaque'))); })
+      .catch(function () { clearTimeout(t); finish(false); });
+  } catch (e) { clearTimeout(t); finish(false); }
+}
+function refreshOnlineState() {
+  probeConnection(function (ok) {
+    setOffline(!ok);
+    if (ok && wasOffline) toast('🌐 Bağlantı geri geldi', { kind: 'good' });
+    wasOffline = !ok;
+  });
 }
 function setOffline(on) {
   var b = $('pwa-offline');

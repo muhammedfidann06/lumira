@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.0.3';
+const CACHE_VERSION = 'v1.0.5';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -96,7 +96,10 @@ self.addEventListener('fetch', (event) => {
   try { url = new URL(req.url); } catch (e) { return; }
   if (!/^https?:$/.test(url.protocol)) return;
 
-  /* Canlı veri (liderlik tablosu, giriş) hiçbir zaman önbelleklenmez. */
+  /* Bağlantı testi (?__ping=) ve canlı veri (liderlik, giriş) hiçbir zaman
+     önbelleklenmez — doğrudan ağa gider. Aksi hâlde çevrimdışıyken bile
+     önbellekten cevap döner ve "çevrimiçiyiz" sanılır. */
+  if (url.searchParams.has('__ping')) return;
   if (isLive(url)) return;
 
   /* 1) Sayfa açılışları */
