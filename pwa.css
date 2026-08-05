@@ -271,18 +271,18 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 
 /* ---- logo ve arkasındaki ışık ---- */
 .brand-mark-wrap{
-  position:relative; width:118px; height:118px;
+  position:relative;
   display:flex; align-items:center; justify-content:center;
-  margin-bottom:20px;
+  margin-bottom:14px;
 }
 .brand-mark{
   position:relative; z-index:3;
-  width:118px; height:118px;
-  /* Kenarları saydama geçen bir görsel kullanılıyor: kutu gölgesi ya da
-     köşe yuvarlaması YOK, yoksa logonun koyu zemini çerçeve gibi görünüyor. */
+  width:min(168px, 46vw); height:auto;
+  /* Görselin zemini tamamen saydam: kutu gölgesi ve köşe yuvarlaması YOK,
+     yoksa logonun koyu zemini yeniden çerçeve gibi görünür. */
   border-radius:0; box-shadow:none;
-  filter:drop-shadow(0 10px 26px rgba(0,0,0,.5))
-         drop-shadow(0 0 22px rgba(120,180,255,.30));
+  filter:drop-shadow(0 12px 28px rgba(0,0,0,.55))
+         drop-shadow(0 0 26px rgba(120,180,255,.28));
   animation:brandFloat 5.6s ease-in-out infinite;
 }
 @keyframes brandFloat{
@@ -302,7 +302,7 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 }
 /* ---- LUMIRA yazısı ---- */
 .brand-name{
-  position:relative; margin:0;
+  position:relative; margin:0; overflow:visible;
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   font-size:clamp(38px, 12.5vw, 54px);
   font-weight:800; letter-spacing:.15em; line-height:1;
@@ -318,12 +318,26 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
   0%,100%{background-position:0% 50%;}
   50%{background-position:100% 50%;}
 }
-.brand-i{
-  /* Safari, üst öğedeki gradyan-metin kırpmasını iç içe geçmiş öğeye
-     uygulamadığı için "İ" kayboluyordu; düz renk verilerek çözüldü. */
-  color:#a98cff; -webkit-text-fill-color:#a98cff;
-  filter:drop-shadow(0 0 14px rgba(150,120,255,.5));
+/* Yıldız, yazının İÇİNDE bir öğe DEĞİL: mutlak konumlu.
+   Böylece "LUMİRA" tek bir metin olarak kalır ve gradyan tüm harflerde aynı
+   anda, aynı hızda akar. (Harfi ayrı bir <span> içine almak, Safari'de o harfe
+   ayrı bir gradyan kutusu verdiği için farklı renkte/hızda görünmesine yol
+   açıyordu.) Yatay konumu pwa.js ölçerek veriyor — göz kararı değil. */
+.brand-spark{
+  position:absolute; top:-.30em; left:57.5%;
+  transform:translateX(-50%);
+  font-size:.34em; font-style:normal; line-height:1;
+  color:#e6f2ff; -webkit-text-fill-color:#e6f2ff;
+  filter:drop-shadow(0 0 9px rgba(170,205,255,.95))
+         drop-shadow(0 0 20px rgba(160,125,255,.75));
+  animation:sparkTwinkle 2.6s ease-in-out infinite;
+  pointer-events:none;
 }
+@keyframes sparkTwinkle{
+  0%,100%{opacity:.6; transform:translateX(-50%) scale(.85);}
+  50%{opacity:1; transform:translateX(-50%) scale(1.12);}
+}
+
 /* ---- "DİL KARTLARI" çizgili alt başlık ---- */
 .brand-rule{
   display:flex; align-items:center; justify-content:center; gap:12px;
@@ -345,7 +359,7 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 }
 
 @media (max-width:360px){
-  .brand-mark-wrap,.brand-mark{width:98px; height:98px;}
+  .brand-mark{width:132px;}
   .brand-rule span{letter-spacing:.26em; font-size:10.5px;}
 }
 @media (prefers-reduced-motion:reduce){

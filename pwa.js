@@ -1194,6 +1194,31 @@ function pad(n) { return String(n).padStart(2, '0'); }
 
 /* ============================================================ BAŞLAT ==== */
 
+/* Splash'taki ✦ işaretini "İ" harfinin tam ortasına oturtur.
+   Yüzdeyle konumlandırmak yazı tipine göre kayabildiği için harf genişlikleri
+   gerçekten ölçülüyor. */
+function placeBrandSpark() {
+  try {
+    var h = qs('.brand-name');
+    var sp = qs('.brand-spark');
+    if (!h || !sp) return;
+    var cs = getComputedStyle(h);
+    var ctx = document.createElement('canvas').getContext('2d');
+    ctx.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+    var ls = parseFloat(cs.letterSpacing);
+    if (!isFinite(ls)) ls = 0;
+    var word = 'LUMİRA', idx = 3;                 /* L U M [İ] R A */
+    var wOf = function (t) { return ctx.measureText(t).width + ls * t.length; };
+    var total = wOf(word);
+    if (!total || !isFinite(total)) return;
+    var padL = parseFloat(cs.paddingLeft) || 0;
+    var inner = h.clientWidth - padL - (parseFloat(cs.paddingRight) || 0);
+    var start = padL + Math.max(0, (inner - total) / 2);
+    var center = start + wOf(word.slice(0, idx)) + ctx.measureText(word[idx]).width / 2;
+    sp.style.left = center.toFixed(1) + 'px';
+  } catch (e) {}
+}
+
 /* Eksik kalan efekt: "Sonraki" düğmesinin işleyicisi sky.js'teki
    spawnShootingStar()'ı çağırıyordu. O dosya kaldırıldığı için her tıklamada
    ReferenceError atıyor ve HEMEN ARDINDAKİ saveCardPosition() çalışmıyordu
@@ -1220,6 +1245,13 @@ function boot() {
     if (!store('pwa_first_open')) store('pwa_first_open', Date.now());
 
     setupErrorReporting();
+    placeBrandSpark();
+    addEventListener('resize', placeBrandSpark);
+    addEventListener('orientationchange', function () { setTimeout(placeBrandSpark, 250); });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(placeBrandSpark).catch(function () {});
+    }
+    setTimeout(placeBrandSpark, 600);
     registerSW();
     setupShell();
     setupBackButton();
@@ -1288,7 +1320,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.0.7',
+  version: 'pwa.js 1.0.8',
   isStandalone: function () { return isStandalone; }
 };
 
