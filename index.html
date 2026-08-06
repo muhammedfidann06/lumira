@@ -987,6 +987,43 @@ window.VOCAB_LOADED = { de: true };
   }
   window.ensureVocab = ensure;
 
+  /* --- Arka planda sessiz tamamlama -----------------------------------
+     Açılışta hız için yalnızca Almanca yükleniyor. Ama "Kişisel" sekmesindeki
+     istatistikler, hata listesi ve öğrenilen kelimeler tüm kelime verisini
+     tarayarak çalışıyor; eksik dil varken bu ekranlar BOŞ görünüyor (veri
+     duruyor, sadece eşleşecek kelime bulunamıyor). Bu yüzden açılıştan
+     birkaç saniye sonra, kullanıcı hiçbir şey fark etmeden kalan diller de
+     arka planda yükleniyor. Açılış hızı korunuyor, hiçbir ekran eksik
+     kalmıyor. */
+  var REST = ['en','ar','fr','es','ru'];
+  function preloadRest(){
+    var i = 0;
+    (function next(){
+      if(i >= REST.length) return;
+      var lang = REST[i++];
+      if(window.VOCAB_LOADED[lang]) return next();
+      ensure(lang).then(function(){
+        /* Ekranda açık olan liste varsa tazelensin */
+        try{ if(typeof applyFilter === 'function' && window.VOCAB_LOADED[lang]) {} }catch(e){}
+        setTimeout(next, 400);          /* aralık bırak: arayüz takılmasın */
+      }).catch(function(){ setTimeout(next, 1500); });
+    })();
+  }
+
+  function startPreload(){
+    if(navigator.onLine === false) return;
+    if(window.requestIdleCallback) requestIdleCallback(preloadRest, { timeout: 6000 });
+    else setTimeout(preloadRest, 2500);
+  }
+  if(document.readyState === 'complete') setTimeout(startPreload, 2500);
+  else window.addEventListener('load', function(){ setTimeout(startPreload, 2500); });
+
+  /* Kişisel sekmesine geçilirse beklemeden tamamla */
+  document.addEventListener('click', function(e){
+    var t = e.target && e.target.closest ? e.target.closest('#tabPersonal') : null;
+    if(t) preloadRest();
+  }, true);
+
   function note(msg){
     if(window.PWA && window.PWA.toast) return window.PWA.toast(msg);
     return function(){};

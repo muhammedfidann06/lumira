@@ -1186,6 +1186,21 @@ function openSettings() {
     favRow.onclick = function () { openFavorites(); };
     b.appendChild(favRow);
 
+    var check = row('🔍', 'Verilerim duruyor mu?', 'Kayıtlı ilerleme kayıtlarını say');
+    check.onclick = function () {
+      var n = 0, keys = [];
+      try {
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i);
+          if (!k) continue;
+          n++;
+          if (/prog|xp|streak|meta|word|badge|stat/i.test(k)) keys.push(k);
+        }
+      } catch (e) {}
+      toast('💾 ' + n + ' kayıt var, ' + keys.length + ' tanesi ilerleme verisi', { duration: 7000 });
+    };
+    b.appendChild(check);
+
     var exp = row('⬇️', 'İlerlememi yedekle', 'JSON dosyası indir veya paylaş');
     exp.onclick = exportAllData;
     b.appendChild(exp);
@@ -1398,7 +1413,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.2.4',
+  version: 'pwa.js 1.2.5',
   isStandalone: function () { return isStandalone; }
 };
 
