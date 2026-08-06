@@ -343,9 +343,15 @@ function initLeaderboard(){
       const ref = db.ref('leaderboard/' + currentUid);
       ref.transaction((current) => {
         const prev = current && typeof current === 'object' ? current : { name: currentName, totalSeconds: 0 };
+        /* XP asla GERİ ALINMAZ.
+           Aynı hesapla birden fazla cihaz/sekme açıkken her biri kendi
+           belleğindeki değeri yazıyor; biri düşük kalmışsa sıralama sürekli
+           bir yükselip bir iniyordu. Artık yalnızca daha yüksek değer geçer. */
+        const prevXp = (prev && typeof prev.xp === 'number') ? prev.xp : 0;
+        const nextXp = Math.max(prevXp, xp || 0);
         return Object.assign({}, prev, {
           name: currentName || prev.name,
-          xp: xp || 0,
+          xp: nextXp,
           lastSeen: Date.now()
         });
       });
@@ -369,7 +375,7 @@ function initLeaderboard(){
         const rankDisplay = MEDALS[i] || (i+1);
         row.innerHTML = `
           <div class="lb-rank">${rankDisplay}</div>
-          <div class="lb-name">${escapeHtml(e.name)}${isMe ? ' (sen)' : ''}</div>
+          <div class="lb-name">${escapeHtml(e.name)}</div>
           <div class="lb-time">${formatValue(e)}</div>`;
         list.appendChild(row);
       });
@@ -434,9 +440,18 @@ function initLeaderboard(){
     function processLbSnapshot(val){
       lastLbVal = val;
       cacheLb(val);
+      /* Eskiden yalnızca "name" alanı dolu olan kayıtlar listeye giriyordu.
+         Bir kaydın adı herhangi bir sebeple boş kalırsa (ör. yalnızca xp
+         yazılmışsa) kişi sıralamada HİÇ görünmüyordu. Artık adı olmayan ama
+         verisi olan kayıtlar da listeye giriyor. */
       const all = Object.entries(val || {})
-        .filter(([k, v]) => v && v.name)
-        .map(([k, v]) => ({ uid: k, name: v.name, totalSeconds: v.totalSeconds || 0, xp: v.xp || 0 }));
+        .filter(([k, v]) => v && (v.name || v.xp || v.totalSeconds))
+        .map(([k, v]) => ({
+          uid: k,
+          name: v.name || 'Kullanıcı',
+          totalSeconds: v.totalSeconds || 0,
+          xp: v.xp || 0
+        }));
 
       const byTime = all.slice().sort((a,b) => (b.totalSeconds||0) - (a.totalSeconds||0));
       const byLevel = all.slice().sort((a,b) => (b.xp||0) - (a.xp||0));

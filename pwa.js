@@ -1309,9 +1309,14 @@ function openAdminXp() {
           send.disabled = true; send.textContent = 'Gönderiliyor…';
           /* SADECE xp alanı yazılıyor: kişinin serisi, günlük sayacı ve
              öğrendiği kelimeler asla değiştirilmiyor. */
+          /* Sıralamaya yazarken ADI da koruyoruz. Yalnızca "xp" alanı
+             yazıldığında, kaydın adı boş kalırsa kişi sıralamada hiç
+             görünmüyordu. */
+          var lbUpdate = { xp: newXp };
+          if (target.name) lbUpdate.name = target.name;
           Promise.all([
             db.ref('progress/' + target.uid + '/meta/xp').set(newXp),
-            db.ref('leaderboard/' + target.uid + '/xp').set(newXp)
+            db.ref('leaderboard/' + target.uid).update(lbUpdate)
           ]).then(function () {
             target.xp = newXp;
             send.disabled = false; send.textContent = 'XP gönder';
@@ -1833,7 +1838,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.4.5',
+  version: 'pwa.js 1.4.7',
   isStandalone: function () { return isStandalone; }
 };
 

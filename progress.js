@@ -163,7 +163,17 @@
   function persistMeta(){
     persistLocalMirror();
     const ref = dbRef('progress/'+currentKey+'/meta');
-    if(ref) ref.set(meta).catch(()=>{});
+    if(ref){
+      /* Sunucudaki XP bu cihazınkinden yüksekse (başka bir cihazda çalışılmış
+         ya da yöneticiden XP gelmişse) onu EZMEYELİM: önce yükseğe hizalanıp
+         öyle yazıyoruz. Aksi hâlde iki cihaz birbirinin değerini sürekli geri
+         alıyor ve sıralama oynuyordu. */
+      ref.transaction(function(cur){
+        var remoteXp = (cur && typeof cur.xp === 'number') ? cur.xp : 0;
+        if(remoteXp > (meta.xp||0)) meta.xp = remoteXp;
+        return meta;
+      }, function(){ persistLocalMirror(); }, false);
+    }
     // Seviye liderlik tablosu 'leaderboard/{uid}/xp' alanını okur; her meta
     // kaydında (görev tamamlama, XP kazanma, oturum bitişi vb.) burayı da
     // güncel tutuyoruz ki ayrı bir okuma yapmadan tek dinleyiciyle hem süre
