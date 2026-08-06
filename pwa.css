@@ -273,7 +273,7 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 .brand-mark-wrap{
   position:relative;
   display:flex; align-items:center; justify-content:center;
-  margin-bottom:14px;
+  margin-bottom:26px;               /* büyüyen yıldıza yer aç */
 }
 .brand-mark{
   position:relative; z-index:3;
@@ -287,17 +287,9 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
   0%,100%{transform:translateY(0) rotate(0deg);}
   50%{transform:translateY(-7px) rotate(-.6deg);}
 }
-.brand-halo{
-  position:absolute; z-index:1; inset:-42px; border-radius:50%;
-  background:radial-gradient(circle,
-    rgba(79,232,255,.30) 0%, rgba(155,123,255,.20) 38%, rgba(255,95,184,.10) 58%, transparent 72%);
-  filter:blur(14px);
-  animation:brandGlow 3.6s ease-in-out infinite;
-}
-@keyframes brandGlow{
-  0%,100%{opacity:.62; transform:scale(.94);}
-  50%{opacity:1; transform:scale(1.08);}
-}
+/* NOT: Logonun arkasındaki bulanık ışık hâlesi (.brand-halo) kaldırıldı —
+   kenarları yumuşatılmış gibi gösteriyordu. Logo artık net duruyor. */
+
 /* ---- LUMIRA yazısı ---- */
 .brand-name{
   position:relative; margin:0; overflow:visible;
@@ -324,12 +316,30 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 .brand-spark{
   position:absolute; top:-.60em; left:57%;   /* yatay konumu pwa.js ölçer */
   transform:translateX(-50%);
-  font-size:.55em; font-style:normal; line-height:1;
-  /* Harflerle aynı ton; hareketsiz — "I" harfinin noktası gibi durur. */
-  color:#a98cff; -webkit-text-fill-color:#a98cff;
-  filter:drop-shadow(0 0 7px rgba(160,125,255,.75));
-  animation:none;
+  font-size:.60em; font-style:normal; line-height:1;
+  /* Yazının GRADYANININ AYNISI + aynı süreli animasyon.
+     pwa.js ayrıca gradyanı yazıyla piksel piksel hizalar, böylece yıldız her
+     an "I" harfiyle birebir aynı rengi gösterir. */
+  background:linear-gradient(100deg,#5fd8ff 0%,#7fb0ff 26%,#9b7bff 52%,#c874ff 74%,#ff7ad0 100%);
+  background-size:220% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(150,170,255,.5))
+         drop-shadow(0 0 30px rgba(155,123,255,.32));
+  animation:brandShimmer 6s ease-in-out infinite;
   pointer-events:none;
+}
+/* pwa.js ölçümü yaptığında bu animasyona geçilir: piksel hassasiyetinde hizalı */
+.brand-spark.aligned{
+  animation:sparkAligned 6s ease-in-out infinite;
+}
+@keyframes sparkAligned{
+  0%,100%{background-position-x:var(--sp-a,0px);}
+  50%    {background-position-x:var(--sp-b,0px);}
+}
+/* Gradyanlı metni desteklemeyen tarayıcılarda düz renk */
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){
+  .brand-spark{color:#a98cff; -webkit-text-fill-color:#a98cff;}
 }
 
 /* ---- "DİL KARTLARI" çizgili alt başlık ---- */

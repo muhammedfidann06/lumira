@@ -1225,7 +1225,25 @@ function placeBrandSpark() {
     if (!box.width || !host.width) return;
 
     /* harfin yatay ortası, başlığın sol kenarına göre */
-    sp.style.left = (box.left - host.left + box.width / 2).toFixed(1) + 'px';
+    var center = box.left - host.left + box.width / 2;
+    sp.style.left = center.toFixed(1) + 'px';
+
+    /* --- Gradyanı yazıyla hizala ---------------------------------------
+       Başlıktaki gradyan 220% genişliğinde ve animasyonla sağa-sola kayıyor.
+       Yıldızın kendi kutusu küçük olduğu için aynı gradyan ona verildiğinde
+       farklı bir renkte kalırdı. Burada yıldızın gradyanı, başlığınkiyle
+       aynı ölçeğe getirilip yıldızın bulunduğu noktaya kaydırılıyor:
+       böylece her an "I" harfiyle birebir aynı rengi gösteriyor. */
+    var W = h.clientWidth;
+    if (W > 0) {
+      var bgW = W * 2.2;                       /* background-size:220% */
+      var travel = bgW - W;                    /* animasyonun kat ettiği yol */
+      var x = center - sp.offsetWidth / 2;     /* translateX(-50%) sonrası sol kenar */
+      sp.style.backgroundSize = bgW.toFixed(1) + 'px 100%';
+      sp.style.setProperty('--sp-a', (-x).toFixed(1) + 'px');
+      sp.style.setProperty('--sp-b', (-x - travel).toFixed(1) + 'px');
+      sp.classList.add('aligned');
+    }
   } catch (e) {}
 }
 
@@ -1330,7 +1348,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.1.2',
+  version: 'pwa.js 1.1.3',
   isStandalone: function () { return isStandalone; }
 };
 
