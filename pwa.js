@@ -1068,20 +1068,10 @@ function applyLite(on) {
   }
 }
 
-/* Cihaz zayıfsa hafif mod kendiliğinden açılır; kullanıcı ayarlardan
-   kapatırsa bu tercih kalıcı olur ve otomatik açma bir daha devreye girmez. */
-function weakDevice() {
-  var cores = navigator.hardwareConcurrency;
-  var mem = navigator.deviceMemory;
-  if (typeof cores === 'number' && cores <= 4) return true;
-  if (typeof mem === 'number' && mem <= 3) return true;
-  return false;
-}
-
+/* Hafif mod YALNIZCA kullanıcı ayarlardan açtığında devreye girer.
+   Cihaz özelliklerine bakıp otomatik açma kaldırıldı. */
 function initLite() {
-  var pref = liteSetting();
-  if (pref === true || pref === false) { applyLite(pref); return; }  /* kullanıcı seçti */
-  applyLite(weakDevice());
+  applyLite(liteSetting() === true);
 }
 
 /* ==================== PROFİL VE YÖNETİCİ BÖLÜMÜ ========================= */
@@ -1327,7 +1317,19 @@ function openAdminXp() {
             send.disabled = false; send.textContent = 'XP gönder';
             qs('input', amountF).value = '';
             draw();
-            toast('✅ ' + amount + ' XP gönderildi', { kind: 'good' });
+
+            /* Kendine gönderdiysen: bu cihaz eski XP'yi hâlâ bellekte tutuyor
+               ve düzenli aralıklarla sunucuya geri yazıyor. Sıralamanın bir
+               görünüp bir kaybolmasının sebebi bu çekişme. Sayfa yenilenince
+               cihaz sunucudaki yüksek değeri benimsiyor ve çekişme bitiyor. */
+            var me = fbUser();
+            if (me && me.uid === target.uid) {
+              toast('✅ Gönderildi — yenileniyor…', { kind: 'good' });
+              setTimeout(function () { location.reload(); }, 1200);
+            } else {
+              toast('✅ ' + amount + ' XP gönderildi. Kişi uygulamayı bir daha açtığında değer ona geçecek.',
+                    { kind: 'good', duration: 7000 });
+            }
           }).catch(function (e) {
             send.disabled = false; send.textContent = 'XP gönder';
             toast('Gönderilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
@@ -1831,7 +1833,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.4.4',
+  version: 'pwa.js 1.4.5',
   isStandalone: function () { return isStandalone; }
 };
 
