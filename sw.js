@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.2.5';
+const CACHE_VERSION = 'v1.3.0';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -69,8 +69,11 @@ self.addEventListener('install', (event) => {
       cache.add(new Request(url, { cache: 'reload' }))
     ));
   })());
-  /* skipWaiting'i otomatik yapmıyoruz: kullanıcı "Güncelle"ye basınca
-     pwa.js mesaj gönderir. Böylece açık oturum ortasında sayfa kırılmaz. */
+  /* Artık BEKLEMEDEN devreye giriyor. Eskiden yeni sürüm, kullanıcı
+     "Güncelle"ye basana ya da tüm sekmeler kapanana kadar bekliyordu; bu
+     sürede eski Service Worker eski dosyaları servis etmeye devam ediyor,
+     düzeltmeler telefona ulaşmıyordu. */
+  self.skipWaiting();
 });
 
 /* ========================================================= ACTIVATE ====== */

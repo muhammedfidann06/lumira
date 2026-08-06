@@ -700,3 +700,44 @@ html.lite .app .lang-opt.active::after{animation:none !important; opacity:.45;}
   width:46px; height:46px; font-size:19px;
   z-index:9999;
 }
+
+/* ============================================================================
+   HAFİF MOD — ek kazanımlar
+   ========================================================================== */
+
+/* a) Ekranı kaplayan sabit fotoğraf yerine düz degrade.
+      Sabit (fixed) tam ekran bir fotoğraf, her kaydırmada yeniden birleştirilen
+      en pahalı katmanlardan biridir. Renkler manzaranın tonlarından alındı,
+      böylece arayüzün kontrastı ve okunurluğu aynı kalıyor. */
+html.lite #scene-bg{
+  background-image:none !important;
+  background:
+    radial-gradient(120% 70% at 50% 0%, #123a72 0%, #0b2350 38%, #071634 68%, #040a1e 100%) !important;
+  transform:none !important;
+  will-change:auto !important;
+}
+html.lite #scene-bg::after{background:none !important;}
+html.lite #grade{background:none !important;}
+html.lite #fg-desk{display:none !important;}
+
+/* b) Geçişler kısaltılır — arayüz "daha çevik" hissettirir ve her geçiş
+      daha az kare boyunca hesaplanır. */
+html.lite *,
+html.lite *::before,
+html.lite *::after{
+  transition-duration:.12s !important;
+  animation-duration:.2s;
+}
+/* Kart çevirme sadeleşir: 3B döndürme yerine yumuşak geçiş */
+html.lite .card{transition:transform .18s ease !important;}
+html.lite .face{transition:none !important;}
+html.lite .tf-press{animation:none !important;}
+html.lite .app h1,
+html.lite .app .eyebrow,
+html.lite .app .lang-pair,
+html.lite .app .sub,
+html.lite .app .tf-progress,
+html.lite .app .lang-opt .lname,
+html.lite .app .level-opt,
+html.lite .app .tab,
+html.lite .app .chip{text-shadow:none !important;}

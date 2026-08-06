@@ -1065,9 +1065,20 @@ function applyLite(on) {
   }
 }
 
-/* Hafif mod OTOMATİK açılmaz — yalnızca kullanıcı ayarlardan açar. */
+/* Cihaz zayıfsa hafif mod kendiliğinden açılır; kullanıcı ayarlardan
+   kapatırsa bu tercih kalıcı olur ve otomatik açma bir daha devreye girmez. */
+function weakDevice() {
+  var cores = navigator.hardwareConcurrency;
+  var mem = navigator.deviceMemory;
+  if (typeof cores === 'number' && cores <= 4) return true;
+  if (typeof mem === 'number' && mem <= 3) return true;
+  return false;
+}
+
 function initLite() {
-  applyLite(liteSetting() === true);
+  var pref = liteSetting();
+  if (pref === true || pref === false) { applyLite(pref); return; }  /* kullanıcı seçti */
+  applyLite(weakDevice());
 }
 
 /* ============================== AYAR DÜĞMESİ ============================ */
@@ -1107,7 +1118,10 @@ function openSettings() {
 
     var liteOn = document.documentElement.classList.contains('lite');
     var liteRow = row('⚡', 'Hafif mod',
-      liteOn ? 'Açık — süslemeler kapalı, daha akıcı' : 'Kapalı — tüm görsel efektler açık',
+      liteOn
+        ? (liteSetting() === true ? 'Açık — süslemeler kapalı, daha akıcı'
+                                  : 'Açık (cihaz zayıf olduğu için otomatik)')
+        : 'Kapalı — tüm görsel efektler açık',
       '<div class="pwa-switch' + (liteOn ? ' on' : '') + '"></div>');
     liteRow.onclick = function () {
       var next = !document.documentElement.classList.contains('lite');
@@ -1117,7 +1131,8 @@ function openSettings() {
       qs('.tx span', liteRow).textContent = next
         ? 'Açık — süslemeler kapalı, daha akıcı'
         : 'Kapalı — tüm görsel efektler açık';
-      toast(next ? '⚡ Hafif mod açık' : 'Efektler geri açıldı', { kind: 'good' });
+      toast(next ? '⚡ Hafif mod açık — tam etki için sayfayı yenile'
+                 : 'Efektler geri açıldı — yenileyince tamamlanır', { kind: 'good', duration: 5000 });
     };
     b.appendChild(liteRow);
 
@@ -1413,7 +1428,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.2.5',
+  version: 'pwa.js 1.3.0',
   isStandalone: function () { return isStandalone; }
 };
 
