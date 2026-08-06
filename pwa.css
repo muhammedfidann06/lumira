@@ -277,7 +277,7 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 }
 .brand-mark{
   position:relative; z-index:3;
-  width:min(168px, 46vw); height:auto;
+  width:min(150px, 42vw); height:auto;
   /* Görselin zemini tamamen saydam: kutu gölgesi ve köşe yuvarlaması YOK,
      yoksa logonun koyu zemini yeniden çerçeve gibi görünür. */
   border-radius:0; box-shadow:none;
@@ -324,13 +324,14 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
    ayrı bir gradyan kutusu verdiği için farklı renkte/hızda görünmesine yol
    açıyordu.) Yatay konumu pwa.js ölçerek veriyor — göz kararı değil. */
 .brand-spark{
-  position:absolute; top:-.30em; left:57.5%;
+  position:absolute; top:-.34em; left:57%;   /* pwa.js gerçek konumu ölçüp yazar */
   transform:translateX(-50%);
-  font-size:.34em; font-style:normal; line-height:1;
-  color:#e6f2ff; -webkit-text-fill-color:#e6f2ff;
-  filter:drop-shadow(0 0 9px rgba(170,205,255,.95))
-         drop-shadow(0 0 20px rgba(160,125,255,.75));
-  animation:sparkTwinkle 2.6s ease-in-out infinite;
+  font-size:.30em; font-style:normal; line-height:1;
+  /* Harflerle AYNI renk: gradyanın "I" hizasına denk gelen tonu. */
+  color:#a98cff; -webkit-text-fill-color:#a98cff;
+  filter:drop-shadow(0 0 8px rgba(160,125,255,.85))
+         drop-shadow(0 0 18px rgba(130,150,255,.55));
+  animation:sparkTwinkle 3s ease-in-out infinite;
   pointer-events:none;
 }
 @keyframes sparkTwinkle{
@@ -359,7 +360,7 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 }
 
 @media (max-width:360px){
-  .brand-mark{width:132px;}
+  .brand-mark{width:122px;}
   .brand-rule span{letter-spacing:.26em; font-size:10.5px;}
 }
 @media (prefers-reduced-motion:reduce){
@@ -492,4 +493,24 @@ button, a, .chip, .opt, .tab, .level-opt, .lang-opt, .ctrl,
 .info-card{
   max-height:80dvh; overflow-y:auto;
   -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y;
+}
+
+/* ---------------------------------------- sıralama tablosu: yüklenme iskeleti
+   Firebase cevap verene kadar boş kutu yerine hafifçe parlayan satırlar. */
+.lb-row.lb-skel{
+  height:34px; margin-bottom:6px; border-radius:10px;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,.045) 25%,
+    rgba(255,255,255,.10) 42%,
+    rgba(255,255,255,.045) 60%);
+  background-size:220% 100%;
+  animation:lbShimmer 1.25s ease-in-out infinite;
+  border:1px solid rgba(140,190,255,.10);
+}
+@keyframes lbShimmer{
+  0%{background-position:120% 0;}
+  100%{background-position:-20% 0;}
+}
+@media (prefers-reduced-motion:reduce){
+  .lb-row.lb-skel{animation:none;}
 }

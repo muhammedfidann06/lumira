@@ -1194,28 +1194,38 @@ function pad(n) { return String(n).padStart(2, '0'); }
 
 /* ============================================================ BAŞLAT ==== */
 
-/* Splash'taki ✦ işaretini "İ" harfinin tam ortasına oturtur.
-   Yüzdeyle konumlandırmak yazı tipine göre kayabildiği için harf genişlikleri
-   gerçekten ölçülüyor. */
+/* Splash'taki ✦ işaretini "I" harfinin tam üstüne, harfin GERÇEK çizim
+   konumuna göre yerleştirir.
+   Önceki sürüm harf genişliklerini canvas ile tahmin ediyordu; sistem yazı
+   tipi (-apple-system) canvas'ta farklı bir yazı tipine düştüğü için ölçüm
+   tutmuyor, yıldız kayıyordu. Range API doğrudan ekranda çizilmiş harfin
+   dikdörtgenini verir — tahmin yok. */
 function placeBrandSpark() {
   try {
     var h = qs('.brand-name');
     var sp = qs('.brand-spark');
     if (!h || !sp) return;
-    var cs = getComputedStyle(h);
-    var ctx = document.createElement('canvas').getContext('2d');
-    ctx.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
-    var ls = parseFloat(cs.letterSpacing);
-    if (!isFinite(ls)) ls = 0;
-    var word = 'LUMİRA', idx = 3;                 /* L U M [İ] R A */
-    var wOf = function (t) { return ctx.measureText(t).width + ls * t.length; };
-    var total = wOf(word);
-    if (!total || !isFinite(total)) return;
-    var padL = parseFloat(cs.paddingLeft) || 0;
-    var inner = h.clientWidth - padL - (parseFloat(cs.paddingRight) || 0);
-    var start = padL + Math.max(0, (inner - total) / 2);
-    var center = start + wOf(word.slice(0, idx)) + ctx.measureText(word[idx]).width / 2;
-    sp.style.left = center.toFixed(1) + 'px';
+
+    var node = null;
+    for (var i = 0; i < h.childNodes.length; i++) {
+      if (h.childNodes[i].nodeType === 3 && h.childNodes[i].nodeValue.indexOf('I') > -1) {
+        node = h.childNodes[i]; break;
+      }
+    }
+    if (!node) return;
+
+    var pos = node.nodeValue.indexOf('I');       /* LUM[I]RA */
+    if (pos < 0) return;
+
+    var r = document.createRange();
+    r.setStart(node, pos);
+    r.setEnd(node, pos + 1);
+    var box = r.getBoundingClientRect();
+    var host = h.getBoundingClientRect();
+    if (!box.width || !host.width) return;
+
+    /* harfin yatay ortası, başlığın sol kenarına göre */
+    sp.style.left = (box.left - host.left + box.width / 2).toFixed(1) + 'px';
   } catch (e) {}
 }
 
@@ -1251,7 +1261,7 @@ function boot() {
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(placeBrandSpark).catch(function () {});
     }
-    setTimeout(placeBrandSpark, 600);
+    [120, 400, 900, 1800].forEach(function (ms) { setTimeout(placeBrandSpark, ms); });
     registerSW();
     setupShell();
     setupBackButton();
@@ -1320,7 +1330,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.0.9',
+  version: 'pwa.js 1.1.1',
   isStandalone: function () { return isStandalone; }
 };
 

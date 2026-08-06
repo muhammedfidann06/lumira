@@ -414,8 +414,26 @@ function initLeaderboard(){
 
     let lastLbVal = null;
 
+    /* Son tablo cihazda saklanıyor: yeni açılışta Firebase cevap verene kadar
+       ekran boş kalmasın, önceki sıralama anında görünsün. */
+    const LB_CACHE_KEY = 'lumira_lb_cache_v1';
+    function cacheLb(val){
+      try{ localStorage.setItem(LB_CACHE_KEY, JSON.stringify({ t: Date.now(), v: val })); }catch(e){}
+    }
+    function readLbCache(){
+      try{
+        const raw = localStorage.getItem(LB_CACHE_KEY);
+        if(!raw) return null;
+        const o = JSON.parse(raw);
+        if(!o || !o.v) return null;
+        if(Date.now() - (o.t||0) > 7*86400000) return null;   /* bir haftadan eskiyse gösterme */
+        return o.v;
+      }catch(e){ return null; }
+    }
+
     function processLbSnapshot(val){
       lastLbVal = val;
+      cacheLb(val);
       const all = Object.entries(val || {})
         .filter(([k, v]) => v && v.name)
         .map(([k, v]) => ({ uid: k, name: v.name, totalSeconds: v.totalSeconds || 0, xp: v.xp || 0 }));
@@ -436,7 +454,21 @@ function initLeaderboard(){
       renderMyRanks(timeRank, byTime.length, levelRank, byLevel.length);
     }
 
+    /* Veri gelene kadar boş kutu yerine yüklenme iskeleti göster */
+    function showLbSkeleton(){
+      ['splashLbTimeList','splashLbLevelList'].forEach(id => {
+        const list = document.getElementById(id);
+        if(!list || list.children.length) return;
+        list.innerHTML = '<div class="lb-row lb-skel"></div>'.repeat(4);
+      });
+    }
+
     function listenLeaderboard(){
+      /* Önce cihazdaki son kopya — anında görünür */
+      const cached = readLbCache();
+      if(cached) { try{ processLbSnapshot(cached); }catch(e){} }
+      else showLbSkeleton();
+
       if(!db){
         renderTimeBoard([]);
         renderLevelBoard([]);
