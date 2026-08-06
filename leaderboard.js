@@ -112,22 +112,40 @@ function initLeaderboard(){
           const uidProgSnap = await db.ref('progress/'+uid).once('value');
           if(!uidProgSnap.exists()){
             await db.ref('progress/'+uid).set(progSnap.val());
+          } else {
+            /* Hedefte kayıt varsa eskisini silmeden önce XP'yi koru:
+               hangisi yüksekse o kalsın. */
+            const oldMeta = (progSnap.val() || {}).meta || {};
+            const newMeta = (uidProgSnap.val() || {}).meta || {};
+            const bestXp = Math.max(oldMeta.xp || 0, newMeta.xp || 0);
+            if(bestXp > (newMeta.xp || 0)){
+              await db.ref('progress/'+uid+'/meta/xp').set(bestXp).catch(()=>{});
+            }
           }
-          // Eski kaydı sil — aksi halde aynı veri iki farklı anahtar altında
-          // (eski isim + yeni uid) tekrar tekrar var olmaya devam eder.
           await db.ref('progress/'+oldKey).remove().catch(()=>{});
         }
       }catch(e){}
       try{
         const lbSnap = await db.ref('leaderboard/'+oldKey).once('value');
         if(lbSnap.exists()){
+          const oldVal = lbSnap.val() || {};
           const uidLbSnap = await db.ref('leaderboard/'+uid).once('value');
-          if(!uidLbSnap.exists()){
-            const val = lbSnap.val();
-            if(val && typeof val === 'object') val.name = displayName;
-            await db.ref('leaderboard/'+uid).set(val);
-          }
-          // Eski liderlik kaydını sil — çift görünmesin (ör. iki adet "M Hamza").
+          const newVal = uidLbSnap.val() || {};
+
+          /* BİRLEŞTİR, ÜZERİNE YAZMA.
+             Eskiden: hedefte kayıt varsa eski kayıt hiç okunmadan siliniyordu
+             ve içindeki XP/süre kayboluyordu. Kişi sıralamada bir görünüp
+             sonra kayboluyordu. Artık iki kayıttan da YÜKSEK olan değerler
+             alınıp birleştiriliyor. */
+          const merged = {
+            name: displayName || newVal.name || oldVal.name || 'Kullanıcı',
+            xp: Math.max(oldVal.xp || 0, newVal.xp || 0),
+            totalSeconds: Math.max(oldVal.totalSeconds || 0, newVal.totalSeconds || 0),
+            lastSeen: Date.now()
+          };
+          await db.ref('leaderboard/'+uid).update(merged);
+
+          /* Eski kaydı ancak birleştirme başarıyla yazıldıktan SONRA sil. */
           await db.ref('leaderboard/'+oldKey).remove().catch(()=>{});
         }
       }catch(e){}
@@ -350,7 +368,7 @@ function initLeaderboard(){
         const prevXp = (prev && typeof prev.xp === 'number') ? prev.xp : 0;
         const nextXp = Math.max(prevXp, xp || 0);
         return Object.assign({}, prev, {
-          name: currentName || prev.name,
+          name: currentName || prev.name || 'Kullanıcı',   /* ad asla boş kalmasın */
           xp: nextXp,
           lastSeen: Date.now()
         });
