@@ -278,11 +278,9 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 .brand-mark{
   position:relative; z-index:3;
   width:min(150px, 42vw); height:auto;
-  /* Görselin zemini tamamen saydam: kutu gölgesi ve köşe yuvarlaması YOK,
-     yoksa logonun koyu zemini yeniden çerçeve gibi görünür. */
+  /* Logo orijinal hâliyle: kırpma, maske veya kenar yumuşatma YOK. */
   border-radius:0; box-shadow:none;
-  filter:drop-shadow(0 12px 28px rgba(0,0,0,.55))
-         drop-shadow(0 0 26px rgba(120,180,255,.28));
+  filter:drop-shadow(0 12px 28px rgba(0,0,0,.5));
   animation:brandFloat 5.6s ease-in-out infinite;
 }
 @keyframes brandFloat{
@@ -324,19 +322,14 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
    ayrı bir gradyan kutusu verdiği için farklı renkte/hızda görünmesine yol
    açıyordu.) Yatay konumu pwa.js ölçerek veriyor — göz kararı değil. */
 .brand-spark{
-  position:absolute; top:-.34em; left:57%;   /* pwa.js gerçek konumu ölçüp yazar */
+  position:absolute; top:-.30em; left:57%;   /* yatay konumu pwa.js ölçer */
   transform:translateX(-50%);
   font-size:.30em; font-style:normal; line-height:1;
-  /* Harflerle AYNI renk: gradyanın "I" hizasına denk gelen tonu. */
+  /* Harflerle aynı ton; hareketsiz — "I" harfinin noktası gibi durur. */
   color:#a98cff; -webkit-text-fill-color:#a98cff;
-  filter:drop-shadow(0 0 8px rgba(160,125,255,.85))
-         drop-shadow(0 0 18px rgba(130,150,255,.55));
-  animation:sparkTwinkle 3s ease-in-out infinite;
+  filter:drop-shadow(0 0 7px rgba(160,125,255,.75));
+  animation:none;
   pointer-events:none;
-}
-@keyframes sparkTwinkle{
-  0%,100%{opacity:.6; transform:translateX(-50%) scale(.85);}
-  50%{opacity:1; transform:translateX(-50%) scale(1.12);}
 }
 
 /* ---- "DİL KARTLARI" çizgili alt başlık ---- */

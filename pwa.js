@@ -1330,7 +1330,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.1.1',
+  version: 'pwa.js 1.1.2',
   isStandalone: function () { return isStandalone; }
 };
 
