@@ -324,7 +324,7 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
 .brand-spark{
   position:absolute; top:-.30em; left:57%;   /* yatay konumu pwa.js ölçer */
   transform:translateX(-50%);
-  font-size:.35em; font-style:normal; line-height:1;
+  font-size:.45em; font-style:normal; line-height:1;
   /* Harflerle aynı ton; hareketsiz — "I" harfinin noktası gibi durur. */
   color:#a98cff; -webkit-text-fill-color:#a98cff;
   filter:drop-shadow(0 0 7px rgba(160,125,255,.75));
