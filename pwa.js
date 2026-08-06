@@ -1070,6 +1070,37 @@ function initLite() {
   applyLite(liteSetting() === true);
 }
 
+/* ============================== AYAR DÜĞMESİ ============================ */
+/* NOT: Bu fonksiyon bir önceki düzenlemede yanlışlıkla silinmişti; ayar
+   düğmesinin ekrandan kaybolmasının sebebi buydu. */
+function setupFab() {
+  if ($('pwa-fab')) return;
+  var fab = document.createElement('div');
+  fab.id = 'pwa-fab';
+  fab.setAttribute('role', 'button');
+  fab.setAttribute('aria-label', 'Uygulama ayarları');
+  fab.title = 'Uygulama ayarları';
+  fab.innerHTML = '⚙️';
+  document.body.appendChild(fab);
+  fab.onclick = openSettings;
+
+  /* Açılış ekranı görünürken gizli dursun, kapanınca belirsin */
+  var sp = $('splash');
+  if (sp && !sp.classList.contains('hidden')) {
+    fab.classList.add('hidden');
+    var show = function () { fab.classList.remove('hidden'); };
+    sp.addEventListener('click', function () { setTimeout(show, 400); }, { once: true });
+    try {
+      var obs = new MutationObserver(function () {
+        if (sp.classList.contains('hidden')) { show(); obs.disconnect(); }
+      });
+      obs.observe(sp, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) { show(); }
+    /* Her ihtimale karşı: 12 sn sonra düğme kesinlikle görünür olsun */
+    setTimeout(show, 12000);
+  }
+}
+
 /* ================================ AYARLAR PANELİ ======================== */
 function openSettings() {
   sheet('⚙️ Uygulama', CONFIG.brand + ' · ' + CONFIG.appName + (isStandalone ? ' · uygulama modu' : ''), function (b) {
@@ -1367,7 +1398,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.2.3',
+  version: 'pwa.js 1.2.4',
   isStandalone: function () { return isStandalone; }
 };
 
