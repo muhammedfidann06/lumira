@@ -691,19 +691,12 @@ html.lite .app .lang-opt.active::after{animation:none !important; opacity:.45;}
 .level-box{flex-wrap:wrap;}
 .app .tab{min-width:0; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;}
 
-/* Kısa ekranlarda öndeki masa görseli içeriği fazla kapatmasın */
-@media (max-height:780px){
-  #fg-desk svg{width:104%; margin-left:-2%;}
-  body{padding-bottom:calc(140px + env(safe-area-inset-bottom)) !important;}
-}
-@media (max-height:680px){
-  #fg-desk{opacity:.75;}
-  #fg-desk svg{width:96%; margin-left:2%;}
-  body{padding-bottom:calc(118px + env(safe-area-inset-bottom)) !important;}
-}
 
-/* Ayar düğmesi sekmelerin üstüne binmesin */
+/* Ayar düğmesi: özgün konum ve boyutunda bırakıldı. Yukarı alma denemesi
+   Android'de sekme satırıyla çakışıp düğmeyi kullanılamaz hâle getirmişti. */
 #pwa-fab{
-  bottom:calc(30px + env(safe-area-inset-bottom));
-  width:44px; height:44px; font-size:18px;
+  bottom:calc(20px + env(safe-area-inset-bottom));
+  right:calc(14px + env(safe-area-inset-right));
+  width:46px; height:46px; font-size:19px;
+  z-index:9999;
 }

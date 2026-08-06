@@ -2,24 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" id="vp" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
-<script>
-/* Android'in "Ekran boyutu / Yazı boyutu" ayarı, tarayıcının CSS genişliğini
-   daraltır (ör. 412 → 320). Sayfa aynı kalır ama HER ŞEY büyük görünür ve
-   sığmayan yerler bozulur — iPhone'da bu ayar olmadığı için fark buradan
-   çıkıyordu. Çok dar cihazlarda düzen sabit bir genişliğe oturtuluyor,
-   tarayıcı da onu ekrana sığdırıyor. Bu betik, çizimden ÖNCE çalışsın diye
-   burada duruyor. */
-(function(){
-  try{
-    var w = window.innerWidth || document.documentElement.clientWidth;
-    if(w && w < 358){
-      document.getElementById('vp').setAttribute('content',
-        'width=372, viewport-fit=cover, user-scalable=no');
-    }
-  }catch(e){}
-})();
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
 <title>Lumira | Dil Kartları</title>
 <meta name="description" content="6 dilde binlerce kelime kartı, quiz, seslendirme ve kişisel ilerleme takibi. Çevrimdışı çalışır.">
 <meta name="application-name" content="Dil Kartları">
@@ -978,7 +961,69 @@
      birden (5,2 MB) her açılışta ayrıştırılıyordu; telefonlarda donmanın en
      büyük sebebi buydu. -->
 <script src="vocab-de.js"></script>
-<script>window.VOCAB_LOADED = { de: true };</script>
+<script>
+/* ===================== SÖZLÜKLERİN İHTİYAÇ ANINDA YÜKLENMESİ =============
+   Bu kod BİLEREK index.html'in içinde: sözlük etiketlerini kaldıran dosya ile
+   onları geri getiren kod aynı yerde dursun ki ikisi asla birbirinden ayrı
+   sürümde kalmasın. (Ayrı dosyada dururken, tarayıcıda eski sürüm önbellekte
+   kalınca diller boş görünüyordu.) */
+window.VOCAB_LOADED = { de: true };
+(function(){
+  var loading = {};
+  var NAMES = { de:'Almanca', en:'İngilizce', ar:'Arapça', fr:'Fransızca', es:'İspanyolca', ru:'Rusça' };
+
+  function ensure(lang){
+    if(window.VOCAB_LOADED[lang]) return Promise.resolve(true);
+    if(loading[lang]) return loading[lang];
+    loading[lang] = new Promise(function(res, rej){
+      var sc = document.createElement('script');
+      sc.src = 'vocab-' + lang + '.js';
+      sc.async = false;
+      sc.onload = function(){ window.VOCAB_LOADED[lang] = true; delete loading[lang]; res(true); };
+      sc.onerror = function(){ delete loading[lang]; rej(new Error(lang)); };
+      document.head.appendChild(sc);
+    });
+    return loading[lang];
+  }
+  window.ensureVocab = ensure;
+
+  function note(msg){
+    if(window.PWA && window.PWA.toast) return window.PWA.toast(msg);
+    return function(){};
+  }
+
+  /* Yakalama aşaması: uygulamanın kendi dil işleyicisinden ÖNCE çalışır */
+  document.addEventListener('click', function(e){
+    var el = e.target && e.target.closest ? e.target.closest('.lang-opt') : null;
+    if(!el) return;
+    var lang = el.getAttribute('data-lang');
+    if(!lang || window.VOCAB_LOADED[lang]) return;      /* hazırsa karışma */
+
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+
+    if(el.dataset.loading === '1') return;
+    el.dataset.loading = '1';
+    el.style.opacity = '.55';
+    var close = note('⏳ ' + (NAMES[lang] || lang) + ' sözlüğü yükleniyor…');
+
+    ensure(lang).then(function(){
+      el.dataset.loading = '';
+      el.style.opacity = '';
+      if(typeof close === 'function') close();
+      el.click();                                        /* artık normal akış */
+    }).catch(function(){
+      el.dataset.loading = '';
+      el.style.opacity = '';
+      if(typeof close === 'function') close();
+      note(navigator.onLine === false
+        ? '📴 Bu dil için önce internet gerekli'
+        : '⚠️ Sözlük yüklenemedi, tekrar dene');
+    });
+  }, true);
+})();
+</script>
 <script src="leaderboard.js"></script>
 <script>
 /* ================================================================
@@ -1830,8 +1875,13 @@ applyFilter();
 (function(){
   /* Hafif mod açıksa kar efekti hiç çalıştırılmaz. Bu betik pwa.js'ten önce
      çalıştığı için tercih doğrudan depodan okunuyor. */
+  /* Hafif mod SADECE kullanıcı açtıysa true olur. Depoda değer yoksa ya da
+     'false' ise kar normal şekilde yağar. */
   let liteOn = false;
-  try{ liteOn = localStorage.getItem('pwa_lite') === 'true'; }catch(e){}
+  try{
+    var raw = localStorage.getItem('pwa_lite');
+    liteOn = (raw === 'true');
+  }catch(e){ liteOn = false; }
 
   const canvas = document.getElementById('snowCanvas');
   if(liteOn){ canvas.style.display = 'none'; }
