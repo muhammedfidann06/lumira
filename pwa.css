@@ -322,9 +322,9 @@ html.pwa-standalone textarea{-webkit-user-select:text; user-select:text;}
    ayrı bir gradyan kutusu verdiği için farklı renkte/hızda görünmesine yol
    açıyordu.) Yatay konumu pwa.js ölçerek veriyor — göz kararı değil. */
 .brand-spark{
-  position:absolute; top:-.40em; left:57%;   /* yatay konumu pwa.js ölçer */
+  position:absolute; top:-.60em; left:57%;   /* yatay konumu pwa.js ölçer */
   transform:translateX(-50%);
-  font-size:.60em; font-style:normal; line-height:1;
+  font-size:.55em; font-style:normal; line-height:1;
   /* Harflerle aynı ton; hareketsiz — "I" harfinin noktası gibi durur. */
   color:#a98cff; -webkit-text-fill-color:#a98cff;
   filter:drop-shadow(0 0 7px rgba(160,125,255,.75));
