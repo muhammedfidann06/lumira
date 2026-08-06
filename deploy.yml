@@ -1,5 +1,7 @@
 name: Yayınla (GitHub Pages)
 
+run-name: Deploy
+
 # Bu iş akışı, GitHub'ın otomatik "pages build and deployment" işinin yerine
 # geçer. Aradaki KRİTİK fark aşağıdaki "concurrency" bloğudur:
 # arka arkaya commit atıldığında eski dağıtımlar SIRAYA GİRMEK yerine iptal
