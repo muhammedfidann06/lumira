@@ -15,7 +15,7 @@
   const DEFAULT_DAILY_GOAL = 100;
   const BATCH_SIZE = 10;
   const RETRY_SESSION_GAP = 1; // 1: hemen bir sonraki oturumu atlar, ondan sonraki oturumda tekrar çıkar
-  const XP_PER_NEW_WORD = 3;
+  const XP_PER_NEW_WORD = 5;
   const TASK_XP = { t1:25, t2:100, t3:300, t5:200 };
   const TASK5_SECONDS = 60*60;
 
@@ -1041,4 +1041,19 @@
   };
 
   window.PM_open = openPersonalMode;
+
+  /* Dışarıdan XP eklemek için ortak kapı: quiz doğru cevapları ve
+     destek rozetleri bunu kullanır. Kaydetme ve sunucuya yazma dahil. */
+  window.PR_addXp = function(amount, reason){
+    try{
+      amount = parseInt(amount, 10) || 0;
+      if(amount <= 0) return 0;
+      addXp(amount, reason || '');
+      persistMeta();
+      return meta.xp || 0;
+    }catch(e){ return 0; }
+  };
+  /* Mevcut XP ve seviyeyi okumak için (Profilim / PDF kilitleri) */
+  window.PR_getXp = function(){ try{ return meta.xp || 0; }catch(e){ return 0; } };
+  window.PR_getLevel = function(){ try{ return Math.floor((meta.xp||0)/200) + 1; }catch(e){ return 1; } };
 })();

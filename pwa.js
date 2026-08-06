@@ -1542,12 +1542,15 @@ function openSettings() {
     b.appendChild(testRow);
 
     /* --- Çevrimdışı --------------------------------------------------- */
-    var packRow = row('📦', 'Çevrimdışı paketi indir', '6 dilin tüm sözlükleri (~5 MB)');
+    var packRow = row('📦', 'Çevrimdışı paketi indir', '6 dilin tüm sözlükleri · 3. seviye gerekir');
     var bar = document.createElement('div');
     bar.className = 'pwa-progress';
     bar.innerHTML = '<i></i>';
     cacheBar = qs('i', bar);
-    packRow.onclick = function () { downloadOfflinePack(); };
+    packRow.onclick = function () {
+      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.level(3, 'Çevrimdışı paket')) return;
+      downloadOfflinePack();
+    };
     b.appendChild(packRow); b.appendChild(bar);
     if (store('pwa_offline_pack')) cacheBar.style.width = '100%';
 
@@ -1667,9 +1670,29 @@ function openSettings() {
     /* --- Profil (en altta) ------------------------------------------- */
     b.insertAdjacentHTML('beforeend',
       '<p class="pwa-note" style="margin:20px 2px 8px">Hesap</p>');
-    var prof = row('👤', 'Profilim', 'Adını ve şifreni değiştir');
-    prof.onclick = openProfile;
+    var prof = row('👤', 'Profilim', 'Adını ve şifreni değiştir · 10. seviye gerekir');
+    prof.onclick = function () {
+      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.level(10, 'Profilim')) return;
+      openProfile();
+    };
     b.appendChild(prof);
+
+    var pdfRow = row('📄', 'Kelimeleri PDF olarak indir', 'Kitap düzeninde kelime listesi · rozet gerekir');
+    pdfRow.onclick = function () {
+      if (typeof window.openPdfExport === 'function') window.openPdfExport();
+    };
+    b.appendChild(pdfRow);
+
+    var priv = row('🔒', 'Gizlilik Politikası', 'Hangi veriler saklanıyor?');
+    priv.onclick = function () { window.open('privacy/', '_blank', 'noopener'); };
+    b.appendChild(priv);
+
+    var supRow = row('❤️', 'Lumira\'yı Destekle', 'Rozet kazan, gelişime katkıda bulun');
+    supRow.style.borderColor = 'rgba(255,95,184,.32)';
+    supRow.onclick = function () {
+      if (typeof window.openSupport === 'function') window.openSupport();
+    };
+    b.appendChild(supRow);
 
     b.insertAdjacentHTML('beforeend',
       '<p class="pwa-note">' + CONFIG.brand + ' · ' + CONFIG.appName +
@@ -1838,7 +1861,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.5.0',
+  version: 'pwa.js 1.6.0',
   isStandalone: function () { return isStandalone; }
 };
 

@@ -779,3 +779,82 @@ html.lite .app .chip{text-shadow:none !important;}
   border:1px solid rgba(140,190,255,.2);
   box-shadow:none;
 }
+
+/* ============================================================================
+   DESTEK OL · ROZETLER · PDF · KİLİT
+   ========================================================================== */
+.credit-sub{
+  display:block; margin-top:5px;
+  font-size:10px; color:#5d6b8c; line-height:1.6;
+}
+.support-wrap{
+  display:flex; justify-content:center;
+  margin:14px 0 calc(6px + env(safe-area-inset-bottom));
+  position:relative; z-index:3;
+}
+.support-btn{
+  font:inherit; font-size:13px; font-weight:800; letter-spacing:.02em;
+  cursor:pointer; padding:11px 22px; border-radius:999px;
+  color:#ffd7ea; background:rgba(30,12,28,.55);
+  border:1px solid rgba(255,95,184,.55);
+  box-shadow:0 0 16px rgba(255,95,184,.22), inset 0 0 14px rgba(255,95,184,.10);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  transition:transform .18s cubic-bezier(.22,1.4,.36,1), box-shadow .22s ease;
+}
+.support-btn:active{transform:scale(.96);}
+.support-btn:hover{box-shadow:0 0 24px rgba(255,95,184,.42), inset 0 0 18px rgba(255,95,184,.18);}
+html.lite .support-btn{-webkit-backdrop-filter:none; backdrop-filter:none;}
+
+/* --- bağış kutuları --- */
+.sup-grid{
+  display:grid; grid-template-columns:repeat(3, minmax(0,1fr));
+  gap:9px; margin:2px 2px 4px;
+}
+.sup-item{
+  font:inherit; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:14px 6px 11px; border-radius:14px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(140,190,255,.18);
+  transition:transform .16s cubic-bezier(.22,1.4,.36,1), border-color .2s ease, background .2s ease;
+}
+.sup-item:active{transform:scale(.96);}
+.sup-item:hover{border-color:rgba(255,95,184,.45); background:rgba(255,95,184,.08);}
+.sup-item.owned{
+  border-color:rgba(61,255,160,.5);
+  background:rgba(61,255,160,.09);
+}
+.sup-amount{font-size:16px; font-weight:800; color:#eef4ff;}
+.sup-badge{font-size:20px; line-height:1.1;}
+.sup-xp{font-size:10.5px; font-weight:700; color:#4fe8ff;}
+.sup-desc{
+  margin:16px 2px 0; font-size:12px; line-height:1.75; color:#8fa0c2;
+  text-align:center;
+}
+@media (max-width:340px){ .sup-grid{grid-template-columns:repeat(2, minmax(0,1fr));} }
+
+/* --- kilit uyarısı --- */
+.lock-msg{
+  margin:4px 2px 6px; font-size:13.5px; line-height:1.8; color:#c9d7f5;
+  background:rgba(255,210,59,.07);
+  border:1px solid rgba(255,210,59,.28);
+  border-radius:14px; padding:16px 16px;
+}
+.lock-msg b{color:#ffd23b;}
+
+/* --- PDF seçim satırları --- */
+.pdf-row{margin:0 2px 14px;}
+.pdf-lbl{display:block; font-size:11.5px; color:#8291b3; margin-bottom:8px;}
+.pdf-chips{display:flex; flex-wrap:wrap; gap:7px;}
+.pdf-chip{
+  font:inherit; font-size:12.5px; font-weight:700; cursor:pointer;
+  padding:9px 13px; border-radius:11px; color:#c9d7f5;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(140,190,255,.18);
+  transition:transform .14s ease, border-color .2s ease, background .2s ease, color .2s ease;
+}
+.pdf-chip:active{transform:scale(.95);}
+.pdf-chip.on{
+  color:#04050a; border-color:transparent;
+  background:linear-gradient(120deg,#4fe8ff,#9b7bff);
+}

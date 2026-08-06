@@ -83,8 +83,8 @@
 
     function seedFlies() {
       flies.length = 0;
-      /* az sayıda: telefonda ~7, geniş ekranda en fazla 9 */
-      var n = Math.max(6, Math.round(Math.min(9, W / 95 + 3)));
+      /* iki katına çıkarıldı: telefonda ~14, geniş ekranda en fazla 18 */
+      var n = Math.max(12, Math.round(Math.min(18, (W / 95 + 3) * 2)));
       for (var i = 0; i < n; i++) {
         flies.push({
           x: Math.random() * W,
@@ -345,11 +345,9 @@
   /* 4 kelebek: 2 mavi, 1 mor, 1 turuncu.
      (Önceden 6 taneydi; her biri sürekli dönen bir animasyon katmanı olduğu
      için kaydırma akıcılığını düşürüyordu.) */
+  /* Tek bir mavi kelebek. */
   var FLIES = [
-    { c: 'f1', x: 52, y: 13.0, w: 30, a: '#41c8ff', b: '#1f7ce0', d: '#0c2246' },
-    { c: 'f2', x: 10, y: 25.5, w: 24, a: '#57d2ff', b: '#2a8de8', d: '#0c2246' },
-    { c: 'f4', x: 6,  y: 39.0, w: 22, a: '#c08bff', b: '#7a3ee0', d: '#1a0d33' },
-    { c: 'f5', x: 86, y: 39.5, w: 40, a: '#ff9d3c', b: '#e2621a', d: '#2a1206' }
+    { c: 'f1', x: 52, y: 13.0, w: 30, a: '#41c8ff', b: '#1f7ce0', d: '#0c2246' }
   ];
 
   function buildFlies() {
