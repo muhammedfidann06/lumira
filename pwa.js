@@ -1351,6 +1351,75 @@ function setupFab() {
   }
 }
 
+/* ---------------------- GÜNCELLEME YARDIMCILARI ------------------------ */
+/* Service Worker'a sürümünü sorar (sw.js'teki GET_VERSION'a cevap verir). */
+function swVersion(cb) {
+  try {
+    if (!navigator.serviceWorker || !navigator.serviceWorker.controller) { cb(null); return; }
+    var ch = new MessageChannel();
+    var done = false;
+    ch.port1.onmessage = function (e) {
+      if (done) return;
+      done = true;
+      cb((e.data && e.data.version) || null);
+    };
+    navigator.serviceWorker.controller.postMessage({ type: 'GET_VERSION' }, [ch.port2]);
+    setTimeout(function () { if (!done) { done = true; cb(null); } }, 2500);
+  } catch (e) { cb(null); }
+}
+
+/* Gerçekten yeni bir sürüm var mı diye bakar. reg.update() tek başına
+   yeterli değil: yeni bir worker kurulup kurulmadığını izlemek gerekiyor. */
+function checkForUpdate(cb) {
+  if (!swReg) { cb('error'); return; }
+  var settled = false;
+  var finish = function (r) { if (!settled) { settled = true; cb(r); } };
+
+  if (swReg.waiting) { finish('new'); return; }
+
+  swReg.update().then(function () {
+    if (swReg.waiting || swReg.installing) {
+      var w = swReg.waiting || swReg.installing;
+      if (w.state === 'installed' || w.state === 'activated') { finish('new'); return; }
+      w.addEventListener('statechange', function () {
+        if (w.state === 'installed' || w.state === 'activated') finish('new');
+      });
+      setTimeout(function () { finish(swReg.waiting ? 'new' : 'current'); }, 6000);
+    } else {
+      setTimeout(function () { finish(swReg.waiting ? 'new' : 'current'); }, 1500);
+    }
+  }).catch(function () { finish('error'); });
+}
+
+/* Önbellekleri boşaltıp Service Worker'ı yeniden kurar ve sayfayı tazeler.
+   localStorage'a DOKUNMAZ: ilerleme, favoriler ve ayarlar yerinde kalır. */
+function hardRefresh(full) {
+  var jobs = [];
+  try {
+    if (window.caches && caches.keys) {
+      jobs.push(caches.keys().then(function (names) {
+        return Promise.all(names.map(function (n) { return caches.delete(n); }));
+      }));
+    }
+  } catch (e) {}
+  if (full) {
+    try {
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+        jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+          return Promise.all(rs.map(function (r) { return r.unregister(); }));
+        }));
+      }
+    } catch (e) {}
+  } else if (waitingWorker) {
+    try { waitingWorker.postMessage({ type: 'SKIP_WAITING' }); } catch (e) {}
+  }
+
+  Promise.all(jobs).catch(function () {}).then(function () {
+    var base = location.origin + location.pathname;
+    location.replace(base + '?fresh=' + Date.now());
+  });
+}
+
 /* ================================ AYARLAR PANELİ ======================== */
 function openSettings() {
   sheet('⚙️ Uygulama', CONFIG.brand + ' · ' + CONFIG.appName + (isStandalone ? ' · uygulama modu' : ''), function (b) {
@@ -1474,17 +1543,46 @@ function openSettings() {
       b.appendChild(ins);
     }
 
-    var upd = row('🔄', 'Güncellemeleri denetle', 'Sürüm: ' + (window.PWA && window.PWA.version ? window.PWA.version : 'v1.0.0'));
-    upd.onclick = function () {
-      if (!swReg) { toast('Service Worker yok'); return; }
-      toast('Denetleniyor…');
-      swReg.update().then(function () {
-        setTimeout(function () {
-          if (!waitingWorker) toast('✅ En güncel sürümdesin', { kind: 'good' });
-        }, 2500);
-      }).catch(function () { toast('Denetlenemedi', { kind: 'bad' }); });
-    };
+    var myVer = (window.PWA && window.PWA.version) ? window.PWA.version : 'bilinmiyor';
+    var upd = row('🔄', 'Güncellemeleri denetle', 'Çalışan sürüm: ' + myVer);
+    var updDesc = qs('.tx span', upd);
     b.appendChild(upd);
+
+    /* Service Worker'ın kendi sürümünü de göster: ikisi farklıysa cihazda
+       eski dosyalar takılı kalmış demektir. */
+    swVersion(function (v) {
+      if (!v) return;
+      updDesc.textContent = 'Çalışan: ' + myVer + ' · önbellek: ' + v;
+    });
+
+    upd.onclick = function () {
+      if (!navigator.onLine) { toast('Güncelleme için internet gerekli', { kind: 'bad' }); return; }
+      updDesc.textContent = 'Denetleniyor…';
+      checkForUpdate(function (state) {
+        if (state === 'new') {
+          updDesc.textContent = 'Yeni sürüm indirildi';
+          toast('✨ Yeni sürüm hazır', {
+            action: 'Şimdi yükle', duration: 14000,
+            onAction: function () { hardRefresh(); }
+          });
+        } else if (state === 'error') {
+          updDesc.textContent = 'Denetlenemedi';
+          toast('Denetlenemedi', { kind: 'bad' });
+        } else {
+          updDesc.textContent = 'Çalışan sürüm: ' + myVer;
+          toast('✅ En güncel sürümdesin', { kind: 'good' });
+        }
+      });
+    };
+
+    /* Takılı kalan dosyalar için kesin çözüm */
+    var force = row('🧹', 'Zorla güncelle', 'Önbelleği temizler ve yeniler — verilerin silinmez');
+    force.onclick = function () {
+      confirmSheet('Zorla güncellensin mi?',
+        'Kayıtlı dosyalar silinip yeniden indirilecek. <b>İlerlemen, favorilerin ve ayarların silinmez.</b> Uygulama bir kez yenilenecek.',
+        function () { hardRefresh(true); });
+    };
+    b.appendChild(force);
 
     var net = row('📶', 'Bağlantı durumunu denetle', 'Çevrimdışı uyarısı yanlışsa buraya bak');
     net.onclick = function () { refreshOnlineState(); window.PWA.netStatus(); };
@@ -1679,13 +1777,14 @@ window.PWA = {
   addFavorite: addFavorite,
   logError: logError,
   openProfile: openProfile,
+  hardRefresh: hardRefresh,
   netStatus: function () {
     probeConnection(function (ok) {
       toast('navigator.onLine: ' + navigator.onLine + ' · sunucu testi: ' + (ok ? 'başarılı' : 'başarısız'), { duration: 7000 });
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.4.0',
+  version: 'pwa.js 1.4.1',
   isStandalone: function () { return isStandalone; }
 };
 

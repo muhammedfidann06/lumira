@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.4.0';
+const CACHE_VERSION = 'v1.4.1';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -212,7 +212,13 @@ self.addEventListener('message', (event) => {
   }
 
   if (data.type === 'GET_VERSION') {
-    event.ports[0] && event.ports[0].postMessage({ version: CACHE_VERSION });
+    try {
+      if (event.ports && event.ports[0]) {
+        event.ports[0].postMessage({ version: CACHE_VERSION });
+      } else if (event.source && event.source.postMessage) {
+        event.source.postMessage({ type: 'VERSION', version: CACHE_VERSION });
+      }
+    } catch (e) {}
     return;
   }
 
