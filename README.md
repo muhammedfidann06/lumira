@@ -4,4 +4,4 @@
 quiz, seslendirme, liderlik tablosu ve kişisel ilerleme takibi.
 Yüklenebilir, çevrimdışı çalışan bir uygulamadır.
 - Sürüm: 1.97
-
+.
