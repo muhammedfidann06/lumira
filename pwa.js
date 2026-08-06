@@ -108,7 +108,6 @@ function sheet(title, subtitle, buildBody) {
   box.appendChild(body);
   document.body.appendChild(back);
   document.body.appendChild(box);
-  try { buildBody(body, api); } catch (e) { logError(e); }
 
   requestAnimationFrame(function () { back.classList.add('in'); box.classList.add('in'); });
   back.onclick = function () { api.close(); };
@@ -139,6 +138,9 @@ function sheet(title, subtitle, buildBody) {
   };
   openSheets.push(api);
   pushGuard();
+  /* İçerik, api hazır olduktan SONRA kuruluyor: aksi hâlde geri çağrıya
+     gönderilen api tanımsız oluyordu (var hoisting). */
+  try { buildBody(body, api); } catch (e) { logError(e); }
   return api;
 }
 function row(icon, title, desc, right) {
@@ -1081,6 +1083,243 @@ function initLite() {
   applyLite(weakDevice());
 }
 
+/* ==================== PROFİL VE YÖNETİCİ BÖLÜMÜ ========================= */
+/* Firebase'e doğrudan erişim (yüklenmediyse hepsi sessizce devre dışı kalır) */
+function fbAuth() {
+  try { return (window.firebase && firebase.apps.length) ? firebase.auth() : null; } catch (e) { return null; }
+}
+function fbDb() {
+  try { return (window.firebase && firebase.apps.length) ? firebase.database() : null; } catch (e) { return null; }
+}
+function fbUser() {
+  var a = fbAuth();
+  return a ? a.currentUser : null;
+}
+
+/* Yönetici tanımı. UID en güvenilir yoldur; Profilim ekranındaki
+   "Kullanıcı kimliğim" satırından kopyalanıp buraya yazılabilir.
+   NOT: Bu yalnızca ARAYÜZ gizlemesidir, güvenlik değildir — gerçek koruma
+   Firebase kurallarında yapılmalıdır (aşağıdaki açıklamaya bak). */
+var ADMIN_UIDS = [];
+var ADMIN_NAMES = ['m hamza', 'mhamza'];
+
+function isAdmin() {
+  var u = fbUser();
+  if (!u) return false;
+  if (ADMIN_UIDS.indexOf(u.uid) > -1) return true;
+  var dn = (u.displayName || '').trim().toLowerCase();
+  return ADMIN_NAMES.indexOf(dn) > -1;
+}
+
+function inputRow(label, type, value, placeholder) {
+  var d = document.createElement('label');
+  d.className = 'pwa-field';
+  d.innerHTML = '<span>' + label + '</span>' +
+    '<input class="pwa-input" type="' + type + '" ' +
+    (value ? 'value="' + escapeHtml(value) + '" ' : '') +
+    (placeholder ? 'placeholder="' + escapeHtml(placeholder) + '" ' : '') +
+    'autocomplete="off" autocapitalize="off" spellcheck="false">';
+  return d;
+}
+function bigButton(text) {
+  var b = document.createElement('button');
+  b.className = 'pwa-btn';
+  b.type = 'button';
+  b.textContent = text;
+  return b;
+}
+
+/* ------------------------------- PROFİLİM ------------------------------- */
+function openProfile() {
+  var u = fbUser();
+  sheet('👤 Profilim', u ? 'Giriş yapıldı' : 'Bu bölüm için önce giriş yapman gerekiyor.', function (b) {
+    if (!u) {
+      b.innerHTML = '<div class="pwa-empty">Açılış ekranındaki sıralama bölümünden giriş yapabilirsin.</div>';
+      return;
+    }
+
+    var loginName = (u.email || '').split('@')[0];
+    var info = row('🪪', 'Giriş adın', loginName + ' — bu ad değişmez, giriş için hep bunu kullan');
+    info.style.cursor = 'default';
+    b.appendChild(info);
+
+    var idRow = row('🔑', 'Kullanıcı kimliğim', 'Dokun ve kopyala');
+    idRow.onclick = function () { copyText(u.uid); };
+    b.appendChild(idRow);
+
+    /* --- görünen ad --- */
+    b.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:18px 2px 6px">Görünen ad</p>');
+    var nameF = inputRow('Sıralamada görünecek ad', 'text', u.displayName || '', 'Adın');
+    b.appendChild(nameF);
+    var nameBtn = bigButton('Adı güncelle');
+    nameBtn.onclick = function () {
+      var v = qs('input', nameF).value.trim();
+      if (v.length < 2) { toast('Ad en az 2 karakter olmalı', { kind: 'bad' }); return; }
+      nameBtn.disabled = true; nameBtn.textContent = 'Güncelleniyor…';
+      u.updateProfile({ displayName: v }).then(function () {
+        var db = fbDb();
+        if (db) return db.ref('leaderboard/' + u.uid + '/name').set(v);
+      }).then(function () {
+        nameBtn.disabled = false; nameBtn.textContent = 'Adı güncelle';
+        toast('✅ Ad güncellendi', { kind: 'good' });
+      }).catch(function (e) {
+        nameBtn.disabled = false; nameBtn.textContent = 'Adı güncelle';
+        toast('Ad değiştirilemedi: ' + (e && e.code ? e.code : 'hata'), { kind: 'bad', duration: 6000 });
+      });
+    };
+    b.appendChild(nameBtn);
+
+    /* --- şifre --- */
+    b.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:22px 2px 6px">Şifre değiştir</p>');
+    var oldF = inputRow('Mevcut şifren', 'password', '', '••••••');
+    var newF = inputRow('Yeni şifre (en az 6 karakter)', 'password', '', '••••••');
+    b.appendChild(oldF); b.appendChild(newF);
+    var passBtn = bigButton('Şifreyi değiştir');
+    passBtn.onclick = function () {
+      var oldP = qs('input', oldF).value;
+      var newP = qs('input', newF).value;
+      if (!oldP) { toast('Mevcut şifreni yaz', { kind: 'bad' }); return; }
+      if (!newP || newP.length < 6) { toast('Yeni şifre en az 6 karakter olmalı', { kind: 'bad' }); return; }
+      passBtn.disabled = true; passBtn.textContent = 'Değiştiriliyor…';
+
+      var cred;
+      try { cred = firebase.auth.EmailAuthProvider.credential(u.email, oldP); }
+      catch (e) { passBtn.disabled = false; passBtn.textContent = 'Şifreyi değiştir'; toast('Yapılamadı', { kind: 'bad' }); return; }
+
+      u.reauthenticateWithCredential(cred).then(function () {
+        return u.updatePassword(newP);
+      }).then(function () {
+        passBtn.disabled = false; passBtn.textContent = 'Şifreyi değiştir';
+        qs('input', oldF).value = ''; qs('input', newF).value = '';
+        toast('✅ Şifren değişti', { kind: 'good' });
+      }).catch(function (e) {
+        passBtn.disabled = false; passBtn.textContent = 'Şifreyi değiştir';
+        var code = e && e.code;
+        toast(code === 'auth/wrong-password' || code === 'auth/invalid-credential'
+          ? 'Mevcut şifre yanlış'
+          : 'Değiştirilemedi: ' + (code || 'hata'), { kind: 'bad', duration: 6000 });
+      });
+    };
+    b.appendChild(passBtn);
+
+    b.insertAdjacentHTML('beforeend',
+      '<p class="pwa-note">Görünen adını değiştirmen giriş bilgilerini etkilemez; ' +
+      'uygulamaya girerken yine <b>' + escapeHtml(loginName) + '</b> adını kullanacaksın.</p>');
+  });
+}
+
+/* --------------------------- YÖNETİCİ: XP GÖNDER ------------------------ */
+function openAdminXp() {
+  sheet('🛡️ XP Gönder', 'Yalnızca yönetici görür. Seçtiğin kişinin XP\'si kalıcı olarak artar.', function (b) {
+    var db = fbDb();
+    if (!db) {
+      b.innerHTML = '<div class="pwa-empty">Bağlantı yok — internet gerekiyor.</div>';
+      return;
+    }
+
+    var searchF = inputRow('Kişi ara', 'text', '', 'İsim yaz…');
+    b.appendChild(searchF);
+
+    var amountF = inputRow('Gönderilecek XP', 'number', '', 'ör. 500');
+    b.appendChild(amountF);
+
+    var list = document.createElement('div');
+    list.innerHTML = '<div class="pwa-empty">Kullanıcılar yükleniyor…</div>';
+    b.appendChild(list);
+
+    var users = [];
+    var selected = null;
+
+    function draw() {
+      var q = qs('input', searchF).value.trim().toLowerCase();
+      var shown = users.filter(function (u) {
+        return !q || (u.name || '').toLowerCase().indexOf(q) > -1;
+      }).slice(0, 40);
+
+      list.innerHTML = '';
+      if (!shown.length) {
+        list.innerHTML = '<div class="pwa-empty">Eşleşen kullanıcı yok.</div>';
+        return;
+      }
+      shown.forEach(function (u) {
+        var r = row('👤', escapeHtml(u.name || '(isimsiz)'),
+          (u.xp || 0) + ' XP · Sv ' + (Math.floor((u.xp || 0) / 200) + 1));
+        if (selected && selected.uid === u.uid) {
+          r.style.borderColor = 'rgba(79,232,255,.6)';
+          r.style.background = 'rgba(79,232,255,.10)';
+        }
+        r.onclick = function () { selected = u; draw(); };
+        list.appendChild(r);
+      });
+    }
+
+    qs('input', searchF).addEventListener('input', draw);
+
+    db.ref('leaderboard').once('value').then(function (snap) {
+      var val = snap.val() || {};
+      users = Object.keys(val).map(function (uid) {
+        return { uid: uid, name: val[uid] && val[uid].name, xp: (val[uid] && val[uid].xp) || 0 };
+      }).sort(function (a, b2) { return (b2.xp || 0) - (a.xp || 0); });
+      draw();
+    }).catch(function (e) {
+      list.innerHTML = '<div class="pwa-empty">Liste okunamadı: ' + escapeHtml((e && e.code) || 'hata') + '</div>';
+    });
+
+    var send = bigButton('XP gönder');
+    send.onclick = function () {
+      if (!selected) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
+      var amount = parseInt(qs('input', amountF).value, 10);
+      if (!amount || amount <= 0) { toast('Geçerli bir XP miktarı yaz', { kind: 'bad' }); return; }
+      if (amount > 100000) { toast('Tek seferde en fazla 100.000 XP', { kind: 'bad' }); return; }
+
+      var target = selected;
+      var newXp = (target.xp || 0) + amount;
+
+      confirmSheet('XP gönderilsin mi?',
+        escapeHtml(target.name || '(isimsiz)') + ' → ' + (target.xp || 0) + ' XP yerine <b>' + newXp + ' XP</b> olacak.',
+        function () {
+          send.disabled = true; send.textContent = 'Gönderiliyor…';
+          /* SADECE xp alanı yazılıyor: kişinin serisi, günlük sayacı ve
+             öğrendiği kelimeler asla değiştirilmiyor. */
+          Promise.all([
+            db.ref('progress/' + target.uid + '/meta/xp').set(newXp),
+            db.ref('leaderboard/' + target.uid + '/xp').set(newXp)
+          ]).then(function () {
+            target.xp = newXp;
+            send.disabled = false; send.textContent = 'XP gönder';
+            qs('input', amountF).value = '';
+            draw();
+            toast('✅ ' + amount + ' XP gönderildi', { kind: 'good' });
+          }).catch(function (e) {
+            send.disabled = false; send.textContent = 'XP gönder';
+            toast('Gönderilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+          });
+        });
+    };
+    b.appendChild(send);
+
+    b.insertAdjacentHTML('beforeend',
+      '<p class="pwa-note">Kişinin cihazı, sunucudaki XP kendi kaydından yüksekse ' +
+      'onu esas alır; yani gönderdiğin XP bir sonraki açılışta ona geçer. ' +
+      'Serisi, günlük sayacı ve öğrendiği kelimeler değişmez.</p>');
+  });
+}
+
+/* Basit onay penceresi */
+function confirmSheet(title, html, onYes) {
+  sheet(title, '', function (b, api) {
+    b.insertAdjacentHTML('beforeend', '<p class="sheet-sub">' + html + '</p>');
+    var yes = bigButton('Evet, gönder');
+    yes.onclick = function () { api.close(); onYes(); };
+    var no = document.createElement('button');
+    no.className = 'pwa-btn ghost';
+    no.type = 'button';
+    no.textContent = 'Vazgeç';
+    no.onclick = function () { api.close(); };
+    b.appendChild(yes); b.appendChild(no);
+  });
+}
+
 /* ============================== AYAR DÜĞMESİ ============================ */
 /* NOT: Bu fonksiyon bir önceki düzenlemede yanlışlıkla silinmişti; ayar
    düğmesinin ekrandan kaybolmasının sebebi buydu. */
@@ -1263,6 +1502,23 @@ function openSettings() {
     };
     b.appendChild(rate);
 
+    /* --- Yönetici (yalnızca M Hamza) --------------------------------- */
+    if (isAdmin()) {
+      b.insertAdjacentHTML('beforeend',
+        '<p class="pwa-note" style="margin:20px 2px 8px">Yönetici</p>');
+      var adm = row('🛡️', 'XP gönder', 'Bir kullanıcıya XP ekle');
+      adm.style.borderColor = 'rgba(255,210,59,.35)';
+      adm.onclick = openAdminXp;
+      b.appendChild(adm);
+    }
+
+    /* --- Profil (en altta) ------------------------------------------- */
+    b.insertAdjacentHTML('beforeend',
+      '<p class="pwa-note" style="margin:20px 2px 8px">Hesap</p>');
+    var prof = row('👤', 'Profilim', 'Adını ve şifreni değiştir');
+    prof.onclick = openProfile;
+    b.appendChild(prof);
+
     b.insertAdjacentHTML('beforeend',
       '<p class="pwa-note">' + CONFIG.brand + ' · ' + CONFIG.appName +
       ' — çevrimdışı çalışır, verilerin cihazında saklanır.<br>' +
@@ -1422,13 +1678,14 @@ window.PWA = {
   favorites: favs,
   addFavorite: addFavorite,
   logError: logError,
+  openProfile: openProfile,
   netStatus: function () {
     probeConnection(function (ok) {
       toast('navigator.onLine: ' + navigator.onLine + ' · sunucu testi: ' + (ok ? 'başarılı' : 'başarısız'), { duration: 7000 });
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.3.0',
+  version: 'pwa.js 1.4.0',
   isStandalone: function () { return isStandalone; }
 };
 
