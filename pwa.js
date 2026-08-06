@@ -132,6 +132,7 @@ function sheet(title, subtitle, buildBody) {
     close: function () {
       var i = openSheets.indexOf(api);
       if (i > -1) openSheets.splice(i, 1);
+      if (settingsOpen === api) settingsOpen = null;
       back.classList.remove('in'); box.classList.remove('in');
       setTimeout(function () { back.remove(); box.remove(); }, 380);
     }
@@ -1332,7 +1333,14 @@ function setupFab() {
   fab.title = 'Uygulama ayarları';
   fab.innerHTML = '⚙️';
   document.body.appendChild(fab);
-  fab.onclick = openSettings;
+  /* Aç/kapa: panel açıkken tekrar basınca üst üste açmak yerine kapatır. */
+  fab.onclick = function () {
+    if (openSheets.length) {
+      while (openSheets.length) openSheets[openSheets.length - 1].close();
+      return;
+    }
+    openSettings();
+  };
 
   /* Açılış ekranı görünürken gizli dursun, kapanınca belirsin */
   var sp = $('splash');
@@ -1421,8 +1429,10 @@ function hardRefresh(full) {
 }
 
 /* ================================ AYARLAR PANELİ ======================== */
+var settingsOpen = null;
 function openSettings() {
-  sheet('⚙️ Uygulama', CONFIG.brand + ' · ' + CONFIG.appName + (isStandalone ? ' · uygulama modu' : ''), function (b) {
+  if (settingsOpen) { try { settingsOpen.close(); } catch (e) {} settingsOpen = null; return; }
+  settingsOpen = sheet('⚙️ Uygulama', CONFIG.brand + ' · ' + CONFIG.appName + (isStandalone ? ' · uygulama modu' : ''), function (b) {
 
     var liteOn = document.documentElement.classList.contains('lite');
     var liteRow = row('⚡', 'Hafif mod',
@@ -1784,7 +1794,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.4.1',
+  version: 'pwa.js 1.4.2',
   isStandalone: function () { return isStandalone; }
 };
 

@@ -191,8 +191,8 @@
       "description": "Her gün yeni bir kelime",
       "tag": "daily-word",
       "template": "daily-word",
-      "ms_ac_template": "widgets/daily-word.ac.json",
-      "data": "widgets/daily-word.json",
+      "ms_ac_template": "daily-word.ac.json",
+      "data": "daily-word.json",
       "type": "application/json",
       "screenshots": [
         {
