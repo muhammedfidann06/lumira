@@ -1101,8 +1101,11 @@ function fbUser() {
    "Kullanıcı kimliğim" satırından kopyalanıp buraya yazılabilir.
    NOT: Bu yalnızca ARAYÜZ gizlemesidir, güvenlik değildir — gerçek koruma
    Firebase kurallarında yapılmalıdır (aşağıdaki açıklamaya bak). */
-var ADMIN_UIDS = [];
-var ADMIN_NAMES = ['m hamza', 'mhamza'];
+var ADMIN_UIDS = ['49AyoEDRltPQ8NSzPU9y2fDtWDI2'];
+/* İsimle eşleştirme kapatıldı: isim taklit edilebilir, kimlik edilemez.
+   Başka bir yöneticiye yetki vermek istersen UID'sini yukarıdaki listeye ekle
+   ve Firebase kurallarına da aynı kimliği yaz. */
+var ADMIN_NAMES = [];
 
 function isAdmin() {
   var u = fbUser();
@@ -1794,7 +1797,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.4.2',
+  version: 'pwa.js 1.4.3',
   isStandalone: function () { return isStandalone; }
 };
 
