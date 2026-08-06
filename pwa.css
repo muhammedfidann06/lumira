@@ -517,3 +517,62 @@ button, a, .chip, .opt, .tab, .level-opt, .lang-opt, .ctrl,
 @media (prefers-reduced-motion:reduce){
   .lb-row.lb-skel{animation:none;}
 }
+
+/* ============================================================================
+   PERFORMANS — kalıcı iyileştirmeler
+   ========================================================================== */
+
+/* Kelebeklerin üzerindeki drop-shadow, kanatlar her 0.1 sn'de bir hareket
+   ettiği için gölgenin SÜREKLİ yeniden hesaplanmasına yol açıyordu. Gölge
+   kaldırıldı, kanat çırpışı da biraz yavaşlatıldı: görüntü neredeyse aynı,
+   maliyet çok daha düşük. */
+.flutter{filter:none !important;}
+.flutter .wing{animation-duration:.16s !important;}
+
+/* Kart yüzeyi ve quiz paneli dışındaki bulanıklıklar kaldırıldı */
+.info-overlay{-webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+              background:rgba(2,3,8,.90) !important;}
+.cat-panel{-webkit-backdrop-filter:blur(10px) !important; backdrop-filter:blur(10px) !important;}
+
+/* ============================ HAFİF MOD (html.lite) ======================
+   Zayıf cihazlarda otomatik açılır, ayarlardan elle de açılıp kapatılabilir.
+   Hiçbir işlev kaybolmaz; yalnızca pahalı süslemeler devre dışı kalır. */
+html.lite .flutter,
+html.lite #grain,
+html.lite #sky-fx{display:none !important;}
+
+html.lite .face,
+html.lite .quiz-card,
+html.lite #quizView .quiz-card,
+html.lite .cat-panel,
+html.lite .pwa-sheet,
+html.lite .pwa-sheet-backdrop,
+html.lite .pwa-toast,
+html.lite #pwa-fab,
+html.lite #pwa-install,
+html.lite #pwa-offline,
+html.lite .info-overlay{
+  -webkit-backdrop-filter:none !important;
+          backdrop-filter:none !important;
+}
+/* Bulanıklık kalkınca arkası boş kalmasın diye gerçek bir zemin veriliyor
+   (theme.css'te .face zemini "transparent !important" olduğu için burada da
+   !important ve daha yüksek özgüllük şart). */
+html.lite .face{background-color:rgba(11,16,36,.90) !important;}
+html.lite .quiz-card,
+html.lite #quizView .quiz-card{background-color:rgba(11,16,36,.90) !important;}
+html.lite .cat-panel{background-color:rgba(12,17,38,.97) !important;}
+html.lite .pwa-sheet-backdrop{background:rgba(3,6,16,.80) !important;}
+
+/* Nefes alan/animasyonlu gölgeler her karede yeniden boyanır */
+html.lite .app .lang-opt.active{animation:none !important;}
+html.lite .steam path{animation:none !important; opacity:.25;}
+html.lite .brand-mark{animation:none !important;}
+html.lite .brand-name{animation:none !important;}
+html.lite .brand-spark{animation:none !important;}
+html.lite #scene-bg{will-change:auto !important; transform:none !important;}
+html.lite .tf-ripple{display:none !important;}
+html.lite .face .word,
+html.lite .face .tag,
+html.lite .face .pos,
+html.lite .face .example{text-shadow:none !important;}

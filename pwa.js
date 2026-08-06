@@ -383,7 +383,7 @@ function route(params, force) {
   dismissSplash(function () {
     if (lang) {
       var lo = qs('.lang-opt[data-lang="' + lang.toLowerCase() + '"]');
-      if (lo) lo.click();
+      if (lo) lo.click();     /* sözlük hazır değilse setupLazyVocab devralır */
     }
     if (level) {
       var lv = Array.prototype.slice.call(document.querySelectorAll('.level-opt'))
@@ -1049,7 +1049,105 @@ function updateWidgetData(w) {
   } catch (e) {}
 }
 
-/* ================================ AYARLAR PANELİ ======================== */
+/* ================== DİL DOSYALARININ TEMBEL YÜKLENMESİ ================== */
+/* Altı sözlük dosyası toplam ~5,2 MB. Hepsini açılışta yüklemek telefonlarda
+   saniyelerce donmaya ve yüksek bellek kullanımına yol açıyordu. Artık
+   açılışta yalnızca Almanca var; diğerleri kullanıcı o dile dokunduğu anda,
+   yarım saniyeden kısa sürede iniyor ve bir daha inmiyor. */
+var vocabLoading = {};
+
+function vocabReady(lang) {
+  return !!(window.VOCAB_LOADED && window.VOCAB_LOADED[lang]);
+}
+
+function ensureVocab(lang) {
+  if (vocabReady(lang)) return Promise.resolve(true);
+  if (vocabLoading[lang]) return vocabLoading[lang];
+
+  vocabLoading[lang] = new Promise(function (resolve, reject) {
+    var sc = document.createElement('script');
+    sc.src = 'vocab-' + lang + '.js';
+    sc.async = false;
+    sc.onload = function () {
+      window.VOCAB_LOADED = window.VOCAB_LOADED || {};
+      window.VOCAB_LOADED[lang] = true;
+      delete vocabLoading[lang];
+      resolve(true);
+    };
+    sc.onerror = function () {
+      delete vocabLoading[lang];
+      reject(new Error('vocab-' + lang + '.js yüklenemedi'));
+    };
+    document.head.appendChild(sc);
+  });
+  return vocabLoading[lang];
+}
+
+var LANG_NAMES = { de: 'Almanca', en: 'İngilizce', ar: 'Arapça', fr: 'Fransızca', es: 'İspanyolca', ru: 'Rusça' };
+
+function setupLazyVocab() {
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('.lang-opt') : null;
+    if (!el) return;
+    var lang = el.getAttribute('data-lang');
+    if (!lang || vocabReady(lang)) return;          /* hazırsa hiç karışma */
+
+    /* Dosya inene kadar tıklamayı beklet */
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+
+    if (el.dataset.loading === '1') return;
+    el.dataset.loading = '1';
+    el.style.opacity = '.55';
+    var closeToast = toast('⏳ ' + (LANG_NAMES[lang] || lang) + ' sözlüğü yükleniyor…', { duration: 20000 });
+
+    ensureVocab(lang).then(function () {
+      el.dataset.loading = '';
+      el.style.opacity = '';
+      closeToast();
+      el.click();                                   /* artık hazır: normal akış */
+    }).catch(function () {
+      el.dataset.loading = '';
+      el.style.opacity = '';
+      closeToast();
+      toast(navigator.onLine === false
+        ? '📴 Bu dil için önce internet gerekli'
+        : '⚠️ Sözlük yüklenemedi, tekrar dene', { kind: 'bad' });
+    });
+  }, true);   /* yakalama aşaması: uygulamanın kendi işleyicisinden ÖNCE */
+}
+
+/* ===================== OTOMATİK HAFİF MOD (lite) ======================== */
+/* Zayıf cihazlarda arka plan bulanıklıkları, kelebekler ve film taneciği
+   kare hızını yarıya düşürebiliyor. Cihaz gerçekten zorlanıyorsa bu süslemeler
+   kapatılır — işlevsellik aynen kalır. */
+function liteSetting() { return store('pwa_lite'); }   /* true / false / null(oto) */
+
+function applyLite(on) {
+  document.documentElement.classList.toggle('lite', !!on);
+}
+
+function autoDetectLite() {
+  var pref = liteSetting();
+  if (pref === true || pref === false) { applyLite(pref); return; }
+
+  /* Donanım ipuçları: az çekirdek veya az bellek → doğrudan hafif mod */
+  var cores = navigator.hardwareConcurrency || 8;
+  var mem = navigator.deviceMemory || 8;
+  if (cores <= 4 || mem <= 3) { applyLite(true); return; }
+
+  /* Değilse gerçek kare hızını ölç */
+  var frames = 0, t0 = 0;
+  function step(t) {
+    if (!t0) t0 = t;
+    frames++;
+    if (t - t0 < 1400) { requestAnimationFrame(step); return; }
+    var fps = frames / ((t - t0) / 1000);
+    if (fps < 42) applyLite(true);
+  }
+  requestAnimationFrame(step);
+}
 function setupFab() {
   if ($('pwa-fab')) return;
   var fab = document.createElement('div');
@@ -1070,6 +1168,7 @@ function setupFab() {
   }
 }
 
+/* ================================ AYARLAR PANELİ ======================== */
 function openSettings() {
   sheet('⚙️ Uygulama', CONFIG.brand + ' · ' + CONFIG.appName + (isStandalone ? ' · uygulama modu' : ''), function (b) {
 
@@ -1167,6 +1266,22 @@ function openSettings() {
       }).catch(function () { toast('Denetlenemedi', { kind: 'bad' }); });
     };
     b.appendChild(upd);
+
+    var liteOn = document.documentElement.classList.contains('lite');
+    var liteRow = row('⚡', 'Hafif mod',
+      liteOn ? 'Açık — süslemeler kapalı, daha akıcı' : 'Kapalı — tüm görsel efektler açık',
+      '<div class="pwa-switch' + (liteOn ? ' on' : '') + '"></div>');
+    liteRow.onclick = function () {
+      var next = !document.documentElement.classList.contains('lite');
+      applyLite(next);
+      store('pwa_lite', next);
+      qs('.pwa-switch', liteRow).classList.toggle('on', next);
+      qs('.tx span', liteRow).textContent = next
+        ? 'Açık — süslemeler kapalı, daha akıcı'
+        : 'Kapalı — tüm görsel efektler açık';
+      toast(next ? '⚡ Hafif mod açık' : 'Efektler geri açıldı', { kind: 'good' });
+    };
+    b.appendChild(liteRow);
 
     var net = row('📶', 'Bağlantı durumunu denetle', 'Çevrimdışı uyarısı yanlışsa buraya bak');
     net.onclick = function () { refreshOnlineState(); window.PWA.netStatus(); };
@@ -1286,6 +1401,8 @@ function boot() {
     setupInstall();
     setupFab();
     setupTransitions();
+    setupLazyVocab();
+    autoDetectLite();
     scheduleReminder();
 
     /* Kart alanı hazır olunca favori yıldızını ekle */
@@ -1348,7 +1465,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.1.3',
+  version: 'pwa.js 1.2.0',
   isStandalone: function () { return isStandalone; }
 };
 

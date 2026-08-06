@@ -956,12 +956,12 @@
 </div>
 
 <script src="vocab-core.js"></script>
+<!-- Açılışta SADECE Almanca yükleniyor. Diğer beş dil, kullanıcı o dile
+     geçtiği anda pwa.js tarafından indiriliyor. Önceden altı dosyanın altısı
+     birden (5,2 MB) her açılışta ayrıştırılıyordu; telefonlarda donmanın en
+     büyük sebebi buydu. -->
 <script src="vocab-de.js"></script>
-<script src="vocab-en.js"></script>
-<script src="vocab-ar.js"></script>
-<script src="vocab-fr.js"></script>
-<script src="vocab-es.js"></script>
-<script src="vocab-ru.js"></script>
+<script>window.VOCAB_LOADED = { de: true };</script>
 <script src="leaderboard.js"></script>
 <script>
 /* ================================================================
@@ -990,8 +990,9 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 <script>
-/* Kelime verisi artık vocab-core.js / vocab-de.js / vocab-en.js / vocab-ar.js /
-   vocab-fr.js / vocab-es.js / vocab-ru.js dosyalarından yükleniyor
+/* Kelime verisi vocab-core.js + vocab-<dil>.js dosyalarından geliyor.
+   Açılışta yalnızca vocab-de.js yükleniyor; diğer diller o dile geçildiğinde
+   pwa.js tarafından indiriliyor
    (bkz. yukarıdaki <script src> etiketleri). fr/es/ru şu an boş iskelettir. */
 /* ======================= CONFIG ======================= */
 const LANGS = {
@@ -1818,79 +1819,121 @@ applyFilter();
   window.addEventListener('resize', resize);
   resize();
 
-  function makeFlakes(n){
-    return Array.from({length:n}, () => ({
-      x: Math.random()*w,
-      y: Math.random()*h,
-      r: Math.random()*9 + 4,
-      speedY: Math.random()*1.6 + 0.7,
-      speedX: Math.random()*1.0 - 0.5,
-      rot: Math.random()*Math.PI*2,
-      rotSpeed: (Math.random()*0.05 - 0.025),
-      drift: Math.random()*Math.PI*2,
-      driftSpeed: Math.random()*0.03 + 0.015,
-      opacity: Math.random()*0.5 + 0.55,
-      hue: Math.random() < 0.5 ? "190,235,255" : "210,220,255"
-    }));
-  }
-  
-  flakes = makeFlakes(62);
-
-  function drawCrystal(f){
-    ctx.save();
-    ctx.translate(f.x, f.y);
-    ctx.rotate(f.rot);
-    ctx.globalAlpha = f.opacity;
-    ctx.strokeStyle = `rgba(${f.hue},1)`;
-    ctx.fillStyle = `rgba(${f.hue},1)`;
-    ctx.lineWidth = Math.max(0.6, f.r*0.09);
-    
-    for(let i=0;i<6;i++){
-      ctx.save();
-      ctx.rotate((Math.PI/3)*i);
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(0, f.r);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, f.r*0.45);
-      ctx.lineTo(f.r*0.22, f.r*0.62);
-      ctx.moveTo(0, f.r*0.45);
-      ctx.lineTo(-f.r*0.22, f.r*0.62);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, f.r*0.75);
-      ctx.lineTo(f.r*0.16, f.r*0.88);
-      ctx.moveTo(0, f.r*0.75);
-      ctx.lineTo(-f.r*0.16, f.r*0.88);
-      ctx.stroke();
-      ctx.restore();
+  /* --- Kar taneleri: her kare yeniden ÇİZİLMİYOR, bir kez resme dönüştürülüp
+     sonra sadece kopyalanıyor.
+     Eskiden her tane için 6 kol × 3 çizgi = kare başına ~1100 stroke() çağrısı
+     yapılıyordu; açılış ekranındaki donmanın sebebi buydu. Şimdi tane başına
+     tek bir drawImage var. Görüntü birebir aynı. */
+  function makeSprite(r, hue){
+    const pad = 3;
+    const size = Math.ceil(r * 2 + pad * 2);
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const x = c.getContext('2d');
+    x.translate(size / 2, size / 2);
+    x.strokeStyle = `rgba(${hue},1)`;
+    x.fillStyle = `rgba(${hue},1)`;
+    x.lineWidth = Math.max(0.6, r * 0.09);
+    x.lineCap = 'round';
+    for(let i = 0; i < 6; i++){
+      x.save();
+      x.rotate((Math.PI / 3) * i);
+      x.beginPath();
+      x.moveTo(0, 0);
+      x.lineTo(0, r);
+      x.stroke();
+      x.beginPath();
+      x.moveTo(0, r * 0.45);
+      x.lineTo(r * 0.22, r * 0.62);
+      x.moveTo(0, r * 0.45);
+      x.lineTo(-r * 0.22, r * 0.62);
+      x.stroke();
+      x.beginPath();
+      x.moveTo(0, r * 0.75);
+      x.lineTo(r * 0.16, r * 0.88);
+      x.moveTo(0, r * 0.75);
+      x.lineTo(-r * 0.16, r * 0.88);
+      x.stroke();
+      x.restore();
     }
-    ctx.beginPath();
-    ctx.arc(0,0,f.r*0.14,0,Math.PI*2);
-    ctx.fill();
-    ctx.restore();
+    x.beginPath();
+    x.arc(0, 0, r * 0.14, 0, Math.PI * 2);
+    x.fill();
+    return c;
   }
 
-  function tick(){
+  /* Aynı yarıçapı defalarca çizmemek için küçük bir önbellek */
+  const spriteCache = {};
+  function spriteFor(r, hue){
+    const key = Math.round(r) + '|' + hue;
+    if(!spriteCache[key]) spriteCache[key] = makeSprite(Math.round(r), hue);
+    return spriteCache[key];
+  }
+
+  function flakeCount(){
+    if(document.documentElement.classList.contains('lite')) return 16;
+    const small = Math.min(window.innerWidth, window.innerHeight) < 430;
+    return small ? 34 : 56;
+  }
+
+  function makeFlakes(n){
+    return Array.from({length:n}, () => {
+      const r = Math.random()*9 + 4;
+      const hue = Math.random() < 0.5 ? "190,235,255" : "210,220,255";
+      return {
+        x: Math.random()*w,
+        y: Math.random()*h,
+        r, hue,
+        sprite: spriteFor(r, hue),
+        speedY: Math.random()*1.6 + 0.7,
+        speedX: Math.random()*1.0 - 0.5,
+        rot: Math.random()*Math.PI*2,
+        rotSpeed: (Math.random()*0.05 - 0.025),
+        drift: Math.random()*Math.PI*2,
+        driftSpeed: Math.random()*0.03 + 0.015,
+        opacity: Math.random()*0.5 + 0.55
+      };
+    });
+  }
+
+  flakes = makeFlakes(flakeCount());
+
+  /* Kare hızı sınırı: kar için 30 fps fazlasıyla yeterli, geri kalan güç
+     arayüze kalsın. */
+  let lastFrame = 0;
+  const FRAME_MS = 1000 / 30;
+
+  function tick(now){
     if(!running) return;
+    requestAnimationFrame(tick);
+    if(now - lastFrame < FRAME_MS) return;
+    lastFrame = now;
+
     ctx.clearRect(0,0,w,h);
-    windPhase += 0.012;
+    windPhase += 0.012 * 2;              /* 30 fps'te aynı hız hissi */
     const gust = Math.sin(windPhase) * 0.6;
-    flakes.forEach(f=>{
-      f.drift += f.driftSpeed;
-      f.rot += f.rotSpeed;
-      f.y += f.speedY;
-      f.x += f.speedX + gust + Math.sin(f.drift)*0.6;
+
+    for(let i = 0; i < flakes.length; i++){
+      const f = flakes[i];
+      f.drift += f.driftSpeed * 2;
+      f.rot += f.rotSpeed * 2;
+      f.y += f.speedY * 2;
+      f.x += (f.speedX + gust + Math.sin(f.drift)*0.6) * 2;
       if(f.y > h + 12){ f.y = -12; f.x = Math.random()*w; }
       if(f.x > w + 12) f.x = -12;
       if(f.x < -12) f.x = w + 12;
-      drawCrystal(f);
-    });
+
+      const s = f.sprite;
+      ctx.globalAlpha = f.opacity;
+      ctx.save();
+      ctx.translate(f.x, f.y);
+      ctx.rotate(f.rot);
+      ctx.drawImage(s, -s.width/2, -s.height/2);
+      ctx.restore();
+    }
     ctx.globalAlpha = 1;
-    requestAnimationFrame(tick);
   }
-  tick();
+  requestAnimationFrame(tick);
 
   const splash = document.getElementById('splash');
   const mainApp = document.getElementById('mainApp');
@@ -1915,8 +1958,8 @@ applyFilter();
 <!-- ===== HAREKET KATMANI =====
      GSAP ve Lenis isteğe bağlıdır: yüklenmezlerse arayüz aynen çalışır,
      sadece giriş koreografisi CSS ile yapılır. -->
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js"></script>
+<!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
+     açılışta indirilip ayrıştırılıyordu (~130 KB). -->
 <script defer src="voice.js"></script>
 <script defer src="theme.js"></script>
 
