@@ -1,1 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.lumira.dilkartlari",
+      "sha256_cert_fingerprints": [
+        "2A:E9:B5:D5:44:EE:EB:1D:A4:08:52:45:DB:B2:EE:4B:03:D8:61:74:FF:57:F6:46:AD:C6:8E:22:DD:4C:72:39"
+      ]
+    }
+  }
+]
 
