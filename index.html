@@ -645,8 +645,8 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.4.4">
-<link rel="stylesheet" href="pwa.css?v=1.4.4">
+<link rel="stylesheet" href="theme.css?v=1.4.5">
+<link rel="stylesheet" href="pwa.css?v=1.4.5">
 </head>
 <body>
 
@@ -1061,7 +1061,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.4.4"></script>
+<script src="leaderboard.js?v=1.4.5"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -1914,19 +1914,12 @@ applyFilter();
      çalıştığı için tercih doğrudan depodan okunuyor. */
   /* Hafif mod SADECE kullanıcı açtıysa true olur. Depoda değer yoksa ya da
      'false' ise kar normal şekilde yağar. */
-  /* Hafif mod: kullanıcı seçtiyse onun tercihi; seçmediyse cihaz zayıfsa
-     (4 çekirdek veya altı / 3 GB RAM veya altı) kendiliğinden açılır.
-     Bu betik pwa.js'ten önce çalıştığı için aynı kural burada da uygulanıyor;
-     yoksa kar bir an için yağıp sonra kaybolurdu. */
+  /* Hafif mod yalnızca kullanıcı ayarlardan açtığında etkin. Bu betik
+     pwa.js'ten önce çalıştığı için tercih doğrudan depodan okunuyor. */
   let liteOn = false;
   try{
     var raw = localStorage.getItem('pwa_lite');
-    if(raw === 'true')       liteOn = true;
-    else if(raw === 'false') liteOn = false;
-    else {
-      var c = navigator.hardwareConcurrency, m = navigator.deviceMemory;
-      liteOn = (typeof c === 'number' && c <= 4) || (typeof m === 'number' && m <= 3);
-    }
+    liteOn = (raw === 'true');   /* yalnızca kullanıcı açtıysa */
     if(liteOn) document.documentElement.classList.add('lite');
   }catch(e){ liteOn = false; }
 
@@ -2072,7 +2065,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.4.4"></script>
+<script src="progress.js?v=1.4.5"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2083,12 +2076,12 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.4.4"></script>
-<script defer src="theme.js?v=1.4.4"></script>
+<script defer src="voice.js?v=1.4.5"></script>
+<script defer src="theme.js?v=1.4.5"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.4.4"></script>
+<script defer src="pwa.js?v=1.4.5"></script>
 </body>
 </html>
