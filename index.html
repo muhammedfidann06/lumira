@@ -2,7 +2,24 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+<meta name="viewport" id="vp" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+<script>
+/* Android'in "Ekran boyutu / Yazı boyutu" ayarı, tarayıcının CSS genişliğini
+   daraltır (ör. 412 → 320). Sayfa aynı kalır ama HER ŞEY büyük görünür ve
+   sığmayan yerler bozulur — iPhone'da bu ayar olmadığı için fark buradan
+   çıkıyordu. Çok dar cihazlarda düzen sabit bir genişliğe oturtuluyor,
+   tarayıcı da onu ekrana sığdırıyor. Bu betik, çizimden ÖNCE çalışsın diye
+   burada duruyor. */
+(function(){
+  try{
+    var w = window.innerWidth || document.documentElement.clientWidth;
+    if(w && w < 358){
+      document.getElementById('vp').setAttribute('content',
+        'width=372, viewport-fit=cover, user-scalable=no');
+    }
+  }catch(e){}
+})();
+</script>
 <title>Lumira | Dil Kartları</title>
 <meta name="description" content="6 dilde binlerce kelime kartı, quiz, seslendirme ve kişisel ilerleme takibi. Çevrimdışı çalışır.">
 <meta name="application-name" content="Dil Kartları">
@@ -1811,9 +1828,15 @@ applyFilter();
 
 /* ======================= SNOW / CRYSTAL EFFECT ======================= */
 (function(){
+  /* Hafif mod açıksa kar efekti hiç çalıştırılmaz. Bu betik pwa.js'ten önce
+     çalıştığı için tercih doğrudan depodan okunuyor. */
+  let liteOn = false;
+  try{ liteOn = localStorage.getItem('pwa_lite') === 'true'; }catch(e){}
+
   const canvas = document.getElementById('snowCanvas');
+  if(liteOn){ canvas.style.display = 'none'; }
   const ctx = canvas.getContext('2d');
-  let w, h, flakes, running = true, windPhase = 0;
+  let w, h, flakes, running = !liteOn, windPhase = 0;
 
   function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
   window.addEventListener('resize', resize);
@@ -1871,7 +1894,7 @@ applyFilter();
   }
 
   function flakeCount(){
-    if(document.documentElement.classList.contains('lite')) return 16;
+    if(document.documentElement.classList.contains('lite')) return 0;
     const small = Math.min(window.innerWidth, window.innerHeight) < 430;
     return small ? 34 : 56;
   }
@@ -1896,7 +1919,10 @@ applyFilter();
     });
   }
 
-  flakes = makeFlakes(flakeCount());
+  flakes = liteOn ? [] : makeFlakes(flakeCount());
+
+  /* Ayarlardan hafif mod açılırsa kar anında dursun */
+  window.__snowStop = function(){ running = false; try{ ctx.clearRect(0,0,w,h); canvas.style.display='none'; }catch(e){} };
 
   /* Kare hızı sınırı: kar için 30 fps fazlasıyla yeterli, geri kalan güç
      arayüze kalsın. */
@@ -1933,7 +1959,7 @@ applyFilter();
     }
     ctx.globalAlpha = 1;
   }
-  requestAnimationFrame(tick);
+  if(!liteOn) requestAnimationFrame(tick);
 
   const splash = document.getElementById('splash');
   const mainApp = document.getElementById('mainApp');

@@ -1126,51 +1126,36 @@ function liteSetting() { return store('pwa_lite'); }   /* true / false / null(ot
 
 function applyLite(on) {
   document.documentElement.classList.toggle('lite', !!on);
+  if (on && typeof window.__snowStop === 'function') {
+    try { window.__snowStop(); } catch (e) {}
+  }
 }
 
-function autoDetectLite() {
-  var pref = liteSetting();
-  if (pref === true || pref === false) { applyLite(pref); return; }
-
-  /* Donanım ipuçları: az çekirdek veya az bellek → doğrudan hafif mod */
-  var cores = navigator.hardwareConcurrency || 8;
-  var mem = navigator.deviceMemory || 8;
-  if (cores <= 4 || mem <= 3) { applyLite(true); return; }
-
-  /* Değilse gerçek kare hızını ölç */
-  var frames = 0, t0 = 0;
-  function step(t) {
-    if (!t0) t0 = t;
-    frames++;
-    if (t - t0 < 1400) { requestAnimationFrame(step); return; }
-    var fps = frames / ((t - t0) / 1000);
-    if (fps < 42) applyLite(true);
-  }
-  requestAnimationFrame(step);
-}
-function setupFab() {
-  if ($('pwa-fab')) return;
-  var fab = document.createElement('div');
-  fab.id = 'pwa-fab';
-  fab.setAttribute('role', 'button');
-  fab.title = 'Uygulama ayarları';
-  fab.innerHTML = '⚙️';
-  document.body.appendChild(fab);
-  fab.onclick = openSettings;
-  /* Splash açıkken gizli kalsın */
-  var sp = $('splash');
-  if (sp && !sp.classList.contains('hidden')) {
-    fab.classList.add('hidden');
-    var obs = new MutationObserver(function () {
-      if (sp.classList.contains('hidden')) { fab.classList.remove('hidden'); obs.disconnect(); }
-    });
-    obs.observe(sp, { attributes: true, attributeFilter: ['class'] });
-  }
+/* Hafif mod OTOMATİK açılmaz — yalnızca kullanıcı ayarlardan açar. */
+function initLite() {
+  applyLite(liteSetting() === true);
 }
 
 /* ================================ AYARLAR PANELİ ======================== */
 function openSettings() {
   sheet('⚙️ Uygulama', CONFIG.brand + ' · ' + CONFIG.appName + (isStandalone ? ' · uygulama modu' : ''), function (b) {
+
+    var liteOn = document.documentElement.classList.contains('lite');
+    var liteRow = row('⚡', 'Hafif mod',
+      liteOn ? 'Açık — süslemeler kapalı, daha akıcı' : 'Kapalı — tüm görsel efektler açık',
+      '<div class="pwa-switch' + (liteOn ? ' on' : '') + '"></div>');
+    liteRow.onclick = function () {
+      var next = !document.documentElement.classList.contains('lite');
+      applyLite(next);
+      store('pwa_lite', next);
+      qs('.pwa-switch', liteRow).classList.toggle('on', next);
+      qs('.tx span', liteRow).textContent = next
+        ? 'Açık — süslemeler kapalı, daha akıcı'
+        : 'Kapalı — tüm görsel efektler açık';
+      toast(next ? '⚡ Hafif mod açık' : 'Efektler geri açıldı', { kind: 'good' });
+    };
+    b.appendChild(liteRow);
+
 
     /* --- Bildirimler ------------------------------------------------- */
     var s = reminderSettings();
@@ -1266,22 +1251,6 @@ function openSettings() {
       }).catch(function () { toast('Denetlenemedi', { kind: 'bad' }); });
     };
     b.appendChild(upd);
-
-    var liteOn = document.documentElement.classList.contains('lite');
-    var liteRow = row('⚡', 'Hafif mod',
-      liteOn ? 'Açık — süslemeler kapalı, daha akıcı' : 'Kapalı — tüm görsel efektler açık',
-      '<div class="pwa-switch' + (liteOn ? ' on' : '') + '"></div>');
-    liteRow.onclick = function () {
-      var next = !document.documentElement.classList.contains('lite');
-      applyLite(next);
-      store('pwa_lite', next);
-      qs('.pwa-switch', liteRow).classList.toggle('on', next);
-      qs('.tx span', liteRow).textContent = next
-        ? 'Açık — süslemeler kapalı, daha akıcı'
-        : 'Kapalı — tüm görsel efektler açık';
-      toast(next ? '⚡ Hafif mod açık' : 'Efektler geri açıldı', { kind: 'good' });
-    };
-    b.appendChild(liteRow);
 
     var net = row('📶', 'Bağlantı durumunu denetle', 'Çevrimdışı uyarısı yanlışsa buraya bak');
     net.onclick = function () { refreshOnlineState(); window.PWA.netStatus(); };
@@ -1402,7 +1371,7 @@ function boot() {
     setupFab();
     setupTransitions();
     setupLazyVocab();
-    autoDetectLite();
+    initLite();
     scheduleReminder();
 
     /* Kart alanı hazır olunca favori yıldızını ekle */
@@ -1465,7 +1434,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.2.0',
+  version: 'pwa.js 1.2.2',
   isStandalone: function () { return isStandalone; }
 };
 
