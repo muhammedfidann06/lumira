@@ -316,7 +316,16 @@ function initLeaderboard(){
       const ref = db.ref('leaderboard/' + uid);
       ref.transaction((current) => {
         const prev = current && typeof current === 'object' ? current : { name: name, totalSeconds: 0 };
-        return { name: name, totalSeconds: (prev.totalSeconds || 0) + seconds, lastSeen: Date.now() };
+        /* ÖNEMLİ: Buradan SIFIRDAN yeni bir nesne döndürülüyordu ve içinde "xp"
+           alanı yoktu. Süre her kaydedildiğinde (giriş anında, sekme
+           değişiminde, düzenli aralıklarla) kişinin XP'si siliniyordu; seviye
+           sıralamasında bir görünüp kaybolmasının ve "XP silinmiş gibi"
+           düşmesinin sebebi buydu. Artık mevcut alanlar korunuyor. */
+        return Object.assign({}, prev, {
+          name: name || prev.name || 'Kullanıcı',
+          totalSeconds: (prev.totalSeconds || 0) + seconds,
+          lastSeen: Date.now()
+        });
       });
     }
 
