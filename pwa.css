@@ -1065,3 +1065,76 @@ html.lite .splash-sub{
   opacity:.92 !important;
   text-shadow:0 0 10px rgba(79,232,255,.45) !important;
 }
+
+/* ============================================================================
+   PERFORMANS — ikinci tur (iOS / Android)
+   Görüntüyü değiştirmeyen, yalnızca tarayıcının işini azaltan düzenlemeler.
+   ========================================================================== */
+
+/* Ekranı kaplayan sabit fotoğraf sürekli bir "değişecek" katmanı olarak
+   işaretliyordu; bu, telefonlarda kalıcı olarak yüksek bellek ayırıyor.
+   Görsel sabit olduğu için buna gerek yok. */
+#scene-bg{will-change:auto !important;}
+
+/* Uzun listelerde ekran dışında kalan satırlar hiç çizilmesin.
+   Kişisel moddaki tekrar listesi, quiz hataları ve kategori ızgarası
+   yüzlerce öğeye ulaşabiliyor; bu tek satır orada belirgin fark yaratır. */
+.fav-item,
+.cat-grid .chip,
+#mistakesView .mistake-item{
+  content-visibility:auto;
+  contain-intrinsic-size:auto 46px;
+}
+
+/* Dokunma vurgusu ve seçim işaretçisi: her dokunuşta ek boyama yapıyordu */
+*{-webkit-tap-highlight-color:transparent;}
+
+/* Küçük yüzen öğelerdeki arka plan bulanıklığı kaldırıldı — üzerlerinde
+   zaten koyu bir zemin var, gözle fark edilmiyor ama her karede
+   hesaplanıyordu. */
+#pwa-fab,
+.pwa-toast,
+#pwa-offline{
+  -webkit-backdrop-filter:none !important;
+          backdrop-filter:none !important;
+}
+#pwa-fab{background:linear-gradient(160deg, rgba(22,30,60,.94), rgba(10,14,30,.94));}
+.pwa-toast{background:linear-gradient(160deg, rgba(20,27,54,.97), rgba(11,15,32,.97));}
+#pwa-offline{background:rgba(60,12,26,.96);}
+
+/* Kart yüzeyindeki bulanıklık bir kademe daha düşürüldü (9px → 7px).
+   iOS'ta bulanıklık maliyeti yarıçapla birlikte hızla artıyor. */
+.face,
+#quizView .quiz-card,
+.quiz-card{
+  -webkit-backdrop-filter:blur(7px) !important;
+          backdrop-filter:blur(7px) !important;
+}
+
+/* Kart çevirme: katman hazırlığı önceden yapılsın.
+   NOT: Görünmeyen yüzü "visibility:hidden" ile gizleme denemesi geri alındı —
+   sınıf anında değiştiği için dönüşün ortasında yüzlerden biri birden
+   kayboluyor, animasyon sıçramış gibi görünüyordu. */
+.card{will-change:transform;}
+
+/* ============================================================================
+   iOS'ta KAYDIRMA SIRASINDA ANİMASYON SIÇRAMASI
+   Sabit (position:fixed) katmanlar iOS'ta sayfa kaydırılırken yeniden
+   konumlandırılıyor; üzerlerinde animasyon varsa bu "gidip gelme" olarak
+   görünüyor. Katmanları kendi çizim bağlamına almak (contain + translateZ)
+   bunu belirgin biçimde azaltır.
+   ========================================================================== */
+#sky-fx,
+#scene-bg,
+#grain,
+#grade,
+#fg-desk{
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  contain:strict;
+  pointer-events:none;
+}
+#scene-bg{contain:layout paint;}   /* arka plan görselinin boyutu korunmalı */
+
+/* Kaydırma iOS'ta kendi ivmesiyle aksın */
+html{-webkit-overflow-scrolling:touch;}

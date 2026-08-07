@@ -81,6 +81,33 @@
     var flies = [], shots = [], t0 = performance.now();
     var nextShot = performance.now() + 4000;
 
+    /* Ateş böceğinin ışıması her karede yeniden hesaplanıyordu:
+       böcek başına iki adet createRadialGradient() → 18 böcekte saniyede
+       ~2000 gradyan nesnesi. Işıma artık BİR KEZ küçük bir tuvale çizilip
+       sonra sadece kopyalanıyor; görüntü aynı, maliyet neredeyse sıfır. */
+    var glowCache = {};
+    function glowSprite(r) {
+      var key = Math.round(r * 4) / 4;
+      if (glowCache[key]) return glowCache[key];
+      var R = Math.ceil(key * 9);
+      var size = R * 2 + 2;
+      var c = document.createElement('canvas');
+      c.width = c.height = size;
+      var x = c.getContext('2d');
+      var cx = size / 2;
+      var g = x.createRadialGradient(cx, cx, 0, cx, cx, R);
+      g.addColorStop(0, 'rgba(255,232,150,0.95)');
+      g.addColorStop(0.30, 'rgba(255,196,86,0.42)');
+      g.addColorStop(1, 'rgba(255,180,70,0)');
+      x.fillStyle = g;
+      x.beginPath(); x.arc(cx, cx, R, 0, 6.2832); x.fill();
+      /* çekirdek nokta */
+      x.fillStyle = 'rgba(255,246,206,1)';
+      x.beginPath(); x.arc(cx, cx, key, 0, 6.2832); x.fill();
+      glowCache[key] = { img: c, half: size / 2 };
+      return glowCache[key];
+    }
+
     function seedFlies() {
       flies.length = 0;
       /* iki katına çıkarıldı: telefonda ~14, geniş ekranda en fazla 18 */
@@ -177,23 +204,32 @@
         b = Math.pow(b, 2.2) * f.bs;                 /* keskin yanıp sönme */
         if (b < 0.02) continue;
 
-        var gg = ctx.createRadialGradient(fxp, fyp, 0, fxp, fyp, f.r * 9);
-        gg.addColorStop(0, 'rgba(255,232,150,' + (b * 0.95).toFixed(3) + ')');
-        gg.addColorStop(0.30, 'rgba(255,196,86,' + (b * 0.42).toFixed(3) + ')');
-        gg.addColorStop(1, 'rgba(255,180,70,0)');
-        ctx.fillStyle = gg;
-        ctx.beginPath(); ctx.arc(fxp, fyp, f.r * 9, 0, 6.2832); ctx.fill();
-
-        ctx.fillStyle = 'rgba(255,246,206,' + Math.min(1, b * 1.5).toFixed(3) + ')';
-        ctx.beginPath(); ctx.arc(fxp, fyp, f.r, 0, 6.2832); ctx.fill();
+        var sp = glowSprite(f.r);
+        ctx.globalAlpha = Math.min(1, b);
+        ctx.drawImage(sp.img, fxp - sp.half, fyp - sp.half);
+        ctx.globalAlpha = 1;
       }
 
-      raf = requestAnimationFrame(frame);
     }
 
+    /* NOT: Buraya bir zamanlar 30 fps sınırı konmuştu. 120 Hz ekranlarda
+       (iPhone Pro modelleri gibi) 33 ms eşiği ekranın 8,3 ms'lik ritmine tam
+       oturmadığı için kareler düzensiz aralıklarla düşüyor ve animasyon
+       "gidip geliyor" gibi görünüyordu. Çizim artık hazır dokularla
+       yapıldığından sınıra gerek yok; ekranın kendi hızında akıyor. */
     var raf = 0;
-    function start() { if (!raf) raf = requestAnimationFrame(frame); }
+    function loop(now) {
+      raf = requestAnimationFrame(loop);
+      frame(now);
+    }
+    function start() { if (!raf) raf = requestAnimationFrame(loop); }
     function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+
+    /* Sekme arka plandayken boşuna çizmesin */
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop();
+      else if (!reduce) start();
+    });
 
     /* Konsoldan denemek için:
          THEME_shoot()  → hemen bir kayan yıldız gönderir

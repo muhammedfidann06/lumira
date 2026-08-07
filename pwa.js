@@ -209,9 +209,17 @@ function registerSW() {
       console.warn('[PWA] Service Worker kullanılamıyor:', err && err.message);
     });
 
+  /* Service Worker el değiştirdiğinde sayfa yenilenir — ama OTURUMDA EN
+     FAZLA BİR KEZ. Bu kilit olmadan, worker her devraldığında sayfa
+     yenileniyor, yenilenen sayfa worker'ı yeniden kuruyor ve döngü
+     sürüyordu; site birkaç saniyede bir kendini baştan yüklüyordu. */
   var refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', function () {
     if (refreshing) return;
+    try {
+      if (sessionStorage.getItem('lumira_sw_reloaded')) return;
+      sessionStorage.setItem('lumira_sw_reloaded', '1');
+    } catch (e) {}
     refreshing = true;
     location.reload();
   });
@@ -1998,7 +2006,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.7.0',
+  version: 'pwa.js 1.7.2',
   isStandalone: function () { return isStandalone; }
 };
 

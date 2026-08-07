@@ -645,8 +645,8 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.0">
-<link rel="stylesheet" href="pwa.css?v=1.7.0">
+<link rel="stylesheet" href="theme.css?v=1.7.2">
+<link rel="stylesheet" href="pwa.css?v=1.7.2">
 </head>
 <body>
 
@@ -1070,7 +1070,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.0"></script>
+<script src="leaderboard.js?v=1.7.2"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2038,27 +2038,34 @@ applyFilter();
   /* Ayarlardan hafif mod açılırsa kar anında dursun */
   window.__snowStop = function(){ running = false; try{ ctx.clearRect(0,0,w,h); canvas.style.display='none'; }catch(e){} };
 
-  /* Kare hızı sınırı: kar için 30 fps fazlasıyla yeterli, geri kalan güç
-     arayüze kalsın. */
-  let lastFrame = 0;
-  const FRAME_MS = 1000 / 30;
+  /* Hareket ZAMANA bağlı hesaplanıyor.
+     Önceden sabit bir kare hızı varsayılıyor ve 30 fps sınırı konuyordu;
+     120 Hz ekranlarda (iPhone Pro modelleri) bu sınır ekranın ritmine
+     oturmadığı için kar tanelerinin hızı dalgalanıyor, animasyon "gidip
+     geliyor" gibi görünüyordu. Artık iki kare arasındaki gerçek süre
+     ölçülüyor: hangi ekranda olursa olsun aynı hızda ve akıcı. */
+  let prevTime = 0;
 
   function tick(now){
     if(!running) return;
     requestAnimationFrame(tick);
-    if(now - lastFrame < FRAME_MS) return;
-    lastFrame = now;
+
+    if(!prevTime) prevTime = now;
+    /* saniye cinsinden fark; sekme arka plandan dönerse sıçramasın diye sınırlı */
+    let dt = Math.min((now - prevTime) / 1000, 0.05);
+    prevTime = now;
+    const k = dt * 60;                   /* 60 fps'e göre ölçek */
 
     ctx.clearRect(0,0,w,h);
-    windPhase += 0.012 * 2;              /* 30 fps'te aynı hız hissi */
+    windPhase += 0.012 * k;
     const gust = Math.sin(windPhase) * 0.6;
 
     for(let i = 0; i < flakes.length; i++){
       const f = flakes[i];
-      f.drift += f.driftSpeed * 2;
-      f.rot += f.rotSpeed * 2;
-      f.y += f.speedY * 2;
-      f.x += (f.speedX + gust + Math.sin(f.drift)*0.6) * 2;
+      f.drift += f.driftSpeed * k;
+      f.rot += f.rotSpeed * k;
+      f.y += f.speedY * k;
+      f.x += (f.speedX + gust + Math.sin(f.drift)*0.6) * k;
       if(f.y > h + 12){ f.y = -12; f.x = Math.random()*w; }
       if(f.x > w + 12) f.x = -12;
       if(f.x < -12) f.x = w + 12;
@@ -2089,7 +2096,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.0"></script>
+<script src="progress.js?v=1.7.2"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2100,21 +2107,21 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.0"></script>
-<script defer src="theme.js?v=1.7.0"></script>
+<script defer src="voice.js?v=1.7.2"></script>
+<script defer src="theme.js?v=1.7.2"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.0"></script>
+<script defer src="pwa.js?v=1.7.2"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.0"></script>
+<script defer src="support-badges.js?v=1.7.2"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="analytics.js?v=1.7.0"></script>
+<script defer src="analytics.js?v=1.7.2"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.0"></script>
+<script defer src="admin.js?v=1.7.2"></script>
 </body>
 </html>
