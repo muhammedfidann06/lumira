@@ -340,11 +340,30 @@ function initLeaderboard(){
     window.addEventListener('pagehide', () => flushElapsed(true));
 
     /* ---------------- LİDERLİK TABLOSU GÖRÜNÜMÜ (splash içinde sabit) ---------------- */
+    /* Ayrıntılı süre — profil satırında kullanılır (ör. "4s 39dk"). */
     function fmtTime(totalSeconds){
       const s = Math.max(0, Math.floor(totalSeconds || 0));
-      const h = Math.floor(s / 3600);
+      const d = Math.floor(s / 86400);
+      const h = Math.floor((s % 86400) / 3600);
       const m = Math.floor((s % 3600) / 60);
+      if(d > 0) return `${d}g ${h}s`;
       if(h > 0) return `${h}s ${m}dk`;
+      if(m > 0) return `${m}dk`;
+      return `${s}sn`;
+    }
+
+    /* Sıralama tablosu için kısa süre.
+       İsimlere yer kalsın diye tek birim gösterilir:
+         1 günü geçtiyse  → "2g +"
+         1 saati geçtiyse → "4s +"
+         altındaysa       → "42dk" / "35sn" */
+    function fmtTimeShort(totalSeconds){
+      const s = Math.max(0, Math.floor(totalSeconds || 0));
+      const d = Math.floor(s / 86400);
+      if(d > 0) return `${d}g +`;
+      const h = Math.floor(s / 3600);
+      if(h > 0) return `${h}s +`;
+      const m = Math.floor(s / 60);
       if(m > 0) return `${m}dk`;
       return `${s}sn`;
     }
@@ -409,7 +428,7 @@ function initLeaderboard(){
     }
 
     function renderTimeBoard(entries){
-      renderBoard('splashLbTimeList', entries, e => fmtTime(e.totalSeconds));
+      renderBoard('splashLbTimeList', entries, e => fmtTimeShort(e.totalSeconds));
     }
     function renderLevelBoard(entries){
       renderBoard('splashLbLevelList', entries, e => 'Sv ' + levelFromXp(e.xp));

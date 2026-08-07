@@ -870,14 +870,17 @@ html.lite .support-btn{-webkit-backdrop-filter:none; backdrop-filter:none;}
   padding:15px 13px 10px !important;
 }
 
-/* İsim: kesilmek yerine sarılır, en fazla iki satır */
+/* İsim: normalde tek satırda tam görünür. Süre metni kısaltıldığı için
+   ("4s +") isme çok daha fazla yer kalıyor; yalnızca gerçekten uzun
+   isimlerde ikinci satıra iniyor ve kelime ortadan bölünmüyor. */
 .lb-name{
   white-space:normal !important;
   text-overflow:clip !important;
   overflow:hidden;
-  line-height:1.25;
-  word-break:break-word;
-  overflow-wrap:anywhere;
+  line-height:1.22;
+  word-break:normal;          /* kelimeyi ortadan bölme */
+  overflow-wrap:break-word;   /* yalnızca sığmıyorsa böl */
+  hyphens:none;
   display:-webkit-box;
   -webkit-line-clamp:2;
   -webkit-box-orient:vertical;
@@ -892,7 +895,13 @@ html.lite .support-btn{-webkit-backdrop-filter:none; backdrop-filter:none;}
   padding:8px 9px !important;
   min-height:38px;
 }
-.lb-time{flex:0 0 auto;}
+/* Süre alanı sabit ve dar: isim sütunu geniş kalsın */
+.lb-time{
+  flex:0 0 auto;
+  min-width:46px;
+  text-align:right;
+  white-space:nowrap;
+}
 
 /* Sütun aralığı biraz açıldı, ayraç görünür kalsın */
 .splash-lb-cols{gap:11px !important;}
@@ -913,4 +922,22 @@ html.lite .support-btn{-webkit-backdrop-filter:none; backdrop-filter:none;}
 @media (min-width:520px){
   .splash-lb-col .lb-name{font-size:12.5px !important;}
   .splash-lb-col .lb-time{font-size:11.5px !important;}
+}
+
+/* ---------------------------------------- açılış ekranı: dikey yerleşim
+   Instagram bağlantısı sıralama tablosunun altına taşındı. Boşalan yerden
+   yararlanarak tablo yukarı çekildi ve nefes payları yeniden dengelendi. */
+#splash .goethe-note{
+  margin-top:16px !important;
+  margin-bottom:0 !important;
+}
+#splash .splash-lb{
+  margin-top:18px !important;   /* eskiden 28px */
+}
+#splash .ig-link{
+  margin-top:18px !important;
+  margin-bottom:4px !important;
+}
+#splash .splash-sub{
+  margin-bottom:2px !important;
 }
