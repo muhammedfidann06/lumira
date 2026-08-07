@@ -97,12 +97,20 @@ function toast(msg, opts) {
 /* ------------------------------------------------------- ALT SAYFA ------ */
 var openSheets = [];
 function sheet(title, subtitle, buildBody) {
+  /* Aynı panel zaten açıksa ikinci dokunuş onu KAPATIR — üst üste kopya
+     açılmasını engeller (ayar düğmesindeki davranışın aynısı). */
+  for (var i = openSheets.length - 1; i >= 0; i--) {
+    if (openSheets[i].title === title) { openSheets[i].close(); return null; }
+  }
+
   var back = document.createElement('div');
   back.className = 'pwa-sheet-backdrop';
   var box = document.createElement('div');
   box.className = 'pwa-sheet';
   box.setAttribute('role', 'dialog');
-  box.innerHTML = '<div class="grab"></div><h3>' + title + '</h3>' +
+  box.innerHTML = '<div class="grab"></div>' +
+                  '<button type="button" class="pwa-sheet-x" aria-label="Kapat">✕</button>' +
+                  '<h3>' + title + '</h3>' +
                   (subtitle ? '<p class="sheet-sub">' + subtitle + '</p>' : '');
   var body = document.createElement('div');
   box.appendChild(body);
@@ -138,6 +146,9 @@ function sheet(title, subtitle, buildBody) {
     }
   };
   openSheets.push(api);
+  var xBtn = qs('.pwa-sheet-x', box);
+  if (xBtn) xBtn.onclick = function (e) { e.stopPropagation(); api.close(); };
+  api.title = title;
   pushGuard();
   /* İçerik, api hazır olduktan SONRA kuruluyor: aksi hâlde geri çağrıya
      gönderilen api tanımsız oluyordu (var hoisting). */
@@ -1108,6 +1119,94 @@ function initLite() {
   applyLite(liteSetting() === true);
 }
 
+/* ======================= HOŞ GELDİN KARTI ============================== */
+/* Giriş yapmış kullanıcıya, açılış ekranı kapandıktan sonra kısa bir
+   karşılama gösterir. Butonu yoktur: 2,6 saniye sonra kendiliğinden kaybolur
+   ya da dokunulunca kapanır. Her açılışta DEĞİL — günün ilk girişinde veya
+   son gösterimden en az 8 saat geçmişse. */
+var WELCOME_KEY = 'lumira_welcome_v1';
+
+function shouldShowWelcome() {
+  try {
+    var last = store(WELCOME_KEY) || 0;
+    if (!last) return true;
+    var now = Date.now();
+    if (now - last >= 8 * 3600 * 1000) return true;      /* 8 saat geçtiyse */
+    return new Date(last).toDateString() !== new Date(now).toDateString();
+  } catch (e) { return false; }
+}
+
+function welcomeStats() {
+  var out = { streak: 0, xp: 0, level: 1, goal: 0, done: 0 };
+  try {
+    if (typeof window.PR_getXp === 'function') out.xp = window.PR_getXp();
+    if (typeof window.PR_getLevel === 'function') out.level = window.PR_getLevel();
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (!k || k.indexOf('meta') === -1) continue;
+      var v = JSON.parse(localStorage.getItem(k) || 'null');
+      if (!v || typeof v !== 'object') continue;
+      if (typeof v.streak === 'number') out.streak = Math.max(out.streak, v.streak);
+      if (typeof v.dailyGoal === 'number') out.goal = Math.max(out.goal, v.dailyGoal);
+      if (typeof v.todayCount === 'number') out.done = Math.max(out.done, v.todayCount);
+    }
+  } catch (e) {}
+  return out;
+}
+
+function showWelcomeCard(name) {
+  if (!name || $('lumira-welcome')) return;
+  var st = welcomeStats();
+
+  var lines = [];
+  if (st.streak > 0) lines.push('🔥 <b>' + st.streak + ' günlük</b> serin devam ediyor');
+  lines.push('⭐ Seviye <b>' + st.level + '</b> · ' + st.xp + ' XP');
+  if (st.goal > 0) lines.push('📚 Bugünkü hedefin: <b>' + st.goal + '</b> kelime');
+
+  var el = document.createElement('div');
+  el.id = 'lumira-welcome';
+  el.innerHTML =
+    '<div class="wc-card">' +
+      '<span class="wc-mark">🦋</span>' +
+      '<div class="wc-hi">Hoş geldin,</div>' +
+      '<div class="wc-name">' + escapeHtml(name) + '</div>' +
+      '<div class="wc-lines">' + lines.map(function (l) {
+        return '<div class="wc-line">' + l + '</div>';
+      }).join('') + '</div>' +
+      '<span class="wc-fly">🦋</span>' +
+    '</div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function () { el.classList.add('in'); });
+
+  var closed = false;
+  var close = function () {
+    if (closed) return;
+    closed = true;
+    el.classList.remove('in');
+    setTimeout(function () { el.remove(); }, 420);
+  };
+  el.addEventListener('click', close);
+  setTimeout(close, 2600);
+  store(WELCOME_KEY, Date.now());
+}
+
+function setupWelcome() {
+  if (!shouldShowWelcome()) return;
+  var tries = 0;
+  var timer = setInterval(function () {
+    tries++;
+    if (tries > 40) { clearInterval(timer); return; }        /* ~20 sn sonra vazgeç */
+    var sp = $('splash');
+    if (sp && !sp.classList.contains('hidden')) return;       /* açılış ekranı hâlâ açık */
+    var u = fbUser();
+    if (!u) return;
+    clearInterval(timer);
+    setTimeout(function () {
+      showWelcomeCard(u.displayName || (u.email || '').split('@')[0]);
+    }, 500);
+  }, 500);
+}
+
 /* ==================== PROFİL VE YÖNETİCİ BÖLÜMÜ ========================= */
 /* Firebase'e doğrudan erişim (yüklenmediyse hepsi sessizce devre dışı kalır) */
 function fbAuth() {
@@ -1691,22 +1790,25 @@ function openSettings() {
     };
     b.appendChild(rate);
 
-    /* --- Yönetici (yalnızca M Hamza) --------------------------------- */
+    /* --- Yönetici (yalnızca yönetici hesabında görünür) --------------- */
     if (isAdmin()) {
       b.insertAdjacentHTML('beforeend',
         '<p class="pwa-note" style="margin:20px 2px 8px">Yönetici</p>');
-      var adm = row('🛡️', 'XP gönder', 'Bir kullanıcıya XP ekle');
-      adm.style.borderColor = 'rgba(255,210,59,.35)';
-      adm.onclick = openAdminXp;
+      var adm = row('🛡️', 'Admin Panel', 'İstatistik · XP · yasaklama');
+      adm.style.borderColor = 'rgba(255,210,59,.4)';
+      adm.onclick = function () {
+        if (typeof window.openAdminPanel === 'function') window.openAdminPanel();
+        else toast('Yönetici paneli yüklenemedi', { kind: 'bad' });
+      };
       b.appendChild(adm);
     }
 
     /* --- Profil (en altta) ------------------------------------------- */
     b.insertAdjacentHTML('beforeend',
       '<p class="pwa-note" style="margin:20px 2px 8px">Hesap</p>');
-    var prof = row('👤', 'Profilim', 'Adını ve şifreni değiştir · 10. seviye gerekir');
+    var prof = row('👤', 'Profilim', 'Adını ve şifreni değiştir · 3. seviye gerekir');
     prof.onclick = function () {
-      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.level(10, 'Profilim')) return;
+      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.level(3, 'Profilim')) return;
       openProfile();
     };
     b.appendChild(prof);
@@ -1830,6 +1932,7 @@ function boot() {
     setupInstall();
     setupFab();
     setupTransitions();
+    setupWelcome();
     initLite();
     scheduleReminder();
 
@@ -1895,7 +1998,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.6.4',
+  version: 'pwa.js 1.7.0',
   isStandalone: function () { return isStandalone; }
 };
 
