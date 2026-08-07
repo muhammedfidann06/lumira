@@ -172,16 +172,31 @@ function registerSW() {
         });
       });
 
-      /* Otomatik güncelleme kontrolü: açılışta, saatte bir ve öne gelince */
-      setTimeout(function () { try { reg.update(); } catch (e) {} }, 8000);
-      setInterval(function () { try { reg.update(); } catch (e) {} }, 60 * 60 * 1000);
+      /* Otomatik güncelleme kontrolü: açılışta, saatte bir ve öne gelince.
+         NOT: reg.update() bir söz (promise) döndürür; try/catch onun
+         REDDİNİ yakalamaz. Yakalanmadığında "sw.js load failed" hatası
+         raporlara düşüyordu — özellikle iOS'ta Chrome gibi Service Worker
+         desteği sınırlı tarayıcılarda ve anlık ağ kesintilerinde. */
+      var quietUpdate = function () {
+        try {
+          var pr = reg.update();
+          if (pr && pr.catch) pr.catch(function () {});   /* sessizce geç */
+        } catch (e) {}
+      };
+      setTimeout(quietUpdate, 8000);
+      setInterval(quietUpdate, 60 * 60 * 1000);
       document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) { try { reg.update(); } catch (e) {} }
+        if (!document.hidden) quietUpdate();
       });
 
       registerPeriodicSync(reg);
     })
-    .catch(function (err) { console.warn('[PWA] SW kaydı başarısız:', err); });
+    .catch(function (err) {
+      /* Bazı tarayıcılar (ör. iOS'ta Chrome) Service Worker'ı desteklemez.
+         Uygulama bu durumda da tam çalışır; yalnızca çevrimdışı kullanım ve
+         bildirimler devre dışı kalır. Hata raporuna yazmıyoruz. */
+      console.warn('[PWA] Service Worker kullanılamıyor:', err && err.message);
+    });
 
   var refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', function () {
@@ -814,8 +829,27 @@ function importData() {
 
 /* ================================ 10 · HATA RAPORU ====================== */
 var ERR_KEY = 'lumira_errors_v1';
+/* Kullanıcı için anlamı olmayan, uygulamayı etkilemeyen bilinen mesajlar.
+   Bunlar rapora yazılmaz; yoksa liste gerçek hataları gizleyen gürültüyle
+   dolar. */
+var IGNORED_ERRORS = [
+  'sw.js load failed',
+  'ServiceWorker script',
+  'The operation is insecure',
+  'disconnect',
+  'ResizeObserver loop'
+];
+function isNoise(msg) {
+  msg = String(msg || '');
+  for (var i = 0; i < IGNORED_ERRORS.length; i++) {
+    if (msg.indexOf(IGNORED_ERRORS[i]) > -1) return true;
+  }
+  return false;
+}
+
 function logError(err, extra) {
   try {
+    if (isNoise(err && (err.message || err.reason || err))) return;
     var list = store(ERR_KEY) || [];
     list.unshift({
       t: new Date().toISOString(),
@@ -1861,7 +1895,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.6.3',
+  version: 'pwa.js 1.6.4',
   isStandalone: function () { return isStandalone; }
 };
 
