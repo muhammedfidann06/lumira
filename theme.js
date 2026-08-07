@@ -217,9 +217,31 @@
        oturmadığı için kareler düzensiz aralıklarla düşüyor ve animasyon
        "gidip geliyor" gibi görünüyordu. Çizim artık hazır dokularla
        yapıldığından sınıra gerek yok; ekranın kendi hızında akıyor. */
+    /* Kaydırma sürerken çizmeyi bırak.
+       iOS'ta sabit katmanlar kaydırma boyunca geriden geliyor; bu sırada
+       tuvale yeni kare basmak, ateş böceklerinin sıçrayarak yer değiştirmesi
+       gibi görünüyor. Kaydırma boyunca son kare olduğu gibi kalıyor, parmak
+       kalkınca hareket kaldığı yerden sürüyor — zaman tabanlı olduğu için
+       konumlar kaymıyor. */
+    var scrolling = false, scrollTimer = 0;
+    function onScroll() {
+      if (!scrolling) {
+        scrolling = true;
+        document.documentElement.classList.add('scrolling');
+      }
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function () {
+        scrolling = false;
+        document.documentElement.classList.remove('scrolling');
+      }, 140);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('touchmove', onScroll, { passive: true });
+
     var raf = 0;
     function loop(now) {
       raf = requestAnimationFrame(loop);
+      if (scrolling) return;          /* kaydırma bitene kadar bekle */
       frame(now);
     }
     function start() { if (!raf) raf = requestAnimationFrame(loop); }

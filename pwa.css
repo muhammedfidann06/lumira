@@ -1131,10 +1131,22 @@ html.lite .splash-sub{
 #fg-desk{
   transform:translateZ(0);
   backface-visibility:hidden;
-  contain:strict;
+  contain:layout paint;
   pointer-events:none;
 }
-#scene-bg{contain:layout paint;}   /* arka plan görselinin boyutu korunmalı */
 
 /* Kaydırma iOS'ta kendi ivmesiyle aksın */
 html{-webkit-overflow-scrolling:touch;}
+
+
+/* Kaydırma sürerken sabit katmanlar iOS'ta geriden gelip sonra yerine
+   oturuyor. Bu sırada üzerlerinde animasyon çalışırsa sıçrama belirgin
+   oluyor. Kaydırma boyunca yalnızca DEKORATİF katmanlar donduruluyor —
+   parmak kalkınca kaldığı yerden akmaya devam ediyor. Arayüzün hiçbir
+   parçası bundan etkilenmiyor. */
+html.scrolling #sky-fx,
+html.scrolling #snowCanvas{
+  opacity:.55;
+  transition:opacity .18s ease;
+}
+#sky-fx, #snowCanvas{transition:opacity .32s ease;}

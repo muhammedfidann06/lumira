@@ -645,8 +645,8 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.2">
-<link rel="stylesheet" href="pwa.css?v=1.7.2">
+<link rel="stylesheet" href="theme.css?v=1.7.3">
+<link rel="stylesheet" href="pwa.css?v=1.7.3">
 </head>
 <body>
 
@@ -1070,7 +1070,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.2"></script>
+<script src="leaderboard.js?v=1.7.3"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2046,9 +2046,28 @@ applyFilter();
      ölçülüyor: hangi ekranda olursa olsun aynı hızda ve akıcı. */
   let prevTime = 0;
 
+  /* Açılış ekranı da kaydırılabiliyor; kar taneleri kaydırma sırasında
+     aynı sıçramayı yapıyordu. Parmak ekrandayken çizim duruyor. */
+  let scrollingNow = false, scrollT = 0;
+  function markScroll(){
+    if(!scrollingNow){
+      scrollingNow = true;
+      document.documentElement.classList.add('scrolling');
+    }
+    clearTimeout(scrollT);
+    scrollT = setTimeout(()=>{
+      scrollingNow = false;
+      document.documentElement.classList.remove('scrolling');
+      prevTime = 0;                 /* zaman farkı sıçramasın */
+    }, 140);
+  }
+  window.addEventListener('scroll', markScroll, { passive:true });
+  window.addEventListener('touchmove', markScroll, { passive:true });
+
   function tick(now){
     if(!running) return;
     requestAnimationFrame(tick);
+    if(scrollingNow) return;
 
     if(!prevTime) prevTime = now;
     /* saniye cinsinden fark; sekme arka plandan dönerse sıçramasın diye sınırlı */
@@ -2096,7 +2115,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.2"></script>
+<script src="progress.js?v=1.7.3"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2107,21 +2126,21 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.2"></script>
-<script defer src="theme.js?v=1.7.2"></script>
+<script defer src="voice.js?v=1.7.3"></script>
+<script defer src="theme.js?v=1.7.3"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.2"></script>
+<script defer src="pwa.js?v=1.7.3"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.2"></script>
+<script defer src="support-badges.js?v=1.7.3"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="analytics.js?v=1.7.2"></script>
+<script defer src="analytics.js?v=1.7.3"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.2"></script>
+<script defer src="admin.js?v=1.7.3"></script>
 </body>
 </html>
