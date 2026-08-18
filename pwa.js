@@ -1,5 +1,5 @@
 /* ============================================================================
-   pwa.js — Lumiva | Dil Kartları  ·  Uygulama katmanı
+   pwa.js — Lumira | Dil Kartları  ·  Uygulama katmanı
    ----------------------------------------------------------------------------
    Mevcut uygulama koduna DOKUNMAZ. Sadece dışarıdan bağlanır:
 
@@ -24,7 +24,7 @@
 /* ========================================================== AYARLAR ====== */
 var CONFIG = {
   appName:      'Dil Kartları',
-  brand:        'Lumiva',
+  brand:        'Lumira',
   packageId:    'com.lumira.dilkartlari',   /* Bubblewrap ile aynı olmalı */
   playUrl:      'https://play.google.com/store/apps/details?id=com.lumira.dilkartlari',
   vapidKey:     '',                          /* FCM/WebPush açık anahtarı (ops.) */
@@ -762,7 +762,7 @@ function openFavorites() {
 function exportFavorites() {
   var list = favs();
   var txt = list.map(function (f) { return f.w + ' — ' + (f.tr || ''); }).join('\n');
-  var content = 'Lumiva · Dil Kartları — Favorilerim (' + today() + ')\n\n' + txt;
+  var content = 'Lumira · Dil Kartları — Favorilerim (' + today() + ')\n\n' + txt;
   shareOrSave('favorilerim-' + today() + '.txt', content, 'text/plain', 'Favori kelimelerim');
 }
 
@@ -1893,7 +1893,7 @@ function openSettings() {
     priv.onclick = function () { window.open('privacy/', '_blank', 'noopener'); };
     b.appendChild(priv);
 
-    var supRow = row('❤️', 'Lumiva\'yı Destekle', 'Rozet kazan, gelişime katkıda bulun');
+    var supRow = row('❤️', 'Lumira\'yı Destekle', 'Rozet kazan, gelişime katkıda bulun');
     supRow.style.borderColor = 'rgba(255,95,184,.32)';
     supRow.onclick = function () {
       if (typeof window.openSupport === 'function') window.openSupport();
@@ -2068,7 +2068,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.7.4',
+  version: 'pwa.js 1.7.5',
   isStandalone: function () { return isStandalone; }
 };
 
