@@ -54,8 +54,8 @@
 
       /* dilin renginde süzülen sözcükler — HER ZAMAN en altta */
       '.lms-words{position:absolute;inset:0;z-index:0;pointer-events:none;}',
-      '.lms-word{position:absolute;font-family:var(--lms-mono);font-size:13px;letter-spacing:.03em;',
-      'opacity:0;white-space:nowrap;will-change:transform,opacity;text-shadow:0 0 18px currentColor;}',
+      '.lms-word{position:absolute;font-family:-apple-system,system-ui,"Segoe UI",Arial,sans-serif;',
+      'font-size:14px;font-weight:500;opacity:0;white-space:nowrap;will-change:transform,opacity;text-shadow:0 0 12px currentColor;}',
       '@keyframes lbDrift{0%{opacity:0;transform:translateY(16px) scale(.96)}',
       '20%{opacity:.42}80%{opacity:.42}100%{opacity:0;transform:translateY(-16px) scale(1.02)}}',
 
@@ -147,7 +147,7 @@
     if (reduce) { return; }
     list.forEach(function (g, i) {
       var el = document.createElement('span');
-      el.className = 'lms-word'; el.textContent = g.t; el.style.color = COL[g.c] || COL.tr;
+      el.className = 'lms-word'; el.textContent = g.t; el.dir = 'auto'; el.style.color = COL[g.c] || COL.tr;
       var x;
       if (edge) { x = (i % 2 === 0) ? (3 + Math.random()*15) : (74 + Math.random()*17); }  /* kenarlara yasla */
       else { x = 7 + Math.random()*74; }
