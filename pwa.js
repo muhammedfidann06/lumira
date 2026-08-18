@@ -1,5 +1,5 @@
 /* ============================================================================
-   pwa.js — Lumira | Dil Kartları  ·  Uygulama katmanı
+   pwa.js — Lumiva | Dil Kartları  ·  Uygulama katmanı
    ----------------------------------------------------------------------------
    Mevcut uygulama koduna DOKUNMAZ. Sadece dışarıdan bağlanır:
 
@@ -24,7 +24,7 @@
 /* ========================================================== AYARLAR ====== */
 var CONFIG = {
   appName:      'Dil Kartları',
-  brand:        'Lumira',
+  brand:        'Lumiva',
   packageId:    'com.lumira.dilkartlari',   /* Bubblewrap ile aynı olmalı */
   playUrl:      'https://play.google.com/store/apps/details?id=com.lumira.dilkartlari',
   vapidKey:     '',                          /* FCM/WebPush açık anahtarı (ops.) */
@@ -762,7 +762,7 @@ function openFavorites() {
 function exportFavorites() {
   var list = favs();
   var txt = list.map(function (f) { return f.w + ' — ' + (f.tr || ''); }).join('\n');
-  var content = 'Lumira · Dil Kartları — Favorilerim (' + today() + ')\n\n' + txt;
+  var content = 'Lumiva · Dil Kartları — Favorilerim (' + today() + ')\n\n' + txt;
   shareOrSave('favorilerim-' + today() + '.txt', content, 'text/plain', 'Favori kelimelerim');
 }
 
@@ -1228,23 +1228,31 @@ function fbUser() {
   return a ? a.currentUser : null;
 }
 
-/* Yönetici tanımı. UID en güvenilir yoldur; Profilim ekranındaki
-   "Kullanıcı kimliğim" satırından kopyalanıp buraya yazılabilir.
-   NOT: Bu yalnızca ARAYÜZ gizlemesidir, güvenlik değildir — gerçek koruma
-   Firebase kurallarında yapılmalıdır (aşağıdaki açıklamaya bak). */
-var ADMIN_UIDS = ['49AyoEDRltPQ8NSzPU9y2fDtWDI2'];
-/* İsimle eşleştirme kapatıldı: isim taklit edilebilir, kimlik edilemez.
-   Başka bir yöneticiye yetki vermek istersen UID'sini yukarıdaki listeye ekle
-   ve Firebase kurallarına da aynı kimliği yaz. */
-var ADMIN_NAMES = [];
+/* Yönetici tanımı — UID artık istemcide SABİT DEĞİL.
+   Yetki /admins/<uid> düğümünden okunur; gerçek koruma Firebase
+   kurallarındadır. Bu yalnızca ARAYÜZ içindir (Admin Panel satırını
+   göstermek/gizlemek). Yeni yönetici eklemek için: Firebase Console'da
+   /admins/<yeni-uid> = true düğümünü ekle — kod değişmez. */
+var _isAdmin = false;
 
-function isAdmin() {
+function refreshAdminFlag(cb) {
   var u = fbUser();
-  if (!u) return false;
-  if (ADMIN_UIDS.indexOf(u.uid) > -1) return true;
-  var dn = (u.displayName || '').trim().toLowerCase();
-  return ADMIN_NAMES.indexOf(dn) > -1;
+  var d = (typeof fbDb === 'function') ? fbDb() : null;
+  if (!u || !d) { _isAdmin = false; if (cb) cb(false); return; }
+  d.ref('admins/' + u.uid).once('value').then(function (s) {
+    _isAdmin = (s.val() === true);
+    if (cb) cb(_isAdmin);
+  }).catch(function () { _isAdmin = false; if (cb) cb(false); });
 }
+
+function isAdmin() { return _isAdmin === true; }
+
+/* Firebase hazır olunca oturum değişimlerini dinle, yönetici bayrağını tazele. */
+(function attachAdminWatch() {
+  var a = (typeof fbAuth === 'function') ? fbAuth() : null;
+  if (!a) { setTimeout(attachAdminWatch, 800); return; }
+  a.onAuthStateChanged(function () { refreshAdminFlag(); });
+})();
 
 function inputRow(label, type, value, placeholder) {
   var d = document.createElement('label');
@@ -1336,6 +1344,53 @@ function openProfile() {
       });
     };
     b.appendChild(passBtn);
+
+    /* --- Hesabı sil (KALICI) --------------------------------------- */
+    b.insertAdjacentHTML('beforeend',
+      '<p class="pwa-note" style="margin:24px 2px 6px;color:#ff8a8a">Hesabımı sil</p>' +
+      '<p class="pwa-note" style="margin:0 2px 8px;opacity:.75">Hesabın, ilerlemen ve sıralaman kalıcı olarak silinir. Geri alınamaz.</p>');
+    var delF = inputRow('Onaylamak için şifreni yaz', 'password', '', '••••••');
+    b.appendChild(delF);
+    var delBtn = bigButton('Hesabımı kalıcı olarak sil');
+    delBtn.style.background = 'rgba(255,80,80,.14)';
+    delBtn.style.borderColor = 'rgba(255,80,80,.5)';
+    delBtn.style.color = '#ff8a8a';
+    delBtn.onclick = function () {
+      var pw = qs('input', delF).value;
+      if (!pw) { toast('Önce şifreni yaz', { kind: 'bad' }); return; }
+      if (!window.confirm('Hesabın, ilerlemen ve sıralaman KALICI olarak silinecek. Bu işlem geri alınamaz.\n\nDevam edilsin mi?')) return;
+
+      var uid = u.uid;
+      var d = (typeof fbDb === 'function') ? fbDb() : null;
+      delBtn.disabled = true; delBtn.textContent = 'Siliniyor…';
+
+      var cred;
+      try { cred = firebase.auth.EmailAuthProvider.credential(u.email, pw); }
+      catch (e) { delBtn.disabled = false; delBtn.textContent = 'Hesabımı kalıcı olarak sil'; toast('Yapılamadı', { kind: 'bad' }); return; }
+
+      u.reauthenticateWithCredential(cred).then(function () {
+        /* Kimlik hâlâ geçerliyken önce sunucudaki verileri sil */
+        var jobs = [];
+        if (d) {
+          jobs.push(d.ref('progress/' + uid).remove().catch(function () {}));
+          jobs.push(d.ref('leaderboard/' + uid).remove().catch(function () {}));
+        }
+        return Promise.all(jobs);
+      }).then(function () {
+        return u.delete();               /* sonra hesabı sil */
+      }).then(function () {
+        try { localStorage.clear(); } catch (e) {}
+        toast('✅ Hesabın ve tüm verilerin silindi', { kind: 'good' });
+        setTimeout(function () { location.reload(); }, 1200);
+      }).catch(function (e) {
+        delBtn.disabled = false; delBtn.textContent = 'Hesabımı kalıcı olarak sil';
+        var code = e && e.code;
+        toast(code === 'auth/wrong-password' || code === 'auth/invalid-credential'
+          ? 'Şifre yanlış'
+          : 'Silinemedi: ' + (code || 'hata'), { kind: 'bad', duration: 6000 });
+      });
+    };
+    b.appendChild(delBtn);
 
     b.insertAdjacentHTML('beforeend',
       '<p class="pwa-note">Görünen adını değiştirmen giriş bilgilerini etkilemez; ' +
@@ -1799,17 +1854,24 @@ function openSettings() {
     b.appendChild(rate);
 
     /* --- Yönetici (yalnızca yönetici hesabında görünür) --------------- */
-    if (isAdmin()) {
-      b.insertAdjacentHTML('beforeend',
-        '<p class="pwa-note" style="margin:20px 2px 8px">Yönetici</p>');
-      var adm = row('🛡️', 'Admin Panel', 'İstatistik · XP · yasaklama');
-      adm.style.borderColor = 'rgba(255,210,59,.4)';
-      adm.onclick = function () {
-        if (typeof window.openAdminPanel === 'function') window.openAdminPanel();
-        else toast('Yönetici paneli yüklenemedi', { kind: 'bad' });
-      };
-      b.appendChild(adm);
-    }
+    (function (adminBox) {
+      function injectAdmin() {
+        if (adminBox.querySelector('.pwa-admin-row')) return; /* zaten eklendi */
+        adminBox.insertAdjacentHTML('beforeend',
+          '<p class="pwa-note" style="margin:20px 2px 8px">Yönetici</p>');
+        var adm = row('🛡️', 'Admin Panel', 'İstatistik · XP · yasaklama');
+        adm.className += ' pwa-admin-row';
+        adm.style.borderColor = 'rgba(255,210,59,.4)';
+        adm.onclick = function () {
+          if (typeof window.openAdminPanel === 'function') window.openAdminPanel();
+          else toast('Yönetici paneli yüklenemedi', { kind: 'bad' });
+        };
+        adminBox.appendChild(adm);
+      }
+      /* Bayrak zaten çözülmüşse hemen; değilse /admins okunduktan sonra. */
+      if (isAdmin()) injectAdmin();
+      else refreshAdminFlag(function (ok) { if (ok) injectAdmin(); });
+    })(b);
 
     /* --- Profil (en altta) ------------------------------------------- */
     b.insertAdjacentHTML('beforeend',
@@ -1831,7 +1893,7 @@ function openSettings() {
     priv.onclick = function () { window.open('privacy/', '_blank', 'noopener'); };
     b.appendChild(priv);
 
-    var supRow = row('❤️', 'Lumira\'yı Destekle', 'Rozet kazan, gelişime katkıda bulun');
+    var supRow = row('❤️', 'Lumiva\'yı Destekle', 'Rozet kazan, gelişime katkıda bulun');
     supRow.style.borderColor = 'rgba(255,95,184,.32)';
     supRow.onclick = function () {
       if (typeof window.openSupport === 'function') window.openSupport();
