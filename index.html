@@ -2,11 +2,6 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<!-- GÜVENLİK: CSP meta (sunucu başlığı yoksa yedek). Netlify başlığı asıldır.
-     'unsafe-inline' gömülü <style>/<script> yüzünden şimdilik gerekli. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://*.googleapis.com https://identitytoolkit.googleapis.com wss://*.firebaseio.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
 <title>Lumira | Dil Kartları</title>
 <meta name="description" content="6 dilde binlerce kelime kartı, quiz, seslendirme ve kişisel ilerleme takibi. Çevrimdışı çalışır.">
@@ -76,16 +71,9 @@
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" crossorigin>
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js" crossorigin>
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" crossorigin>
-<!-- GÜVENLİK (denetim madde 19): SRI ekleyin. Hash'leri şu komutla üretin:
-       for f in app database auth; do
-         curl -s "https://www.gstatic.com/firebasejs/10.12.2/firebase-$f-compat.js" \
-         | openssl dgst -sha384 -binary | openssl base64 -A; echo " <- $f";
-       done
-     Çıkan değeri ilgili integrity="sha384-..." alanına yapıştırın.
-     crossorigin="anonymous" SRI ile ZORUNLUDUR. -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" integrity="sha384-BURAYA_APP_HASH" crossorigin="anonymous"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js" integrity="sha384-BURAYA_DATABASE_HASH" crossorigin="anonymous"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" integrity="sha384-BURAYA_AUTH_HASH" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <style>
   :root{
     --bg:#04050a;
