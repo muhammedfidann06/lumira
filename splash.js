@@ -1,119 +1,158 @@
 /* ============================================================================
    splash.js — Lumira | Dil Kartları
-   Animasyonlu açılış (splash) + başlangıç kontrolleri + routing + onboarding.
-   TAMAMEN KATMAN (overlay) olarak çalışır; mevcut uygulama mantığına dokunmaz.
-   Akış:  Splash → kontroller → (eski kullanıcı → Ana uygulama)
-                              → (yeni kullanıcı → Hoş geldin / dil / seviye → Ana uygulama)
+   Premium animasyonlu açılış (splash) + başlangıç kontrolleri + routing + onboarding.
+   Tamamen OVERLAY olarak çalışır; mevcut uygulama mantığına dokunmaz.
    ========================================================================== */
 (function () {
   'use strict';
-  if (window.__lumBootDone) return;          /* iki kez çalışmasın (race koruması) */
+  if (window.__lumBootDone) return;               /* iki kez çalışmasın (race koruması) */
   window.__lumBootDone = true;
 
   var ONBOARD_KEY = 'lumira_onboarded_v1';
-  var MIN_SPLASH  = 1100;   /* logo animasyonu nefes alsın */
-  var MAX_SPLASH  = 3000;   /* asla sonsuz beklemez */
+  var MIN_SPLASH  = 1200;
+  var MAX_SPLASH  = 4200;                          /* liderlik yüklensin diye biraz geniş; asla sonsuz değil */
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* dilin kendi rengi (index.html :root ile birebir) */
+  var COL = { de:'#ffd23b', en:'#4fe8ff', fr:'#ff5fb8', es:'#ff3b5c', ar:'#3dffa0', ru:'#9b7bff', tr:'#eaf0f7' };
   var GREETINGS = [
-    { t: 'Hallo',  l: 'de' }, { t: 'Hello', l: 'en' }, { t: 'Bonjour', l: 'fr' },
-    { t: 'Hola',   l: 'es' }, { t: 'Привет', l: 'ru' }, { t: 'مرحبا',  l: 'ar' }
+    { t:'Hallo', c:'de' }, { t:'Hello', c:'en' }, { t:'Bonjour', c:'fr' },
+    { t:'Hola', c:'es' }, { t:'Привет', c:'ru' }, { t:'مرحبا', c:'ar' }
+  ];
+  var WELCOMES = [
+    { t:'Hoş geldin', c:'tr' }, { t:'Welcome', c:'en' }, { t:'Willkommen', c:'de' },
+    { t:'Bienvenue', c:'fr' }, { t:'Bienvenido', c:'es' }, { t:'Добро пожаловать', c:'ru' }, { t:'أهلاً', c:'ar' }
   ];
   var LANGS = [
-    { c: 'de', flag: '🇩🇪', name: 'Almanca' }, { c: 'en', flag: '🇬🇧', name: 'İngilizce' },
-    { c: 'fr', flag: '🇫🇷', name: 'Fransızca' }, { c: 'es', flag: '🇪🇸', name: 'İspanyolca' },
-    { c: 'ar', flag: '🇸🇦', name: 'Arapça' }, { c: 'ru', flag: '🇷🇺', name: 'Rusça' }
+    { c:'de', flag:'🇩🇪', name:'Almanca' }, { c:'en', flag:'🇬🇧', name:'İngilizce' },
+    { c:'fr', flag:'🇫🇷', name:'Fransızca' }, { c:'es', flag:'🇪🇸', name:'İspanyolca' },
+    { c:'ar', flag:'🇸🇦', name:'Arapça' }, { c:'ru', flag:'🇷🇺', name:'Rusça' }
   ];
   var LEVELS = ['A1', 'A2', 'B1', 'B2'];
 
-  /* ------------------------------------------------------------- stiller -- */
+  function track(ev){ try { if (window.LUMIRA_TRACK) window.LUMIRA_TRACK(ev); } catch(e){} }
+
+  /* --------------------------------------------------------------- stil -- */
   function injectCss() {
     if (document.getElementById('lumBootCss')) return;
-    /* iki font: Fraunces + DM Mono (JS ile, render'ı bloklamaz) */
-    var fl = document.createElement('link');
-    fl.rel = 'stylesheet';
-    fl.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Mono:wght@400;500&display=swap';
+    var fl = document.createElement('link'); fl.rel = 'stylesheet';
+    fl.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Mono:wght@400;500&display=swap';
     document.head.appendChild(fl);
 
     var s = document.createElement('style'); s.id = 'lumBootCss';
     s.textContent = [
-      ':root{--lb-bg:#0d1016;--lb-panel:#141a24;--lb-ink:#eef1f6;--lb-dim:#8b93a3;',
-      '--lb-line:#242c38;--lb-acc:#5f8fd6;--lb-r:6px;',
-      '--lb-serif:"Fraunces",Georgia,"Times New Roman",serif;',
-      '--lb-mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;}',
+      ':root{--lb-bg:#0a0d14;--lb-bg2:#0f1420;--lb-panel:#141b28;--lb-ink:#eef2f8;',
+      '--lb-dim:#8791a3;--lb-line:#232c3b;--lb-acc:#6d9bff;--lb-vio:#9b7bff;--lb-r:7px;',
+      '--lb-serif:"Fraunces",Georgia,serif;--lb-mono:"DM Mono",ui-monospace,monospace;}',
 
-      '#lumSplash,#lumOnb{position:fixed;inset:0;z-index:99999;background:var(--lb-bg);',
-      'display:flex;align-items:center;justify-content:center;',
-      'padding:calc(env(safe-area-inset-top) + 20px) 22px calc(env(safe-area-inset-bottom) + 20px);',
-      'opacity:1;transition:opacity .38s ease;overflow:hidden;color:var(--lb-ink);}',
+      '#lumSplash,#lumOnb{position:fixed;inset:0;z-index:99999;color:var(--lb-ink);',
+      'background:radial-gradient(120% 90% at 50% 38%, #12192a 0%, var(--lb-bg) 62%);',
+      'display:flex;align-items:center;justify-content:center;overflow:hidden;',
+      'padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 22px);',
+      'opacity:1;transition:opacity .42s ease;}',
       '#lumSplash.lb-out,#lumOnb.lb-out{opacity:0;pointer-events:none;}',
 
-      /* süzülen selamlama sözcükleri */
-      '.lb-word{position:absolute;font-family:var(--lb-mono);font-size:13px;letter-spacing:.04em;',
-      'color:var(--lb-dim);opacity:0;white-space:nowrap;will-change:transform,opacity;}',
-      '@keyframes lbDrift{0%{opacity:0;transform:translateY(14px)}',
-      '18%{opacity:.5}82%{opacity:.5}100%{opacity:0;transform:translateY(-14px)}}',
+      /* dilin renginde süzülen sözcükler — HER ZAMAN en altta */
+      '.lb-words{position:absolute;inset:0;z-index:0;pointer-events:none;}',
+      '.lb-word{position:absolute;font-family:var(--lb-mono);font-size:13px;letter-spacing:.03em;',
+      'opacity:0;white-space:nowrap;will-change:transform,opacity;text-shadow:0 0 18px currentColor;}',
+      '@keyframes lbDrift{0%{opacity:0;transform:translateY(16px) scale(.96)}',
+      '20%{opacity:.42}80%{opacity:.42}100%{opacity:0;transform:translateY(-16px) scale(1.02)}}',
 
-      /* splash logo */
-      '.lb-logo{position:relative;z-index:2;text-align:center;}',
-      '.lb-logo img{width:132px;height:132px;border-radius:26px;display:block;margin:0 auto;',
+      /* mor kelebek */
+      '.lb-bfly{position:absolute;z-index:1;width:34px;height:30px;pointer-events:none;',
+      'filter:drop-shadow(0 0 10px rgba(155,123,255,.55));}',
+      '.lb-bfly .wg{transform-origin:50% 50%;animation:lbFlap .34s ease-in-out infinite;}',
+      '.lb-bfly .wgR{animation-delay:.02s;}',
+      '@keyframes lbFlap{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.52)}}',
+      '@keyframes lbFly{0%{transform:translate(0,0) rotate(-6deg)}',
+      '25%{transform:translate(46px,-34px) rotate(8deg)}50%{transform:translate(14px,-64px) rotate(-4deg)}',
+      '75%{transform:translate(-40px,-30px) rotate(6deg)}100%{transform:translate(0,0) rotate(-6deg)}}',
+
+      /* splash logo + künye */
+      '.lb-core{position:relative;z-index:3;text-align:center;}',
+      '.lb-glow{position:absolute;left:50%;top:44px;width:220px;height:220px;transform:translateX(-50%);',
+      'background:radial-gradient(circle, rgba(109,155,255,.20), rgba(109,155,255,0) 68%);z-index:-1;',
+      'opacity:0;animation:lbGlow 1.2s ease .2s forwards;}',
+      '@keyframes lbGlow{to{opacity:1}}',
+      '.lb-logo{width:128px;height:128px;border-radius:28px;display:block;margin:0 auto;',
       'opacity:0;transform:scale(.86);}',
-      '.lb-logo.lb-in img{animation:lbLogo 1000ms cubic-bezier(.2,.7,.2,1) forwards;}',
-      '@keyframes lbLogo{0%{opacity:0;transform:scale(.86)}60%{opacity:1;transform:scale(1.04)}',
-      '100%{opacity:1;transform:scale(1)}}',
-      '.lb-logo.lb-float img{animation:lbLogo 1000ms cubic-bezier(.2,.7,.2,1) forwards, lbFloat 3.6s ease-in-out 1000ms infinite;}',
-      '@keyframes lbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}',
-      '.lb-tag{margin-top:18px;font-family:var(--lb-mono);font-size:11px;letter-spacing:.34em;',
-      'text-transform:uppercase;color:var(--lb-dim);opacity:0;transition:opacity .5s ease .5s;}',
-      '.lb-logo.lb-in .lb-tag{opacity:1;}',
+      '.lb-core.in .lb-logo{animation:lbLogo 1050ms cubic-bezier(.2,.7,.2,1) forwards' +
+        (reduce ? '' : ', lbFloat 4s ease-in-out 1050ms infinite') + ';}',
+      '@keyframes lbLogo{0%{opacity:0;transform:scale(.86)}60%{opacity:1;transform:scale(1.045)}100%{opacity:1;transform:scale(1)}}',
+      '@keyframes lbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}',
+      '.lb-name{margin-top:22px;font-family:var(--lb-serif);font-weight:600;font-size:15px;',
+      'letter-spacing:.02em;color:var(--lb-ink);opacity:0;}',
+      '.lb-tag{margin-top:7px;font-family:var(--lb-mono);font-size:10.5px;letter-spacing:.32em;',
+      'text-transform:uppercase;color:var(--lb-dim);opacity:0;}',
+      '.lb-core.in .lb-name{animation:lbUp .6s ease .5s forwards;}',
+      '.lb-core.in .lb-tag{animation:lbUp .6s ease .66s forwards;}',
+      '@keyframes lbUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}',
+      /* minimal ilerleme çizgisi */
+      '.lb-load{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 42px);',
+      'transform:translateX(-50%);width:132px;height:2px;background:var(--lb-line);border-radius:2px;overflow:hidden;}',
+      '.lb-load i{display:block;height:100%;width:38%;background:var(--lb-acc);border-radius:2px;',
+      'animation:lbBar 1.3s ease-in-out infinite;}',
+      '@keyframes lbBar{0%{transform:translateX(-120%)}100%{transform:translateX(360%)}}',
 
       /* onboarding panel */
-      '.lb-panel{position:relative;z-index:2;width:100%;max-width:440px;}',
-      '.lb-step{opacity:0;transform:translateY(10px);transition:opacity .32s ease, transform .32s ease;',
-      'display:none;}',
+      '.lb-panel{position:relative;z-index:5;width:100%;max-width:460px;}',
+      '.lb-step{opacity:0;transform:translateY(10px);transition:opacity .34s ease, transform .34s ease;display:none;}',
       '.lb-step.on{display:block;opacity:1;transform:none;}',
-      '.lb-eyebrow{font-family:var(--lb-mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;',
-      'color:var(--lb-acc);margin-bottom:16px;}',
-      '.lb-h{font-family:var(--lb-serif);font-weight:600;font-size:34px;line-height:1.06;',
-      'letter-spacing:-.01em;margin:0 0 12px;}',
-      '.lb-p{color:var(--lb-dim);font-size:15.5px;line-height:1.5;margin:0 0 26px;max-width:34ch;',
-      'font-family:var(--lb-serif);}',
-      '.lb-cta{display:block;width:100%;border:none;cursor:pointer;font-family:var(--lb-mono);',
-      'font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--lb-bg);',
-      'background:var(--lb-ink);border-radius:var(--lb-r);padding:15px 18px;transition:background .2s;}',
-      '.lb-cta:hover{background:var(--lb-acc);color:#fff;}',
+      '.lb-eyebrow{font-family:var(--lb-mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;',
+      'color:var(--lb-acc);margin-bottom:15px;}',
+      '.lb-h{font-family:var(--lb-serif);font-weight:600;font-size:35px;line-height:1.05;letter-spacing:-.01em;margin:0 0 12px;}',
+      '.lb-h .em{font-style:italic;font-weight:500;}',
+      '.lb-p{color:var(--lb-dim);font-size:15.5px;line-height:1.55;margin:0 0 24px;max-width:36ch;font-family:var(--lb-serif);}',
+      '.lb-cta{display:block;width:100%;border:none;cursor:pointer;font-family:var(--lb-mono);font-size:14px;',
+      'letter-spacing:.05em;text-transform:uppercase;color:#0a0d14;background:var(--lb-ink);',
+      'border-radius:var(--lb-r);padding:16px 18px;transition:background .2s, transform .1s;}',
+      '.lb-cta:hover{background:var(--lb-acc);color:#fff;}.lb-cta:active{transform:scale(.985);}',
       '.lb-cta[disabled]{opacity:.4;cursor:default;}',
-
-      /* seçenek ızgarası (dil / seviye) */
-      '.lb-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:26px;}',
+      '.lb-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}',
       '.lb-opt{display:flex;align-items:center;gap:11px;padding:14px 15px;cursor:pointer;',
       'border:1px solid var(--lb-line);border-radius:var(--lb-r);background:var(--lb-panel);',
-      'color:var(--lb-ink);font-family:var(--lb-serif);font-size:16px;transition:border-color .15s, background .15s;}',
+      'color:var(--lb-ink);font-family:var(--lb-serif);font-size:16px;',
+      'transition:border-color .16s, background .16s, box-shadow .16s;}',
       '.lb-opt:hover{border-color:var(--lb-acc);}',
-      '.lb-opt.sel{border-color:var(--lb-acc);background:#182230;}',
+      '.lb-opt.sel{border-color:var(--lb-acc);background:#172232;box-shadow:inset 0 0 0 1px var(--lb-acc);}',
       '.lb-opt .fl{font-size:20px;line-height:1;}',
-      '.lb-lv{grid-template-columns:1fr 1fr;}',
-      '.lb-lv .lb-opt{justify-content:center;font-family:var(--lb-mono);letter-spacing:.08em;}',
+      '.lb-lv .lb-opt{justify-content:center;font-family:var(--lb-mono);letter-spacing:.1em;}',
       '.lb-steps{display:flex;gap:6px;margin-top:22px;}',
       '.lb-dot{height:3px;flex:1;background:var(--lb-line);border-radius:2px;transition:background .3s;}',
       '.lb-dot.on{background:var(--lb-acc);}',
-
-      reduce ? '*{animation:none!important;transition:opacity .2s ease!important;}' : ''
+      /* hafif mod adımı */
+      '.lb-note{font-family:var(--lb-mono);font-size:11.5px;color:var(--lb-dim);margin:2px 2px 18px;line-height:1.5;}',
+      '.lb-warn{color:#ff3b5c;font-family:var(--lb-mono);font-size:12px;font-weight:500;margin:0 2px 20px;line-height:1.45;}',
+      reduce ? '.lb-word,.lb-bfly{animation:none!important;opacity:.32!important;}*{animation-duration:.001s!important;}' : ''
     ].join('');
     document.head.appendChild(s);
   }
 
-  /* ------------------------------------------------- süzülen sözcükler --- */
-  function seedWords(host) {
-    if (reduce) return;
-    var W = host.clientWidth || window.innerWidth, H = host.clientHeight || window.innerHeight;
-    GREETINGS.forEach(function (g, i) {
+  /* -------------------------------------------- kelebek + süzülen sözcük */
+  function butterfly(host, x, y) {
+    var b = document.createElement('div'); b.className = 'lb-bfly';
+    b.style.left = x + '%'; b.style.top = y + '%';
+    if (!reduce) b.style.animation = 'lbFly ' + (11 + Math.random()*4) + 's ease-in-out infinite';
+    b.innerHTML =
+      '<svg viewBox="0 0 34 30" width="34" height="30" aria-hidden="true">' +
+      '<g class="wg wgL" fill="#9b7bff"><path d="M17 15C13 4 6 3 3 8c-3 5 2 11 8 11 3 0 5-2 6-4z" opacity=".92"/>' +
+      '<path d="M17 15C13 22 8 27 4 24c-3-3-1-8 5-9 3-.5 6 0 8 0z" opacity=".7"/></g>' +
+      '<g class="wg wgR" fill="#b79dff"><path d="M17 15C21 4 28 3 31 8c3 5-2 11-8 11-3 0-5-2-6-4z" opacity=".92"/>' +
+      '<path d="M17 15C21 22 26 27 30 24c3-3 1-8-5-9-3-.5-6 0-8 0z" opacity=".7"/></g>' +
+      '<rect x="16" y="6" width="2" height="18" rx="1" fill="#2a2140"/></svg>';
+    host.appendChild(b);
+  }
+  function seedWords(host, list, edge) {
+    if (reduce) { return; }
+    list.forEach(function (g, i) {
       var el = document.createElement('span');
-      el.className = 'lb-word'; el.textContent = g.t;
-      var x = 8 + Math.random() * 76, y = 12 + Math.random() * 72;
-      el.style.left = x + '%'; el.style.top = y + '%';
-      var dur = 5 + Math.random() * 3, delay = i * 0.5;
-      el.style.animation = 'lbDrift ' + dur + 's ease-in-out ' + delay + 's infinite';
+      el.className = 'lb-word'; el.textContent = g.t; el.style.color = COL[g.c] || COL.tr;
+      var x;
+      if (edge) { x = (i % 2 === 0) ? (3 + Math.random()*15) : (74 + Math.random()*17); }  /* kenarlara yasla */
+      else { x = 7 + Math.random()*74; }
+      el.style.left = x + '%'; el.style.top = (8 + Math.random()*78) + '%';
+      el.style.animation = 'lbDrift ' + (5.5 + Math.random()*3) + 's ease-in-out ' + (i*0.55) + 's infinite';
       host.appendChild(el);
     });
   }
@@ -121,104 +160,88 @@
   /* ------------------------------------------------ uygulamayı göster ---- */
   function revealApp() {
     var sp = document.getElementById('lumSplash');
-    if (sp) { sp.classList.add('lb-out'); setTimeout(function () { sp.remove(); }, 420); }
+    if (sp) { sp.classList.add('lb-out'); setTimeout(function () { sp.remove(); }, 460); }
   }
 
-  /* ------------------------------------------------ başlangıç kontrol ---- */
-  function authResolved(cb) {
-    var done = false, finish = function () { if (!done) { done = true; cb(); } };
-    /* Firebase yüklüyse ilk auth durumunu bekle, değilse hemen geç */
+  /* ------------------------------------------- başlangıç kontrolleri ----- */
+  function whenAuth(cb) {
+    var done = false, fin = function () { if (!done) { done = true; cb(); } };
     try {
       if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-        var un = firebase.auth().onAuthStateChanged(function () { try { un(); } catch (e) {} finish(); },
-          function () { finish(); });
-      } else { setTimeout(function () { authResolved(cb); }, 250); return; }
-    } catch (e) { finish(); }
-    setTimeout(finish, MAX_SPLASH);           /* güvenlik: asla asılı kalma */
+        var un = firebase.auth().onAuthStateChanged(function () { try { un(); } catch (e) {} fin(); }, fin);
+      } else { setTimeout(function () { whenAuth(cb); }, 250); return; }
+    } catch (e) { fin(); }
+    setTimeout(fin, MAX_SPLASH);
   }
-
   function isReturning() {
-    try {
-      if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length &&
-          firebase.auth().currentUser) return true;
-    } catch (e) {}
-    return false;
+    try { return !!(typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length && firebase.auth().currentUser); }
+    catch (e) { return false; }
   }
   function isOnboarded() { try { return !!localStorage.getItem(ONBOARD_KEY); } catch (e) { return false; } }
+  function markOnboarded() { try { localStorage.setItem(ONBOARD_KEY, '1'); } catch (e) {} }
 
   /* ---------------------------------------------------------- routing ---- */
   function decideRoute() {
-    if (isReturning() || isOnboarded()) {
-      /* eski/giriş yapmış kullanıcı: bir daha onboarding görmesin (çevrimdışı da) */
-      try { localStorage.setItem(ONBOARD_KEY, '1'); } catch (e) {}
-      revealApp(); return;                                        /* → ana uygulama */
-    }
-    startOnboarding();                                            /* yeni kullanıcı → onboarding */
+    if (isReturning() || isOnboarded()) { markOnboarded(); revealApp(); return; }
+    startOnboarding();
+  }
+
+  /* ------------------------------------------ hafif mod (mevcut sisteme) - */
+  function applyLite(on) {
+    try { localStorage.setItem('pwa_lite', JSON.stringify(!!on)); } catch (e) {}
+    try { document.documentElement.classList.toggle('lite', !!on); } catch (e) {}
+    if (on && typeof window.__snowStop === 'function') { try { window.__snowStop(); } catch (e) {} }
   }
 
   /* --------------------------------------------------------- onboarding -- */
   function applyChoice(lang, level) {
-    /* mevcut arayüzün kendi handler'larını tetikleyerek uygula (mantık kopyalamıyoruz) */
-    try {
-      var lo = document.querySelector('.lang-opt[data-lang="' + lang + '"]');
-      if (lo) lo.click();
-    } catch (e) {}
+    try { var lo = document.querySelector('.lang-opt[data-lang="' + lang + '"]'); if (lo) lo.click(); } catch (e) {}
     if (level) {
       var tries = 0;
       (function setLvl() {
-        var btns = document.querySelectorAll('.level-opt');
-        for (var i = 0; i < btns.length; i++) {
-          if ((btns[i].textContent || '').trim().toUpperCase() === level) { btns[i].click(); return; }
-        }
-        if (tries++ < 10) setTimeout(setLvl, 300);   /* levelBox sonradan dolabilir */
+        var b = document.querySelectorAll('.level-opt');
+        for (var i = 0; i < b.length; i++) if ((b[i].textContent || '').trim().toUpperCase() === level) { b[i].click(); return; }
+        if (tries++ < 10) setTimeout(setLvl, 300);
       })();
     }
-    try { localStorage.setItem(ONBOARD_KEY, '1'); } catch (e) {}
   }
 
   function startOnboarding() {
+    markOnboarded();                 /* HATA 1 DÜZELTMESİ: gösterilir gösterilmez işaretle → bir daha görünmez */
+    track('welcome_viewed');
     var sp = document.getElementById('lumSplash');
     var ob = document.createElement('div'); ob.id = 'lumOnb'; ob.setAttribute('role', 'dialog');
-    var words = document.createElement('div'); words.style.cssText = 'position:absolute;inset:0;';
-    ob.appendChild(words);
+    var words = document.createElement('div'); words.className = 'lb-words'; ob.appendChild(words);
     var panel = document.createElement('div'); panel.className = 'lb-panel'; ob.appendChild(panel);
-
-    var chosen = { lang: null, level: null };
+    var chosen = { lang: null, level: null, lite: false };
     var stepEls = [];
-
     function step(html) { var d = document.createElement('div'); d.className = 'lb-step'; d.innerHTML = html; panel.appendChild(d); stepEls.push(d); return d; }
 
     /* 0 — hoş geldin */
-    var s0 = step(
-      '<div class="lb-eyebrow">Lumira · Dil Kartları</div>' +
-      '<h1 class="lb-h">Hoş geldin</h1>' +
-      '<p class="lb-p">Yeni dil. Yeni kelimeler. Yeni sen. 40.000\u2019den fazla kelime kartı seni bekliyor.</p>' +
+    step('<div class="lb-eyebrow">Lumira · Dil Kartları</div>' +
+      '<h1 class="lb-h">Hoş geldin.<br><span class="em">Yeni bir dile</span> başla.</h1>' +
+      '<p class="lb-p">Altı dilde 36.702 kelime kartı, örnek cümleleri ve Türkçe karşılıklarıyla. Günde on dakika yeter.</p>' +
       '<button class="lb-cta" data-go="1">Başlayalım</button>');
 
     /* 1 — dil */
-    var s1 = step(
-      '<div class="lb-eyebrow">Adım 1 / 2</div>' +
-      '<h1 class="lb-h">Ne öğrenmek istiyorsun?</h1>' +
-      '<div class="lb-grid" id="lbLangs"></div>' +
-      '<button class="lb-cta" data-go="2" disabled>Devam</button>');
+    var s1 = step('<div class="lb-eyebrow">Adım 1 / 3</div><h1 class="lb-h">Ne öğrenmek istiyorsun?</h1>' +
+      '<div class="lb-cards" id="lbLangs"></div><button class="lb-cta" data-go="2" disabled>Devam</button>');
     var lg = s1.querySelector('#lbLangs');
     LANGS.forEach(function (L) {
       var o = document.createElement('div'); o.className = 'lb-opt';
       o.innerHTML = '<span class="fl">' + L.flag + '</span>' + L.name;
       o.onclick = function () {
         chosen.lang = L.c;
-        lg.querySelectorAll('.lb-opt').forEach(function (x) { x.classList.remove('sel'); });
-        o.classList.add('sel'); s1.querySelector('.lb-cta').removeAttribute('disabled');
+        lg.querySelectorAll('.lb-opt').forEach(function (x) { x.classList.remove('sel'); x.style.boxShadow=''; x.style.borderColor=''; });
+        o.classList.add('sel'); o.style.borderColor = COL[L.c]; o.style.boxShadow = 'inset 0 0 0 1px ' + COL[L.c];
+        s1.querySelector('.lb-cta').removeAttribute('disabled');
       };
       lg.appendChild(o);
     });
 
     /* 2 — seviye */
-    var s2 = step(
-      '<div class="lb-eyebrow">Adım 2 / 2</div>' +
-      '<h1 class="lb-h">Seviyen nedir?</h1>' +
-      '<div class="lb-grid lb-lv" id="lbLevels"></div>' +
-      '<button class="lb-cta" data-go="3" disabled>Devam</button>');
+    var s2 = step('<div class="lb-eyebrow">Adım 2 / 3</div><h1 class="lb-h">Seviyen nedir?</h1>' +
+      '<div class="lb-cards lb-lv" id="lbLevels"></div><button class="lb-cta" data-go="3" disabled>Devam</button>');
     var lv = s2.querySelector('#lbLevels');
     LEVELS.forEach(function (L) {
       var o = document.createElement('div'); o.className = 'lb-opt'; o.textContent = L;
@@ -230,41 +253,57 @@
       lv.appendChild(o);
     });
 
-    /* 3 — hazır */
-    var s3 = step(
-      '<div class="lb-eyebrow">Hazırsın</div>' +
-      '<h1 class="lb-h">Öğrenme yolculuğun<br>şimdi başlıyor.</h1>' +
-      '<p class="lb-p">Seçtiğin dille ilk kartına birazdan bakacaksın. Dilediğinde dili ve seviyeni değiştirebilirsin.</p>' +
+    /* 3 — hafif mod */
+    var s3 = step('<div class="lb-eyebrow">Adım 3 / 3</div><h1 class="lb-h">Hafif mod</h1>' +
+      '<p class="lb-p">Kar taneleri, ışıltı ve arka plan süslemelerini kapatır; uygulama daha akıcı ve daha az pil harcar. Sözlük ve quiz aynen çalışır.</p>' +
+      '<div class="lb-cards" id="lbLite"></div>' +
+      '<p class="lb-warn">Telefonun düşük performanslı değilse açman önerilmez.</p>' +
+      '<p class="lb-note">İstediğin zaman Ayarlar › Hafif mod\u2019dan değiştirebilirsin.</p>' +
+      '<button class="lb-cta" data-go="4">Devam</button>');
+    var li = s3.querySelector('#lbLite');
+    [['off','Kapalı kalsın'], ['on','Evet, aç']].forEach(function (P, idx) {
+      var o = document.createElement('div'); o.className = 'lb-opt' + (idx === 0 ? ' sel' : ''); o.textContent = P[1];
+      o.style.justifyContent = 'center';
+      o.onclick = function () {
+        chosen.lite = (P[0] === 'on');
+        li.querySelectorAll('.lb-opt').forEach(function (x) { x.classList.remove('sel'); });
+        o.classList.add('sel');
+      };
+      li.appendChild(o);
+    });
+
+    /* 4 — hazır */
+    step('<div class="lb-eyebrow">Hazırsın</div><h1 class="lb-h">Öğrenme yolculuğun<br><span class="em">şimdi başlıyor.</span></h1>' +
+      '<p class="lb-p">Seçtiğin dille ilk kartına birazdan bakacaksın. Dili ve seviyeni dilediğinde değiştirebilirsin.</p>' +
       '<button class="lb-cta" data-go="done">Lumira\u2019ya Başla</button>');
 
-    /* adım göstergesi */
     var dots = document.createElement('div'); dots.className = 'lb-steps';
-    for (var i = 0; i < 4; i++) { var d = document.createElement('i'); d.className = 'lb-dot'; dots.appendChild(d); }
+    for (var i = 0; i < 5; i++) dots.appendChild(document.createElement('i')).className = 'lb-dot';
     panel.appendChild(dots);
 
-    var cur = 0;
     function show(n) {
       stepEls.forEach(function (el, k) { el.classList.toggle('on', k === n); });
       dots.querySelectorAll('.lb-dot').forEach(function (dd, k) { dd.classList.toggle('on', k <= n); });
-      cur = n;
+      if (n === 1) track('onboarding_started');
     }
     panel.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('[data-go]'); if (!b) return;
       var go = b.getAttribute('data-go');
-      if (go === 'done') { finishOnboarding(); return; }
+      if (go === 'done') { finish(); return; }
       show(parseInt(go, 10));
     });
 
     document.body.appendChild(ob);
-    seedWords(words);
-    /* splash'tan onboarding'e yumuşak geçiş */
-    if (sp) { sp.classList.add('lb-out'); setTimeout(function () { sp.remove(); }, 420); }
+    seedWords(words, WELCOMES, true);
+    butterfly(words, 72, 20); if (!reduce) butterfly(words, 16, 60);
+    if (sp) { sp.classList.add('lb-out'); setTimeout(function () { sp.remove(); }, 460); }
     requestAnimationFrame(function () { show(0); });
 
-    function finishOnboarding() {
+    function finish() {
       applyChoice(chosen.lang || 'de', chosen.level);
-      ob.classList.add('lb-out');
-      setTimeout(function () { ob.remove(); }, 420);
+      applyLite(chosen.lite);
+      track('language_selected'); track('level_selected'); track('onboarding_completed');
+      ob.classList.add('lb-out'); setTimeout(function () { ob.remove(); }, 460);
     }
   }
 
@@ -272,18 +311,19 @@
   function run() {
     injectCss();
     var sp = document.getElementById('lumSplash');
-    if (!sp) { decideRoute(); return; }         /* overlay yoksa yine de yönlendir */
-    var logo = sp.querySelector('.lb-logo');
+    if (!sp) { decideRoute(); return; }
+    var core  = sp.querySelector('.lb-core');
     var words = sp.querySelector('.lb-words');
-    if (words) seedWords(words);
-    if (logo) { logo.classList.add('lb-in'); if (!reduce) logo.classList.add('lb-float'); }
+    if (words) { seedWords(words, GREETINGS); butterfly(words, 68, 24); if (!reduce) butterfly(words, 20, 58); }
+    if (core) core.classList.add('in');
 
-    var t0 = Date.now(), checksDone = false;
-    authResolved(function () { checksDone = true; maybeGo(); });
-    setTimeout(function () { checksDone = true; maybeGo(); }, MAX_SPLASH);
+    var t0 = Date.now(), authOk = false, lbOk = false, forced = false;
+    whenAuth(function () { authOk = true; maybe(); });
+    var poll = setInterval(function () { if (window.__lumLbReady) { lbOk = true; clearInterval(poll); maybe(); } }, 120);
+    setTimeout(function () { forced = true; clearInterval(poll); maybe(); }, MAX_SPLASH);
 
-    function maybeGo() {
-      if (!checksDone) return;
+    function maybe() {
+      if (!(forced || (authOk && lbOk))) return;
       var wait = Math.max(0, MIN_SPLASH - (Date.now() - t0));
       setTimeout(decideRoute, wait);
     }

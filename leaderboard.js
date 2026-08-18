@@ -486,6 +486,7 @@ function initLeaderboard(){
     }
 
     function processLbSnapshot(val){
+      try { window.__lumLbReady = true; } catch(e){}   /* splash: sıralama hazır sinyali */
       lastLbVal = val;
       cacheLb(val);
       /* Eskiden yalnızca "name" alanı dolu olan kayıtlar listeye giriyordu.
