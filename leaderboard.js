@@ -306,12 +306,14 @@ function initLeaderboard(){
 
     function addSeconds(uid, name, seconds, useBeacon){
       if(!uid) return;
-      if(useBeacon && FIREBASE_CONFIG.databaseURL && FIREBASE_CONFIG.databaseURL.indexOf('BURAYA_YAPISTIR') === -1){
-        try{
-          const url = FIREBASE_CONFIG.databaseURL.replace(/\/$/, '') + '/leaderboard/' + uid + '/lastFlushAttempt.json';
-          fetch(url, { method:'PUT', body: JSON.stringify(Date.now()), keepalive:true }).catch(()=>{});
-        }catch(e){}
-      }
+      /* KALDIRILDI: buradaki kimliksiz (auth'suz) REST PUT güvenlik kuralları
+         'auth != null' istediği için zaten sessizce reddediliyordu (ölü kod) ve
+         kimliksiz yazma yüzeyi bırakıyordu. 'useBeacon' imza uyumu için duruyor
+         ama kullanılmıyor; süre aşağıdaki KİMLİKLİ transaction ile yazılır.
+         Sekme kapanırken son yazmayı garanti etmek istersen doğru yol,
+         önceden alınmış ID token'ı ekleyip '...lastFlushAttempt.json?auth=<token>'
+         çağırmaktır (token bayatlarsa güvenilmez olabilir). */
+      void useBeacon;
       if(!db) return;
       const ref = db.ref('leaderboard/' + uid);
       ref.transaction((current) => {
