@@ -9,8 +9,8 @@
   window.__lumBootDone = true;
 
   var ONBOARD_KEY = 'lumira_onboarded_v1';
-  var MIN_SPLASH  = 5000;
-  var MAX_SPLASH  = 6000;                          /* üst sınır; asla sonsuz değil */
+  var MIN_SPLASH  = 2500;
+  var MAX_SPLASH  = 4500;                          /* üst sınır; asla sonsuz değil */
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* dilin kendi rengi (index.html :root ile birebir) */

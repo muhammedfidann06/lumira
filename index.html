@@ -530,7 +530,7 @@
   .splash-lb-subtitle.level{color:var(--violet);text-shadow:0 0 8px rgba(155,123,255,0.55);}
   .splash-lb-list{display:flex;flex-direction:column;gap:6px;padding-bottom:6px;}
   .splash-lb-col .lb-row{padding:6px 6px;gap:5px;border-radius:9px;}
-  .splash-lb-col .lb-rank{width:15px;font-size:10.5px;}
+  .splash-lb-col .lb-rank{width:16px;flex-shrink:0;font-size:10.5px;overflow:hidden;}
   .splash-lb-col .lb-name{font-size:10.5px;}
   .splash-lb-col .lb-time{font-size:9.5px;}
   .lb-row{
@@ -538,8 +538,8 @@
     background:rgba(255,255,255,0.03);border:1px solid transparent;
   }
   .lb-row.me{background:rgba(255,210,59,0.14);border-color:rgba(255,210,59,0.4);}
-  .lb-rank{width:20px;text-align:center;font-weight:800;font-size:12px;color:var(--muted);}
-  .lb-name{flex:1;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
+  .lb-rank{width:20px;flex-shrink:0;text-align:center;font-weight:800;font-size:12px;color:var(--muted);}
+  .lb-name{flex:1 1 auto;min-width:0;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-break:keep-all;overflow-wrap:normal;text-align:left;}
   .lb-time{font-size:11px;color:var(--cyan-soft);font-weight:700;white-space:nowrap;}
   .lb-empty{text-align:center;color:var(--muted);font-size:10.5px;padding:10px 4px;line-height:1.4;}
 
@@ -650,8 +650,8 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.9">
-<link rel="stylesheet" href="pwa.css?v=1.7.9">
+<link rel="stylesheet" href="theme.css?v=1.7.10">
+<link rel="stylesheet" href="pwa.css?v=1.7.10">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1087,7 +1087,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.9"></script>
+<script src="leaderboard.js?v=1.7.10"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2132,7 +2132,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.9"></script>
+<script src="progress.js?v=1.7.10"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2143,22 +2143,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.9"></script>
-<script defer src="theme.js?v=1.7.9"></script>
+<script defer src="voice.js?v=1.7.10"></script>
+<script defer src="theme.js?v=1.7.10"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.9"></script>
+<script defer src="pwa.js?v=1.7.10"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.9"></script>
+<script defer src="support-badges.js?v=1.7.10"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.9"></script>
-<script defer src="analytics.js?v=1.7.9"></script>
+<script defer src="splash.js?v=1.7.10"></script>
+<script defer src="analytics.js?v=1.7.10"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.9"></script>
+<script defer src="admin.js?v=1.7.10"></script>
 </body>
 </html>
