@@ -76,16 +76,9 @@
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" crossorigin>
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js" crossorigin>
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" crossorigin>
-<!-- GÜVENLİK (denetim madde 19): SRI ekleyin. Hash'leri şu komutla üretin:
-       for f in app database auth; do
-         curl -s "https://www.gstatic.com/firebasejs/10.12.2/firebase-$f-compat.js" \
-         | openssl dgst -sha384 -binary | openssl base64 -A; echo " <- $f";
-       done
-     Çıkan değeri ilgili integrity="sha384-..." alanına yapıştırın.
-     crossorigin="anonymous" SRI ile ZORUNLUDUR. -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" integrity="sha384-BURAYA_APP_HASH" crossorigin="anonymous"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js" integrity="sha384-BURAYA_DATABASE_HASH" crossorigin="anonymous"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" integrity="sha384-BURAYA_AUTH_HASH" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <style>
   :root{
     --bg:#04050a;
@@ -657,10 +650,19 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.5">
-<link rel="stylesheet" href="pwa.css?v=1.7.5">
+<link rel="stylesheet" href="theme.css?v=1.7.6">
+<link rel="stylesheet" href="pwa.css?v=1.7.6">
 </head>
 <body>
+<!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
+<div id="lumSplash" aria-hidden="true">
+  <div class="lb-words"></div>
+  <div class="lb-logo">
+    <img src="splash-logo.png" alt="Lumira" width="132" height="132">
+    <div class="lb-tag">Dil Kartları</div>
+  </div>
+</div>
+<style>#lumSplash{position:fixed;inset:0;z-index:99999;background:#0d1016;display:flex;align-items:center;justify-content:center}#lumSplash .lb-logo img{width:132px;height:132px;border-radius:26px}#lumSplash .lb-tag{margin-top:18px;text-align:center;font:11px/1 ui-monospace,monospace;letter-spacing:.34em;text-transform:uppercase;color:#8b93a3}</style>
 
 <!-- ===== SAHNE: manzara + efektler theme.css / theme.js tarafından kurulur ===== -->
 <div id="grade" aria-hidden="true"></div>
@@ -1082,7 +1084,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.5"></script>
+<script src="leaderboard.js?v=1.7.6"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2127,7 +2129,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.5"></script>
+<script src="progress.js?v=1.7.6"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2138,21 +2140,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.5"></script>
-<script defer src="theme.js?v=1.7.5"></script>
+<script defer src="voice.js?v=1.7.6"></script>
+<script defer src="theme.js?v=1.7.6"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.5"></script>
+<script defer src="pwa.js?v=1.7.6"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.5"></script>
+<script defer src="support-badges.js?v=1.7.6"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="analytics.js?v=1.7.5"></script>
+<script defer src="splash.js?v=1.7.6"></script>
+<script defer src="analytics.js?v=1.7.6"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.5"></script>
+<script defer src="admin.js?v=1.7.6"></script>
 </body>
 </html>

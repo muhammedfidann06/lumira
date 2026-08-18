@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.7.5';
+const CACHE_VERSION = 'v1.7.6';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -37,6 +37,7 @@ const SHELL = [
   './pwa.js',
   './support-badges.js',
   './analytics.js',
+  './splash.js',
   './admin.js',
   './theme.css',
   './theme.js',

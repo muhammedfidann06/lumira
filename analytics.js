@@ -119,6 +119,44 @@
     }
   }
 
+  /* mevcut arayüz öğelerini olaylara bağla — hiçbir mevcut handler'ı değiştirmez */
+  function wireAuto() {
+    /* tıklama delegasyonu (capture) */
+    document.addEventListener('click', function (e) {
+      var t = e.target; if (!t || !t.closest) return;
+      if (t.closest('#tabQuiz'))         trackEvent('opened_quiz_tab');
+      else if (t.closest('#tabCards'))   trackEvent('opened_flashcard');
+      else if (t.closest('#tabPersonal')) trackEvent('opened_personal');
+      if (t.closest('.lang-opt'))        trackEvent('changed_language');
+      if (t.closest('#rabbitBtn') || t.closest('#turtleBtn')) trackEvent('played_pronunciation');
+    }, true);
+
+    /* global fonksiyonları sar (yüklenince) */
+    function wrap(name, ev) {
+      var tries = 0;
+      (function attach() {
+        var f = window[name];
+        if (typeof f === 'function' && !f.__lumTracked) {
+          var orig = f;
+          window[name] = function () { trackEvent(ev); return orig.apply(this, arguments); };
+          window[name].__lumTracked = true; return;
+        }
+        if (tries++ < 12) setTimeout(attach, 500);
+      })();
+    }
+    wrap('openProfile', 'opened_profile');
+    wrap('openSupport', 'support_clicked');
+
+    /* PDF çıktısı = window.print */
+    try {
+      if (window.print && !window.print.__lumTracked) {
+        var op = window.print;
+        window.print = function () { trackEvent('pdf_exported'); return op.apply(this, arguments); };
+        window.print.__lumTracked = true;
+      }
+    } catch (e) {}
+  }
+
   function boot() {
     if (!hasFB()) { setTimeout(boot, 400); return; }   /* firebase henüz yüklenmedi */
 
@@ -127,6 +165,9 @@
 
     /* app_opened — her açılışta bir kez (giriş varsa hemen, yoksa tamponda) */
     trackEvent('app_opened');
+
+    /* mevcut arayüzü ölçüme bağla (handler'lara dokunmadan) */
+    wireAuto();
 
     /* isteğe bağlı anonim giriş: kısa süre sonra hâlâ oturum yoksa */
     if (ANON_SIGNIN) {
