@@ -9,15 +9,15 @@
   window.__lumBootDone = true;
 
   var ONBOARD_KEY = 'lumira_onboarded_v1';
-  var MIN_SPLASH  = 1200;
-  var MAX_SPLASH  = 4200;                          /* liderlik yüklensin diye biraz geniş; asla sonsuz değil */
+  var MIN_SPLASH  = 5000;
+  var MAX_SPLASH  = 6000;                          /* üst sınır; asla sonsuz değil */
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* dilin kendi rengi (index.html :root ile birebir) */
   var COL = { de:'#ffd23b', en:'#4fe8ff', fr:'#ff5fb8', es:'#ff3b5c', ar:'#3dffa0', ru:'#9b7bff', tr:'#eaf0f7' };
   var GREETINGS = [
     { t:'Hallo', c:'de' }, { t:'Hello', c:'en' }, { t:'Bonjour', c:'fr' },
-    { t:'Hola', c:'es' }, { t:'Привет', c:'ru' }, { t:'مرحبا', c:'ar' }
+    { t:'Hola', c:'es' }, { t:'Привет', c:'ru' }, { t:'مرحبا', c:'ar' }, { t:'Merhaba', c:'tr' }
   ];
   var WELCOMES = [
     { t:'Hoş geldin', c:'tr' }, { t:'Welcome', c:'en' }, { t:'Willkommen', c:'de' },
@@ -41,97 +41,97 @@
 
     var s = document.createElement('style'); s.id = 'lumBootCss';
     s.textContent = [
-      ':root{--lb-bg:#0a0d14;--lb-bg2:#0f1420;--lb-panel:#141b28;--lb-ink:#eef2f8;',
-      '--lb-dim:#8791a3;--lb-line:#232c3b;--lb-acc:#6d9bff;--lb-vio:#9b7bff;--lb-r:7px;',
-      '--lb-serif:"Fraunces",Georgia,serif;--lb-mono:"DM Mono",ui-monospace,monospace;}',
+      ':root{--lms-bg:#0a0d14;--lms-bg2:#0f1420;--lms-panel:#141b28;--lms-ink:#eef2f8;',
+      '--lms-dim:#8791a3;--lms-line:#232c3b;--lms-acc:#6d9bff;--lms-vio:#9b7bff;--lms-r:7px;',
+      '--lms-serif:"Fraunces",Georgia,serif;--lms-mono:"DM Mono",ui-monospace,monospace;}',
 
-      '#lumSplash,#lumOnb{position:fixed;inset:0;z-index:99999;color:var(--lb-ink);',
-      'background:radial-gradient(120% 90% at 50% 38%, #12192a 0%, var(--lb-bg) 62%);',
+      '#lumSplash,#lumOnb{position:fixed;inset:0;z-index:99999;color:var(--lms-ink);',
+      'background:radial-gradient(120% 90% at 50% 38%, #12192a 0%, var(--lms-bg) 62%);',
       'display:flex;align-items:center;justify-content:center;overflow:hidden;',
       'padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 22px);',
       'opacity:1;transition:opacity .42s ease;}',
-      '#lumSplash.lb-out,#lumOnb.lb-out{opacity:0;pointer-events:none;}',
+      '#lumSplash.lms-out,#lumOnb.lms-out{opacity:0;pointer-events:none;}',
 
       /* dilin renginde süzülen sözcükler — HER ZAMAN en altta */
-      '.lb-words{position:absolute;inset:0;z-index:0;pointer-events:none;}',
-      '.lb-word{position:absolute;font-family:var(--lb-mono);font-size:13px;letter-spacing:.03em;',
+      '.lms-words{position:absolute;inset:0;z-index:0;pointer-events:none;}',
+      '.lms-word{position:absolute;font-family:var(--lms-mono);font-size:13px;letter-spacing:.03em;',
       'opacity:0;white-space:nowrap;will-change:transform,opacity;text-shadow:0 0 18px currentColor;}',
       '@keyframes lbDrift{0%{opacity:0;transform:translateY(16px) scale(.96)}',
       '20%{opacity:.42}80%{opacity:.42}100%{opacity:0;transform:translateY(-16px) scale(1.02)}}',
 
       /* mor kelebek */
-      '.lb-bfly{position:absolute;z-index:1;width:34px;height:30px;pointer-events:none;',
+      '.lms-bfly{position:absolute;z-index:1;width:34px;height:30px;pointer-events:none;',
       'filter:drop-shadow(0 0 10px rgba(155,123,255,.55));}',
-      '.lb-bfly .wg{transform-origin:50% 50%;animation:lbFlap .34s ease-in-out infinite;}',
-      '.lb-bfly .wgR{animation-delay:.02s;}',
+      '.lms-bfly .wg{transform-origin:50% 50%;animation:lbFlap .34s ease-in-out infinite;}',
+      '.lms-bfly .wgR{animation-delay:.02s;}',
       '@keyframes lbFlap{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.52)}}',
       '@keyframes lbFly{0%{transform:translate(0,0) rotate(-6deg)}',
       '25%{transform:translate(46px,-34px) rotate(8deg)}50%{transform:translate(14px,-64px) rotate(-4deg)}',
       '75%{transform:translate(-40px,-30px) rotate(6deg)}100%{transform:translate(0,0) rotate(-6deg)}}',
 
       /* splash logo + künye */
-      '.lb-core{position:relative;z-index:3;text-align:center;}',
-      '.lb-glow{position:absolute;left:50%;top:44px;width:220px;height:220px;transform:translateX(-50%);',
+      '.lms-core{position:relative;z-index:3;text-align:center;}',
+      '.lms-glow{position:absolute;left:50%;top:44px;width:220px;height:220px;transform:translateX(-50%);',
       'background:radial-gradient(circle, rgba(109,155,255,.20), rgba(109,155,255,0) 68%);z-index:-1;',
       'opacity:0;animation:lbGlow 1.2s ease .2s forwards;}',
       '@keyframes lbGlow{to{opacity:1}}',
-      '.lb-logo{width:128px;height:128px;border-radius:28px;display:block;margin:0 auto;',
+      '.lms-logo{width:128px;height:128px;border-radius:28px;display:block;margin:0 auto;',
       'opacity:0;transform:scale(.86);}',
-      '.lb-core.in .lb-logo{animation:lbLogo 1050ms cubic-bezier(.2,.7,.2,1) forwards' +
+      '.lms-core.in .lms-logo{animation:lbLogo 1050ms cubic-bezier(.2,.7,.2,1) forwards' +
         (reduce ? '' : ', lbFloat 4s ease-in-out 1050ms infinite') + ';}',
       '@keyframes lbLogo{0%{opacity:0;transform:scale(.86)}60%{opacity:1;transform:scale(1.045)}100%{opacity:1;transform:scale(1)}}',
       '@keyframes lbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}',
-      '.lb-name{margin-top:22px;font-family:var(--lb-serif);font-weight:600;font-size:15px;',
-      'letter-spacing:.02em;color:var(--lb-ink);opacity:0;}',
-      '.lb-tag{margin-top:7px;font-family:var(--lb-mono);font-size:10.5px;letter-spacing:.32em;',
-      'text-transform:uppercase;color:var(--lb-dim);opacity:0;}',
-      '.lb-core.in .lb-name{animation:lbUp .6s ease .5s forwards;}',
-      '.lb-core.in .lb-tag{animation:lbUp .6s ease .66s forwards;}',
+      '.lms-name{margin-top:22px;font-family:var(--lms-serif);font-weight:600;font-size:15px;',
+      'letter-spacing:.02em;color:var(--lms-ink);opacity:0;}',
+      '.lms-tag{margin-top:7px;font-family:var(--lms-mono);font-size:10.5px;letter-spacing:.32em;',
+      'text-transform:uppercase;color:var(--lms-dim);opacity:0;}',
+      '.lms-core.in .lms-name{animation:lbUp .6s ease .5s forwards;}',
+      '.lms-core.in .lms-tag{animation:lbUp .6s ease .66s forwards;}',
       '@keyframes lbUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}',
       /* minimal ilerleme çizgisi */
-      '.lb-load{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 42px);',
-      'transform:translateX(-50%);width:132px;height:2px;background:var(--lb-line);border-radius:2px;overflow:hidden;}',
-      '.lb-load i{display:block;height:100%;width:38%;background:var(--lb-acc);border-radius:2px;',
+      '.lms-load{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 42px);',
+      'transform:translateX(-50%);width:132px;height:2px;background:var(--lms-line);border-radius:2px;overflow:hidden;}',
+      '.lms-load i{display:block;height:100%;width:38%;background:var(--lms-acc);border-radius:2px;',
       'animation:lbBar 1.3s ease-in-out infinite;}',
       '@keyframes lbBar{0%{transform:translateX(-120%)}100%{transform:translateX(360%)}}',
 
       /* onboarding panel */
-      '.lb-panel{position:relative;z-index:5;width:100%;max-width:460px;}',
-      '.lb-step{opacity:0;transform:translateY(10px);transition:opacity .34s ease, transform .34s ease;display:none;}',
-      '.lb-step.on{display:block;opacity:1;transform:none;}',
-      '.lb-eyebrow{font-family:var(--lb-mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;',
-      'color:var(--lb-acc);margin-bottom:15px;}',
-      '.lb-h{font-family:var(--lb-serif);font-weight:600;font-size:35px;line-height:1.05;letter-spacing:-.01em;margin:0 0 12px;}',
-      '.lb-h .em{font-style:italic;font-weight:500;}',
-      '.lb-p{color:var(--lb-dim);font-size:15.5px;line-height:1.55;margin:0 0 24px;max-width:36ch;font-family:var(--lb-serif);}',
-      '.lb-cta{display:block;width:100%;border:none;cursor:pointer;font-family:var(--lb-mono);font-size:14px;',
-      'letter-spacing:.05em;text-transform:uppercase;color:#0a0d14;background:var(--lb-ink);',
-      'border-radius:var(--lb-r);padding:16px 18px;transition:background .2s, transform .1s;}',
-      '.lb-cta:hover{background:var(--lb-acc);color:#fff;}.lb-cta:active{transform:scale(.985);}',
-      '.lb-cta[disabled]{opacity:.4;cursor:default;}',
-      '.lb-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}',
-      '.lb-opt{display:flex;align-items:center;gap:11px;padding:14px 15px;cursor:pointer;',
-      'border:1px solid var(--lb-line);border-radius:var(--lb-r);background:var(--lb-panel);',
-      'color:var(--lb-ink);font-family:var(--lb-serif);font-size:16px;',
+      '.lms-panel{position:relative;z-index:5;width:100%;max-width:460px;}',
+      '.lms-step{opacity:0;transform:translateY(10px);transition:opacity .34s ease, transform .34s ease;display:none;}',
+      '.lms-step.on{display:block;opacity:1;transform:none;}',
+      '.lms-eyebrow{font-family:var(--lms-mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;',
+      'color:var(--lms-acc);margin-bottom:15px;}',
+      '.lms-h{font-family:var(--lms-serif);font-weight:600;font-size:35px;line-height:1.05;letter-spacing:-.01em;margin:0 0 12px;}',
+      '.lms-h .em{font-style:italic;font-weight:500;}',
+      '.lms-p{color:var(--lms-dim);font-size:15.5px;line-height:1.55;margin:0 0 24px;max-width:36ch;font-family:var(--lms-serif);}',
+      '.lms-cta{display:block;width:100%;border:none;cursor:pointer;font-family:var(--lms-mono);font-size:14px;',
+      'letter-spacing:.05em;text-transform:uppercase;color:#0a0d14;background:var(--lms-ink);',
+      'border-radius:var(--lms-r);padding:16px 18px;transition:background .2s, transform .1s;}',
+      '.lms-cta:hover{background:var(--lms-acc);color:#fff;}.lms-cta:active{transform:scale(.985);}',
+      '.lms-cta[disabled]{opacity:.4;cursor:default;}',
+      '.lms-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}',
+      '.lms-opt{display:flex;align-items:center;gap:11px;padding:14px 15px;cursor:pointer;',
+      'border:1px solid var(--lms-line);border-radius:var(--lms-r);background:var(--lms-panel);',
+      'color:var(--lms-ink);font-family:var(--lms-serif);font-size:16px;',
       'transition:border-color .16s, background .16s, box-shadow .16s;}',
-      '.lb-opt:hover{border-color:var(--lb-acc);}',
-      '.lb-opt.sel{border-color:var(--lb-acc);background:#172232;box-shadow:inset 0 0 0 1px var(--lb-acc);}',
-      '.lb-opt .fl{font-size:20px;line-height:1;}',
-      '.lb-lv .lb-opt{justify-content:center;font-family:var(--lb-mono);letter-spacing:.1em;}',
-      '.lb-steps{display:flex;gap:6px;margin-top:22px;}',
-      '.lb-dot{height:3px;flex:1;background:var(--lb-line);border-radius:2px;transition:background .3s;}',
-      '.lb-dot.on{background:var(--lb-acc);}',
+      '.lms-opt:hover{border-color:var(--lms-acc);}',
+      '.lms-opt.sel{border-color:var(--lms-acc);background:#172232;box-shadow:inset 0 0 0 1px var(--lms-acc);}',
+      '.lms-opt .fl{font-size:20px;line-height:1;}',
+      '.lms-lv .lms-opt{justify-content:center;font-family:var(--lms-mono);letter-spacing:.1em;}',
+      '.lms-steps{display:flex;gap:6px;margin-top:22px;}',
+      '.lms-dot{height:3px;flex:1;background:var(--lms-line);border-radius:2px;transition:background .3s;}',
+      '.lms-dot.on{background:var(--lms-acc);}',
       /* hafif mod adımı */
-      '.lb-note{font-family:var(--lb-mono);font-size:11.5px;color:var(--lb-dim);margin:2px 2px 18px;line-height:1.5;}',
-      '.lb-warn{color:#ff3b5c;font-family:var(--lb-mono);font-size:12px;font-weight:500;margin:0 2px 20px;line-height:1.45;}',
-      reduce ? '.lb-word,.lb-bfly{animation:none!important;opacity:.32!important;}*{animation-duration:.001s!important;}' : ''
+      '.lms-note{font-family:var(--lms-mono);font-size:11.5px;color:var(--lms-dim);margin:2px 2px 18px;line-height:1.5;}',
+      '.lms-warn{color:#ff3b5c;font-family:var(--lms-mono);font-size:12px;font-weight:500;margin:0 2px 20px;line-height:1.45;}',
+      reduce ? '.lms-word,.lms-bfly{animation:none!important;opacity:.32!important;}*{animation-duration:.001s!important;}' : ''
     ].join('');
     document.head.appendChild(s);
   }
 
   /* -------------------------------------------- kelebek + süzülen sözcük */
   function butterfly(host, x, y) {
-    var b = document.createElement('div'); b.className = 'lb-bfly';
+    var b = document.createElement('div'); b.className = 'lms-bfly';
     b.style.left = x + '%'; b.style.top = y + '%';
     if (!reduce) b.style.animation = 'lbFly ' + (11 + Math.random()*4) + 's ease-in-out infinite';
     b.innerHTML =
@@ -147,7 +147,7 @@
     if (reduce) { return; }
     list.forEach(function (g, i) {
       var el = document.createElement('span');
-      el.className = 'lb-word'; el.textContent = g.t; el.style.color = COL[g.c] || COL.tr;
+      el.className = 'lms-word'; el.textContent = g.t; el.style.color = COL[g.c] || COL.tr;
       var x;
       if (edge) { x = (i % 2 === 0) ? (3 + Math.random()*15) : (74 + Math.random()*17); }  /* kenarlara yasla */
       else { x = 7 + Math.random()*74; }
@@ -160,7 +160,7 @@
   /* ------------------------------------------------ uygulamayı göster ---- */
   function revealApp() {
     var sp = document.getElementById('lumSplash');
-    if (sp) { sp.classList.add('lb-out'); setTimeout(function () { sp.remove(); }, 460); }
+    if (sp) { sp.classList.add('lms-out'); setTimeout(function () { sp.remove(); }, 460); }
   }
 
   /* ------------------------------------------- başlangıç kontrolleri ----- */
@@ -211,79 +211,79 @@
     track('welcome_viewed');
     var sp = document.getElementById('lumSplash');
     var ob = document.createElement('div'); ob.id = 'lumOnb'; ob.setAttribute('role', 'dialog');
-    var words = document.createElement('div'); words.className = 'lb-words'; ob.appendChild(words);
-    var panel = document.createElement('div'); panel.className = 'lb-panel'; ob.appendChild(panel);
+    var words = document.createElement('div'); words.className = 'lms-words'; ob.appendChild(words);
+    var panel = document.createElement('div'); panel.className = 'lms-panel'; ob.appendChild(panel);
     var chosen = { lang: null, level: null, lite: false };
     var stepEls = [];
-    function step(html) { var d = document.createElement('div'); d.className = 'lb-step'; d.innerHTML = html; panel.appendChild(d); stepEls.push(d); return d; }
+    function step(html) { var d = document.createElement('div'); d.className = 'lms-step'; d.innerHTML = html; panel.appendChild(d); stepEls.push(d); return d; }
 
     /* 0 — hoş geldin */
-    step('<div class="lb-eyebrow">Lumira · Dil Kartları</div>' +
-      '<h1 class="lb-h">Hoş geldin.<br><span class="em">Yeni bir dile</span> başla.</h1>' +
-      '<p class="lb-p">Altı dilde 36.702 kelime kartı, örnek cümleleri ve Türkçe karşılıklarıyla. Günde on dakika yeter.</p>' +
-      '<button class="lb-cta" data-go="1">Başlayalım</button>');
+    step('<div class="lms-eyebrow">Lumira · Dil Kartları</div>' +
+      '<h1 class="lms-h">Hoş geldin.<br><span class="em">Yeni bir dile</span> başla.</h1>' +
+      '<p class="lms-p">Altı dilde 36.702 kelime kartı, örnek cümleleri ve Türkçe karşılıklarıyla. Günde on dakika yeter.</p>' +
+      '<button class="lms-cta" data-go="1">Başlayalım</button>');
 
     /* 1 — dil */
-    var s1 = step('<div class="lb-eyebrow">Adım 1 / 3</div><h1 class="lb-h">Ne öğrenmek istiyorsun?</h1>' +
-      '<div class="lb-cards" id="lbLangs"></div><button class="lb-cta" data-go="2" disabled>Devam</button>');
+    var s1 = step('<div class="lms-eyebrow">Adım 1 / 3</div><h1 class="lms-h">Ne öğrenmek istiyorsun?</h1>' +
+      '<div class="lms-cards" id="lbLangs"></div><button class="lms-cta" data-go="2" disabled>Devam</button>');
     var lg = s1.querySelector('#lbLangs');
     LANGS.forEach(function (L) {
-      var o = document.createElement('div'); o.className = 'lb-opt';
+      var o = document.createElement('div'); o.className = 'lms-opt';
       o.innerHTML = '<span class="fl">' + L.flag + '</span>' + L.name;
       o.onclick = function () {
         chosen.lang = L.c;
-        lg.querySelectorAll('.lb-opt').forEach(function (x) { x.classList.remove('sel'); x.style.boxShadow=''; x.style.borderColor=''; });
+        lg.querySelectorAll('.lms-opt').forEach(function (x) { x.classList.remove('sel'); x.style.boxShadow=''; x.style.borderColor=''; });
         o.classList.add('sel'); o.style.borderColor = COL[L.c]; o.style.boxShadow = 'inset 0 0 0 1px ' + COL[L.c];
-        s1.querySelector('.lb-cta').removeAttribute('disabled');
+        s1.querySelector('.lms-cta').removeAttribute('disabled');
       };
       lg.appendChild(o);
     });
 
     /* 2 — seviye */
-    var s2 = step('<div class="lb-eyebrow">Adım 2 / 3</div><h1 class="lb-h">Seviyen nedir?</h1>' +
-      '<div class="lb-cards lb-lv" id="lbLevels"></div><button class="lb-cta" data-go="3" disabled>Devam</button>');
+    var s2 = step('<div class="lms-eyebrow">Adım 2 / 3</div><h1 class="lms-h">Seviyen nedir?</h1>' +
+      '<div class="lms-cards lms-lv" id="lbLevels"></div><button class="lms-cta" data-go="3" disabled>Devam</button>');
     var lv = s2.querySelector('#lbLevels');
     LEVELS.forEach(function (L) {
-      var o = document.createElement('div'); o.className = 'lb-opt'; o.textContent = L;
+      var o = document.createElement('div'); o.className = 'lms-opt'; o.textContent = L;
       o.onclick = function () {
         chosen.level = L;
-        lv.querySelectorAll('.lb-opt').forEach(function (x) { x.classList.remove('sel'); });
-        o.classList.add('sel'); s2.querySelector('.lb-cta').removeAttribute('disabled');
+        lv.querySelectorAll('.lms-opt').forEach(function (x) { x.classList.remove('sel'); });
+        o.classList.add('sel'); s2.querySelector('.lms-cta').removeAttribute('disabled');
       };
       lv.appendChild(o);
     });
 
     /* 3 — hafif mod */
-    var s3 = step('<div class="lb-eyebrow">Adım 3 / 3</div><h1 class="lb-h">Hafif mod</h1>' +
-      '<p class="lb-p">Kar taneleri, ışıltı ve arka plan süslemelerini kapatır; uygulama daha akıcı ve daha az pil harcar. Sözlük ve quiz aynen çalışır.</p>' +
-      '<div class="lb-cards" id="lbLite"></div>' +
-      '<p class="lb-warn">Telefonun düşük performanslı değilse açman önerilmez.</p>' +
-      '<p class="lb-note">İstediğin zaman Ayarlar › Hafif mod\u2019dan değiştirebilirsin.</p>' +
-      '<button class="lb-cta" data-go="4">Devam</button>');
+    var s3 = step('<div class="lms-eyebrow">Adım 3 / 3</div><h1 class="lms-h">Hafif mod</h1>' +
+      '<p class="lms-p">Kar taneleri, ışıltı ve arka plan süslemelerini kapatır; uygulama daha akıcı ve daha az pil harcar. Sözlük ve quiz aynen çalışır.</p>' +
+      '<div class="lms-cards" id="lbLite"></div>' +
+      '<p class="lms-warn">Telefonun düşük performanslı değilse açman önerilmez.</p>' +
+      '<p class="lms-note">İstediğin zaman Ayarlar › Hafif mod\u2019dan değiştirebilirsin.</p>' +
+      '<button class="lms-cta" data-go="4">Devam</button>');
     var li = s3.querySelector('#lbLite');
     [['off','Kapalı kalsın'], ['on','Evet, aç']].forEach(function (P, idx) {
-      var o = document.createElement('div'); o.className = 'lb-opt' + (idx === 0 ? ' sel' : ''); o.textContent = P[1];
+      var o = document.createElement('div'); o.className = 'lms-opt' + (idx === 0 ? ' sel' : ''); o.textContent = P[1];
       o.style.justifyContent = 'center';
       o.onclick = function () {
         chosen.lite = (P[0] === 'on');
-        li.querySelectorAll('.lb-opt').forEach(function (x) { x.classList.remove('sel'); });
+        li.querySelectorAll('.lms-opt').forEach(function (x) { x.classList.remove('sel'); });
         o.classList.add('sel');
       };
       li.appendChild(o);
     });
 
     /* 4 — hazır */
-    step('<div class="lb-eyebrow">Hazırsın</div><h1 class="lb-h">Öğrenme yolculuğun<br><span class="em">şimdi başlıyor.</span></h1>' +
-      '<p class="lb-p">Seçtiğin dille ilk kartına birazdan bakacaksın. Dili ve seviyeni dilediğinde değiştirebilirsin.</p>' +
-      '<button class="lb-cta" data-go="done">Lumira\u2019ya Başla</button>');
+    step('<div class="lms-eyebrow">Hazırsın</div><h1 class="lms-h">Öğrenme yolculuğun<br><span class="em">şimdi başlıyor.</span></h1>' +
+      '<p class="lms-p">Seçtiğin dille ilk kartına birazdan bakacaksın. Dili ve seviyeni dilediğinde değiştirebilirsin.</p>' +
+      '<button class="lms-cta" data-go="done">Lumira\u2019ya Başla</button>');
 
-    var dots = document.createElement('div'); dots.className = 'lb-steps';
-    for (var i = 0; i < 5; i++) dots.appendChild(document.createElement('i')).className = 'lb-dot';
+    var dots = document.createElement('div'); dots.className = 'lms-steps';
+    for (var i = 0; i < 5; i++) dots.appendChild(document.createElement('i')).className = 'lms-dot';
     panel.appendChild(dots);
 
     function show(n) {
       stepEls.forEach(function (el, k) { el.classList.toggle('on', k === n); });
-      dots.querySelectorAll('.lb-dot').forEach(function (dd, k) { dd.classList.toggle('on', k <= n); });
+      dots.querySelectorAll('.lms-dot').forEach(function (dd, k) { dd.classList.toggle('on', k <= n); });
       if (n === 1) track('onboarding_started');
     }
     panel.addEventListener('click', function (e) {
@@ -294,16 +294,16 @@
     });
 
     document.body.appendChild(ob);
-    seedWords(words, WELCOMES, true);
+    seedWords(words, WELCOMES.concat(GREETINGS), true);
     butterfly(words, 72, 20); if (!reduce) butterfly(words, 16, 60);
-    if (sp) { sp.classList.add('lb-out'); setTimeout(function () { sp.remove(); }, 460); }
+    if (sp) { sp.classList.add('lms-out'); setTimeout(function () { sp.remove(); }, 460); }
     requestAnimationFrame(function () { show(0); });
 
     function finish() {
       applyChoice(chosen.lang || 'de', chosen.level);
       applyLite(chosen.lite);
       track('language_selected'); track('level_selected'); track('onboarding_completed');
-      ob.classList.add('lb-out'); setTimeout(function () { ob.remove(); }, 460);
+      ob.classList.add('lms-out'); setTimeout(function () { ob.remove(); }, 460);
     }
   }
 
@@ -312,8 +312,8 @@
     injectCss();
     var sp = document.getElementById('lumSplash');
     if (!sp) { decideRoute(); return; }
-    var core  = sp.querySelector('.lb-core');
-    var words = sp.querySelector('.lb-words');
+    var core  = sp.querySelector('.lms-core');
+    var words = sp.querySelector('.lms-words');
     if (words) { seedWords(words, GREETINGS); butterfly(words, 68, 24); if (!reduce) butterfly(words, 20, 58); }
     if (core) core.classList.add('in');
 

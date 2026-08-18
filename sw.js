@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.7.7';
+const CACHE_VERSION = 'v1.7.8';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
