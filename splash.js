@@ -8,6 +8,16 @@
   if (window.__lumBootDone) return;               /* iki kez çalışmasın (race koruması) */
   window.__lumBootDone = true;
 
+  /* MUTLAK FAILSAFE: ne olursa olsun (JS hatası, takılma) splash 8sn'de kalkar,
+     böylece uygulama + liderlik asla splash altında gizli kalmaz. */
+  setTimeout(function () {
+    var sp = document.getElementById('lumSplash');
+    if (sp && !document.getElementById('lumOnb')) {   /* onboarding açıksa dokunma */
+      sp.classList.add('lms-out');
+      setTimeout(function () { if (sp && sp.parentNode) sp.remove(); }, 500);
+    }
+  }, 8000);
+
   var ONBOARD_KEY = 'lumira_onboarded_v1';
   var MIN_SPLASH  = 2500;
   var MAX_SPLASH  = 4500;                          /* üst sınır; asla sonsuz değil */
