@@ -171,6 +171,9 @@
       ref.transaction(function(cur){
         var remoteXp = (cur && typeof cur.xp === 'number') ? cur.xp : 0;
         if(remoteXp > (meta.xp||0)) meta.xp = remoteXp;
+        /* Sunucudaki özel rozetleri (admin verdiği ya da başka cihazda kazanılan)
+           KORU — yoksa bu cihazın kaydı onları silebilir. */
+        if(cur && cur.awards){ meta.awards = Object.assign({}, cur.awards, meta.awards||{}); }
         return meta;
       }, function(){ persistLocalMirror(); }, false);
     }
@@ -205,6 +208,21 @@
         meta.badges[t] = true;
         sessionStats.newBadges.push(t);
         showToast('Rozet kazandın: '+t+' kelime öğrenildi!');
+      }
+    });
+    checkStreakAwards();
+  }
+  /* Seri (streak) kilometre taşı başarımları → meta.awards (özel rozetlerle aynı yer) */
+  function checkStreakAwards(){
+    const s = meta.streak||0;
+    const STREAK_AWARDS = [[3,'🔥','3 Gün Seri'],[7,'⚡','7 Gün Seri'],[14,'🌙','14 Gün Seri'],
+                           [30,'🏅','30 Gün Seri'],[60,'💎','60 Gün Seri'],[100,'👑','100 Gün Seri']];
+    meta.awards = meta.awards || {};
+    STREAK_AWARDS.forEach(a=>{
+      const key = 'streak'+a[0];
+      if(s>=a[0] && !meta.awards[key]){
+        meta.awards[key] = { e:a[1], n:a[2], ts:Date.now() };
+        showToast('Başarım açıldı: '+a[2]+' 🎉');
       }
     });
   }
@@ -378,6 +396,10 @@
       .pm-root .pm-stat-num{font-size:19px;font-weight:800;color:#eef4ff;font-family:Georgia,serif;}
       .pm-root .pm-stat-label{font-size:10.5px;color:#8291b3;margin-top:2px;}
       .pm-root .pm-badges{display:flex;gap:8px;flex-wrap:wrap;}
+      .pm-root .pm-awards{display:flex;gap:8px;flex-wrap:wrap;}
+      .pm-root .pm-award{display:flex;align-items:center;gap:7px;padding:7px 12px 7px 9px;border-radius:999px;background:rgba(255,210,59,0.10);border:1px solid rgba(255,210,59,0.35);}
+      .pm-root .pm-award-e{font-size:17px;line-height:1;}
+      .pm-root .pm-award-n{font-size:12.5px;font-weight:700;color:#ffe9a8;white-space:nowrap;}
       .pm-root .pm-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(79,232,255,0.12);border:1px solid var(--pm-border);}
       .pm-root .pm-badge.locked{opacity:.25;filter:grayscale(1);}
       .pm-root .pm-task{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(79,232,255,0.12);}
@@ -385,6 +407,10 @@
       .pm-root .pm-task-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
       .pm-root .pm-task-body{flex:1;min-width:0;}
       .pm-root .pm-task-label{font-size:12.5px;color:#eef4ff;}
+      .pm-root .pm-task-ring{position:relative;width:40px;height:40px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(#4fe8ff calc(var(--pct,0)*1%), rgba(255,255,255,0.10) 0);}
+      .pm-root .pm-task-ring.done{background:conic-gradient(#3dffa0 100%, rgba(255,255,255,0.10) 0);}
+      .pm-root .pm-task-ring::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#0e131c;}
+      .pm-root .pm-task-ring span{position:relative;z-index:1;font-size:9.5px;font-weight:800;color:#eef4ff;}
       .pm-root .pm-task-sub{font-size:10.5px;color:#8291b3;margin-top:2px;}
       .pm-root .pm-task.done .pm-task-label{color:var(--pm-good);text-decoration:line-through;opacity:.8;}
       .pm-root .pm-due-banner{
@@ -523,11 +549,11 @@
       ? ('Tamamlandı · +'+(due.length*2)+' XP')
       : (due.length>0 ? (due.length+' kelime bekliyor · kelime başına +2 XP') : '[Geçen gün öğrenilen kelime yok]');
     const taskDefs = [
-      { icon:'💵', label:'Bugün 10 yeni kelime öğren', sub:Math.min(today,10)+'/10 · +'+TASK_XP.t1+' XP', done:t.t1 },
-      { icon:'💰', label:'Bugün 50 yeni kelime öğren', sub:Math.min(today,50)+'/50 · +'+TASK_XP.t2+' XP', done:t.t2 },
-      { icon:'🪎', label:'Bugün 100 yeni kelime öğren', sub:Math.min(today,100)+'/100 · +'+TASK_XP.t3+' XP', done:t.t3 },
-      { icon:'📋', label:'Günlük tekrarı tamamla', sub: t4Sub, done:t.t4 },
-      { icon:'⏱️', label:'Bu oturumda 60 dakika çalış', sub:'+'+TASK_XP.t5+' XP', done:t.t5 },
+      { icon:'📋', label:'Günlük tekrarı tamamla', sub: t4Sub, done:t.t4, pct: t.t4?100:0 },
+      { icon:'💵', label:'Bugün 10 yeni kelime öğren', sub:Math.min(today,10)+'/10 · +'+TASK_XP.t1+' XP', done:t.t1, pct:Math.min(100,Math.round(today/10*100)) },
+      { icon:'💰', label:'Bugün 50 yeni kelime öğren', sub:Math.min(today,50)+'/50 · +'+TASK_XP.t2+' XP', done:t.t2, pct:Math.min(100,Math.round(today/50*100)) },
+      { icon:'🪎', label:'Bugün 100 yeni kelime öğren', sub:Math.min(today,100)+'/100 · +'+TASK_XP.t3+' XP', done:t.t3, pct:Math.min(100,Math.round(today/100*100)) },
+      { icon:'⏱️', label:'Bu oturumda 60 dakika çalış', sub:'+'+TASK_XP.t5+' XP', done:t.t5, pct:t.t5?100:0 },
     ];
 
     let html = '<div class="pm-root">';
@@ -572,11 +598,27 @@
 
     html += '<div class="pm-card"><h4>Bugünkü Görevler</h4>';
     taskDefs.forEach(td=>{
-      html += '<div class="pm-task '+(td.done?'done':'')+'"><div class="pm-task-icon">'+(td.done?'✅':td.icon)+'</div><div class="pm-task-body"><div class="pm-task-label">'+td.label+'</div><div class="pm-task-sub">'+td.sub+'</div></div></div>';
+      const rp = Math.max(0, Math.min(100, td.pct||0));
+      html += '<div class="pm-task '+(td.done?'done':'')+'"><div class="pm-task-icon">'+(td.done?'✅':td.icon)+'</div><div class="pm-task-body"><div class="pm-task-label">'+td.label+'</div><div class="pm-task-sub">'+td.sub+'</div></div><div class="pm-task-ring'+(td.done?' done':'')+'" style="--pct:'+rp+'"><span>'+rp+'%</span></div></div>';
     });
     html += '</div>';
 
     html += '<div class="pm-card"><h4>Rozetler</h4><div class="pm-badges">'+badgeRow+'</div></div>';
+
+    /* Başarımlar & Özel Rozetler (seri kilometre taşları + admin verdiği) */
+    const awards = meta.awards || {};
+    const awardKeys = Object.keys(awards);
+    if(awardKeys.length){
+      awardKeys.sort((x,y)=>(awards[x].ts||0)-(awards[y].ts||0));
+      let awRow = '';
+      awardKeys.forEach(k=>{
+        const a = awards[k] || {};
+        awRow += '<div class="pm-award" title="'+String(a.n||'').replace(/"/g,'')+'">'+
+                 '<span class="pm-award-e">'+(a.e||'🏅')+'</span>'+
+                 '<span class="pm-award-n">'+String(a.n||'').replace(/</g,'')+'</span></div>';
+      });
+      html += '<div class="pm-card"><h4>Başarımlar</h4><div class="pm-awards">'+awRow+'</div></div>';
+    }
 
     html += '<button class="pm-btn primary" id="pmStartBtn">🚀 Çalışmaya Başla</button>';
     html += '<button class="pm-btn small" id="pmKnownBtn">✅ Öğrendiğim Kelimeler ('+totalKnownLang+')</button>';

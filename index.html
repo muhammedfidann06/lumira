@@ -347,16 +347,28 @@
       filter:drop-shadow(0 0 4px rgba(155,123,255,0.35));
     }
   }
+  .speak-controls{display:flex;justify-content:center;gap:26px;margin-top:10px;}
+  .speak-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .speak-lbl{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--muted);}
   .speak-icon-btn{
-    width:30px;height:30px;border-radius:999px;font-size:14px;line-height:1;
-    background:rgba(79,232,255,0.14);border:1px solid rgba(79,232,255,0.3);
+    width:48px;height:48px;border-radius:999px;font-size:21px;line-height:1;
+    background:rgba(155,123,255,0.16);border:1px solid rgba(155,123,255,0.4);
     display:flex;align-items:center;justify-content:center;cursor:pointer;
     -webkit-tap-highlight-color:transparent;
+    box-shadow:0 0 18px rgba(155,123,255,0.28), inset 0 0 12px rgba(155,123,255,0.12);
     transition:transform .15s ease, box-shadow .15s ease;
   }
-  .speak-icon-btn:hover{transform:translateY(-1px);box-shadow:0 0 12px rgba(79,232,255,0.35);}
-  .speak-icon-btn:active{opacity:.6;transform:scale(.92);}
-  #turtleBtn{background:rgba(155,123,255,0.14);border-color:rgba(155,123,255,0.3);}
+  #rabbitBtn ~ .speak-lbl{color:#c7b8ff;}
+  #turtleBtn ~ .speak-lbl{color:#8ff2c2;}
+  .speak-icon-btn:hover{transform:translateY(-1px);}
+  #rabbitBtn:hover{box-shadow:0 0 26px rgba(155,123,255,0.5), inset 0 0 12px rgba(155,123,255,0.15);}
+  .speak-icon-btn:active{opacity:.7;transform:scale(.92);}
+  #turtleBtn{background:rgba(61,255,160,0.14);border-color:rgba(61,255,160,0.36);
+    box-shadow:0 0 18px rgba(61,255,160,0.24), inset 0 0 12px rgba(61,255,160,0.10);}
+  #turtleBtn:hover{box-shadow:0 0 26px rgba(61,255,160,0.45), inset 0 0 12px rgba(61,255,160,0.14);}
+  .card-bg-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:185px;line-height:1;opacity:0.06;pointer-events:none;z-index:0;user-select:none;-webkit-user-select:none;}
+  .face-front .tag,.face-front .word,.face-front .pos,.face-front .example,.face-front .speak-controls,.face-front .speak-caption,
+  .face-back .tag,.face-back .word,.face-back .pos,.face-back .example{position:relative;z-index:1;}
   .word{font-size:29px;font-weight:700;line-height:1.25;font-family:Georgia,'Iowan Old Style',serif;}
   .word[dir="rtl"]{font-family:'Segoe UI',Tahoma,sans-serif;}
   .pos{font-size:12px;color:var(--muted);margin-top:8px;}
@@ -647,8 +659,8 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.12">
-<link rel="stylesheet" href="pwa.css?v=1.7.12">
+<link rel="stylesheet" href="theme.css?v=1.7.14">
+<link rel="stylesheet" href="pwa.css?v=1.7.14">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -818,18 +830,26 @@
     <div class="stage">
       <div class="card" id="card">
         <div class="face face-front">
+          <div class="card-bg-emoji" id="frontBgEmoji" aria-hidden="true"></div>
           <div class="level-badge" id="levelBadgeFront">A1</div>
           <div class="tag" id="tagFront">Deutsch</div>
           <div class="word" id="frontWord">Hallo</div>
           <div class="pos" id="frontPos">ünlem</div>
           <div class="example" id="frontExample"></div>
           <div class="speak-controls">
-            <button type="button" class="speak-icon-btn" id="rabbitBtn" title="Hızlı dinle">🐰</button>
-            <button type="button" class="speak-icon-btn" id="turtleBtn" title="Yavaş dinle">🐢</button>
+            <div class="speak-item">
+              <button type="button" class="speak-icon-btn" id="rabbitBtn" title="Normal hızda dinle">🔊</button>
+              <span class="speak-lbl">Normal</span>
+            </div>
+            <div class="speak-item">
+              <button type="button" class="speak-icon-btn" id="turtleBtn" title="Yavaş dinle">🐢</button>
+              <span class="speak-lbl">Yavaş</span>
+            </div>
           </div>
           <div class="speak-caption">Dinlemek İçin Tıkla</div>
         </div>
         <div class="face face-back">
+          <div class="card-bg-emoji" id="backBgEmoji" aria-hidden="true"></div>
           <div class="level-badge" id="levelBadgeBack">A1</div>
           <div class="tag">Türkçe</div>
           <div class="word" id="trWord">Merhaba</div>
@@ -1117,7 +1137,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.12"></script>
+<script src="leaderboard.js?v=1.7.14"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -1667,6 +1687,19 @@ function applyFilter(){
 }
 
 /* ======================= CARD RENDER ======================= */
+var CAT_EMOJI = {
+  'Aile':'👨‍👩‍👧','Alışveriş':'🛍️','Aylar':'📅','Bahçe':'🌷','Bayramlar':'🎉','Bağlaçlar':'🔗',
+  'Deyimler':'💬','Doğa':'🌿','Duygular':'😊','Duygu':'😊','Edatlar':'🔤','Ev Eşyaları':'🪑','Ev İşleri':'🧹',
+  'Ev':'🏠','Eylemler':'🏃','Fiiller':'🏃','Eğitim':'📚','Genel':'🗂️','Giysi':'👕','Günler':'📆','Hava Durumu':'🌤️',
+  'Hayvanlar':'🐾','Hobiler':'🎨','Kişilik':'🧑','Malzeme':'🧱','Meslekler':'👔','Meslek':'👔','Mevsimler':'🍂',
+  'Meyve ve Sebze':'🍎','Mutfak':'🍳','Okul':'🏫','Renkler':'🎨','Renk':'🎨','Sanat':'🎭','Sayılar':'🔢',
+  'Sağlık':'🏥','Selamlaşma':'👋','Sinema ve Televizyon':'🎬','Sorular':'❓','Spor':'⚽','Sıfatlar':'🏷️','Sıfat':'🏷️',
+  'Teknoloji':'💻','Toplum':'🏙️','Ulaşım':'🚗','Ekonomi':'💰','Bilim':'🔬','Seyahat':'✈️','Yemek':'🍽️',
+  'Gıda':'🍽️','Yiyecek':'🍽️','İçecek':'🥤','İş Dünyası':'💼','İş':'💼','Müzik':'🎵','Vücut':'💪','Zaman':'⏰',
+  'Şehir':'🏙️','Ülkeler':'🌍','Coğrafya':'🗺️','Tarih':'📜','Din':'🕌','Hukuk':'⚖️','Siyaset':'🏛️',
+  'Matematik':'➗','Gramer':'🔤','Zamirler':'🔤','Zarflar':'🔤','İletişim':'📞','Para':'💰','Bankacılık':'🏦',
+  'İnternet':'🌐','Oyun':'🎮','Kitaplar':'📕','Yön':'🧭','Ölçü':'📏','Araçlar':'🔧','Bitkiler':'🌱'
+};
 function renderCard(){
   if(deck.length===0){
      document.getElementById('frontWord').textContent = "Kelime Yok";
@@ -1697,6 +1730,10 @@ function renderCard(){
   document.getElementById('cardBar').style.width = `${((idx+1)/deck.length)*100}%`;
   document.getElementById('levelBadgeFront').textContent = v.level;
   document.getElementById('levelBadgeBack').textContent = v.level;
+  /* kategoriye uygun soluk arka plan emojisi (her iki yüz) */
+  var _catE = (CAT_EMOJI[v.cat] || '📖');
+  var _fbg = document.getElementById('frontBgEmoji'); if(_fbg) _fbg.textContent = _catE;
+  var _bbg = document.getElementById('backBgEmoji'); if(_bbg) _bbg.textContent = _catE;
   document.getElementById('card').classList.remove('flipped');
   flipped = false;
 }
@@ -1957,11 +1994,15 @@ if($('tabCards')) $('tabCards').onclick = () => {
   deactivateAllTabs();
   toggleActive('tabCards', true);
   setDisplay('cardsView', 'block');
+  setDisplay('langBox', '');       /* dil butonları Kartlar'da görünür */
+  setDisplay('langPair', '');
 };
 if($('tabQuiz')) $('tabQuiz').onclick = () => {
   deactivateAllTabs();
   toggleActive('tabQuiz', true);
   setDisplay('quizView', 'block');
+  setDisplay('langBox', '');       /* dil butonları Quiz'de görünür */
+  setDisplay('langPair', '');
   buildQuizDeck();
 };
 if($('tabPersonal')) $('tabPersonal').onclick = () => {
@@ -1970,6 +2011,8 @@ if($('tabPersonal')) $('tabPersonal').onclick = () => {
   setDisplay('personalView', 'block');
   setDisplay('levelBox', 'none');
   setDisplay('chips', 'none');
+  setDisplay('langBox', 'none');    /* Kişisel ayrı sayfa: dil butonları gizli */
+  setDisplay('langPair', 'none');
   if(window.PM_open) window.PM_open();
 };
 
@@ -2162,7 +2205,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.12"></script>
+<script src="progress.js?v=1.7.14"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2173,22 +2216,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.12"></script>
-<script defer src="theme.js?v=1.7.12"></script>
+<script defer src="voice.js?v=1.7.14"></script>
+<script defer src="theme.js?v=1.7.14"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.12"></script>
+<script defer src="pwa.js?v=1.7.14"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.12"></script>
+<script defer src="support-badges.js?v=1.7.14"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.12"></script>
-<script defer src="analytics.js?v=1.7.12"></script>
+<script defer src="splash.js?v=1.7.14"></script>
+<script defer src="analytics.js?v=1.7.14"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.12"></script>
+<script defer src="admin.js?v=1.7.14"></script>
 </body>
 </html>

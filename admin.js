@@ -42,6 +42,7 @@
       var rows = [
         ['📊', 'Kullanım istatistikleri', 'Günlük kullanıcı, olaylar, quiz hunisi', openStats],
         ['⭐', 'XP gönder',               'Bir kullanıcıya XP ekle',                openXp],
+        ['🏅', 'Rozet ver',              'Bir kullanıcıya özel rozet ver',         openGiveBadge],
         ['🚫', 'Kullanıcı yasakla',       'Hesabı kapat, ilerlemesini kaldır',      openBan],
         ['✅', 'Yasağı kaldır',           'Hesabı aç, ilerlemesini geri getir',     openUnban]
       ];
@@ -305,6 +306,65 @@
           send.disabled = false; send.textContent = 'XP gönder';
           toast('Gönderilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
         });
+      };
+      b.appendChild(send);
+    });
+  }
+
+  /* ============================================ 2.5) ROZET VER (özel) */
+  function openGiveBadge() {
+    if (!sheet()) return;
+    window.PWA.sheet('🏅 Rozet Ver', 'Seçtiğin kişiye özel bir rozet ver. Profilinde görünür.', function (b) {
+      var d = db();
+      if (!d) { b.innerHTML = '<div class="pwa-empty">Bağlantı yok.</div>'; return; }
+
+      var BADGES = [
+        ['sampiyon', '🏆', 'Şampiyon'], ['kurucu', '👑', 'Kurucu'], ['yildiz', '⭐', 'Yıldız'],
+        ['elmas', '💎', 'Elmas'], ['efsane', '🌟', 'Efsane'], ['nisanci', '🎯', 'Nişancı'],
+        ['ates', '🔥', 'Ateş'], ['oncu', '🚀', 'Öncü'], ['bilge', '🧠', 'Bilge'],
+        ['kitapkurdu', '📚', 'Kitap Kurdu'], ['sevgi', '❤️', 'Sevgi'], ['birinci', '🥇', 'Birinci'],
+        /* ücretli destek / teşekkür rozetleri */
+        ['dtesekkur', '👍🏻', 'Teşekkür'], ['dkahve', '☕️', 'Kahve'],
+        ['ddestekci', '❤️', 'Destekçi'], ['ddost', '💛', 'Dost']
+      ];
+      var chosen = null;
+
+      b.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:2px 2px 8px">Rozet seç</p>');
+      var grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px';
+      BADGES.forEach(function (bd) {
+        var cell = document.createElement('button');
+        cell.type = 'button';
+        cell.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);color:#e8eef7;font-size:11px;cursor:pointer';
+        cell.innerHTML = '<span style="font-size:22px;line-height:1">' + bd[1] + '</span>' + bd[2];
+        cell.onclick = function () {
+          chosen = bd;
+          Array.prototype.forEach.call(grid.children, function (c) {
+            c.style.borderColor = 'rgba(255,255,255,.12)'; c.style.background = 'rgba(255,255,255,.03)';
+          });
+          cell.style.borderColor = 'rgba(255,210,59,.7)'; cell.style.background = 'rgba(255,210,59,.12)';
+        };
+        grid.appendChild(cell);
+      });
+      b.appendChild(grid);
+
+      var picker = userPicker(b, function () {});
+
+      var send = mkBtn('Rozet ver');
+      send.onclick = function () {
+        var t = picker.get();
+        if (!t) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
+        if (!chosen) { toast('Önce bir rozet seç', { kind: 'bad' }); return; }
+        send.disabled = true; send.textContent = 'Veriliyor…';
+        d.ref('progress/' + t.uid + '/meta/awards/' + chosen[0])
+          .set({ e: chosen[1], n: chosen[2], ts: Date.now() })
+          .then(function () {
+            send.disabled = false; send.textContent = 'Rozet ver';
+            toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' rozeti verildi', { kind: 'good', duration: 6000 });
+          }).catch(function (e) {
+            send.disabled = false; send.textContent = 'Rozet ver';
+            toast('Verilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+          });
       };
       b.appendChild(send);
     });
