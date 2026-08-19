@@ -1235,9 +1235,16 @@ function fbUser() {
    /admins/<yeni-uid> = true düğümünü ekle — kod değişmez. */
 var _isAdmin = false;
 
+/* Yönetici arayüzünü ANINDA ve güvenilir göstermek için sabit UID (1.7.4 gibi).
+   Gerçek veritabanı güvenliği yine Firebase kurallarındaki /admins düğümüyle
+   sağlanır; bu liste yalnızca arayüzün (admin panelinin) görünmesi içindir. */
+var ADMIN_UIDS = ['49AyoEDRltPQ8NSzPU9y2fDtWDI2'];
+
 function refreshAdminFlag(cb) {
   var u = fbUser();
   var d = (typeof fbDb === 'function') ? fbDb() : null;
+  /* sabit listedeyse hemen yönetici say, DB'yi bekleme */
+  if (u && ADMIN_UIDS.indexOf(u.uid) !== -1) { _isAdmin = true; if (cb) cb(true); return; }
   if (!u || !d) { _isAdmin = false; if (cb) cb(false); return; }
   d.ref('admins/' + u.uid).once('value').then(function (s) {
     _isAdmin = (s.val() === true);
@@ -1245,7 +1252,11 @@ function refreshAdminFlag(cb) {
   }).catch(function () { _isAdmin = false; if (cb) cb(false); });
 }
 
-function isAdmin() { return _isAdmin === true; }
+function isAdmin() {
+  if (_isAdmin === true) return true;
+  var u = fbUser();
+  return !!(u && ADMIN_UIDS.indexOf(u.uid) !== -1);
+}
 
 /* Firebase hazır olunca oturum değişimlerini dinle, yönetici bayrağını tazele. */
 (function attachAdminWatch() {
@@ -2068,7 +2079,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.7.11',
+  version: 'pwa.js 1.7.12',
   isStandalone: function () { return isStandalone; }
 };
 

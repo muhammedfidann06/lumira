@@ -2,9 +2,6 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<!-- GÜVENLİK: CSP meta (sunucu başlığı yoksa yedek). Netlify başlığı asıldır.
-     'unsafe-inline' gömülü <style>/<script> yüzünden şimdilik gerekli. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://*.googleapis.com https://identitytoolkit.googleapis.com wss://*.firebaseio.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
@@ -539,7 +536,7 @@
   }
   .lb-row.me{background:rgba(255,210,59,0.14);border-color:rgba(255,210,59,0.4);}
   .lb-rank{width:20px;flex-shrink:0;text-align:center;font-weight:800;font-size:12px;color:var(--muted);}
-  .lb-name{flex:1 1 0%;min-width:0;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;word-break:normal;overflow-wrap:normal;text-align:left;}
+  .lb-name{flex:1 1 0%;min-width:0;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap !important;word-break:keep-all !important;overflow-wrap:normal !important;text-align:left;}
   .lb-time{font-size:11px;color:var(--cyan-soft);font-weight:700;white-space:nowrap;}
   .lb-empty{text-align:center;color:var(--muted);font-size:10.5px;padding:10px 4px;line-height:1.4;}
 
@@ -650,8 +647,8 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.11">
-<link rel="stylesheet" href="pwa.css?v=1.7.11">
+<link rel="stylesheet" href="theme.css?v=1.7.12">
+<link rel="stylesheet" href="pwa.css?v=1.7.12">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1120,7 +1117,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.11"></script>
+<script src="leaderboard.js?v=1.7.12"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2165,7 +2162,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.11"></script>
+<script src="progress.js?v=1.7.12"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2176,22 +2173,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.11"></script>
-<script defer src="theme.js?v=1.7.11"></script>
+<script defer src="voice.js?v=1.7.12"></script>
+<script defer src="theme.js?v=1.7.12"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.11"></script>
+<script defer src="pwa.js?v=1.7.12"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.11"></script>
+<script defer src="support-badges.js?v=1.7.12"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.11"></script>
-<script defer src="analytics.js?v=1.7.11"></script>
+<script defer src="splash.js?v=1.7.12"></script>
+<script defer src="analytics.js?v=1.7.12"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.11"></script>
+<script defer src="admin.js?v=1.7.12"></script>
 </body>
 </html>
