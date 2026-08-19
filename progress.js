@@ -12,6 +12,7 @@
 (function(){
 
   const BADGE_THRESHOLDS = [50, 100, 250, 500, 1000];
+  const PM_FLAGS = { de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
   const DEFAULT_DAILY_GOAL = 100;
   const BATCH_SIZE = 10;
   const RETRY_SESSION_GAP = 1; // 1: hemen bir sonraki oturumu atlar, ondan sonraki oturumda tekrar çıkar
@@ -369,6 +370,25 @@
       .pm-root .pm-pill{padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:700;background:rgba(79,232,255,0.1);border:1px solid var(--pm-border);color:#eef4ff;}
       .pm-root .pm-pill.flame{background:rgba(255,95,184,0.14);border-color:rgba(255,95,184,0.4);}
       .pm-root .pm-mini-select{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
+      .pm-root .pm-lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
+      .pm-root .pm-lang-card{display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 6px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(79,232,255,0.18);cursor:pointer;transition:border-color .15s,background .15s,transform .1s;}
+      .pm-root .pm-lang-card:active{transform:scale(.96);}
+      .pm-root .pm-lang-card.active{border-color:#4fe8ff;background:rgba(79,232,255,0.10);}
+      .pm-root .pm-lang-card .fl{font-size:22px;line-height:1;}
+      .pm-root .pm-lang-card .nm{font-size:11.5px;font-weight:700;color:#8291b3;}
+      .pm-root .pm-lang-card.active .nm{color:#eef4ff;}
+      .pm-root .pm-level-seg{display:flex;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(79,232,255,0.18);border-radius:14px;padding:5px;margin-top:10px;}
+      .pm-root .pm-level-seg .lvl{flex:1;text-align:center;padding:8px 0;border-radius:10px;font-size:12.5px;font-weight:700;letter-spacing:.04em;color:#8291b3;cursor:pointer;transition:all .2s;}
+      .pm-root .pm-level-seg .lvl:active{transform:scale(.94);}
+      .pm-root .pm-level-seg .lvl.active{background:rgba(79,232,255,0.16);color:#eef4ff;}
+      .pm-root .pm-sup-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+      .pm-root .pm-sup-badge{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);}
+      .pm-root .pm-sup-badge .e{font-size:26px;line-height:1;filter:grayscale(1);opacity:.32;transition:filter .2s,opacity .2s;}
+      .pm-root .pm-sup-badge.owned{border-color:rgba(255,210,59,0.35);background:rgba(255,210,59,0.08);}
+      .pm-root .pm-sup-badge.owned .e{filter:none;opacity:1;}
+      .pm-root .pm-sup-badge .lock{position:absolute;top:7px;right:8px;font-size:13px;opacity:.75;}
+      .pm-root .pm-sup-badge .nm{font-size:10.5px;font-weight:700;color:#8291b3;text-align:center;}
+      .pm-root .pm-sup-badge.owned .nm{color:#ffe9a8;}
       .pm-root .pm-chip{padding:6px 11px;border-radius:10px;font-size:11.5px;font-weight:700;color:#8291b3;background:rgba(255,255,255,0.03);border:1px solid rgba(79,232,255,0.18);cursor:pointer;transition:transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;}
       .pm-root .pm-chip:hover{border-color:rgba(79,232,255,0.4);color:#eef4ff;}
       .pm-root .pm-chip:active{transform:scale(.94);}
@@ -556,20 +576,21 @@
       { icon:'⏱️', label:'Bu oturumda 60 dakika çalış', sub:'+'+TASK_XP.t5+' XP', done:t.t5, pct:t.t5?100:0 },
     ];
 
+    try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
     let html = '<div class="pm-root">';
     html += '<div class="pm-head">';
     html += '<div class="pm-eyebrow">Kişisel Öğrenme Alanı</div>';
     html += '<div class="pm-title">👤 '+escapeHtml(currentName)+'\'e Özel</div>';
     html += '<div class="pm-sub">'+L.native+' öğrenimi - ilerlemen tüm cihazlarında senkron</div>';
-    html += '<div class="pm-mini-select" id="pmLangSelect">';
+    html += '<div class="pm-lang-grid" id="pmLangSelect">';
     Object.keys(LANGS).forEach(code=>{
-      html += '<div class="pm-chip '+(code===activeLang?'active':'')+'" data-lang="'+code+'">'+LANGS[code].label+'</div>';
+      html += '<div class="pm-lang-card '+(code===activeLang?'active':'')+'" data-lang="'+code+'"><span class="fl">'+(PM_FLAGS[code]||'🌐')+'</span><span class="nm">'+LANGS[code].label+'</span></div>';
     });
     html += '</div>';
-    html += '<div class="pm-mini-select" id="pmLevelSelect">';
-    html += '<div class="pm-chip '+(activeLevel==='TÜMÜ'?'active':'')+'" data-level="TÜMÜ">TÜMÜ</div>';
+    html += '<div class="pm-level-seg" id="pmLevelSelect">';
+    html += '<div class="lvl '+(activeLevel==='TÜMÜ'?'active':'')+'" data-level="TÜMÜ">TÜMÜ</div>';
     L.levels.forEach(lv=>{
-      html += '<div class="pm-chip '+(lv===activeLevel?'active':'')+'" data-level="'+lv+'">'+lv+'</div>';
+      html += '<div class="lvl '+(lv===activeLevel?'active':'')+'" data-level="'+lv+'">'+lv+'</div>';
     });
     html += '</div>';
     html += '<div class="pm-pill-row"><div class="pm-pill flame">🔥 '+(meta.streak||0)+' günlük seri</div><div class="pm-pill">⭐ Seviye '+(Math.floor((meta.xp||0)/200)+1)+' - '+(meta.xp||0)+' XP</div></div>';
@@ -603,7 +624,21 @@
     });
     html += '</div>';
 
-    html += '<div class="pm-card"><h4>Rozetler</h4><div class="pm-badges">'+badgeRow+'</div></div>';
+    /* Rozetler = ücretli destek rozetleri (kilitli/açık). Sahip olunca kilit kalkar. */
+    var _tiers = (window.LUMIRA_BADGES && window.LUMIRA_BADGES.tiers) || [];
+    if(_tiers.length){
+      var supRow = '';
+      _tiers.forEach(function(t){
+        var owned = !!(window.LUMIRA_BADGES && window.LUMIRA_BADGES.has(t.badge));
+        supRow += '<div class="pm-sup-badge'+(owned?' owned':'')+'">'+
+                  '<span class="e">'+t.badge+'</span>'+
+                  (owned?'':'<span class="lock">🔒</span>')+
+                  '<span class="nm">'+String(t.name||'').replace(/</g,'')+'</span></div>';
+      });
+      html += '<div class="pm-card"><h4>Rozetler</h4><div class="pm-sup-grid">'+supRow+'</div></div>';
+    }
+    /* Kelime kilometre taşı rozetleri (öğrenilen kelime sayısı) */
+    html += '<div class="pm-card"><h4>Kelime Rozetleri</h4><div class="pm-badges">'+badgeRow+'</div></div>';
 
     /* Başarımlar & Özel Rozetler (seri kilometre taşları + admin verdiği) */
     const awards = meta.awards || {};
@@ -627,7 +662,7 @@
 
     root.innerHTML = html;
 
-    document.querySelectorAll('#pmLangSelect .pm-chip').forEach(el=>{
+    document.querySelectorAll('#pmLangSelect .pm-lang-card').forEach(el=>{
       el.onclick = () => {
         activeLang = el.dataset.lang;
         activeLevel = 'TÜMÜ';
@@ -638,7 +673,7 @@
         renderHome();
       };
     });
-    document.querySelectorAll('#pmLevelSelect .pm-chip').forEach(el=>{
+    document.querySelectorAll('#pmLevelSelect .lvl').forEach(el=>{
       el.onclick = () => {
         activeLevel = el.dataset.level;
         if(typeof rebuildLevelBox==='function') rebuildLevelBox();
@@ -907,6 +942,7 @@
 
   function renderSessionSummary(){
     const s = sessionStats;
+    try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
     let html = '<div class="pm-root">';
     html += '<div class="pm-head"><div class="pm-eyebrow">Oturum Tamamlandı</div><div class="pm-title">🎉 Harika İş!</div><div class="pm-sub">'+s.newKnown+' yeni kelime öğrendin - +'+s.xp+' XP</div></div>';
     html += '<div class="pm-card"><h4>Sonuç</h4><div class="pm-stat-grid"><div class="pm-stat-box"><div class="pm-stat-num">'+s.newKnown+'</div><div class="pm-stat-label">Yeni öğrenilen</div></div><div class="pm-stat-box"><div class="pm-stat-num">'+s.wrong+'</div><div class="pm-stat-label">Tekrar gerekiyor</div></div></div></div>';

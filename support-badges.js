@@ -22,7 +22,7 @@
     { amount: 10,  badge: '❤️', name: 'Destekçi',  xp: 100  },
     { amount: 25,  badge: '💛', name: 'Dost',      xp: 250  },
     { amount: 50,  badge: '⭐️', name: 'Yıldız',    xp: 500  },
-    { amount: 100, badge: '👑', name: 'Kurucu',    xp: 1000 }
+    { amount: 100, badge: '👑', name: 'Kral',    xp: 1000 }
   ];
   /* PDF için gereken rozetler */
   var PDF_BADGES = ['💛', '⭐️', '👑'];
