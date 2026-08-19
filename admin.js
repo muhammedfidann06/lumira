@@ -42,7 +42,8 @@
       var rows = [
         ['📊', 'Kullanım istatistikleri', 'Günlük kullanıcı, olaylar, quiz hunisi', openStats],
         ['⭐', 'XP gönder',               'Bir kullanıcıya XP ekle',                openXp],
-        ['🏅', 'Rozet ver',              'Bir kullanıcıya özel rozet ver',         openGiveBadge],
+        ['🏅', 'Başarım rozeti ver',      'Özel başarım rozeti (Başarımlar)',       openGiveBadge],
+        ['💛', 'Destek rozeti ver',       'Satın alma gibi açar (PDF vb. + XP)',    openGiveSupport],
         ['🚫', 'Kullanıcı yasakla',       'Hesabı kapat, ilerlemesini kaldır',      openBan],
         ['✅', 'Yasağı kaldır',           'Hesabı aç, ilerlemesini geri getir',     openUnban]
       ];
@@ -311,21 +312,18 @@
     });
   }
 
-  /* ============================================ 2.5) ROZET VER (özel) */
+  /* ============================================ 2.5) BAŞARIM ROZETİ VER */
   function openGiveBadge() {
     if (!sheet()) return;
-    window.PWA.sheet('🏅 Rozet Ver', 'Seçtiğin kişiye özel bir rozet ver. Profilinde görünür.', function (b) {
+    window.PWA.sheet('🏅 Başarım Rozeti Ver', 'Özel başarım rozeti. Kişinin "Başarımlar" bölümünde görünür.', function (b) {
       var d = db();
       if (!d) { b.innerHTML = '<div class="pwa-empty">Bağlantı yok.</div>'; return; }
 
       var BADGES = [
-        ['sampiyon', '🏆', 'Şampiyon'], ['kurucu', '👑', 'Kurucu'], ['yildiz', '⭐', 'Yıldız'],
-        ['elmas', '💎', 'Elmas'], ['efsane', '🌟', 'Efsane'], ['nisanci', '🎯', 'Nişancı'],
-        ['ates', '🔥', 'Ateş'], ['oncu', '🚀', 'Öncü'], ['bilge', '🧠', 'Bilge'],
-        ['kitapkurdu', '📚', 'Kitap Kurdu'], ['sevgi', '❤️', 'Sevgi'], ['birinci', '🥇', 'Birinci'],
-        /* ücretli destek / teşekkür rozetleri */
-        ['dtesekkur', '👍🏻', 'Teşekkür'], ['dkahve', '☕️', 'Kahve'],
-        ['ddestekci', '❤️', 'Destekçi'], ['ddost', '💛', 'Dost']
+        ['sampiyon', '🏆', 'Şampiyon'], ['elmas', '💎', 'Elmas'], ['efsane', '🌟', 'Efsane'],
+        ['nisanci', '🎯', 'Nişancı'], ['ates', '🔥', 'Ateş'], ['oncu', '🚀', 'Öncü'],
+        ['bilge', '🧠', 'Bilge'], ['kitapkurdu', '📚', 'Kitap Kurdu'], ['birinci', '🥇', 'Birinci'],
+        ['madalya', '🏅', 'Madalya'], ['onur', '🎖️', 'Onur'], ['kelebek', '🦋', 'Kelebek']
       ];
       var chosen = null;
 
@@ -365,6 +363,74 @@
             send.disabled = false; send.textContent = 'Rozet ver';
             toast('Verilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
           });
+      };
+      b.appendChild(send);
+    });
+  }
+
+  /* ======================================= 2.6) DESTEK ROZETİ VER (ödüllü)
+     Satın alma gibi davranır: rozeti supportGrants'a yazar (uygulama okuyup
+     özellikleri açar) + tier XP'sini bir kez ekler. */
+  function openGiveSupport() {
+    if (!sheet()) return;
+    window.PWA.sheet('💛 Destek Rozeti Ver', 'Satın almış gibi rozeti açar, özellikleri ve XP ödülünü verir.', function (b) {
+      var d = db();
+      if (!d) { b.innerHTML = '<div class="pwa-empty">Bağlantı yok.</div>'; return; }
+
+      var TIERS = [
+        [1, '👍🏻', 'Teşekkür', 10], [5, '☕️', 'Kahve', 50], [10, '❤️', 'Destekçi', 100],
+        [25, '💛', 'Dost', 250], [50, '⭐️', 'Yıldız', 500], [100, '👑', 'Kurucu', 1000]
+      ];
+      var chosen = null;
+
+      b.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:2px 2px 8px">Destek rozeti seç (💛 ⭐️ 👑 PDF ve kilitli özellikleri açar)</p>');
+      var grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px';
+      TIERS.forEach(function (t) {
+        var cell = document.createElement('button');
+        cell.type = 'button';
+        cell.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);color:#e8eef7;font-size:11px;cursor:pointer';
+        cell.innerHTML = '<span style="font-size:22px;line-height:1">' + t[1] + '</span>' + t[2] + '<span style="font-size:9px;color:#8791a3">+' + t[3] + ' XP</span>';
+        cell.onclick = function () {
+          chosen = t;
+          Array.prototype.forEach.call(grid.children, function (c) { c.style.borderColor = 'rgba(255,255,255,.12)'; c.style.background = 'rgba(255,255,255,.03)'; });
+          cell.style.borderColor = 'rgba(255,210,59,.7)'; cell.style.background = 'rgba(255,210,59,.12)';
+        };
+        grid.appendChild(cell);
+      });
+      b.appendChild(grid);
+
+      var picker = userPicker(b, function () {});
+
+      var send = mkBtn('Rozeti ver');
+      send.onclick = function () {
+        var u = picker.get();
+        if (!u) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
+        if (!chosen) { toast('Önce bir rozet seç', { kind: 'bad' }); return; }
+        send.disabled = true; send.textContent = 'Veriliyor…';
+        var amount = chosen[0], xp = chosen[3];
+        /* XP ödülünü bir kez ekle (mevcut değeri oku, üstüne koy) */
+        d.ref('progress/' + u.uid + '/meta/xp').once('value').then(function (sn) {
+          var cur = typeof sn.val() === 'number' ? sn.val() : (u.xp || 0);
+          var next = cur + xp;
+          return Promise.all([
+            d.ref('progress/' + u.uid + '/meta/supportGrants/' + amount).set(true),
+            d.ref('progress/' + u.uid + '/meta/xp').set(next),
+            d.ref('leaderboard/' + u.uid).update({ xp: next, name: u.name })
+          ]);
+        }).then(function () {
+          send.disabled = false; send.textContent = 'Rozeti ver';
+          var m = me();
+          if (m && m.uid === u.uid) {
+            toast('✅ Verildi — yenileniyor…', { kind: 'good' });
+            setTimeout(function () { location.reload(); }, 1200);
+          } else {
+            toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' verildi · +' + xp + ' XP · özellikler açık', { kind: 'good', duration: 7000 });
+          }
+        }).catch(function (e) {
+          send.disabled = false; send.textContent = 'Rozeti ver';
+          toast('Verilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+        });
       };
       b.appendChild(send);
     });

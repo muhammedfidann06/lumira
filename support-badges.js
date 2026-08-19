@@ -286,8 +286,25 @@
           var html = buildPdfHtml(lang, level, words);
           var win = window.open('', '_blank');
           if (!win) {
-            finish();
-            toast('Açılır pencere engellendi — tarayıcı ayarlarından izin ver', { kind: 'bad', duration: 7000 });
+            /* iOS PWA'da açılır pencere sık engellenir — gizli iframe ile yazdır */
+            try {
+              var ifr = document.createElement('iframe');
+              ifr.setAttribute('aria-hidden', 'true');
+              ifr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0;';
+              document.body.appendChild(ifr);
+              var idoc = ifr.contentWindow.document;
+              idoc.open(); idoc.write(html); idoc.close();
+              finish();
+              setTimeout(function () {
+                try { ifr.contentWindow.focus(); ifr.contentWindow.print(); } catch (e) {}
+                setTimeout(function () { try { ifr.remove(); } catch (e) {} }, 60000);
+              }, 500);
+              toast('📄 ' + words.length + ' kelime hazır — yazdır menüsünden PDF olarak kaydet',
+                    { kind: 'good', duration: 8000 });
+            } catch (e) {
+              finish();
+              toast('Açılır pencere engellendi — tarayıcı ayarlarından izin ver', { kind: 'bad', duration: 7000 });
+            }
             return;
           }
           win.document.open();
@@ -314,4 +331,36 @@
     });
   }
   window.openPdfExport = openPdfExport;
+
+  /* ====================================== ADMIN HEDİYE ROZETİ SENKRONU
+     Admin bir kullanıcıya destek rozeti verdiğinde bunu Firebase'e yazar
+     (progress/<uid>/meta/supportGrants/<tutar> = true). Burada o kayıt
+     okunur ve rozet yerel listeye eklenir; böylece SATIN ALMIŞ GİBİ tüm
+     özellikler (PDF, Profilim vb.) açılır ve "Lumira'yı Destekle"de görünür.
+     XP ödülü admin tarafında bir kez eklenir; burada tekrar eklenmez. */
+  function syncSupportGrants() {
+    try {
+      if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
+      var u = firebase.auth().currentUser; if (!u) return;
+      firebase.database().ref('progress/' + u.uid + '/meta/supportGrants').once('value').then(function (sn) {
+        var g = sn.val() || {}; var list = myBadges(); var changed = false; var got = [];
+        TIERS.forEach(function (t) {
+          if (g[t.amount] && list.indexOf(t.badge) === -1) {
+            list.push(t.badge); changed = true; got.push(t.badge + ' ' + t.name);
+          }
+        });
+        if (changed) {
+          store(KEY, list);
+          toast('🎁 Sana rozet verildi: ' + got.join(', ') + ' · özellikler açıldı', { kind: 'good', duration: 8000 });
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  }
+  (function initGiftSync() {
+    try {
+      if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+        firebase.auth().onAuthStateChanged(function (u) { if (u) syncSupportGrants(); });
+      } else { setTimeout(initGiftSync, 800); }
+    } catch (e) { setTimeout(initGiftSync, 800); }
+  })();
 })();
