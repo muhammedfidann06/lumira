@@ -427,8 +427,8 @@
       .pm-root .pm-task-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
       .pm-root .pm-task-body{flex:1;min-width:0;}
       .pm-root .pm-task-label{font-size:12.5px;color:#eef4ff;}
-      .pm-root .pm-task-ring{position:relative;width:40px;height:40px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(#4fe8ff calc(var(--pct,0)*1%), rgba(255,255,255,0.10) 0);}
-      .pm-root .pm-task-ring.done{background:conic-gradient(#3dffa0 100%, rgba(255,255,255,0.10) 0);}
+      .pm-root .pm-task-ring{position:relative;width:44px !important;height:44px !important;min-width:44px;flex:0 0 44px;align-self:center;aspect-ratio:1;box-sizing:border-box;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:conic-gradient(#4fe8ff 0 calc(var(--pct,0)*1%), rgba(255,255,255,0.10) calc(var(--pct,0)*1%) 100%);}
+      .pm-root .pm-task-ring.done{background:conic-gradient(#3dffa0 0 100%);}
       .pm-root .pm-task-ring::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#0e131c;}
       .pm-root .pm-task-ring span{position:relative;z-index:1;font-size:9.5px;font-weight:800;color:#eef4ff;}
       .pm-root .pm-task-sub{font-size:10.5px;color:#8291b3;margin-top:2px;}
@@ -576,6 +576,7 @@
       { icon:'⏱️', label:'Bu oturumda 60 dakika çalış', sub:'+'+TASK_XP.t5+' XP', done:t.t5, pct:t.t5?100:0 },
     ];
 
+    try{document.body.classList.add('pm-active');}catch(e){}
     try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
     let html = '<div class="pm-root">';
     html += '<div class="pm-head">';
@@ -624,23 +625,18 @@
     });
     html += '</div>';
 
-    /* Rozetler = ücretli destek rozetleri (kilitli/açık). Sahip olunca kilit kalkar. */
+    /* Rozetler (destek) + Başarımlar — mistakes butonunun ALTINA taşınacak (Başarımlar → Rozetler) */
     var _tiers = (window.LUMIRA_BADGES && window.LUMIRA_BADGES.tiers) || [];
+    var supHtml = '';
     if(_tiers.length){
       var supRow = '';
       _tiers.forEach(function(t){
         var owned = !!(window.LUMIRA_BADGES && window.LUMIRA_BADGES.has(t.badge));
-        supRow += '<div class="pm-sup-badge'+(owned?' owned':'')+'">'+
-                  '<span class="e">'+t.badge+'</span>'+
-                  (owned?'':'<span class="lock">🔒</span>')+
-                  '<span class="nm">'+String(t.name||'').replace(/</g,'')+'</span></div>';
+        supRow += '<div class="pm-sup-badge'+(owned?' owned':'')+'"><span class="e">'+t.badge+'</span>'+(owned?'':'<span class="lock">🔒</span>')+'<span class="nm">'+String(t.name||'').replace(/</g,'')+'</span></div>';
       });
-      html += '<div class="pm-card"><h4>Rozetler</h4><div class="pm-sup-grid">'+supRow+'</div></div>';
+      supHtml = '<div class="pm-card"><h4>Rozetler</h4><div class="pm-sup-grid">'+supRow+'</div></div>';
     }
-    /* Kelime kilometre taşı rozetleri (öğrenilen kelime sayısı) */
-    html += '<div class="pm-card"><h4>Kelime Rozetleri</h4><div class="pm-badges">'+badgeRow+'</div></div>';
-
-    /* Başarımlar & Özel Rozetler (seri kilometre taşları + admin verdiği) */
+    var awHtml = '';
     const awards = meta.awards || {};
     const awardKeys = Object.keys(awards);
     if(awardKeys.length){
@@ -648,16 +644,16 @@
       let awRow = '';
       awardKeys.forEach(k=>{
         const a = awards[k] || {};
-        awRow += '<div class="pm-award" title="'+String(a.n||'').replace(/"/g,'')+'">'+
-                 '<span class="pm-award-e">'+(a.e||'🏅')+'</span>'+
-                 '<span class="pm-award-n">'+String(a.n||'').replace(/</g,'')+'</span></div>';
+        awRow += '<div class="pm-award" title="'+String(a.n||'').replace(/"/g,'')+'"><span class="pm-award-e">'+(a.e||'🏅')+'</span><span class="pm-award-n">'+String(a.n||'').replace(/</g,'')+'</span></div>';
       });
-      html += '<div class="pm-card"><h4>Başarımlar</h4><div class="pm-awards">'+awRow+'</div></div>';
+      awHtml = '<div class="pm-card"><h4>Başarımlar</h4><div class="pm-awards">'+awRow+'</div></div>';
     }
 
     html += '<button class="pm-btn primary" id="pmStartBtn">🚀 Çalışmaya Başla</button>';
     html += '<button class="pm-btn small" id="pmKnownBtn">✅ Öğrendiğim Kelimeler ('+totalKnownLang+')</button>';
     html += '<button class="pm-btn small" id="pmWeakBtn">📉 Hata Yaptığım Kelimeler</button>';
+    html += awHtml;    /* Başarımlar (mistakes butonunun altında) */
+    html += supHtml;   /* Rozetler */
     html += '</div>';
 
     root.innerHTML = html;
@@ -942,6 +938,7 @@
 
   function renderSessionSummary(){
     const s = sessionStats;
+    try{document.body.classList.add('pm-active');}catch(e){}
     try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
     let html = '<div class="pm-root">';
     html += '<div class="pm-head"><div class="pm-eyebrow">Oturum Tamamlandı</div><div class="pm-title">🎉 Harika İş!</div><div class="pm-sub">'+s.newKnown+' yeni kelime öğrendin - +'+s.xp+' XP</div></div>';
