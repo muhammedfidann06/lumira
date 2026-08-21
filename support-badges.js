@@ -283,7 +283,7 @@
   }
 
   function openPdfExport() {
-    if (!window.LUMIRA_LOCK.pdfBadge()) return;
+    if (!window.LUMIRA_LOCK.anyBadge('Kelime listesi PDF')) return;
     if (!(window.PWA && window.PWA.sheet)) return;
 
     window.PWA.sheet('📄 Kelimeleri PDF olarak indir',

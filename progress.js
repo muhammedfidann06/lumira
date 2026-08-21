@@ -28,8 +28,8 @@
 
   let batch = [];
   let batchResult = {};
-  let cardIdx = 0, quizIdx = 0, listenIdx = 0;
-  let quizOrder = [], listenOrder = [];
+  let cardIdx = 0, quizIdx = 0, listenIdx = 0, fillIdx = 0;
+  let quizOrder = [], listenOrder = [], fillOrder = [];
   let sessionStats = { total:0, correct:0, wrong:0, xp:0, newKnown:0, newBadges:[], mistakes:[] };
   let currentAnswered = false;
   let reviewMode = null;
@@ -478,6 +478,12 @@
       .pm-root .pm-word{font-size:27px;font-weight:700;font-family:Georgia,'Iowan Old Style',serif;color:#eef4ff;margin-bottom:6px;}
       .pm-root .pm-word-sub{font-size:12px;color:#8291b3;margin-bottom:8px;}
       .pm-root .pm-speak-row{display:flex;justify-content:center;gap:10px;margin:10px 0 4px;}
+      .pm-root .pm-fill-row{font-family:Georgia,'Iowan Old Style',serif;font-size:19px;color:#eef4ff;background:var(--pm-panel);border:1px solid var(--pm-border);border-radius:14px;padding:16px;margin-bottom:0;line-height:1.6;}
+      .pm-root .pm-fill-input{width:100%;box-sizing:border-box;font-family:Georgia,'Iowan Old Style',serif;font-size:16px;color:#eef4ff;background:var(--pm-panel);border:1px solid var(--pm-border);border-radius:14px;padding:14px 16px;outline:none;}
+      .pm-root .pm-fill-input:focus{border-color:var(--pm-accent);}
+      .pm-root .pm-fill-fb{min-height:20px;font-size:12.5px;margin:10px 0 4px;font-weight:600;}
+      .pm-root .pm-fill-fb.ok{color:#3dffa0;}
+      .pm-root .pm-fill-fb.bad{color:#ff8a8a;}
       .pm-root .pm-speak-caption{
         text-align:center;margin-bottom:8px;
         font-size:10.5px;font-weight:600;letter-spacing:.03em;
@@ -754,7 +760,6 @@
      (A1'i tamamlamak A2'yi bekletmez; bir seviyeyi TEKRAR yapmak için o
      seviyenin son tamamlanmasından itibaren 7 gün geçmesi gerekir). */
   const LT_COOLDOWN_MS = 7*24*60*60*1000;
-  const LT_QUESTION_COUNT = 20;
   let ltState = null; // { level, order:[...], idx, correct, learnedKeys:[] }
 
   function ltKey(level){ return activeLang+'_'+level; }
@@ -768,18 +773,22 @@
     const d = Math.ceil(ms / (24*60*60*1000));
     return d <= 1 ? '1 gün' : d+' gün';
   }
+  function ltWordCount(level){
+    return VOCAB.filter(v=>v.lang===activeLang && v.level===level).length;
+  }
 
   function openLevelTestPicker(){
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">Seviye Tespit Sınavı</div>'+
       '<div class="pm-title">🎓 Seviyeni Test Et</div>'+
-      '<div class="pm-sub">Bir seviye seç · '+LT_QUESTION_COUNT+' soru · tamamlayınca +100 XP · doğru bildiğin kelimeler bilinenler listene eklenir</div></div>';
+      '<div class="pm-sub">Bir seviye seç · o seviyedeki TÜM kelimeler sorulur · tamamlayınca +100 XP · doğru bildiğin kelimeler bilinenler listene eklenir</div></div>';
     html += '<div class="pm-lang-grid" style="grid-template-columns:1fr 1fr;">';
     LANGS[activeLang].levels.forEach(lv=>{
       const left = ltCooldownLeft(lv);
       const locked = left > 0;
+      const cnt = ltWordCount(lv);
       html += '<div class="pm-lang-card lt-lv-opt'+(locked?' locked':'')+'" data-level="'+lv+'" style="'+(locked?'opacity:.5;cursor:default;':'cursor:pointer;')+'">'+
         '<span class="nm" style="font-size:16px;font-weight:800;">'+lv+'</span>'+
-        '<span class="nm" style="font-size:10px;">'+(locked ? ('🔒 '+ltFmtLeft(left)) : 'Hazır')+'</span></div>';
+        '<span class="nm" style="font-size:10px;">'+(locked ? ('🔒 '+ltFmtLeft(left)) : (cnt+' kelime'))+'</span></div>';
     });
     html += '</div>';
     html += '<span class="pm-back-link" id="pmBackHome" style="display:block;margin-top:18px;">← Ana sayfaya dön</span></div>';
@@ -796,8 +805,8 @@
     if(pool.length < 4){
       showToast('Bu seviyede yeterli kelime yok'); openLevelTestPicker(); return;
     }
-    const shuffled = shuffle(pool.slice());
-    const order = shuffled.slice(0, Math.min(LT_QUESTION_COUNT, shuffled.length));
+    /* O seviyedeki TÜM kelimeler sorulur (sınırlama yok) */
+    const order = shuffle(pool.slice());
     ltState = { level, order, idx:0, correct:0, learnedKeys:[] };
     renderLevelTestQuestion();
   }
@@ -890,7 +899,7 @@
 
   function beginBatchFlow(){
     batchResult = {};
-    batch.forEach(item => { batchResult[item.key] = { quizOk:null, listenOk:null }; });
+    batch.forEach(item => { batchResult[item.key] = { quizOk:null, listenOk:null, fillOk:null }; });
     cardIdx = 0;
     sessionStats = { total:0, correct:0, wrong:0, xp:0, newKnown:0, newBadges:[], mistakes:[] };
     renderCardsPhase();
@@ -905,7 +914,7 @@
     }
     const v = batch[cardIdx].v;
     const L = LANGS[v.lang];
-    const barHtml = '<div class="pm-session-bar"><span>Tanışma '+(cardIdx+1)+' / '+batch.length+'</span><span>Adım 1/3</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((cardIdx/batch.length)*100)+'%"></div></div>';
+    const barHtml = '<div class="pm-session-bar"><span>Tanışma '+(cardIdx+1)+' / '+batch.length+'</span><span>Adım 1/4</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((cardIdx/batch.length)*100)+'%"></div></div>';
     let flipped = false;
     const catEmoji = (window.CAT_EMOJI && window.CAT_EMOJI[v.cat]) || '📖';
     function draw(){
@@ -993,7 +1002,7 @@
     const v = item.v;
     const distractors = pickDistractors(v, 3);
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
-    const barHtml = '<div class="pm-session-bar"><span>Soru '+(quizIdx+1)+' / '+batch.length+'</span><span>Adim 2/3 - Anlam Testi</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((quizIdx/batch.length)*100)+'%"></div></div>';
+    const barHtml = '<div class="pm-session-bar"><span>Soru '+(quizIdx+1)+' / '+batch.length+'</span><span>Adım 2/4 - Anlam Testi</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((quizIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
       '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Bu kelimenin anlami nedir?</div><div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+'</div><div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit">🔊</button><span class="speak-lbl">Normal</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle">🐢</button><span class="speak-lbl">Yavaş</span></div></div><div class="speak-caption">Dinlemek İçin Tıkla</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
@@ -1021,7 +1030,9 @@
 
   function renderListenPhase(){
     if(listenIdx >= listenOrder.length){
-      finalizeBatch();
+      fillOrder = shuffle(batch.map((_,i)=>i));
+      fillIdx = 0;
+      renderFillPhase();
       return;
     }
     currentAnswered = false;
@@ -1029,7 +1040,7 @@
     const v = item.v;
     const distractors = pickDistractors(v, 3);
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
-    const barHtml = '<div class="pm-session-bar"><span>Soru '+(listenIdx+1)+' / '+batch.length+'</span><span>Adim 3/3 - Dinleme</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((listenIdx/batch.length)*100)+'%"></div></div>';
+    const barHtml = '<div class="pm-session-bar"><span>Soru '+(listenIdx+1)+' / '+batch.length+'</span><span>Adım 3/4 - Dinleme</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((listenIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
       '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">🎧 Duydugun kelimenin anlami ne?</div><div class="pm-word" style="font-size:34px;">🎙️</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="Hizli tekrar dinle">🔊</button><span class="speak-lbl">Normal</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle" title="Yavas tekrar dinle">🐢</button><span class="speak-lbl">Yavaş</span></div></div><div class="speak-caption">Dinlemek İçin Tıkla</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
@@ -1056,6 +1067,59 @@
       };
       wrap.appendChild(b);
     });
+  }
+
+  /* ============================== ADIM 4 — BOŞLUK DOLDURMA (yazarak)
+     Örnek cümledeki kelime boşluk yapılır ("İch bin ___" gibi), kullanıcı
+     yazarak doldurur — tıpkı Duolingo'daki gibi. v.ex yoksa bu kelime
+     atlanır (tüm kelimelerde örnek cümle olmayabilir). */
+  function blankSentence(sentence, word){
+    const range = (typeof findStemMatch === 'function') ? findStemMatch(sentence, word) : null;
+    if(!range) return null;
+    return {
+      before: sentence.slice(0, range.start),
+      answer: sentence.slice(range.start, range.end),
+      after: sentence.slice(range.end)
+    };
+  }
+
+  function renderFillPhase(){
+    if(fillIdx >= fillOrder.length){
+      finalizeBatch();
+      return;
+    }
+    const item = batch[fillOrder[fillIdx]];
+    const v = item.v;
+    const blanked = v.ex ? blankSentence(v.ex, v.w) : null;
+    if(!blanked){ fillIdx++; renderFillPhase(); return; } // örnek cümlesi yoksa atla
+
+    const barHtml = '<div class="pm-session-bar"><span>Soru '+(fillIdx+1)+' / '+batch.length+'</span><span>Adım 4/4 - Boşluk Doldurma</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((fillIdx/batch.length)*100)+'%"></div></div>';
+    root.innerHTML = '<div class="pm-root">'+barHtml+
+      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Boşluğu doldur</div>'+
+      '<div class="pm-fill-row" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(blanked.before)+'<b>_____</b>'+escapeHtml(blanked.after)+'</div>'+
+      '<div class="pm-word-sub" style="margin-top:10px;">'+escapeHtml(v.exTr||v.tr||'')+'</div></div>'+
+      '<input type="text" class="pm-fill-input" id="pmFillInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Buraya yaz…" style="margin-bottom:12px;">'+
+      '<div class="pm-fill-fb" id="pmFillFb"></div>'+
+      '<button class="pm-btn primary" id="pmFillCheck">Kontrol Et</button>'+
+      '<button class="pm-btn primary" id="pmFillNext" style="display:none;">Devam</button></div>';
+
+    const input = document.getElementById('pmFillInput');
+    const fb = document.getElementById('pmFillFb');
+    const checkBtn = document.getElementById('pmFillCheck');
+    const nextBtn = document.getElementById('pmFillNext');
+    input.focus();
+    function check(){
+      const val = (input.value||'').trim().toLocaleLowerCase('tr');
+      const correct = blanked.answer.trim().toLocaleLowerCase('tr');
+      const ok = val === correct;
+      batchResult[item.key].fillOk = ok;
+      fb.textContent = ok ? '✅ Doğru!' : ('Doğrusu: '+blanked.answer);
+      fb.className = 'pm-fill-fb ' + (ok ? 'ok' : 'bad');
+      input.disabled = true; checkBtn.style.display = 'none'; nextBtn.style.display = '';
+    }
+    checkBtn.onclick = check;
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') check(); });
+    nextBtn.onclick = () => { fillIdx++; renderFillPhase(); };
   }
 
   function finalizeBatch(){
