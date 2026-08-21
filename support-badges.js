@@ -17,12 +17,12 @@
 
   /* --------------------------------------------------------- rozet tablosu */
   var TIERS = [
-    { amount: 1,   badge: '👍🏻', name: 'Teşekkür',  xp: 10   },
-    { amount: 5,   badge: '☕️', name: 'Kahve',     xp: 50   },
-    { amount: 10,  badge: '❤️', name: 'Destekçi',  xp: 100  },
-    { amount: 25,  badge: '💛', name: 'Dost',      xp: 250  },
-    { amount: 50,  badge: '⭐️', name: 'Yıldız',    xp: 500  },
-    { amount: 100, badge: '👑', name: 'Kral',    xp: 1000 }
+    { amount: 1,   badge: '👍🏻', name: 'Teşekkür',  xp: 10,   try_: '59,95',   sku: 'lumira_support_1'   },
+    { amount: 5,   badge: '☕️', name: 'Kahve',     xp: 50,   try_: '299,95',  sku: 'lumira_support_5'   },
+    { amount: 10,  badge: '❤️', name: 'Destekçi',  xp: 100,  try_: '599,95',  sku: 'lumira_support_10'  },
+    { amount: 25,  badge: '💛', name: 'Dost',      xp: 250,  try_: '1499,95', sku: 'lumira_support_25'  },
+    { amount: 50,  badge: '⭐️', name: 'Yıldız',    xp: 500,  try_: '2999,95', sku: 'lumira_support_50'  },
+    { amount: 100, badge: '👑', name: 'Kral',    xp: 1000, try_: '5999,95', sku: 'lumira_support_100' }
   ];
   /* PDF için gereken rozetler */
   var PDF_BADGES = ['💛', '⭐️', '👑'];
@@ -59,6 +59,50 @@
   };
   window.LUMIRA_BADGES = { list: myBadges, has: hasBadge, tiers: TIERS };
 
+  /* ============================================== SATIN ALMA (Play Billing)
+     Yalnızca Play Store üzerinden (TWA) çalışır — web sürümünde ödeme
+     alınmaz, bilgi mesajı gösterilir. Google Play Console'da her tier için
+     TIERS[].sku ile BİREBİR AYNI ürün kimliğiyle "Yönetilmeyen ürün"
+     (managed in-app product, tek seferlik) oluşturulmuş olmalı. */
+  function purchaseTier(t) {
+    if (!window.isTwa) {
+      toast('Bu satın alma yalnızca Play Store\'dan indirilen uygulamada kullanılabilir. ' +
+            'Web sürümünde ödeme alınmıyor.', { duration: 7000 });
+      return;
+    }
+    if (!window.PaymentRequest || typeof window.getDigitalGoodsService !== 'function') {
+      toast('Satın alma şu an bu cihazda kullanılamıyor. Play Store uygulamasını güncelleyip tekrar dene.',
+            { kind: 'bad', duration: 7000 });
+      return;
+    }
+    var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: { sku: t.sku } }];
+    var details = { total: { label: 'Toplam', amount: { currency: 'TRY', value: '0' } } };
+    var request;
+    try { request = new PaymentRequest(methodData, details); }
+    catch (e) { toast('Satın alma başlatılamadı.', { kind: 'bad' }); return; }
+
+    request.show().then(function (response) {
+      var token = (response.details && (response.details.token || response.details.purchaseToken)) || null;
+      return response.complete('success').then(function () {
+        return window.getDigitalGoodsService('https://play.google.com/billing').then(function (service) {
+          if (service && token && service.acknowledge) {
+            return service.acknowledge(token, 'onetime').catch(function () {});
+          }
+        });
+      });
+    }).then(function () {
+      window.grantSupportTier(t.amount);
+      if (window.openSupport) { setTimeout(window.openSupport, 300); } /* rozeti göstermek için yeniden aç */
+    }).catch(function (e) {
+      /* kullanıcı iptal ettiyse sessiz geç, gerçek hataysa bilgilendir */
+      var msg = String((e && e.message) || e || '');
+      if (msg.toLowerCase().indexOf('cancel') === -1) {
+        toast('Satın alma tamamlanamadı.', { kind: 'bad', duration: 6000 });
+      }
+    });
+  }
+  window.purchaseSupportTier = purchaseTier;
+
   /* ============================================================ DESTEK OL */
   function openSupport() {
     if (!(window.PWA && window.PWA.sheet)) return;
@@ -72,13 +116,11 @@
         el.type = 'button';
         el.className = 'sup-item' + (owned ? ' owned' : '');
         el.innerHTML =
-          '<span class="sup-amount">' + t.amount + ' €</span>' +
+          '<span class="sup-amount">' + t.try_ + ' ₺</span>' +
+          '<span class="sup-eur">~' + t.amount + ' €</span>' +
           '<span class="sup-badge">' + t.badge + '</span>' +
           '<span class="sup-xp">+' + t.xp + ' XP</span>';
-        el.onclick = function () {
-          toast('Bağış sistemi çok yakında — Play Store sürümüyle birlikte açılacak. İlgin için teşekkürler ❤️',
-                { duration: 7000 });
-        };
+        el.onclick = function () { purchaseTier(t); };
         grid.appendChild(el);
       });
       b.appendChild(grid);
@@ -127,6 +169,16 @@
         'Bu özellik için <b>💛</b>, <b>⭐️</b> veya <b>👑</b> rozetlerinden birine ' +
         'sahip olman gerekiyor.<br><br>Rozetleri ❤️ <b>Lumira\'yı Destekle</b> ' +
         'bölümünden edinebilirsin.');
+      return false;
+    },
+    /* Herhangi bir destek rozeti yeterli olan özellikler için genel kilit
+       (Çevrimdışı paket, Favoriler). En küçük rozet (👍🏻 Teşekkür) bile yeter. */
+    anyBadge: function (featureName) {
+      if (myBadges().length > 0) return true;
+      lockNotice(featureName,
+        'Bu özelliği kullanmak için herhangi bir destek rozetine sahip olman ' +
+        'gerekiyor — en küçüğü bile (👍🏻 Teşekkür) yeterli.<br><br>Rozetleri ' +
+        '❤️ <b>Lumira\'yı Destekle</b> bölümünden edinebilirsin.');
       return false;
     }
   };

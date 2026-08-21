@@ -427,10 +427,9 @@
       .pm-root .pm-task-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
       .pm-root .pm-task-body{flex:1;min-width:0;}
       .pm-root .pm-task-label{font-size:12.5px;color:#eef4ff;}
-      .pm-root .pm-task-ring{position:relative;width:44px !important;height:44px !important;min-width:44px;flex:0 0 44px;align-self:center;aspect-ratio:1;box-sizing:border-box;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:conic-gradient(#4fe8ff 0 calc(var(--pct,0)*1%), rgba(255,255,255,0.10) calc(var(--pct,0)*1%) 100%);}
-      .pm-root .pm-task-ring.done{background:conic-gradient(#3dffa0 0 100%);}
-      .pm-root .pm-task-ring::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#0e131c;}
-      .pm-root .pm-task-ring span{position:relative;z-index:1;font-size:9.5px;font-weight:800;color:#eef4ff;}
+      .pm-root .pm-task-ring{position:relative;width:40px;height:40px;min-width:40px;max-width:40px;flex:none;display:flex;align-items:center;justify-content:center;}
+      .pm-root .pm-task-ring-svg{position:absolute;inset:0;width:40px;height:40px;display:block;}
+      .pm-root .pm-task-ring span{position:relative;z-index:1;font-size:9px;font-weight:800;color:#eef4ff;}
       .pm-root .pm-task-sub{font-size:10.5px;color:#8291b3;margin-top:2px;}
       .pm-root .pm-task.done .pm-task-label{color:var(--pm-good);text-decoration:line-through;opacity:.8;}
       .pm-root .pm-due-banner{
@@ -572,7 +571,7 @@
       { icon:'📋', label:'Günlük tekrarı tamamla', sub: t4Sub, done:t.t4, pct: t.t4?100:0 },
       { icon:'💵', label:'Bugün 10 yeni kelime öğren', sub:Math.min(today,10)+'/10 · +'+TASK_XP.t1+' XP', done:t.t1, pct:Math.min(100,Math.round(today/10*100)) },
       { icon:'💰', label:'Bugün 50 yeni kelime öğren', sub:Math.min(today,50)+'/50 · +'+TASK_XP.t2+' XP', done:t.t2, pct:Math.min(100,Math.round(today/50*100)) },
-      { icon:'🪎', label:'Bugün 100 yeni kelime öğren', sub:Math.min(today,100)+'/100 · +'+TASK_XP.t3+' XP', done:t.t3, pct:Math.min(100,Math.round(today/100*100)) },
+      { icon:'🏆', label:'Bugün 100 yeni kelime öğren', sub:Math.min(today,100)+'/100 · +'+TASK_XP.t3+' XP', done:t.t3, pct:Math.min(100,Math.round(today/100*100)) },
       { icon:'⏱️', label:'Bu oturumda 60 dakika çalış', sub:'+'+TASK_XP.t5+' XP', done:t.t5, pct:t.t5?100:0 },
     ];
 
@@ -621,7 +620,14 @@
     html += '<div class="pm-card"><h4>Bugünkü Görevler</h4>';
     taskDefs.forEach(td=>{
       const rp = Math.max(0, Math.min(100, td.pct||0));
-      html += '<div class="pm-task '+(td.done?'done':'')+'"><div class="pm-task-icon">'+(td.done?'✅':td.icon)+'</div><div class="pm-task-body"><div class="pm-task-label">'+td.label+'</div><div class="pm-task-sub">'+td.sub+'</div></div><div class="pm-task-ring'+(td.done?' done':'')+'" style="--pct:'+rp+'"><span>'+rp+'%</span></div></div>';
+      const R = 16, C = 2*Math.PI*R, off = C - (C*rp/100);
+      const ringColor = td.done ? '#3dffa0' : '#4fe8ff';
+      const svg = '<svg width="40" height="40" viewBox="0 0 40 40" class="pm-task-ring-svg">'+
+        '<circle cx="20" cy="20" r="'+R+'" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="4"></circle>'+
+        '<circle cx="20" cy="20" r="'+R+'" fill="none" stroke="'+ringColor+'" stroke-width="4" '+
+        'stroke-linecap="round" stroke-dasharray="'+C.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'" '+
+        'transform="rotate(-90 20 20)"></circle></svg>';
+      html += '<div class="pm-task '+(td.done?'done':'')+'"><div class="pm-task-icon">'+(td.done?'✅':td.icon)+'</div><div class="pm-task-body"><div class="pm-task-label">'+td.label+'</div><div class="pm-task-sub">'+td.sub+'</div></div><div class="pm-task-ring">'+svg+'<span>'+rp+'%</span></div></div>';
     });
     html += '</div>';
 
@@ -650,6 +656,7 @@
     }
 
     html += '<button class="pm-btn primary" id="pmStartBtn">🚀 Çalışmaya Başla</button>';
+    html += '<button class="pm-btn small" id="pmLevelTestBtn">🎓 Seviye Tespit Sınavı</button>';
     html += '<button class="pm-btn small" id="pmKnownBtn">✅ Öğrendiğim Kelimeler ('+totalKnownLang+')</button>';
     html += '<button class="pm-btn small" id="pmWeakBtn">📉 Hata Yaptığım Kelimeler</button>';
     html += awHtml;    /* Başarımlar (mistakes butonunun altında) */
@@ -682,6 +689,7 @@
       el.onclick = () => startGeneralReview(el.dataset.group);
     });
     document.getElementById('pmStartBtn').onclick = startSession;
+    document.getElementById('pmLevelTestBtn').onclick = openLevelTestPicker;
     document.getElementById('pmKnownBtn').onclick = renderKnownWords;
     document.getElementById('pmWeakBtn').onclick = renderWeakWords;
     const dueBtn = document.getElementById('pmDueBtn');
@@ -739,6 +747,129 @@
     return chosen.map(v=>({v, key:wordKeyFor(v)}));
   }
 
+  /* ============================================ SEVİYE TESPİT SINAVI
+     A1-B2 seçilir → o seviyedeki (aktif dilde) kelimelerden 20 soruluk quiz.
+     Doğru cevaplanan kelimeler doğrudan "bilinen" sayılır. Tamamlama ödülü
+     sabit +100 XP. Her seviye İÇİN AYRI AYRI haftada bir kez girilebilir
+     (A1'i tamamlamak A2'yi bekletmez; bir seviyeyi TEKRAR yapmak için o
+     seviyenin son tamamlanmasından itibaren 7 gün geçmesi gerekir). */
+  const LT_COOLDOWN_MS = 7*24*60*60*1000;
+  const LT_QUESTION_COUNT = 20;
+  let ltState = null; // { level, order:[...], idx, correct, learnedKeys:[] }
+
+  function ltKey(level){ return activeLang+'_'+level; }
+  function ltCooldownLeft(level){
+    const rec = (meta.levelTest||{})[ltKey(level)];
+    if(!rec || !rec.ts) return 0;
+    const left = LT_COOLDOWN_MS - (Date.now() - rec.ts);
+    return left > 0 ? left : 0;
+  }
+  function ltFmtLeft(ms){
+    const d = Math.ceil(ms / (24*60*60*1000));
+    return d <= 1 ? '1 gün' : d+' gün';
+  }
+
+  function openLevelTestPicker(){
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">Seviye Tespit Sınavı</div>'+
+      '<div class="pm-title">🎓 Seviyeni Test Et</div>'+
+      '<div class="pm-sub">Bir seviye seç · '+LT_QUESTION_COUNT+' soru · tamamlayınca +100 XP · doğru bildiğin kelimeler bilinenler listene eklenir</div></div>';
+    html += '<div class="pm-lang-grid" style="grid-template-columns:1fr 1fr;">';
+    LANGS[activeLang].levels.forEach(lv=>{
+      const left = ltCooldownLeft(lv);
+      const locked = left > 0;
+      html += '<div class="pm-lang-card lt-lv-opt'+(locked?' locked':'')+'" data-level="'+lv+'" style="'+(locked?'opacity:.5;cursor:default;':'cursor:pointer;')+'">'+
+        '<span class="nm" style="font-size:16px;font-weight:800;">'+lv+'</span>'+
+        '<span class="nm" style="font-size:10px;">'+(locked ? ('🔒 '+ltFmtLeft(left)) : 'Hazır')+'</span></div>';
+    });
+    html += '</div>';
+    html += '<span class="pm-back-link" id="pmBackHome" style="display:block;margin-top:18px;">← Ana sayfaya dön</span></div>';
+    root.innerHTML = html;
+    document.getElementById('pmBackHome').onclick = renderHome;
+    document.querySelectorAll('.lt-lv-opt').forEach(el=>{
+      if(el.classList.contains('locked')) return;
+      el.onclick = () => startLevelTest(el.dataset.level);
+    });
+  }
+
+  function startLevelTest(level){
+    const pool = VOCAB.filter(v=>v.lang===activeLang && v.level===level);
+    if(pool.length < 4){
+      showToast('Bu seviyede yeterli kelime yok'); openLevelTestPicker(); return;
+    }
+    const shuffled = shuffle(pool.slice());
+    const order = shuffled.slice(0, Math.min(LT_QUESTION_COUNT, shuffled.length));
+    ltState = { level, order, idx:0, correct:0, learnedKeys:[] };
+    renderLevelTestQuestion();
+  }
+
+  function renderLevelTestQuestion(){
+    if(!ltState) return;
+    if(ltState.idx >= ltState.order.length){ finishLevelTest(); return; }
+    const v = ltState.order[ltState.idx];
+    const distractors = pickDistractors(v, 3);
+    const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
+    let answered = false;
+    const barHtml = '<div class="pm-session-bar"><span>Soru '+(ltState.idx+1)+' / '+ltState.order.length+'</span><span>🎓 '+ltState.level+' Seviye Tespit</span></div>'+
+      '<div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((ltState.idx/ltState.order.length)*100)+'%"></div></div>';
+    root.innerHTML = '<div class="pm-root">'+barHtml+
+      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Bu kelimenin anlami nedir?</div>'+
+      '<div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+'</div>'+
+      '<div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div></div>'+
+      '<div class="pm-options" id="pmOptions"></div></div>';
+    const wrap = document.getElementById('pmOptions');
+    opts.forEach(o=>{
+      const b = document.createElement('button');
+      b.className = 'pm-opt'; b.textContent = o;
+      b.onclick = () => {
+        if(answered) return;
+        answered = true;
+        const ok = (o === v.tr);
+        if(ok){
+          ltState.correct++;
+          ltState.learnedKeys.push(wordKeyFor(v));
+        }
+        document.querySelectorAll('#pmOptions .pm-opt').forEach(x=>{
+          x.disabled = true;
+          if(x.textContent === v.tr) x.classList.add('correct');
+          else if(x===b && !ok) x.classList.add('wrong');
+        });
+        setTimeout(()=>{ ltState.idx++; renderLevelTestQuestion(); }, 650);
+      };
+      wrap.appendChild(b);
+    });
+  }
+
+  function finishLevelTest(){
+    const { level, order, correct, learnedKeys } = ltState;
+    /* doğru cevaplanan kelimeler doğrudan "bilinen" listesine geçer */
+    const y = todayStr();
+    learnedKeys.forEach(k=>{
+      const v = order.find(x=>wordKeyFor(x)===k);
+      let rec = wordProgress[k] || { seen:0, correct:0, wrong:0, known:false, lang:v?v.lang:activeLang, level:v?v.level:level, cat:v?v.cat:null };
+      rec.seen = (rec.seen||0)+1;
+      rec.correct = (rec.correct||0)+1;
+      if(!rec.known){ rec.known = true; rec.learnedDate = y; }
+      wordProgress[k] = rec;
+    });
+    meta.levelTest = meta.levelTest || {};
+    meta.levelTest[ltKey(level)] = { ts: Date.now(), lastScore: correct, lastTotal: order.length };
+    addXp(100, 'Seviye tespit sınavı: '+level+' tamamlandı');
+    persistMeta();
+    try{
+      const ref = dbRef('progress/'+currentKey+'/words');
+      if(ref) learnedKeys.forEach(k=>ref.child(k).set(wordProgress[k]).catch(()=>{}));
+    }catch(e){}
+
+    const pct = Math.round((correct/order.length)*100);
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">Sınav Tamamlandı</div>'+
+      '<div class="pm-title">🎓 '+level+' Seviye Sonucun</div>'+
+      '<div class="pm-sub">'+correct+' / '+order.length+' doğru ('+pct+'%) · +100 XP kazandın · '+learnedKeys.length+' kelime bilinenler listene eklendi</div></div>'+
+      '<span class="pm-back-link" id="pmBackHome2" style="display:block;margin-top:8px;">← Ana sayfaya dön</span></div>';
+    root.innerHTML = html;
+    document.getElementById('pmBackHome2').onclick = renderHome;
+    ltState = null;
+  }
+
   function startSession(){
     batch = pickBatch();
     if(batch.length === 0){
@@ -773,17 +904,31 @@
       return;
     }
     const v = batch[cardIdx].v;
-    const barHtml = '<div class="pm-session-bar"><span>Tanisma '+(cardIdx+1)+' / '+batch.length+'</span><span>Adim 1/3</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((cardIdx/batch.length)*100)+'%"></div></div>';
+    const L = LANGS[v.lang];
+    const barHtml = '<div class="pm-session-bar"><span>Tanışma '+(cardIdx+1)+' / '+batch.length+'</span><span>Adım 1/3</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((cardIdx/batch.length)*100)+'%"></div></div>';
     let flipped = false;
+    const catEmoji = (window.CAT_EMOJI && window.CAT_EMOJI[v.cat]) || '📖';
     function draw(){
       let html = '<div class="pm-root">'+barHtml;
-      html += '<div class="pm-study-card" id="pmCard">';
-      html += '<div class="pm-mode-tag">'+(flipped ? 'Türkçesi' : 'Yeni Kelime')+'</div>';
-      html += '<div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+(flipped ? escapeHtml(v.tr) : escapeHtml(v.w))+'</div>';
-      html += '<div class="pm-word-sub">'+escapeHtml(v.pos||'')+'</div>';
-      html += '<div class="pm-speak-row"><div class="pm-speak-btn" id="pmRabbit" title="Hızlı dinle">🐰</div><div class="pm-speak-btn" id="pmTurtle" title="Yavaş dinle">🐢</div></div><div class="pm-speak-caption">Dinlemek İçin Tıkla</div>';
-      html += '<div class="pm-word-sub" style="margin-top:10px;">Çevirmek için karta dokun</div>';
-      html += '</div>';
+      /* Kartlar sekmesiyle BİREBİR AYNI markup/CSS/flip animasyonu (.stage/.card/.face) */
+      html += '<div class="stage"><div class="card'+(flipped?' flipped':'')+'" id="pmCard">'+
+        '<div class="face face-front"><div class="card-bg-emoji">'+catEmoji+'</div>'+
+        '<div class="level-badge">'+(v.level||'')+'</div>'+
+        '<div class="tag">'+L.native+'</div>'+
+        '<div class="word" dir="'+L.dir+'">'+escapeHtml(v.w)+'</div>'+
+        '<div class="pos">'+escapeHtml(v.cat||v.pos||'')+'</div>'+
+        '<div class="example" dir="'+L.dir+'">'+(v.ex ? colorSplit(v.ex, v.w, v.c1, v.c2) : '')+'</div>'+
+        '<div class="speak-controls">'+
+          '<div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="Normal hızda dinle">🔊</button><span class="speak-lbl">Normal</span></div>'+
+          '<div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle" title="Yavaş dinle">🐢</button><span class="speak-lbl">Yavaş</span></div>'+
+        '</div><div class="speak-caption">Dinlemek İçin Tıkla</div></div>'+
+        '<div class="face face-back"><div class="card-bg-emoji">'+catEmoji+'</div>'+
+        '<div class="level-badge">'+(v.level||'')+'</div>'+
+        '<div class="tag">Türkçe</div>'+
+        '<div class="word">'+escapeHtml(v.tr)+'</div>'+
+        '<div class="example">'+(v.exTr ? escapeHtml(v.exTr) : '')+'</div></div>'+
+        '</div></div>';
+      html += '<div class="hint">Çevirmek için karta dokun</div>';
       html += '<button class="pm-btn primary" id="pmNextCard">Sonraki Kelime</button>';
       html += '</div>';
       root.innerHTML = html;
@@ -812,7 +957,28 @@
     let pool = poolForActiveFilter().filter(x=>x.w!==v.w);
     if(pool.length < count) pool = VOCAB.filter(x=>x.lang===v.lang && x.w!==v.w);
     shuffle(pool);
-    return pool.slice(0,count);
+    let picked = pool.slice(0,count);
+
+    /* Zorlaştırma: seçeneklerden biri BUGÜN öğrenilen bir kelime olsun.
+       Amaç: ekrandaki kelimeyi bilmeyen biri, sadece o gün çalıştığı
+       kelimelerin Türkçesini ezberden tanıyıp rastgele doğru cevaba
+       basamasın — çeldirici olarak günün kelimesini de görsün. */
+    try{
+      const y = todayStr();
+      const keys = Object.keys(wordProgress).filter(k=>{
+        const r = wordProgress[k];
+        return r && r.learnedDate===y && r.lang===v.lang;
+      });
+      shuffle(keys);
+      for(const k of keys){
+        const word = VOCAB.find(x=>x.lang===v.lang && x.w!==v.w && wordKeyFor(x)===k);
+        if(word && !picked.some(p=>p.w===word.w)){
+          picked[picked.length-1] = word;
+          break;
+        }
+      }
+    }catch(e){}
+    return picked;
   }
 
   function renderQuizPhase(){
@@ -829,7 +995,7 @@
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
     const barHtml = '<div class="pm-session-bar"><span>Soru '+(quizIdx+1)+' / '+batch.length+'</span><span>Adim 2/3 - Anlam Testi</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((quizIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
-      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Bu kelimenin anlami nedir?</div><div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+'</div><div class="pm-word-sub">'+escapeHtml(v.pos||'')+'</div><div class="pm-speak-row"><div class="pm-speak-btn" id="pmRabbit">🐰</div><div class="pm-speak-btn" id="pmTurtle">🐢</div></div><div class="pm-speak-caption">Dinlemek İçin Tıkla</div></div>'+
+      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Bu kelimenin anlami nedir?</div><div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+'</div><div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit">🔊</button><span class="speak-lbl">Normal</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle">🐢</button><span class="speak-lbl">Yavaş</span></div></div><div class="speak-caption">Dinlemek İçin Tıkla</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
     document.getElementById('pmRabbit').onclick = () => pmSpeak(v.w, LANGS[v.lang].voice, false);
     document.getElementById('pmTurtle').onclick = () => pmSpeak(v.w, LANGS[v.lang].voice, true);
@@ -865,7 +1031,7 @@
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
     const barHtml = '<div class="pm-session-bar"><span>Soru '+(listenIdx+1)+' / '+batch.length+'</span><span>Adim 3/3 - Dinleme</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((listenIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
-      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">🎧 Duydugun kelimenin anlami ne?</div><div class="pm-word" style="font-size:34px;">🎙️</div><div class="pm-speak-row"><div class="pm-speak-btn" id="pmRabbit" title="Hizli tekrar dinle">🐰</div><div class="pm-speak-btn" id="pmTurtle" title="Yavas tekrar dinle">🐢</div></div><div class="pm-speak-caption">Dinlemek İçin Tıkla</div></div>'+
+      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">🎧 Duydugun kelimenin anlami ne?</div><div class="pm-word" style="font-size:34px;">🎙️</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="Hizli tekrar dinle">🔊</button><span class="speak-lbl">Normal</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle" title="Yavas tekrar dinle">🐢</button><span class="speak-lbl">Yavaş</span></div></div><div class="speak-caption">Dinlemek İçin Tıkla</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
     const playFast = () => pmSpeak(v.w, LANGS[v.lang].voice, false);
     const playSlow = () => pmSpeak(v.w, LANGS[v.lang].voice, true);
@@ -988,7 +1154,7 @@
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
     const barHtml = '<div class="pm-session-bar"><span>Genel Tekrar ('+reviewMode.group+')</span><span>'+(reviewMode.idx+1)+' / '+reviewMode.order.length+'</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((reviewMode.idx/reviewMode.order.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
-      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Bu kelimenin anlami nedir?</div><div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+'</div><div class="pm-word-sub">'+escapeHtml(v.pos||'')+'</div><div class="pm-speak-row"><div class="pm-speak-btn" id="pmRabbit">🐰</div><div class="pm-speak-btn" id="pmTurtle">🐢</div></div><div class="pm-speak-caption">Dinlemek İçin Tıkla</div></div>'+
+      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Bu kelimenin anlami nedir?</div><div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+'</div><div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit">🔊</button><span class="speak-lbl">Normal</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle">🐢</button><span class="speak-lbl">Yavaş</span></div></div><div class="speak-caption">Dinlemek İçin Tıkla</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
     document.getElementById('pmRabbit').onclick = () => pmSpeak(v.w, LANGS[v.lang].voice, false);
     document.getElementById('pmTurtle').onclick = () => pmSpeak(v.w, LANGS[v.lang].voice, true);

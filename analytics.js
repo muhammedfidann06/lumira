@@ -163,8 +163,15 @@
     try { firebase.auth().onAuthStateChanged(onAuth); } catch (e) {}
     onAuth();  /* zaten oturum açıksa hemen yakala */
 
-    /* app_opened — her açılışta bir kez (giriş varsa hemen, yoksa tamponda) */
-    trackEvent('app_opened');
+    /* app_opened — SEKME ömrü başına BİR KEZ. sessionStorage kullanılır çünkü
+       SW güncellemesi/rozet sonrası gibi bizim tetiklediğimiz reload'lar aynı
+       sekmede olur; bunlar yeni "açılış" sayılmamalı (istatistik şişmesin). */
+    try {
+      if (!sessionStorage.getItem('lumira_tab_opened')) {
+        sessionStorage.setItem('lumira_tab_opened', '1');
+        trackEvent('app_opened');
+      }
+    } catch (e) { trackEvent('app_opened'); }
 
     /* mevcut arayüzü ölçüme bağla (handler'lara dokunmadan) */
     wireAuto();

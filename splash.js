@@ -134,6 +134,12 @@
       /* hafif mod adımı */
       '.lms-note{font-family:var(--lms-mono);font-size:11.5px;color:var(--lms-dim);margin:2px 2px 18px;line-height:1.5;}',
       '.lms-warn{color:#ff3b5c;font-family:var(--lms-mono);font-size:12px;font-weight:500;margin:0 2px 20px;line-height:1.45;}',
+      '.lms-fill-row{font-family:var(--lms-serif);font-size:19px;color:var(--lms-ink);background:var(--lms-panel);border:1px solid var(--lms-line);border-radius:var(--lms-r);padding:16px;margin-bottom:14px;line-height:1.5;}',
+      '.lms-input{width:100%;box-sizing:border-box;font-family:var(--lms-serif);font-size:17px;color:var(--lms-ink);background:var(--lms-panel);border:1px solid var(--lms-line);border-radius:var(--lms-r);padding:14px 16px;margin-bottom:10px;outline:none;}',
+      '.lms-input:focus{border-color:var(--lms-acc);}',
+      '.lms-fill-fb{min-height:18px;font-family:var(--lms-mono);font-size:12.5px;margin-bottom:14px;}',
+      '.lms-fill-fb.ok{color:#3dffa0;}',
+      '.lms-fill-fb.bad{color:#ff8a8a;}',
       reduce ? '.lms-word,.lms-bfly{animation:none!important;opacity:.32!important;}*{animation-duration:.001s!important;}' : ''
     ].join('');
     document.head.appendChild(s);
@@ -234,7 +240,7 @@
       '<button class="lms-cta" data-go="1">Başlayalım</button>');
 
     /* 1 — dil */
-    var s1 = step('<div class="lms-eyebrow">Adım 1 / 3</div><h1 class="lms-h">Ne öğrenmek istiyorsun?</h1>' +
+    var s1 = step('<div class="lms-eyebrow">Adım 1 / 4</div><h1 class="lms-h">Ne öğrenmek istiyorsun?</h1>' +
       '<div class="lms-cards" id="lbLangs"></div><button class="lms-cta" data-go="2" disabled>Devam</button>');
     var lg = s1.querySelector('#lbLangs');
     LANGS.forEach(function (L) {
@@ -250,7 +256,7 @@
     });
 
     /* 2 — seviye */
-    var s2 = step('<div class="lms-eyebrow">Adım 2 / 3</div><h1 class="lms-h">Seviyen nedir?</h1>' +
+    var s2 = step('<div class="lms-eyebrow">Adım 2 / 4</div><h1 class="lms-h">Seviyen nedir?</h1>' +
       '<div class="lms-cards lms-lv" id="lbLevels"></div><button class="lms-cta" data-go="3" disabled>Devam</button>');
     var lv = s2.querySelector('#lbLevels');
     LEVELS.forEach(function (L) {
@@ -264,7 +270,7 @@
     });
 
     /* 3 — hafif mod */
-    var s3 = step('<div class="lms-eyebrow">Adım 3 / 3</div><h1 class="lms-h">Hafif mod</h1>' +
+    var s3 = step('<div class="lms-eyebrow">Adım 3 / 4</div><h1 class="lms-h">Hafif mod</h1>' +
       '<p class="lms-p">Kar taneleri, ışıltı ve arka plan süslemelerini kapatır; uygulama daha akıcı ve daha az pil harcar. Sözlük ve quiz aynen çalışır.</p>' +
       '<div class="lms-cards" id="lbLite"></div>' +
       '<p class="lms-warn">Telefonun düşük performanslı değilse açman önerilmez.</p>' +
@@ -282,19 +288,65 @@
       li.appendChild(o);
     });
 
-    /* 4 — hazır */
+    /* 4 — yazarak alıştırma (boşluk doldurma) */
+    var FILL_EX = {
+      de: { pre:'Ich', blank:'lerne', post:'Deutsch.', tr:'Ben Almanca öğreniyorum.', hint:'öğrenmek fiilinin \u201cben\u201d hali' },
+      en: { pre:'I', blank:'learn', post:'English.', tr:'Ben İngilizce öğreniyorum.', hint:'\u201clearn\u201d fiili' },
+      fr: { pre:'J\u2019', blank:'apprends', post:'le français.', tr:'Ben Fransızca öğreniyorum.', hint:'\u201capprendre\u201d fiilinin \u201cje\u201d hali' },
+      es: { pre:'Yo', blank:'aprendo', post:'español.', tr:'Ben İspanyolca öğreniyorum.', hint:'\u201caprender\u201d fiilinin \u201cyo\u201d hali' },
+      ar: { pre:'\u0623\u0646\u0627', blank:'\u0623\u062A\u0639\u0644\u0651\u0645', post:'\u0627\u0644\u0639\u0631\u0628\u064A\u0629', tr:'Ben Arapça öğreniyorum.', hint:'\u201c\u0623\u0646\u0627\u201d ile başlayan öğrenme fiili' },
+      ru: { pre:'\u042F', blank:'\u0443\u0447\u0443', post:'\u0440\u0443\u0441\u0441\u043A\u0438\u0439.', tr:'Ben Rusça öğreniyorum.', hint:'\u201c\u0443\u0447\u0438\u0442\u044C\u201d fiilinin \u201cben\u201d hali' }
+    };
+    var s4 = step('<div class="lms-eyebrow">Adım 4 / 4</div><h1 class="lms-h">Şimdi sen dene</h1>' +
+      '<p class="lms-p" id="lmsFillTr">Boşluğu doldur.</p>' +
+      '<div class="lms-fill-row" id="lmsFillRow" dir="auto"></div>' +
+      '<input type="text" class="lms-input" id="lmsFillInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Buraya yaz…">' +
+      '<div class="lms-fill-fb" id="lmsFillFb"></div>' +
+      '<button class="lms-cta" id="lmsFillCheck">Kontrol Et</button>' +
+      '<button class="lms-cta" data-go="5" id="lmsFillNext" style="display:none;margin-top:10px;">Devam</button>');
+    (function setupFill(){
+      var ansEl = s4.querySelector('#lmsFillTr');
+      var rowEl = s4.querySelector('#lmsFillRow');
+      var input = s4.querySelector('#lmsFillInput');
+      var fb = s4.querySelector('#lmsFillFb');
+      var checkBtn = s4.querySelector('#lmsFillCheck');
+      var nextBtn = s4.querySelector('#lmsFillNext');
+      var ex = null;
+      function refresh(){
+        ex = FILL_EX[chosen.lang] || FILL_EX.de;
+        ansEl.textContent = ex.tr + '  ·  ipucu: ' + ex.hint;
+        rowEl.textContent = ex.pre + ' _____ ' + ex.post;
+        input.value = ''; fb.textContent = ''; fb.className = 'lms-fill-fb';
+        checkBtn.style.display = ''; nextBtn.style.display = 'none'; input.disabled = false;
+      }
+      refresh();
+      /* dil sonradan değiştirilirse (Adım1'e geri dönülürse) örneği tazele */
+      s4._refreshFill = refresh;
+      checkBtn.onclick = function(){
+        var val = (input.value || '').trim().toLocaleLowerCase('tr');
+        var correct = ex.blank.trim().toLocaleLowerCase('tr');
+        var ok = val === correct;
+        fb.textContent = ok ? '✅ Doğru! Harika gidiyorsun.' : ('Doğrusu: ' + ex.blank);
+        fb.className = 'lms-fill-fb ' + (ok ? 'ok' : 'bad');
+        input.disabled = true; checkBtn.style.display = 'none'; nextBtn.style.display = '';
+      };
+      input.addEventListener('keydown', function(e){ if(e.key === 'Enter') checkBtn.click(); });
+    })();
+
+    /* 5 — hazır */
     step('<div class="lms-eyebrow">Hazırsın</div><h1 class="lms-h">Öğrenme yolculuğun<br><span class="em">şimdi başlıyor.</span></h1>' +
       '<p class="lms-p">Seçtiğin dille ilk kartına birazdan bakacaksın. Dili ve seviyeni dilediğinde değiştirebilirsin.</p>' +
       '<button class="lms-cta" data-go="done">Lumira\u2019ya Başla</button>');
 
     var dots = document.createElement('div'); dots.className = 'lms-steps';
-    for (var i = 0; i < 5; i++) dots.appendChild(document.createElement('i')).className = 'lms-dot';
+    for (var i = 0; i < 6; i++) dots.appendChild(document.createElement('i')).className = 'lms-dot';
     panel.appendChild(dots);
 
     function show(n) {
       stepEls.forEach(function (el, k) { el.classList.toggle('on', k === n); });
       dots.querySelectorAll('.lms-dot').forEach(function (dd, k) { dd.classList.toggle('on', k <= n); });
       if (n === 1) track('onboarding_started');
+      if (n === 4 && s4._refreshFill) s4._refreshFill();
     }
     panel.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('[data-go]'); if (!b) return;

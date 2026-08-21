@@ -825,6 +825,7 @@ html.lite .support-btn{-webkit-backdrop-filter:none; backdrop-filter:none;}
   background:rgba(61,255,160,.09);
 }
 .sup-amount{font-size:16px; font-weight:800; color:#eef4ff;}
+.sup-eur{font-size:9.5px; font-weight:600; color:#8fa0c2; margin-top:-2px;}
 .sup-badge{font-size:20px; line-height:1.1;}
 .sup-xp{font-size:10.5px; font-weight:700; color:#4fe8ff;}
 .sup-desc{

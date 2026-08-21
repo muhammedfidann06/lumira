@@ -235,7 +235,7 @@ function initLeaderboard(){
     let lastActivity = Date.now();
     let lastTick = Date.now();
     const FLUSH_MS = 5000;
-    const IDLE_MS = 60000;
+    const IDLE_MS = 600000; /* 10 dakika (önceden 1dk) */
 
     const ACTIVITY_EVENTS = ['click','touchstart','touchmove','mousemove','keydown','scroll','pointerdown'];
     ACTIVITY_EVENTS.forEach(evt => {

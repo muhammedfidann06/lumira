@@ -250,6 +250,14 @@ var isStandalone = (window.matchMedia && matchMedia('(display-mode: standalone)'
                    navigator.standalone === true ||
                    /android-app:\/\//.test(document.referrer);
 
+/* Play Store (TWA) üzerinden mi açıldı? twa-manifest.json'daki startUrl
+   '?src=twa' taşıyor; referrer bazen boş gelebildiği için ikisini birden
+   kontrol ediyoruz — daha güvenilir. */
+var isTwa = /android-app:\/\//.test(document.referrer) ||
+            /(^|[?&])src=twa(&|$)/.test(location.search) ||
+            store('pwa_src_twa') === true;
+if (/(^|[?&])src=twa(&|$)/.test(location.search)) { try { store('pwa_src_twa', true); } catch (e) {} }
+
 function setupShell() {
   document.documentElement.classList.toggle('pwa-standalone', isStandalone);
 
@@ -456,6 +464,7 @@ function handleSharedText(txt) {
     b.appendChild(box);
     var save = row('⭐', 'Favorilere ekle', 'Kendi kelime listene kaydet');
     save.onclick = function () {
+      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge('Favorilere ekleme')) return;
       addFavorite({ w: word, tr: txt.slice(0, 120), lang: activeLangCode(), pos: 'not' });
       toast('⭐ Favorilere eklendi', { kind: 'good' });
     };
@@ -480,7 +489,7 @@ function setupInstall() {
     deferredPrompt = e;
     var seen = store('pwa_install_dismissed');
     var opens = (store('pwa_opens') || 0);
-    if (!isStandalone && !seen && opens >= 2) setTimeout(showInstallBanner, 2500);
+    if (!isStandalone && !isTwa && !seen && opens >= 2) setTimeout(showInstallBanner, 2500);
   });
 
   addEventListener('appinstalled', function () {
@@ -493,7 +502,7 @@ function setupInstall() {
   /* iOS: beforeinstallprompt yok → yönergeli rehber */
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (isIOS && !isStandalone && !store('pwa_ios_hint') && (store('pwa_opens') || 0) >= 2) {
+  if (isIOS && !isStandalone && !isTwa && !store('pwa_ios_hint') && (store('pwa_opens') || 0) >= 2) {
     setTimeout(function () { store('pwa_ios_hint', true); iosInstallGuide(); }, 4000);
   }
 }
@@ -722,7 +731,10 @@ function setupFavButton() {
     var c = currentCard();
     if (!c) return;
     if (isFav(c)) { removeFavorite(c); toast('Favorilerden çıkarıldı'); }
-    else { addFavorite(c); vibrate(24); toast('⭐ ' + c.w + ' favorilere eklendi', { kind: 'good' }); }
+    else {
+      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge('Favorilere ekleme')) return;
+      addFavorite(c); vibrate(24); toast('⭐ ' + c.w + ' favorilere eklendi', { kind: 'good' });
+    }
     syncFavButton();
   };
 
@@ -791,10 +803,12 @@ function shareOrSave(filename, content, mime, title) {
   saveFile(filename, blob);
 }
 function shareApp() {
+  var PLAY_URL = CONFIG.playUrl || ('https://play.google.com/store/apps/details?id=' + CONFIG.packageId);
+  var shareUrl = isTwa ? PLAY_URL : (location.origin + location.pathname);
   var data = {
     title: CONFIG.brand + ' · ' + CONFIG.appName,
     text: '6 dilde kelime kartları, quiz ve seslendirme — çevrimdışı da çalışıyor 🌙',
-    url: location.origin + location.pathname
+    url: shareUrl
   };
   if (navigator.share) {
     navigator.share(data).catch(function () {});
@@ -856,7 +870,11 @@ var IGNORED_ERRORS = [
   'ServiceWorker script',
   'The operation is insecure',
   'disconnect',
-  'ResizeObserver loop'
+  'ResizeObserver loop',
+  /* Firebase SDK'nın dahili IndexedDB kalıcılık katmanından gelen, zararsız
+     ve geçici bir yarış-durumu hatası. İşlevselliği etkilemez (Firebase
+     otomatik olarak yeniden dener); hata raporlarını kirletmesin. */
+  'Attempt to get records from database without an in-progress transaction'
 ];
 function isNoise(msg) {
   msg = String(msg || '');
@@ -1749,13 +1767,13 @@ function openSettings() {
     b.appendChild(testRow);
 
     /* --- Çevrimdışı --------------------------------------------------- */
-    var packRow = row('📦', 'Çevrimdışı paketi indir', '6 dilin tüm sözlükleri · 3. seviye gerekir');
+    var packRow = row('📦', 'Çevrimdışı paketi indir', '6 dilin tüm sözlükleri · destek rozeti gerekir');
     var bar = document.createElement('div');
     bar.className = 'pwa-progress';
     bar.innerHTML = '<i></i>';
     cacheBar = qs('i', bar);
     packRow.onclick = function () {
-      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.level(3, 'Çevrimdışı paket')) return;
+      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge('Çevrimdışı paket')) return;
       downloadOfflinePack();
     };
     b.appendChild(packRow); b.appendChild(bar);
@@ -1801,7 +1819,7 @@ function openSettings() {
     b.appendChild(shr);
 
     /* --- Kurulum / güncelleme ----------------------------------------- */
-    if (!isStandalone) {
+    if (!isStandalone && !isTwa) {
       var ins = row('📲', 'Ana ekrana ekle', 'Tam ekran, hızlı ve çevrimdışı');
       ins.onclick = doInstall;
       b.appendChild(ins);
@@ -2079,7 +2097,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: 'pwa.js 1.7.18',
+  version: '1.7.20',
   isStandalone: function () { return isStandalone; }
 };
 

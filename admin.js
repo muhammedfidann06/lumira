@@ -378,8 +378,8 @@
       if (!d) { b.innerHTML = '<div class="pwa-empty">Bağlantı yok.</div>'; return; }
 
       var TIERS = [
-        [1, '👍🏻', 'Teşekkür', 10], [5, '☕️', 'Kahve', 50], [10, '❤️', 'Destekçi', 100],
-        [25, '💛', 'Dost', 250], [50, '⭐️', 'Yıldız', 500], [100, '👑', 'Kral', 1000]
+        [1, '👍🏻', 'Teşekkür', 10, '59,95₺'], [5, '☕️', 'Kahve', 50, '299,95₺'], [10, '❤️', 'Destekçi', 100, '599,95₺'],
+        [25, '💛', 'Dost', 250, '1499,95₺'], [50, '⭐️', 'Yıldız', 500, '2999,95₺'], [100, '👑', 'Kral', 1000, '5999,95₺']
       ];
       var chosen = null;
 
@@ -390,7 +390,7 @@
         var cell = document.createElement('button');
         cell.type = 'button';
         cell.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);color:#e8eef7;font-size:11px;cursor:pointer';
-        cell.innerHTML = '<span style="font-size:22px;line-height:1">' + t[1] + '</span>' + t[2] + '<span style="font-size:9px;color:#8791a3">+' + t[3] + ' XP</span>';
+        cell.innerHTML = '<span style="font-size:22px;line-height:1">' + t[1] + '</span>' + t[2] + '<span style="font-size:9px;color:#8791a3">'+t[4]+' · +' + t[3] + ' XP</span>';
         cell.onclick = function () {
           chosen = t;
           Array.prototype.forEach.call(grid.children, function (c) { c.style.borderColor = 'rgba(255,255,255,.12)'; c.style.background = 'rgba(255,255,255,.03)'; });

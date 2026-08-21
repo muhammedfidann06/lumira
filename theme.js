@@ -521,23 +521,29 @@
 
   /* ------------------------------------------------------------------ init */
   function init() {
-    parallax(sceneLayer());
+    /* Her adım izole: biri hata verirse (ör. tarayıcıya özgü bir API sorunu)
+       diğer dekorasyonlar (kelebekler, ateş böcekleri vb.) yine de çalışsın. */
+    function safe(fn, label) { try { fn(); } catch (e) { try { console.warn('theme.js', label, e); } catch (e2) {} } }
 
-    fx = FX();
-    fx.mount();
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) fx.pause(); else fx.resume();
-    });
+    safe(function () { parallax(sceneLayer()); }, 'parallax');
+    safe(function () { fx = FX(); fx.mount(); }, 'fx.mount');
+    safe(function () {
+      document.addEventListener('visibilitychange', function () {
+        if (!fx) return;
+        if (document.hidden) fx.pause(); else fx.resume();
+      });
+    }, 'visibilitychange');
+    safe(buildDesk, 'buildDesk');
+    safe(buildFlies, 'buildFlies');
+    safe(mergeProgress, 'mergeProgress');
+    safe(goldCount, 'goldCount');
+    safe(decorateLangs, 'decorateLangs');
+    safe(tapFeedback, 'tapFeedback');
 
-    buildDesk();
-    buildFlies();
-    mergeProgress();
-    goldCount();
-    decorateLangs();
-    tapFeedback();
-
-    var box = document.getElementById('langBox');
-    if (box) new MutationObserver(decorateLangs).observe(box, { childList: true });
+    safe(function () {
+      var box = document.getElementById('langBox');
+      if (box) new MutationObserver(decorateLangs).observe(box, { childList: true });
+    }, 'observer');
   }
 
   if (document.readyState === 'loading') {
