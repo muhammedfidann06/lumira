@@ -1097,11 +1097,16 @@
     root.innerHTML = '<div class="pm-root">'+barHtml+
       '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Boşluğu doldur</div>'+
       '<div class="pm-fill-row" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(blanked.before)+'<b>_____</b>'+escapeHtml(blanked.after)+'</div>'+
-      '<div class="pm-word-sub" style="margin-top:10px;">'+escapeHtml(v.exTr||v.tr||'')+'</div></div>'+
+      '<div class="pm-word-sub" style="margin-top:10px;">'+escapeHtml(v.exTr||v.tr||'')+'</div>'+
+      '<div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="Normal hızda dinle">🔊</button><span class="speak-lbl">Normal</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle" title="Yavaş dinle">🐢</button><span class="speak-lbl">Yavaş</span></div></div><div class="speak-caption">Cümleyi Dinlemek İçin Tıkla</div></div>'+
       '<input type="text" class="pm-fill-input" id="pmFillInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Buraya yaz…" style="margin-bottom:12px;">'+
       '<div class="pm-fill-fb" id="pmFillFb"></div>'+
       '<button class="pm-btn primary" id="pmFillCheck">Kontrol Et</button>'+
       '<button class="pm-btn primary" id="pmFillNext" style="display:none;">Devam</button></div>';
+
+    document.getElementById('pmRabbit').onclick = () => pmSpeak(v.ex, LANGS[v.lang].voice, false);
+    document.getElementById('pmTurtle').onclick = () => pmSpeak(v.ex, LANGS[v.lang].voice, true);
+    pmSpeak(v.ex, LANGS[v.lang].voice, false); /* soru gelince otomatik bir kez oku */
 
     const input = document.getElementById('pmFillInput');
     const fb = document.getElementById('pmFillFb');
@@ -1128,7 +1133,12 @@
     batch.forEach(item => {
       const v = item.v, key = item.key;
       const res = batchResult[key];
-      const bothOk = res.quizOk === true && res.listenOk === true;
+      /* Bir kelime "bilinen" sayılması için Anlam Testi + Dinleme + Boşluk
+         Doldurma adımlarının ÜÇÜNÜ DE geçmesi gerekir. fillOk === false
+         (yanlış yazıldı) → bilinmez. fillOk === null (bu kelimenin örnek
+         cümlesi yoktu, Adım 4'te hiç sorulmadı) → bu adım için nötr sayılır,
+         cezalandırılmaz. */
+      const bothOk = res.quizOk === true && res.listenOk === true && res.fillOk !== false;
       let rec = wordProgress[key] || { seen:0, correct:0, wrong:0, known:false, retryAfterSession:null, lang:v.lang, level:v.level, cat:v.cat };
       rec.seen = (rec.seen||0) + 1;
       sessionStats.total++;
