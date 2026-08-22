@@ -65,14 +65,15 @@
      TIERS[].sku ile BİREBİR AYNI ürün kimliğiyle "Yönetilmeyen ürün"
      (managed in-app product, tek seferlik) oluşturulmuş olmalı. */
   function purchaseTier(t) {
-    if (!window.isTwa) {
+    /* isTwa yerine DOĞRUDAN gerçek yeteneği kontrol ediyoruz: PaymentRequest +
+       getDigitalGoodsService sadece gerçek, Play Billing'e bağlı bir TWA
+       içinde var olur. isTwa referrer'a dayandığı için bazı Android/Chrome
+       sürümlerinde yanlışlıkla false çıkabiliyordu (bilinen sorun) — bu,
+       gerçek satın alma kararını etkilememesi için doğrudan API varlığına
+       bakıyoruz, daha güvenilir. */
+    if (!window.PaymentRequest || typeof window.getDigitalGoodsService !== 'function') {
       toast('Bu satın alma yalnızca Play Store\'dan indirilen uygulamada kullanılabilir. ' +
             'Web sürümünde ödeme alınmıyor.', { duration: 7000 });
-      return;
-    }
-    if (!window.PaymentRequest || typeof window.getDigitalGoodsService !== 'function') {
-      toast('Satın alma şu an bu cihazda kullanılamıyor. Play Store uygulamasını güncelleyip tekrar dene.',
-            { kind: 'bad', duration: 7000 });
       return;
     }
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: { sku: t.sku } }];

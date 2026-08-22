@@ -250,11 +250,18 @@ var isStandalone = (window.matchMedia && matchMedia('(display-mode: standalone)'
                    navigator.standalone === true ||
                    /android-app:\/\//.test(document.referrer);
 
-/* Play Store (TWA) üzerinden mi açıldı? twa-manifest.json'daki startUrl
-   '?src=twa' taşıyor; referrer bazen boş gelebildiği için ikisini birden
-   kontrol ediyoruz — daha güvenilir. */
+/* Play Store (TWA) üzerinden mi açıldı? Üç bağımsız sinyal kontrol edilir,
+   biri bile true ise TWA sayılır — hiçbiri tek başına %100 güvenilir değil:
+   1) 'android-app://' referrer — bazı Android/Chrome sürümlerinde (özellikle
+      uygulama simgesinden soğuk başlatmada) hiç set edilmiyor, bilinen sorun.
+   2) '?src=twa' — twa-manifest.json'daki startUrl'e bağlı, PWABuilder formunda
+      doğru girilmemişse eksik kalabilir.
+   3) getDigitalGoodsService — EN GÜVENİLİR sinyal: bu API sadece gerçek,
+      Play Billing'e bağlı bir TWA içinde var olur, sıradan tarayıcı
+      sekmelerinde asla bulunmaz. */
 var isTwa = /android-app:\/\//.test(document.referrer) ||
             /(^|[?&])src=twa(&|$)/.test(location.search) ||
+            (typeof window.getDigitalGoodsService === 'function') ||
             store('pwa_src_twa') === true;
 if (/(^|[?&])src=twa(&|$)/.test(location.search)) { try { store('pwa_src_twa', true); } catch (e) {} }
 
@@ -2097,7 +2104,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.7.20',
+  version: '1.7.22',
   isStandalone: function () { return isStandalone; }
 };
 
