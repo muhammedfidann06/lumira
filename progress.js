@@ -762,6 +762,29 @@
   const LT_COOLDOWN_MS = 7*24*60*60*1000;
   let ltState = null; // { level, order:[...], idx, correct, learnedKeys:[] }
 
+  function ltProgressKey(){ return 'lumira_lt_inprogress_'+activeLang; }
+  function ltSaveProgress(){
+    if(!ltState) return;
+    safeLocalSet(ltProgressKey(), {
+      level: ltState.level,
+      orderKeys: ltState.order.map(wordKeyFor), /* hafif: sadece anahtarlar saklanır */
+      idx: ltState.idx,
+      correct: ltState.correct,
+      learnedKeys: ltState.learnedKeys
+    });
+  }
+  function ltLoadProgress(level){
+    const saved = safeLocalGet(ltProgressKey());
+    if(!saved || saved.level !== level || !Array.isArray(saved.orderKeys)) return null;
+    /* anahtarlardan gerçek kelime nesnelerini VOCAB'dan geri kur */
+    const byKey = {};
+    VOCAB.filter(v=>v.lang===activeLang && v.level===level).forEach(v=>{ byKey[wordKeyFor(v)] = v; });
+    const order = saved.orderKeys.map(k=>byKey[k]).filter(Boolean);
+    if(order.length !== saved.orderKeys.length) return null; /* veri tutarsızsa güvenli şekilde vazgeç */
+    return { level, order, idx: saved.idx, correct: saved.correct, learnedKeys: saved.learnedKeys||[] };
+  }
+  function ltClearProgress(){ safeLocalSet(ltProgressKey(), null); }
+
   function ltKey(level){ return activeLang+'_'+level; }
   function ltCooldownLeft(level){
     const rec = (meta.levelTest||{})[ltKey(level)];
@@ -786,9 +809,14 @@
       const left = ltCooldownLeft(lv);
       const locked = left > 0;
       const cnt = ltWordCount(lv);
-      html += '<div class="pm-lang-card lt-lv-opt'+(locked?' locked':'')+'" data-level="'+lv+'" style="'+(locked?'opacity:.5;cursor:default;':'cursor:pointer;')+'">'+
+      const inProgress = !locked && ltLoadProgress(lv);
+      let sub;
+      if(locked) sub = '🔒 '+ltFmtLeft(left);
+      else if(inProgress) sub = '▶ Devam et · '+inProgress.idx+'/'+inProgress.order.length;
+      else sub = cnt+' kelime';
+      html += '<div class="pm-lang-card lt-lv-opt'+(locked?' locked':'')+(inProgress?' active':'')+'" data-level="'+lv+'" style="'+(locked?'opacity:.5;cursor:default;':'cursor:pointer;')+'">'+
         '<span class="nm" style="font-size:16px;font-weight:800;">'+lv+'</span>'+
-        '<span class="nm" style="font-size:10px;">'+(locked ? ('🔒 '+ltFmtLeft(left)) : (cnt+' kelime'))+'</span></div>';
+        '<span class="nm" style="font-size:10px;">'+sub+'</span></div>';
     });
     html += '</div>';
     html += '<span class="pm-back-link" id="pmBackHome" style="display:block;margin-top:18px;">← Ana sayfaya dön</span></div>';
@@ -796,7 +824,11 @@
     document.getElementById('pmBackHome').onclick = renderHome;
     document.querySelectorAll('.lt-lv-opt').forEach(el=>{
       if(el.classList.contains('locked')) return;
-      el.onclick = () => startLevelTest(el.dataset.level);
+      el.onclick = () => {
+        const saved = ltLoadProgress(el.dataset.level);
+        if(saved){ ltState = saved; renderLevelTestQuestion(); }
+        else startLevelTest(el.dataset.level);
+      };
     });
   }
 
@@ -808,6 +840,7 @@
     /* O seviyedeki TÜM kelimeler sorulur (sınırlama yok) */
     const order = shuffle(pool.slice());
     ltState = { level, order, idx:0, correct:0, learnedKeys:[] };
+    ltSaveProgress();
     renderLevelTestQuestion();
   }
 
@@ -824,8 +857,10 @@
       '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Bu kelimenin anlami nedir?</div>'+
       '<div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+'</div>'+
       '<div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div></div>'+
-      '<div class="pm-options" id="pmOptions"></div></div>';
+      '<div class="pm-options" id="pmOptions"></div>'+
+      '<span class="pm-back-link" id="pmLtExit" style="display:block;margin-top:16px;">← Kaydet ve çık</span></div>';
     const wrap = document.getElementById('pmOptions');
+    document.getElementById('pmLtExit').onclick = () => { ltSaveProgress(); ltState = null; renderHome(); };
     opts.forEach(o=>{
       const b = document.createElement('button');
       b.className = 'pm-opt'; b.textContent = o;
@@ -842,7 +877,7 @@
           if(x.textContent === v.tr) x.classList.add('correct');
           else if(x===b && !ok) x.classList.add('wrong');
         });
-        setTimeout(()=>{ ltState.idx++; renderLevelTestQuestion(); }, 650);
+        setTimeout(()=>{ ltState.idx++; ltSaveProgress(); renderLevelTestQuestion(); }, 650);
       };
       wrap.appendChild(b);
     });
@@ -850,6 +885,7 @@
 
   function finishLevelTest(){
     const { level, order, correct, learnedKeys } = ltState;
+    ltClearProgress();
     /* doğru cevaplanan kelimeler doğrudan "bilinen" listesine geçer */
     const y = todayStr();
     learnedKeys.forEach(k=>{
