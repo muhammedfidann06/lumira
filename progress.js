@@ -819,7 +819,7 @@
         '<span class="nm" style="font-size:10px;">'+sub+'</span></div>';
     });
     html += '</div>';
-    html += '<span class="pm-back-link" id="pmBackHome" style="display:block;margin-top:18px;">← Ana sayfaya dön</span></div>';
+    html += '<button type="button" class="ctrl primary" id="pmBackHome" style="width:100%;margin-top:18px;">← Ana Sayfaya Dön</button></div>';
     root.innerHTML = html;
     document.getElementById('pmBackHome').onclick = renderHome;
     document.querySelectorAll('.lt-lv-opt').forEach(el=>{
@@ -858,7 +858,7 @@
       '<div class="pm-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+'</div>'+
       '<div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div></div>'+
       '<div class="pm-options" id="pmOptions"></div>'+
-      '<span class="pm-back-link" id="pmLtExit" style="display:block;margin-top:16px;">← Kaydet ve çık</span></div>';
+      '<button type="button" class="ctrl primary" id="pmLtExit" style="width:100%;margin-top:16px;">← Kaydet ve Çık</button></div>';
     const wrap = document.getElementById('pmOptions');
     document.getElementById('pmLtExit').onclick = () => { ltSaveProgress(); ltState = null; renderHome(); };
     opts.forEach(o=>{
@@ -909,7 +909,7 @@
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">Sınav Tamamlandı</div>'+
       '<div class="pm-title">🎓 '+level+' Seviye Sonucun</div>'+
       '<div class="pm-sub">'+correct+' / '+order.length+' doğru ('+pct+'%) · +100 XP kazandın · '+learnedKeys.length+' kelime bilinenler listene eklendi</div></div>'+
-      '<span class="pm-back-link" id="pmBackHome2" style="display:block;margin-top:8px;">← Ana sayfaya dön</span></div>';
+      '<button type="button" class="ctrl primary" id="pmBackHome2" style="width:100%;margin-top:8px;">← Ana Sayfaya Dön</button></div>';
     root.innerHTML = html;
     document.getElementById('pmBackHome2').onclick = renderHome;
     ltState = null;
