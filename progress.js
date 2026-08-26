@@ -1119,6 +1119,50 @@
     };
   }
 
+  /* ============================== BOŞLUK DOLDURMA — AKILLI EŞLEŞTİRME
+     Amaç kelimeyi doğru YAZMAK, gramer çekimini test etmek değil. Bu yüzden:
+     1) Noktalama işaretleri yok sayılır ("Leihen?" ~ "leihen").
+     2) Küçük yazım hataları (özellikle ä/ö/ü gibi tek harf farkları)
+        tolere edilir — kelime uzunluğuna göre ölçeklenen bir eşik ile.
+     3) Cümledeki çekimli hâl (ör. "bedeutet") YERİNE öğrenilen sözlük
+        hâli (v.w, ör. "bedeuten") de kabul edilir. */
+  function fillNormalize(s){
+    return String(s||'')
+      .trim()
+      .toLocaleLowerCase('tr')
+      .replace(/[.,!?;:"'„"«»…()\[\]]/g, '')  /* noktalama tamamen at */
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  function levenshtein(a, b){
+    if(a === b) return 0;
+    const al = a.length, bl = b.length;
+    if(al === 0) return bl;
+    if(bl === 0) return al;
+    let prev = new Array(bl+1);
+    for(let j=0; j<=bl; j++) prev[j] = j;
+    for(let i=1; i<=al; i++){
+      const cur = [i];
+      for(let j=1; j<=bl; j++){
+        const cost = a[i-1] === b[j-1] ? 0 : 1;
+        cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost);
+      }
+      prev = cur;
+    }
+    return prev[bl];
+  }
+  function fillWordsMatch(userRaw, correctRaw){
+    const u = fillNormalize(userRaw);
+    const c = fillNormalize(correctRaw);
+    if(!u) return false;
+    if(u === c) return true;
+    /* uzunluğa göre ölçeklenen tolerans: çok kısa kelimede yazım hatası
+       payı verilmez (anlamsız hâle gelir), uzun kelimede 1-2 harf affedilir */
+    const maxLen = Math.max(u.length, c.length);
+    const tolerance = maxLen <= 3 ? 0 : (maxLen <= 7 ? 1 : 2);
+    return levenshtein(u, c) <= tolerance;
+  }
+
   function renderFillPhase(){
     if(fillIdx >= fillOrder.length){
       finalizeBatch();
@@ -1150,9 +1194,10 @@
     const nextBtn = document.getElementById('pmFillNext');
     input.focus();
     function check(){
-      const val = (input.value||'').trim().toLocaleLowerCase('tr');
-      const correct = blanked.answer.trim().toLocaleLowerCase('tr');
-      const ok = val === correct;
+      const typed = input.value || '';
+      /* Hem cümledeki çekimli hâl hem de öğrenilen sözlük hâli (v.w) kabul
+         edilir — amaç kelimeyi doğru yazmak, çekimi test etmek değil. */
+      const ok = fillWordsMatch(typed, blanked.answer) || fillWordsMatch(typed, v.w);
       batchResult[item.key].fillOk = ok;
       fb.textContent = ok ? '✅ Doğru!' : ('Doğrusu: '+blanked.answer);
       fb.className = 'pm-fill-fb ' + (ok ? 'ok' : 'bad');
