@@ -283,11 +283,20 @@
   }
   .cat-overlay.open{display:flex;}
   .cat-panel{
-    width:100%;max-width:480px;max-height:68vh;overflow-y:auto;
+    width:100%;max-width:480px;max-height:68vh;min-height:0;overflow-y:auto;
     background:linear-gradient(160deg, var(--panel-2), var(--panel));
     -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
     border:1px solid rgba(79,232,255,0.3);border-top-left-radius:22px;border-top-right-radius:22px;
     padding:18px 16px 26px;box-shadow:0 -10px 44px rgba(0,0,0,0.55);
+  }
+  /* masaüstünde fare tekerleğiyle kaydırılabildiği belli olsun diye görünür ince scrollbar */
+  .cat-panel::-webkit-scrollbar{width:7px;}
+  .cat-panel::-webkit-scrollbar-track{background:transparent;}
+  .cat-panel::-webkit-scrollbar-thumb{background:rgba(79,232,255,0.35);border-radius:4px;}
+  .cat-panel::-webkit-scrollbar-thumb:hover{background:rgba(79,232,255,0.55);}
+  @media (min-width:720px){
+    .cat-overlay{ align-items:center; }
+    .cat-panel{ max-height:70vh; border-radius:22px; }
   }
   .cat-panel-header{
     display:flex;justify-content:space-between;align-items:center;
@@ -660,8 +669,8 @@
     animation:pmNeonShift 4s ease-in-out infinite;
   }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.21">
-<link rel="stylesheet" href="pwa.css?v=1.7.21">
+<link rel="stylesheet" href="theme.css?v=1.7.27">
+<link rel="stylesheet" href="pwa.css?v=1.7.27">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1138,7 +1147,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.21"></script>
+<script src="leaderboard.js?v=1.7.27"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -1892,9 +1901,18 @@ function renderQuiz(){
 
   answered = false;
   let opts = [v.tr];
-  let pool = poolForLevel().filter(x => x.tr !== v.tr);
+  /* Çeldiriciler artık sorunun KATEGORİSİNDEN seçiliyor — kategori yeterince
+     kalabalık değilse seviyeye, o da yetmezse dile geri düşülür. Amaç:
+     kelimeyi bilmeyen biri "hangisi tanıdık" diye rastgele doğru cevaba
+     basamasın, gerçekten anlamı bilmesi gereksin. */
+  let pool = VOCAB.filter(x => x.lang===activeLang && x.cat===v.cat && x.tr !== v.tr);
   if(pool.length < 3){
-    pool = VOCAB.filter(x => x.lang===activeLang && x.tr !== v.tr);
+    let fallback = poolForLevel().filter(x => x.tr !== v.tr && !pool.some(p=>p.tr===x.tr));
+    pool = pool.concat(fallback);
+  }
+  if(pool.length < 3){
+    let fallback2 = VOCAB.filter(x => x.lang===activeLang && x.tr !== v.tr && !pool.some(p=>p.tr===x.tr));
+    pool = pool.concat(fallback2);
   }
   for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
   opts = opts.concat(pool.slice(0,3).map(x=>x.tr));
@@ -2207,7 +2225,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.21"></script>
+<script src="progress.js?v=1.7.27"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2218,22 +2236,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.21"></script>
-<script defer src="theme.js?v=1.7.21"></script>
+<script defer src="voice.js?v=1.7.27"></script>
+<script defer src="theme.js?v=1.7.27"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.21"></script>
+<script defer src="pwa.js?v=1.7.27"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.21"></script>
+<script defer src="support-badges.js?v=1.7.27"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.21"></script>
-<script defer src="analytics.js?v=1.7.21"></script>
+<script defer src="splash.js?v=1.7.27"></script>
+<script defer src="analytics.js?v=1.7.27"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.21"></script>
+<script defer src="admin.js?v=1.7.27"></script>
 </body>
 </html>

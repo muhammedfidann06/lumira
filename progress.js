@@ -372,6 +372,10 @@
       .pm-root .pm-mini-select{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
       .pm-root .pm-lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
       .pm-root .pm-lang-card{display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 6px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(79,232,255,0.18);cursor:pointer;transition:border-color .15s,background .15s,transform .1s;}
+      .pm-root .pm-cat-card{position:relative;}
+      .pm-root .pm-cat-check{position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all .15s;}
+      .pm-root .pm-cat-card.sel{border-color:#3dffa0;background:rgba(61,255,160,0.08);}
+      .pm-root .pm-cat-card.sel .pm-cat-check{background:#3dffa0;border-color:#3dffa0;color:#0a0d14;}
       .pm-root .pm-lang-card:active{transform:scale(.96);}
       .pm-root .pm-lang-card.active{border-color:#4fe8ff;background:rgba(79,232,255,0.10);}
       .pm-root .pm-lang-card .fl{font-size:22px;line-height:1;}
@@ -767,6 +771,7 @@
     if(!ltState) return;
     safeLocalSet(ltProgressKey(), {
       level: ltState.level,
+      categories: ltState.categories||null,
       orderKeys: ltState.order.map(wordKeyFor), /* hafif: sadece anahtarlar saklanır */
       idx: ltState.idx,
       correct: ltState.correct,
@@ -781,7 +786,7 @@
     VOCAB.filter(v=>v.lang===activeLang && v.level===level).forEach(v=>{ byKey[wordKeyFor(v)] = v; });
     const order = saved.orderKeys.map(k=>byKey[k]).filter(Boolean);
     if(order.length !== saved.orderKeys.length) return null; /* veri tutarsızsa güvenli şekilde vazgeç */
-    return { level, order, idx: saved.idx, correct: saved.correct, learnedKeys: saved.learnedKeys||[] };
+    return { level, categories: saved.categories||null, order, idx: saved.idx, correct: saved.correct, learnedKeys: saved.learnedKeys||[] };
   }
   function ltClearProgress(){ safeLocalSet(ltProgressKey(), null); }
 
@@ -827,19 +832,72 @@
       el.onclick = () => {
         const saved = ltLoadProgress(el.dataset.level);
         if(saved){ ltState = saved; renderLevelTestQuestion(); }
-        else startLevelTest(el.dataset.level);
+        else openLevelTestCategoryPicker(el.dataset.level);
       };
     });
   }
 
-  function startLevelTest(level){
+  /* ============================== SEVİYE TESPİT — KATEGORİ SEÇİMİ
+     Kullanıcı isterse seviyenin TÜMÜNDEN, isterse seçtiği bir veya birden
+     fazla kategoriden sınava girebilir. Sadece seçilen kategorilerdeki
+     kelimeler sorulur ve doğru bilinenler bilinenler listesine geçer. */
+  function openLevelTestCategoryPicker(level){
     const pool = VOCAB.filter(v=>v.lang===activeLang && v.level===level);
-    if(pool.length < 4){
-      showToast('Bu seviyede yeterli kelime yok'); openLevelTestPicker(); return;
+    const catCounts = {};
+    pool.forEach(v=>{ const c = v.cat||'Genel'; catCounts[c] = (catCounts[c]||0)+1; });
+    const cats = Object.keys(catCounts).sort((a,b)=>catCounts[b]-catCounts[a]);
+    const selected = new Set();
+
+    let html = '<div class="pm-root"><div class="pm-head">'+
+      '<div class="pm-eyebrow">🎓 '+level+' · Adım 2/2</div>'+
+      '<div class="pm-title">Kategori Seç</div>'+
+      '<div class="pm-sub">İstediğin kategorileri seç, ya da tümünden sınava gir. Sadece seçtiğin kategorilerin kelimeleri test edilir.</div></div>';
+    html += '<button type="button" class="ctrl primary" id="pmLtAllCats" style="width:100%;margin-bottom:14px;">🎯 Tüm Kategorilerden Gir ('+pool.length+' kelime)</button>';
+    html += '<div class="pm-lang-grid" id="pmLtCatGrid">';
+    cats.forEach(c=>{
+      const emoji = (window.CAT_EMOJI && window.CAT_EMOJI[c]) || '📖';
+      html += '<div class="pm-lang-card pm-cat-card" data-cat="'+escapeHtml(c)+'">'+
+        '<span class="pm-cat-check">✓</span>'+
+        '<span class="fl">'+emoji+'</span>'+
+        '<span class="nm">'+escapeHtml(c)+'</span>'+
+        '<span class="nm" style="font-size:9.5px;opacity:.7;">'+catCounts[c]+' kelime</span></div>';
+    });
+    html += '</div>';
+    html += '<button type="button" class="ctrl primary" id="pmLtStartCats" style="width:100%;margin-top:16px;opacity:.4;" disabled>Sınava Başla</button>';
+    html += '<button type="button" class="ctrl primary" id="pmBackLevels" style="width:100%;margin-top:10px;">← Seviye Seçime Dön</button></div>';
+    root.innerHTML = html;
+
+    document.getElementById('pmBackLevels').onclick = openLevelTestPicker;
+    document.getElementById('pmLtAllCats').onclick = () => startLevelTest(level, null);
+
+    const startBtn = document.getElementById('pmLtStartCats');
+    function refreshStartBtn(){
+      const n = selected.size;
+      startBtn.textContent = n>0 ? ('Sınava Başla ('+n+' kategori)') : 'Sınava Başla';
+      startBtn.disabled = n===0;
+      startBtn.style.opacity = n>0 ? '1' : '.4';
     }
-    /* O seviyedeki TÜM kelimeler sorulur (sınırlama yok) */
+    document.querySelectorAll('.pm-cat-card').forEach(el=>{
+      el.onclick = () => {
+        const c = el.dataset.cat;
+        if(selected.has(c)){ selected.delete(c); el.classList.remove('sel'); }
+        else { selected.add(c); el.classList.add('sel'); }
+        refreshStartBtn();
+      };
+    });
+    startBtn.onclick = () => { if(selected.size>0) startLevelTest(level, Array.from(selected)); };
+  }
+
+  function startLevelTest(level, categories){
+    let pool = VOCAB.filter(v=>v.lang===activeLang && v.level===level);
+    if(categories && categories.length){
+      pool = pool.filter(v=>categories.includes(v.cat));
+    }
+    if(pool.length < 4){
+      showToast('Bu seçimde yeterli kelime yok'); openLevelTestCategoryPicker(level); return;
+    }
     const order = shuffle(pool.slice());
-    ltState = { level, order, idx:0, correct:0, learnedKeys:[] };
+    ltState = { level, categories: categories||null, order, idx:0, correct:0, learnedKeys:[] };
     ltSaveProgress();
     renderLevelTestQuestion();
   }
@@ -848,7 +906,7 @@
     if(!ltState) return;
     if(ltState.idx >= ltState.order.length){ finishLevelTest(); return; }
     const v = ltState.order[ltState.idx];
-    const distractors = pickDistractors(v, 3);
+    const distractors = pickCategoryDistractors(v, 3);
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
     let answered = false;
     const barHtml = '<div class="pm-session-bar"><span>Soru '+(ltState.idx+1)+' / '+ltState.order.length+'</span><span>🎓 '+ltState.level+' Seviye Tespit</span></div>'+
@@ -884,7 +942,7 @@
   }
 
   function finishLevelTest(){
-    const { level, order, correct, learnedKeys } = ltState;
+    const { level, categories, order, correct, learnedKeys } = ltState;
     ltClearProgress();
     /* doğru cevaplanan kelimeler doğrudan "bilinen" listesine geçer */
     const y = todayStr();
@@ -906,9 +964,10 @@
     }catch(e){}
 
     const pct = Math.round((correct/order.length)*100);
+    const scopeTxt = (categories && categories.length) ? (categories.length+' kategori') : 'tüm kategoriler';
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">Sınav Tamamlandı</div>'+
       '<div class="pm-title">🎓 '+level+' Seviye Sonucun</div>'+
-      '<div class="pm-sub">'+correct+' / '+order.length+' doğru ('+pct+'%) · +100 XP kazandın · '+learnedKeys.length+' kelime bilinenler listene eklendi</div></div>'+
+      '<div class="pm-sub">'+correct+' / '+order.length+' doğru ('+pct+'%) · '+scopeTxt+' · +100 XP kazandın · '+learnedKeys.length+' kelime bilinenler listene eklendi</div></div>'+
       '<button type="button" class="ctrl primary" id="pmBackHome2" style="width:100%;margin-top:8px;">← Ana Sayfaya Dön</button></div>';
     root.innerHTML = html;
     document.getElementById('pmBackHome2').onclick = renderHome;
@@ -998,32 +1057,46 @@
     pmSpeak(v.w, LANGS[v.lang].voice, false);
   }
 
-  function pickDistractors(v, count){
-    let pool = poolForActiveFilter().filter(x=>x.w!==v.w);
-    if(pool.length < count) pool = VOCAB.filter(x=>x.lang===v.lang && x.w!==v.w);
+  /* ============================== ÇELDİRİCİ ÜRETİMİ (akıllı yanlış şıklar)
+     Amaç: kelimeyi bilmeyen biri sadece "hangisi tanıdık" diye rastgele
+     doğru cevaba basamasın. İki mod var:
+     1) pickCategoryDistractors — büyük havuzlar için (Seviye Tespit,
+        Günlük/Genel Tekrar): TÜM yanlış şıklar sorunun KATEGORİSİNDEN gelir.
+     2) pickBatchDistractors — küçük 10 kelimelik oturum için (Kişisel
+        Quiz/Dinleme): 2 şık kategoriden, 1 şık o an çalışılan diğer
+        kelimelerden (tuzak) — "bugün öğrendiğim kelime" ezberiyle rastgele
+        doğru cevaba basmayı zorlaştırır. */
+  function pickCategoryDistractors(v, count, exclude){
+    exclude = exclude || [];
+    let pool = VOCAB.filter(x=>x.lang===v.lang && x.cat===v.cat && x.w!==v.w && !exclude.some(e=>e.w===x.w));
+    if(pool.length < count){
+      let fallback = VOCAB.filter(x=>x.lang===v.lang && x.level===v.level && x.w!==v.w &&
+                                      !exclude.some(e=>e.w===x.w) && !pool.some(p=>p.w===x.w));
+      shuffle(fallback);
+      pool = pool.concat(fallback);
+    }
+    if(pool.length < count){
+      let fallback2 = VOCAB.filter(x=>x.lang===v.lang && x.w!==v.w &&
+                                       !exclude.some(e=>e.w===x.w) && !pool.some(p=>p.w===x.w));
+      shuffle(fallback2);
+      pool = pool.concat(fallback2);
+    }
     shuffle(pool);
-    let picked = pool.slice(0,count);
-
-    /* Zorlaştırma: seçeneklerden biri BUGÜN öğrenilen bir kelime olsun.
-       Amaç: ekrandaki kelimeyi bilmeyen biri, sadece o gün çalıştığı
-       kelimelerin Türkçesini ezberden tanıyıp rastgele doğru cevaba
-       basamasın — çeldirici olarak günün kelimesini de görsün. */
-    try{
-      const y = todayStr();
-      const keys = Object.keys(wordProgress).filter(k=>{
-        const r = wordProgress[k];
-        return r && r.learnedDate===y && r.lang===v.lang;
-      });
-      shuffle(keys);
-      for(const k of keys){
-        const word = VOCAB.find(x=>x.lang===v.lang && x.w!==v.w && wordKeyFor(x)===k);
-        if(word && !picked.some(p=>p.w===word.w)){
-          picked[picked.length-1] = word;
-          break;
-        }
-      }
-    }catch(e){}
-    return picked;
+    return pool.slice(0, count);
+  }
+  function pickBatchDistractors(v, count, batchWords){
+    const catPicks = pickCategoryDistractors(v, Math.max(0, count-1));
+    let result = catPicks.slice();
+    const usedWords = [v].concat(result);
+    const trapPool = shuffle((batchWords||[]).filter(x=>x.w!==v.w && !usedWords.some(u=>u.w===x.w)));
+    if(trapPool[0]){
+      result.push(trapPool[0]);
+    } else {
+      const extra = pickCategoryDistractors(v, 1, result);
+      if(extra[0]) result.push(extra[0]);
+    }
+    shuffle(result);
+    return result.slice(0, count);
   }
 
   function renderQuizPhase(){
@@ -1036,7 +1109,7 @@
     currentAnswered = false;
     const item = batch[quizOrder[quizIdx]];
     const v = item.v;
-    const distractors = pickDistractors(v, 3);
+    const distractors = pickBatchDistractors(v, 3, batch.map(it=>it.v));
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
     const barHtml = '<div class="pm-session-bar"><span>Soru '+(quizIdx+1)+' / '+batch.length+'</span><span>Adım 2/4 - Anlam Testi</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((quizIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
@@ -1074,7 +1147,7 @@
     currentAnswered = false;
     const item = batch[listenOrder[listenIdx]];
     const v = item.v;
-    const distractors = pickDistractors(v, 3);
+    const distractors = pickBatchDistractors(v, 3, batch.map(it=>it.v));
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
     const barHtml = '<div class="pm-session-bar"><span>Soru '+(listenIdx+1)+' / '+batch.length+'</span><span>Adım 3/4 - Dinleme</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((listenIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
@@ -1176,7 +1249,7 @@
     const barHtml = '<div class="pm-session-bar"><span>Soru '+(fillIdx+1)+' / '+batch.length+'</span><span>Adım 4/4 - Boşluk Doldurma</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((fillIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
       '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">Boşluğu doldur</div>'+
-      '<div class="pm-fill-row" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(blanked.before)+'<b>_____</b>'+escapeHtml(blanked.after)+'</div>'+
+      '<div class="pm-fill-row" id="pmFillRow" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(blanked.before)+'<b>_____</b>'+escapeHtml(blanked.after)+'</div>'+
       '<div class="pm-word-sub" style="margin-top:10px;">'+escapeHtml(v.exTr||v.tr||'')+'</div>'+
       '<div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="Normal hızda dinle">🔊</button><span class="speak-lbl">Normal</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle" title="Yavaş dinle">🐢</button><span class="speak-lbl">Yavaş</span></div></div><div class="speak-caption">Cümleyi Dinlemek İçin Tıkla</div></div>'+
       '<input type="text" class="pm-fill-input" id="pmFillInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Buraya yaz…" style="margin-bottom:12px;">'+
@@ -1199,6 +1272,14 @@
          edilir — amaç kelimeyi doğru yazmak, çekimi test etmek değil. */
       const ok = fillWordsMatch(typed, blanked.answer) || fillWordsMatch(typed, v.w);
       batchResult[item.key].fillOk = ok;
+      /* Kontrol Et'e basınca boşluk, doğru kelimeyle ve farklı renkte
+         dolduruluyor — kelime doğru şekliyle görsel olarak pekişsin. */
+      const fillRow = document.getElementById('pmFillRow');
+      if(fillRow){
+        fillRow.innerHTML = escapeHtml(blanked.before) +
+          '<b style="color:'+(ok?'#3dffa0':'#ff8a8a')+'">'+escapeHtml(blanked.answer)+'</b>' +
+          escapeHtml(blanked.after);
+      }
       fb.textContent = ok ? '✅ Doğru!' : ('Doğrusu: '+blanked.answer);
       fb.className = 'pm-fill-fb ' + (ok ? 'ok' : 'bad');
       input.disabled = true; checkBtn.style.display = 'none'; nextBtn.style.display = '';
@@ -1305,7 +1386,7 @@
     if(reviewMode.idx >= reviewMode.order.length){ finalizeReview(); return; }
     currentAnswered = false;
     const v = reviewMode.order[reviewMode.idx];
-    const distractors = pickDistractors(v, 3);
+    const distractors = pickCategoryDistractors(v, 3);
     const opts = shuffle([v.tr].concat(distractors.map(d=>d.tr)));
     const barHtml = '<div class="pm-session-bar"><span>Genel Tekrar ('+reviewMode.group+')</span><span>'+(reviewMode.idx+1)+' / '+reviewMode.order.length+'</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((reviewMode.idx/reviewMode.order.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
