@@ -175,6 +175,9 @@
         /* Sunucudaki özel rozetleri (admin verdiği ya da başka cihazda kazanılan)
            KORU — yoksa bu cihazın kaydı onları silebilir. */
         if(cur && cur.awards){ meta.awards = Object.assign({}, cur.awards, meta.awards||{}); }
+        /* İlk kayıt zamanı bir kez yazılır, bir daha değişmez — ileride
+           "ilk N kişi" gibi kayıt-sırası bazlı işler için gerekli. */
+        meta.joinedAt = (cur && cur.joinedAt) ? cur.joinedAt : Date.now();
         return meta;
       }, function(){ persistLocalMirror(); }, false);
     }
@@ -187,7 +190,7 @@
   function ensureDailyRollover(){
     const t = todayStr();
     if(meta.todayDate !== t){ meta.todayDate = t; meta.todayCount = 0; }
-    if(meta.tasksDate !== t){ meta.tasksDate = t; meta.tasks = {t1:false,t2:false,t3:false,t4:false,t5:false}; }
+    if(meta.tasksDate !== t){ meta.tasksDate = t; meta.tasks = {t1:false,t2:false,t3:false,t4:false,t5:false}; meta.todayActiveSeconds = 0; }
   }
   function markStudyToday(){
     const t = todayStr();
@@ -258,11 +261,23 @@
     if(t>=50 && !meta.tasks.t2){ meta.tasks.t2 = true; addXp(TASK_XP.t2, 'Görev: bugün 50 yeni kelime'); }
     if(t>=100 && !meta.tasks.t3){ meta.tasks.t3 = true; addXp(TASK_XP.t3, 'Görev: bugün 100 yeni kelime'); }
   }
+  let _t5SessionBaseline = 0; /* bu sayfa yüklemesinde en son okunan oturum süresi (yinelemeyi önlemek için) */
   function checkTask5(){
+    ensureDailyRollover();
     if(meta.tasks.t5) return;
-    const secs = (window.APP_getActiveSeconds ? window.APP_getActiveSeconds() : 0);
-    if(secs >= TASK5_SECONDS){
-      meta.tasks.t5 = true; addXp(TASK_XP.t5, 'Görev: 60dk çalışma');
+    /* DÜZELTME: eskiden var olmayan window.APP_getActiveSeconds çağrılıyordu,
+       bu yüzden süre her zaman 0 okunup görev asla tamamlanamıyordu. Doğru
+       fonksiyon window.LB_getActiveSeconds (leaderboard.js). Ayrıca artık
+       tek bir oturuma bağlı değil — GÜNLÜK toplam aktif süreye göre çalışır:
+       uygulamayı gün içinde birden çok kez açıp kapatsa bile birikir. */
+    const sessionSecs = (window.LB_getActiveSeconds ? window.LB_getActiveSeconds() : 0);
+    const delta = Math.max(0, sessionSecs - _t5SessionBaseline);
+    _t5SessionBaseline = sessionSecs;
+    if(delta > 0){
+      meta.todayActiveSeconds = (meta.todayActiveSeconds||0) + delta;
+    }
+    if((meta.todayActiveSeconds||0) >= TASK5_SECONDS){
+      meta.tasks.t5 = true; addXp(TASK_XP.t5, 'Görev: günde 60dk çalışma');
       persistMeta();
     }
   }
@@ -582,7 +597,7 @@
       { icon:'💵', label:'Bugün 10 yeni kelime öğren', sub:Math.min(today,10)+'/10 · +'+TASK_XP.t1+' XP', done:t.t1, pct:Math.min(100,Math.round(today/10*100)) },
       { icon:'💰', label:'Bugün 50 yeni kelime öğren', sub:Math.min(today,50)+'/50 · +'+TASK_XP.t2+' XP', done:t.t2, pct:Math.min(100,Math.round(today/50*100)) },
       { icon:'🏆', label:'Bugün 100 yeni kelime öğren', sub:Math.min(today,100)+'/100 · +'+TASK_XP.t3+' XP', done:t.t3, pct:Math.min(100,Math.round(today/100*100)) },
-      { icon:'⏱️', label:'Bu oturumda 60 dakika çalış', sub:'+'+TASK_XP.t5+' XP', done:t.t5, pct:t.t5?100:0 },
+      { icon:'⏱️', label:'Bugün 60 dakika çalış', sub:Math.min(60,Math.floor((meta.todayActiveSeconds||0)/60))+'/60 dk · +'+TASK_XP.t5+' XP', done:t.t5, pct:t.t5?100:Math.min(100,Math.round(((meta.todayActiveSeconds||0)/TASK5_SECONDS)*100)) },
     ];
 
     try{document.body.classList.add('pm-active');}catch(e){}
@@ -763,7 +778,7 @@
      sabit +100 XP. Her seviye İÇİN AYRI AYRI haftada bir kez girilebilir
      (A1'i tamamlamak A2'yi bekletmez; bir seviyeyi TEKRAR yapmak için o
      seviyenin son tamamlanmasından itibaren 7 gün geçmesi gerekir). */
-  const LT_COOLDOWN_MS = 7*24*60*60*1000;
+  const LT_COOLDOWN_MS = 24*60*60*1000; /* 24 saat (önceden 3 gün) */
   let ltState = null; // { level, order:[...], idx, correct, learnedKeys:[] }
 
   function ltProgressKey(){ return 'lumira_lt_inprogress_'+activeLang; }
