@@ -44,6 +44,7 @@
         ['⭐', 'XP gönder',               'Bir kullanıcıya XP ekle',                openXp],
         ['🏅', 'Başarım rozeti ver',      'Özel başarım rozeti (Başarımlar)',       openGiveBadge],
         ['💛', 'Destek rozeti ver',       'Satın alma gibi açar (PDF vb. + XP)',    openGiveSupport],
+        ['🎓', 'Seviye aktar',            'Bir seviyenin tüm kelimelerini bilinene ekle', openTransferLevel],
         ['🚫', 'Kullanıcı yasakla',       'Hesabı kapat, ilerlemesini kaldır',      openBan],
         ['✅', 'Yasağı kaldır',           'Hesabı aç, ilerlemesini geri getir',     openUnban]
       ];
@@ -312,6 +313,108 @@
     });
   }
 
+  /* ======================================= 2.4) SEVİYE AKTAR (bilinene ekle)
+     Admin, seçtiği dil+seviyedeki TÜM kelimeleri, seçtiği kullanıcının
+     "bilinen kelimeler" listesine tek seferde ekler. Akış: Kişi Seç →
+     Dil Seç → Seviye Seç → Bilinen Kelimelere Aktar. */
+  function openTransferLevel() {
+    if (!sheet()) return;
+    window.PWA.sheet('🎓 Seviye Aktar', 'Seçtiğin dil+seviyedeki tüm kelimeler, seçtiğin kişinin bilinen listesine eklenir.', function (b) {
+      var d = db();
+      if (!d) { b.innerHTML = '<div class="pwa-empty">Bağlantı yok.</div>'; return; }
+
+      var picker = userPicker(b, function () {});
+
+      var LANGS_ = [['de','🇩🇪 Almanca'],['en','🇬🇧 İngilizce'],['ar','🇸🇦 Arapça'],['fr','🇫🇷 Fransızca'],['es','🇪🇸 İspanyolca'],['ru','🇷🇺 Rusça']];
+      var LEVELS_ = ['A1','A2','B1','B2'];
+      var chosenLang = null, chosenLevel = null;
+
+      b.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:10px 2px 6px">Dil seç</p>');
+      var langGrid = document.createElement('div');
+      langGrid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px';
+      LANGS_.forEach(function (L) {
+        var cell = document.createElement('button'); cell.type = 'button';
+        cell.style.cssText = 'padding:10px 4px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);color:#e8eef7;font-size:12px;cursor:pointer';
+        cell.textContent = L[1];
+        cell.onclick = function () {
+          chosenLang = L[0];
+          Array.prototype.forEach.call(langGrid.children, function (c) { c.style.borderColor = 'rgba(255,255,255,.12)'; c.style.background = 'rgba(255,255,255,.03)'; });
+          cell.style.borderColor = 'rgba(255,210,59,.7)'; cell.style.background = 'rgba(255,210,59,.12)';
+        };
+        langGrid.appendChild(cell);
+      });
+      b.appendChild(langGrid);
+
+      b.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:2px 2px 6px">Seviye seç</p>');
+      var lvGrid = document.createElement('div');
+      lvGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px';
+      LEVELS_.forEach(function (lv) {
+        var cell = document.createElement('button'); cell.type = 'button';
+        cell.style.cssText = 'padding:10px 4px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);color:#e8eef7;font-size:13px;font-weight:700;cursor:pointer';
+        cell.textContent = lv;
+        cell.onclick = function () {
+          chosenLevel = lv;
+          Array.prototype.forEach.call(lvGrid.children, function (c) { c.style.borderColor = 'rgba(255,255,255,.12)'; c.style.background = 'rgba(255,255,255,.03)'; });
+          cell.style.borderColor = 'rgba(255,210,59,.7)'; cell.style.background = 'rgba(255,210,59,.12)';
+        };
+        lvGrid.appendChild(cell);
+      });
+      b.appendChild(lvGrid);
+
+      /* progress.js'teki wordKeyFor ile BİREBİR aynı anahtar üretimi —
+         tutarsız olursa kullanıcının cihazında kelime "bilinmiyor" görünür. */
+      function wordKeyFor(v) {
+        var raw = v.lang + '_' + v.level + '_' + v.w;
+        return raw.toLowerCase()
+          .replace(/[.#$\[\]\/\s]+/g, '_')
+          .replace(/[^a-z0-9_aoubcdefghijklmnopqrstuvwxyz]/gi, '_')
+          .slice(0, 120);
+      }
+
+      var send = mkBtn('Bilinen Kelimelere Aktar');
+      send.onclick = function () {
+        var u = picker.get();
+        if (!u) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
+        if (!chosenLang) { toast('Önce bir dil seç', { kind: 'bad' }); return; }
+        if (!chosenLevel) { toast('Önce bir seviye seç', { kind: 'bad' }); return; }
+        send.disabled = true; send.textContent = 'Yükleniyor…';
+
+        var proceed = function () {
+          var pool = (window.VOCAB || []).filter(function (v) { return v.lang === chosenLang && v.level === chosenLevel; });
+          if (!pool.length) {
+            send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar';
+            toast('Bu seçimde kelime bulunamadı', { kind: 'bad' }); return;
+          }
+          send.textContent = 'Aktarılıyor… (' + pool.length + ' kelime)';
+          var today = (function () { var dd = new Date(); var p = function (n) { return String(n).padStart(2, '0'); }; return dd.getFullYear() + '-' + p(dd.getMonth() + 1) + '-' + p(dd.getDate()); })();
+          var updates = {};
+          pool.forEach(function (v) {
+            var key = wordKeyFor(v);
+            updates['progress/' + u.uid + '/words/' + key] = {
+              known: true, learnedDate: today, seen: 1, correct: 1,
+              lang: v.lang, level: v.level, cat: v.cat || null
+            };
+          });
+          d.ref().update(updates).then(function () {
+            send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar';
+            toast('✅ ' + pool.length + ' kelime (' + chosenLevel + ') ' + u.name + '\'in bilinenlerine eklendi', { kind: 'good', duration: 7000 });
+          }).catch(function (e) {
+            send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar';
+            toast('Aktarılamadı: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+          });
+        };
+
+        /* Seçilen dilin kelime verisi bu oturumda yüklenmemiş olabilir
+           (diller ihtiyaç anında yükleniyor) — önce garanti altına al. */
+        if (window.ensureVocab) { window.ensureVocab(chosenLang).then(proceed).catch(function () {
+          send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar';
+          toast('Dil verisi yüklenemedi', { kind: 'bad' });
+        }); } else { proceed(); }
+      };
+      b.appendChild(send);
+    });
+  }
+
   /* ============================================ 2.5) BAŞARIM ROZETİ VER */
   function openGiveBadge() {
     if (!sheet()) return;
@@ -346,23 +449,69 @@
       });
       b.appendChild(grid);
 
-      var picker = userPicker(b, function () {});
+      /* ---- Tek kişi mi, herkese mi? ---- */
+      var toAll = false;
+      var modeRow = document.createElement('div');
+      modeRow.style.cssText = 'display:flex;gap:8px;margin-bottom:12px;';
+      var btnOne = mkBtn('👤 Tek kişi'); btnOne.style.flex = '1';
+      var btnAll = mkBtn('📢 Herkese gönder'); btnAll.style.flex = '1';
+      modeRow.appendChild(btnOne); modeRow.appendChild(btnAll);
+      b.appendChild(modeRow);
 
-      var send = mkBtn('Rozet ver');
+      var pickerWrap = document.createElement('div');
+      b.appendChild(pickerWrap);
+      var picker = userPicker(pickerWrap, function () {});
+
+      function syncMode(){
+        btnOne.style.opacity = toAll ? '.5' : '1';
+        btnAll.style.opacity = toAll ? '1' : '.5';
+        pickerWrap.style.display = toAll ? 'none' : '';
+      }
+      btnOne.onclick = function(){ toAll = false; syncMode(); };
+      btnAll.onclick = function(){ toAll = true; syncMode(); };
+      syncMode();
+
+      var send = mkBtn(toAll ? 'Herkese Gönder' : 'Rozet ver');
+      function refreshSendLabel(){ send.textContent = toAll ? 'Herkese Gönder' : 'Rozet ver'; }
+      btnOne.addEventListener('click', refreshSendLabel);
+      btnAll.addEventListener('click', refreshSendLabel);
+
       send.onclick = function () {
-        var t = picker.get();
-        if (!t) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
         if (!chosen) { toast('Önce bir rozet seç', { kind: 'bad' }); return; }
-        send.disabled = true; send.textContent = 'Veriliyor…';
-        d.ref('progress/' + t.uid + '/meta/awards/' + chosen[0])
-          .set({ e: chosen[1], n: chosen[2], ts: Date.now() })
-          .then(function () {
-            send.disabled = false; send.textContent = 'Rozet ver';
-            toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' rozeti verildi', { kind: 'good', duration: 6000 });
-          }).catch(function (e) {
-            send.disabled = false; send.textContent = 'Rozet ver';
-            toast('Verilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+        if (!toAll) {
+          var t = picker.get();
+          if (!t) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
+          send.disabled = true; send.textContent = 'Veriliyor…';
+          d.ref('progress/' + t.uid + '/meta/awards/' + chosen[0])
+            .set({ e: chosen[1], n: chosen[2], ts: Date.now() })
+            .then(function () {
+              send.disabled = false; refreshSendLabel();
+              toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' rozeti verildi', { kind: 'good', duration: 6000 });
+            }).catch(function (e) {
+              send.disabled = false; refreshSendLabel();
+              toast('Verilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+            });
+          return;
+        }
+        /* Herkese gönder: leaderboard'daki tüm UID'lere TEK bir toplu update ile yazılır */
+        if (!confirm('Bu rozeti KAYITLI HERKESE göndermek üzeresin. Emin misin?')) return;
+        send.disabled = true; send.textContent = 'Gönderiliyor…';
+        d.ref('leaderboard').once('value').then(function (sn) {
+          var val = sn.val() || {};
+          var uids = Object.keys(val);
+          if (!uids.length) throw new Error('kullanıcı yok');
+          var updates = {};
+          uids.forEach(function (uid) {
+            updates['progress/' + uid + '/meta/awards/' + chosen[0]] = { e: chosen[1], n: chosen[2], ts: Date.now() };
           });
+          return d.ref().update(updates).then(function () { return uids.length; });
+        }).then(function (n) {
+          send.disabled = false; refreshSendLabel();
+          toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' rozeti ' + n + ' kişiye gönderildi', { kind: 'good', duration: 7000 });
+        }).catch(function (e) {
+          send.disabled = false; refreshSendLabel();
+          toast('Gönderilemedi: ' + ((e && e.message) || 'hata'), { kind: 'bad', duration: 8000 });
+        });
       };
       b.appendChild(send);
     });
@@ -400,36 +549,123 @@
       });
       b.appendChild(grid);
 
-      var picker = userPicker(b, function () {});
+      /* ---- Gönderim modu: Tek kişi / Herkese / UID Listesi ---- */
+      var mode = 'one'; // 'one' | 'all' | 'list'
+      var modeRow = document.createElement('div');
+      modeRow.style.cssText = 'display:flex;gap:6px;margin-bottom:12px;';
+      var btnOne = mkBtn('👤 Tek kişi'); btnOne.style.flex = '1';
+      var btnAll = mkBtn('📢 Herkese'); btnAll.style.flex = '1';
+      var btnList = mkBtn('📋 UID Listesi'); btnList.style.flex = '1';
+      modeRow.appendChild(btnOne); modeRow.appendChild(btnAll); modeRow.appendChild(btnList);
+      b.appendChild(modeRow);
+
+      var pickerWrap = document.createElement('div');
+      b.appendChild(pickerWrap);
+      var picker = userPicker(pickerWrap, function () {});
+
+      var listWrap = document.createElement('div');
+      listWrap.style.display = 'none';
+      listWrap.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:2px 2px 6px">Her satıra bir UID (Firebase Console → Authentication\'dan kopyala). Örn: 67-100. kayıt olan kişilere toplu gönderim için buraya yapıştır.</p>');
+      var listArea = document.createElement('textarea');
+      listArea.rows = 5; listArea.placeholder = 'uid1\nuid2\nuid3...';
+      listArea.style.cssText = 'width:100%;box-sizing:border-box;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);color:#e8eef7;padding:10px;font-family:monospace;font-size:12px;margin-bottom:12px;';
+      listWrap.appendChild(listArea);
+      b.appendChild(listWrap);
+
+      function syncMode(){
+        pickerWrap.style.display = mode==='one' ? '' : 'none';
+        listWrap.style.display = mode==='list' ? '' : 'none';
+        [btnOne,btnAll,btnList].forEach(function(x){x.style.opacity='.5';});
+        (mode==='one'?btnOne:mode==='all'?btnAll:btnList).style.opacity = '1';
+        send.textContent = mode==='one' ? 'Rozeti ver' : (mode==='all' ? 'Herkese Gönder' : 'Listeye Gönder');
+      }
+      btnOne.onclick = function(){ mode='one'; syncMode(); };
+      btnAll.onclick = function(){ mode='all'; syncMode(); };
+      btnList.onclick = function(){ mode='list'; syncMode(); };
 
       var send = mkBtn('Rozeti ver');
-      send.onclick = function () {
-        var u = picker.get();
-        if (!u) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
-        if (!chosen) { toast('Önce bir rozet seç', { kind: 'bad' }); return; }
-        send.disabled = true; send.textContent = 'Veriliyor…';
+      syncMode();
+
+      /* Bir UID grubuna XP+rozet yaz: önce mevcut xp'leri OKU, sonra TEK
+         toplu update ile yaz (N kişi için 1 okuma turu + 1 yazma). */
+      function grantToUids(uids, chosen){
         var amount = chosen[0], xp = chosen[3];
-        /* XP ödülünü bir kez ekle (mevcut değeri oku, üstüne koy) */
-        d.ref('progress/' + u.uid + '/meta/xp').once('value').then(function (sn) {
-          var cur = typeof sn.val() === 'number' ? sn.val() : (u.xp || 0);
-          var next = cur + xp;
-          return Promise.all([
-            d.ref('progress/' + u.uid + '/meta/supportGrants/' + amount).set(true),
-            d.ref('progress/' + u.uid + '/meta/xp').set(next),
-            d.ref('leaderboard/' + u.uid).update({ xp: next, name: u.name })
-          ]);
-        }).then(function () {
-          send.disabled = false; send.textContent = 'Rozeti ver';
-          var m = me();
-          if (m && m.uid === u.uid) {
-            toast('✅ Verildi — yenileniyor…', { kind: 'good' });
-            setTimeout(function () { location.reload(); }, 1200);
-          } else {
-            toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' verildi · +' + xp + ' XP · özellikler açık', { kind: 'good', duration: 7000 });
-          }
+        return Promise.all(uids.map(function(uid){
+          return d.ref('progress/' + uid + '/meta/xp').once('value').then(function(sn){
+            return { uid: uid, cur: (typeof sn.val()==='number') ? sn.val() : 0 };
+          });
+        })).then(function(results){
+          var updates = {};
+          results.forEach(function(r){
+            var next = r.cur + xp;
+            updates['progress/' + r.uid + '/meta/supportGrants/' + amount] = true;
+            updates['progress/' + r.uid + '/meta/xp'] = next;
+            updates['leaderboard/' + r.uid + '/xp'] = next;
+          });
+          return d.ref().update(updates).then(function(){ return results.length; });
+        });
+      }
+
+      send.onclick = function () {
+        if (!chosen) { toast('Önce bir rozet seç', { kind: 'bad' }); return; }
+
+        if (mode === 'one') {
+          var u = picker.get();
+          if (!u) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
+          send.disabled = true; send.textContent = 'Veriliyor…';
+          var amount = chosen[0], xp = chosen[3];
+          d.ref('progress/' + u.uid + '/meta/xp').once('value').then(function (sn) {
+            var cur = typeof sn.val() === 'number' ? sn.val() : (u.xp || 0);
+            var next = cur + xp;
+            return Promise.all([
+              d.ref('progress/' + u.uid + '/meta/supportGrants/' + amount).set(true),
+              d.ref('progress/' + u.uid + '/meta/xp').set(next),
+              d.ref('leaderboard/' + u.uid).update({ xp: next, name: u.name })
+            ]);
+          }).then(function () {
+            send.disabled = false; syncMode();
+            var m = me();
+            if (m && m.uid === u.uid) {
+              toast('✅ Verildi — yenileniyor…', { kind: 'good' });
+              setTimeout(function () { location.reload(); }, 1200);
+            } else {
+              toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' verildi · +' + xp + ' XP · özellikler açık', { kind: 'good', duration: 7000 });
+            }
+          }).catch(function (e) {
+            send.disabled = false; syncMode();
+            toast('Verilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+          });
+          return;
+        }
+
+        if (mode === 'all') {
+          if (!confirm('Bu rozeti KAYITLI HERKESE göndermek üzeresin. Emin misin?')) return;
+          send.disabled = true; send.textContent = 'Gönderiliyor…';
+          d.ref('leaderboard').once('value').then(function (sn) {
+            var uids = Object.keys(sn.val() || {});
+            if (!uids.length) throw new Error('kullanıcı yok');
+            return grantToUids(uids, chosen);
+          }).then(function (n) {
+            send.disabled = false; syncMode();
+            toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' rozeti ' + n + ' kişiye gönderildi', { kind: 'good', duration: 7000 });
+          }).catch(function (e) {
+            send.disabled = false; syncMode();
+            toast('Gönderilemedi: ' + ((e && e.message) || 'hata'), { kind: 'bad', duration: 8000 });
+          });
+          return;
+        }
+
+        /* mode === 'list' */
+        var uids = listArea.value.split(/[\s,;]+/).map(function(s){return s.trim();}).filter(Boolean);
+        if (!uids.length) { toast('Önce UID listesi yapıştır', { kind: 'bad' }); return; }
+        if (!confirm(uids.length + ' kişiye bu rozeti göndermek üzeresin. Emin misin?')) return;
+        send.disabled = true; send.textContent = 'Gönderiliyor…';
+        grantToUids(uids, chosen).then(function (n) {
+          send.disabled = false; syncMode();
+          toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' rozeti ' + n + ' kişiye gönderildi', { kind: 'good', duration: 7000 });
         }).catch(function (e) {
-          send.disabled = false; send.textContent = 'Rozeti ver';
-          toast('Verilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+          send.disabled = false; syncMode();
+          toast('Gönderilemedi: ' + ((e && e.message) || 'hata'), { kind: 'bad', duration: 8000 });
         });
       };
       b.appendChild(send);
