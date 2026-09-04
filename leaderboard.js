@@ -169,6 +169,7 @@ function initLeaderboard(){
       try{
         const cred = await authSvc.createUserWithEmailAndPassword(email, password);
         try{ await cred.user.updateProfile({ displayName: displayName }); }catch(e){}
+        grantNewSignupBonusIfEligible(cred.user.uid); /* arka planda, hataya rağmen akışı bloklamaz */
         onAuthSuccess(cred.user.uid, displayName);
       }catch(err){
         console.error('Giriş hatası:', err && err.code, err && err.message);
@@ -220,6 +221,32 @@ function initLeaderboard(){
     }
     if(!nameSubmit || !nameInput){
       console.warn('Liderlik tablosu: giriş formu elementleri bulunamadı.');
+    }
+
+    /* ============================================ YENİ ÜYE HEDİYESİ (67-100)
+       Kayıt olan HERKES için atomik bir sayaç ilerletilir (system/signupCount).
+       Bu sayaç, bu kullanıcının kaçıncı kayıt olduğunu KESİN olarak (yarış
+       durumu olmadan) verir. 67-100. kayıtlara (dahil) otomatik olarak
+       👍🏻 Teşekkür destek rozeti + 500 XP hediye edilir. 101. ve sonrası
+       hiçbir şey almaz — sayaç orada donuk kalır, tekrar tetiklenmez.
+       NOT: Firebase kurallarında 'system/signupCount' için
+       { ".read": "auth != null", ".write": "auth != null" } izni gerekir. */
+    function grantNewSignupBonusIfEligible(uid){
+      if(!db) return;
+      try{
+        db.ref('system/signupCount').transaction(function(cur){
+          return (typeof cur === 'number' ? cur : 0) + 1;
+        }, function(err, committed, snap){
+          if(err || !committed || !snap) return;
+          var n = snap.val();
+          if(n >= 67 && n <= 100){
+            var updates = {};
+            updates['progress/'+uid+'/meta/supportGrants/1'] = true;
+            updates['progress/'+uid+'/meta/xp'] = 500;
+            db.ref().update(updates).catch(function(){});
+          }
+        });
+      }catch(e){}
     }
 
     function onAuthSuccess(uid, displayName){
