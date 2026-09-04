@@ -223,14 +223,17 @@ function initLeaderboard(){
       console.warn('Liderlik tablosu: giriş formu elementleri bulunamadı.');
     }
 
-    /* ============================================ YENİ ÜYE HEDİYESİ (67-100)
+    /* ============================================ YENİ ÜYE HEDİYESİ (1-100)
        Kayıt olan HERKES için atomik bir sayaç ilerletilir (system/signupCount).
        Bu sayaç, bu kullanıcının kaçıncı kayıt olduğunu KESİN olarak (yarış
-       durumu olmadan) verir. 67-100. kayıtlara (dahil) otomatik olarak
-       👍🏻 Teşekkür destek rozeti + 500 XP hediye edilir. 101. ve sonrası
-       hiçbir şey almaz — sayaç orada donuk kalır, tekrar tetiklenmez.
+       durumu olmadan) verir. Bu turdan itibaren 1. ile 100. kayıt (dahil)
+       arasındaki HERKESE otomatik olarak 👍🏻 Teşekkür destek rozeti + 500 XP
+       hediye edilir. 101. ve sonrası hiçbir şey almaz — normal üye olarak
+       kayıt olur, sayaç orada donuk kalır, tekrar tetiklenmez.
        NOT: Firebase kurallarında 'system/signupCount' için
-       { ".read": "auth != null", ".write": "auth != null" } izni gerekir. */
+       { ".read": "auth != null", ".write": "auth != null" } izni gerekir
+       — bu kural Console'da yayında değilse bu fonksiyon SESSİZCE hiçbir
+       şey yapmaz (transaction izin hatasıyla düşer, err set edilir). */
     function grantNewSignupBonusIfEligible(uid){
       if(!db) return;
       try{
@@ -239,7 +242,7 @@ function initLeaderboard(){
         }, function(err, committed, snap){
           if(err || !committed || !snap) return;
           var n = snap.val();
-          if(n >= 67 && n <= 100){
+          if(n <= 100){
             var updates = {};
             updates['progress/'+uid+'/meta/supportGrants/1'] = true;
             updates['progress/'+uid+'/meta/xp'] = 500;
