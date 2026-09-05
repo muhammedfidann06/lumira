@@ -13,6 +13,7 @@
 
   const BADGE_THRESHOLDS = [50, 100, 250, 500, 1000];
   const PM_FLAGS = { de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
+  const PM_LANDMARK = { de:'🏛️', en:'🕰️', ar:'🕌', fr:'🗼', es:'⛪', ru:'🏰' };
   const DEFAULT_DAILY_GOAL = 100;
   const BATCH_SIZE = 10;
   const RETRY_SESSION_GAP = 1; // 1: hemen bir sonraki oturumu atlar, ondan sonraki oturumda tekrar çıkar
@@ -613,9 +614,9 @@
     html += '<div class="pm-eyebrow">Kişisel Öğrenme Alanı</div>';
     html += '<div class="pm-title">👤 '+escapeHtml(currentName)+'\'e Özel</div>';
     html += '<div class="pm-sub">'+L.native+' öğrenimi - ilerlemen tüm cihazlarında senkron</div>';
-    html += '<div class="pm-lang-grid" id="pmLangSelect">';
+    html += '<div class="lang-box" id="pmLangSelect">';
     Object.keys(LANGS).forEach(code=>{
-      html += '<div class="pm-lang-card '+(code===activeLang?'active':'')+'" data-lang="'+code+'"><span class="fl">'+(PM_FLAGS[code]||'🌐')+'</span><span class="nm">'+LANGS[code].label+'</span></div>';
+      html += '<div class="lang-opt '+(code===activeLang?'active':'')+'" data-lang="'+code+'"><span class="landmark" aria-hidden="true">'+(PM_LANDMARK[code]||'')+'</span><div class="flag">'+(PM_FLAGS[code]||'🌐')+'</div><div class="lname">'+LANGS[code].label+'</div></div>';
     });
     html += '</div>';
     html += '<div class="pm-level-seg" id="pmLevelSelect">';
@@ -696,7 +697,7 @@
 
     root.innerHTML = html;
 
-    document.querySelectorAll('#pmLangSelect .pm-lang-card').forEach(el=>{
+    document.querySelectorAll('#pmLangSelect .lang-opt').forEach(el=>{
       el.onclick = () => {
         activeLang = el.dataset.lang;
         activeLevel = 'TÜMÜ';

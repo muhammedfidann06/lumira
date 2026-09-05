@@ -223,6 +223,16 @@
   }
 
   .lang-box{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  /* GÜVENLİK KATMANI: "Notlarım" (ve "Kişisel") sekmesi açıkken üstteki dil
+     kartları/seviye/kategori çubuğu normalde ilgili tab handler'ı içindeki
+     setDisplay(...,'none') satırlarıyla gizleniyor. Olası bir zamanlama/
+     cache sorununda bile bu asla yanlışlıkla görünür KALMASIN diye, aynı
+     şeyi body sınıfı üzerinden CSS ile de zorunlu kılıyoruz — iki bağımsız
+     mekanizma birden aynı sonucu garanti ediyor. */
+  body.notebook-active #langBox, body.notebook-active #langPair,
+  body.notebook-active #levelBox, body.notebook-active #chips{
+    display:none !important;
+  }
   body.pm-active #langBox,body.pm-active #langPair,body.pm-active #levelBox,body.pm-active #chips{display:none !important;}
   .lang-opt{
     flex:1 1 27%;min-width:78px;text-align:center;padding:12px 4px;border-radius:16px;cursor:pointer;
@@ -800,8 +810,8 @@
   .fav-star.on{color:var(--gold);text-shadow:0 0 10px rgba(255,210,59,0.8);}
   .fav-star.off{color:rgba(255,255,255,0.35);}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.38">
-<link rel="stylesheet" href="pwa.css?v=1.7.38">
+<link rel="stylesheet" href="theme.css?v=1.7.39">
+<link rel="stylesheet" href="pwa.css?v=1.7.39">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1282,7 +1292,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.38"></script>
+<script src="leaderboard.js?v=1.7.39"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2133,6 +2143,7 @@ function toggleActive(id, on){ const el = $(id); if(el) el.classList.toggle('act
 
 function deactivateAllTabs(){
   try{document.body.classList.remove('pm-active');}catch(e){}
+  try{document.body.classList.remove('notebook-active');}catch(e){}
   toggleActive('tabCards', false);
   toggleActive('tabQuiz', false);
   toggleActive('tabPersonal', false);
@@ -2185,6 +2196,7 @@ if($('tabPersonal')) $('tabPersonal').onclick = () => {
 if($('tabNotebook')) $('tabNotebook').onclick = () => {
   deactivateAllTabs();
   toggleActive('tabNotebook', true);
+  try{document.body.classList.add('notebook-active');}catch(e){}
   setDisplay('notebookView', 'block');
   setDisplay('levelBox', 'none');
   setDisplay('chips', 'none');
@@ -2213,6 +2225,7 @@ if($('tabNotebook')) $('tabNotebook').onclick = () => {
    ilk senkronizasyonda otomatik olarak hesaba taşınır (nbMigrateLocalOnce).
    ========================================================= */
 const LANG_FLAGS = { de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
+const LANG_LANDMARK = { de:'🏛️', en:'🕰️', ar:'🕌', fr:'🗼', es:'⛪', ru:'🏰' };
 let nbWords = {};        /* {pushId: {w,tr,ex,lang,cat,ts}} — manuel eklenenler */
 let nbFavorites = {};    /* {favKey: {w,tr,ex,exTr,pos,lang,cat,ts}} — favorilenen kartlar */
 let nbSyncedUid = null;
@@ -2415,11 +2428,11 @@ function nbRender(){
     let html = '<div class="nb-wrap"><div class="pm-root"><div class="pm-card">';
     html += '<h4>🌍 Hangi Dilde Çalışmak İstiyorsun?</h4>';
     html += '<div class="pm-sub" style="margin-bottom:12px;">Kelime Defterindeki kelimeler arasından önce bir dil seç, sadece o dildeki kelimelerle çalışasın.</div>';
-    html += '<div class="pm-lang-grid">';
+    html += '<div class="lang-box">';
     langs.forEach(code => {
       const L = LANGS[code] || { label: code };
       const count = list.filter(it => (it.lang||'de') === code).length;
-      html += '<div class="pm-lang-card" data-nb-study-lang="'+code+'"><span class="fl">'+(LANG_FLAGS[code]||'🌐')+'</span><span class="nm">'+nbEsc(L.label)+'</span><span class="nm" style="opacity:.65;font-weight:600;">'+count+' kelime</span></div>';
+      html += '<div class="lang-opt" data-lang="'+code+'" data-nb-study-lang="'+code+'"><span class="landmark" aria-hidden="true">'+(LANG_LANDMARK[code]||'')+'</span><div class="flag">'+(LANG_FLAGS[code]||'🌐')+'</div><div class="lname">'+nbEsc(L.label)+'</div><div class="lname" style="opacity:.65;font-weight:600;">'+count+' kelime</div></div>';
     });
     html += '</div>';
     html += '<button type="button" class="pm-btn small" id="nbStudyCancel" style="width:100%;margin-top:14px;">Vazgeç</button>';
@@ -2452,11 +2465,11 @@ function nbRender(){
   html += '<h4>'+(editing ? '✏️ Kelimeyi Düzenle' : '➕ Yeni Kelime Ekle')+'</h4>';
 
   html += '<div class="pm-sub" style="margin-bottom:8px;">1) Hangi dilde? *</div>';
-  html += '<div class="pm-lang-grid">';
+  html += '<div class="lang-box">';
   Object.keys(LANGS).forEach(code => {
     const L = LANGS[code];
     const active = nbSelectedAddLang === code;
-    html += '<div class="pm-lang-card'+(active?' active':'')+'" data-nb-add-lang="'+code+'"><span class="fl">'+(LANG_FLAGS[code]||'🌐')+'</span><span class="nm">'+nbEsc(L.label)+'</span></div>';
+    html += '<div class="lang-opt'+(active?' active':'')+'" data-lang="'+code+'" data-nb-add-lang="'+code+'"><span class="landmark" aria-hidden="true">'+(LANG_LANDMARK[code]||'')+'</span><div class="flag">'+(LANG_FLAGS[code]||'🌐')+'</div><div class="lname">'+nbEsc(L.label)+'</div></div>';
   });
   html += '</div>';
   html += '<div class="nb-lang-required" id="nbLangWarn"></div>';
@@ -2898,7 +2911,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.38"></script>
+<script src="progress.js?v=1.7.39"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2909,22 +2922,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.38"></script>
-<script defer src="theme.js?v=1.7.38"></script>
+<script defer src="voice.js?v=1.7.39"></script>
+<script defer src="theme.js?v=1.7.39"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.38"></script>
+<script defer src="pwa.js?v=1.7.39"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.38"></script>
+<script defer src="support-badges.js?v=1.7.39"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.38"></script>
-<script defer src="analytics.js?v=1.7.38"></script>
+<script defer src="splash.js?v=1.7.39"></script>
+<script defer src="analytics.js?v=1.7.39"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.38"></script>
+<script defer src="admin.js?v=1.7.39"></script>
 </body>
 </html>
