@@ -800,8 +800,8 @@
   .fav-star.on{color:var(--gold);text-shadow:0 0 10px rgba(255,210,59,0.8);}
   .fav-star.off{color:rgba(255,255,255,0.35);}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.36">
-<link rel="stylesheet" href="pwa.css?v=1.7.36">
+<link rel="stylesheet" href="theme.css?v=1.7.37">
+<link rel="stylesheet" href="pwa.css?v=1.7.37">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1282,7 +1282,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.36"></script>
+<script src="leaderboard.js?v=1.7.37"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2218,6 +2218,7 @@ let nbFavorites = {};    /* {favKey: {w,tr,ex,exTr,pos,lang,cat,ts}} — favoril
 let nbSyncedUid = null;
 let nbEditingId = null;      /* düzenlenen manuel kelimenin pushId'si */
 let nbSelectedAddLang = null; /* ekleme formunda seçilen dil (zorunlu) */
+let nbPrefill = null;         /* Kelime Ara'dan seçilince formu önceden dolduran veri {w,tr,ex,cat} */
 let nbStudyPicking = false;   /* "Çalışmaya Başla" sonrası dil seçim ekranı açık mı */
 
 function nbSanitizeKey(s){
@@ -2385,18 +2386,14 @@ function nbSearchVocab(query){
   return starts.concat(contains).slice(0, 8);
 }
 function nbQuickAdd(v){
-  const db = window.LB_getDb ? window.LB_getDb() : null;
-  const uid = window.LB_getUid ? window.LB_getUid() : null;
-  if(!db || !uid){ alert('Kelime eklemek için önce giriş yapmalısın.'); return; }
-  const dupExists = Object.keys(nbWords||{}).some(id => {
-    const it = nbWords[id]||{};
-    return (it.lang||'de') === v.lang && nbSanitizeKey(it.w) === nbSanitizeKey(v.w);
-  });
-  if(dupExists){ alert('Bu kelime zaten Kelime Defterinde var.'); return; }
-  db.ref('progress/'+uid+'/notebook').push({
-    w: v.w, tr: v.tr||'', ex: v.ex||'', cat: v.cat||'', lang: v.lang, ts: Date.now()
-  });
   nbSelectedAddLang = v.lang;
+  nbEditingId = null;
+  nbPrefill = { w: v.w||'', tr: v.tr||'', ex: v.ex||'', cat: v.cat||'' };
+  nbRender();
+  try{
+    const wi = document.getElementById('nbInputWord');
+    if(wi) wi.scrollIntoView({ behavior:'smooth', block:'center' });
+  }catch(e){}
 }
 
 function nbRender(){
@@ -2437,6 +2434,7 @@ function nbRender(){
 
   const editing = nbEditingId != null ? list.find(w => w.id === nbEditingId && w.source==='manual') : null;
   if(editing && nbSelectedAddLang == null) nbSelectedAddLang = editing.lang;
+  const formSrc = editing || nbPrefill || null;
 
   let html = '<div class="nb-wrap">';
   html += '<p class="nb-intro">Kendi eklediğin kelimeler ve favorilerine attığın kartlar burada, hesabına bağlı olarak saklanır — herkesin gördüğü hazır listelerden ayrıdır. Farklı bir cihazdan aynı hesapla girsen de kelimelerin seninle gelir.</p>';
@@ -2462,10 +2460,10 @@ function nbRender(){
   html += '</div>';
   html += '<div class="nb-lang-required" id="nbLangWarn"></div>';
 
-  html += '<input type="text" class="pm-fill-input" id="nbInputWord" placeholder="Kelime * (örn. Schmetterling)" maxlength="60" style="margin-top:14px;margin-bottom:10px;" value="'+nbEsc(editing?editing.w:'')+'">';
-  html += '<input type="text" class="pm-fill-input" id="nbInputTr" placeholder="Türkçe anlamı (örn. kelebek)" maxlength="60" style="margin-bottom:10px;" value="'+nbEsc(editing?editing.tr:'')+'">';
-  html += '<input type="text" class="pm-fill-input" id="nbInputCat" placeholder="Kategori (opsiyonel, örn. Hayvanlar)" maxlength="30" style="margin-bottom:10px;" value="'+nbEsc(editing?editing.cat:'')+'">';
-  html += '<textarea class="pm-fill-input" id="nbInputEx" placeholder="Örnek cümle (opsiyonel)" style="margin-bottom:14px;min-height:46px;resize:vertical;font-family:inherit;font-size:14px;">'+nbEsc(editing?editing.ex:'')+'</textarea>';
+  html += '<input type="text" class="pm-fill-input" id="nbInputWord" placeholder="Kelime * (örn. Schmetterling)" maxlength="60" style="margin-top:14px;margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.w:'')+'">';
+  html += '<input type="text" class="pm-fill-input" id="nbInputTr" placeholder="Türkçe anlamı (örn. kelebek)" maxlength="60" style="margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.tr:'')+'">';
+  html += '<input type="text" class="pm-fill-input" id="nbInputCat" placeholder="Kategori (opsiyonel, örn. Hayvanlar)" maxlength="30" style="margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.cat:'')+'">';
+  html += '<textarea class="pm-fill-input" id="nbInputEx" placeholder="Örnek cümle (opsiyonel)" style="margin-bottom:14px;min-height:46px;resize:vertical;font-family:inherit;font-size:14px;">'+nbEsc(formSrc?formSrc.ex:'')+'</textarea>';
   html += '<div style="display:flex;gap:10px;">';
   if(editing){
     html += '<button type="button" class="pm-btn small" id="nbCancelEdit" style="flex:1;">Vazgeç</button>';
@@ -2577,14 +2575,15 @@ function nbRender(){
       db.ref('progress/'+uid2+'/notebook').push({ w, tr, ex, cat, lang: nbSelectedAddLang, ts: Date.now() });
     }
     nbSelectedAddLang = null;
+    nbPrefill = null;
     nbRender();
   };
 
   const cancelBtn = document.getElementById('nbCancelEdit');
-  if(cancelBtn) cancelBtn.onclick = () => { nbEditingId = null; nbSelectedAddLang = null; nbRender(); };
+  if(cancelBtn) cancelBtn.onclick = () => { nbEditingId = null; nbSelectedAddLang = null; nbPrefill = null; nbRender(); };
 
   host.querySelectorAll('[data-nb-edit]').forEach(el => {
-    el.onclick = () => { nbEditingId = el.getAttribute('data-nb-edit'); nbSelectedAddLang = null; nbRender(); };
+    el.onclick = () => { nbEditingId = el.getAttribute('data-nb-edit'); nbSelectedAddLang = null; nbPrefill = null; nbRender(); };
   });
   host.querySelectorAll('[data-nb-del]').forEach(el => {
     el.onclick = () => {
@@ -2880,7 +2879,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.36"></script>
+<script src="progress.js?v=1.7.37"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2891,22 +2890,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.36"></script>
-<script defer src="theme.js?v=1.7.36"></script>
+<script defer src="voice.js?v=1.7.37"></script>
+<script defer src="theme.js?v=1.7.37"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.36"></script>
+<script defer src="pwa.js?v=1.7.37"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.36"></script>
+<script defer src="support-badges.js?v=1.7.37"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.36"></script>
-<script defer src="analytics.js?v=1.7.36"></script>
+<script defer src="splash.js?v=1.7.37"></script>
+<script defer src="analytics.js?v=1.7.37"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.36"></script>
+<script defer src="admin.js?v=1.7.37"></script>
 </body>
 </html>
