@@ -784,8 +784,8 @@
   .fav-star.on{color:var(--gold);text-shadow:0 0 10px rgba(255,210,59,0.8);}
   .fav-star.off{color:rgba(255,255,255,0.35);}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.34">
-<link rel="stylesheet" href="pwa.css?v=1.7.34">
+<link rel="stylesheet" href="theme.css?v=1.7.35">
+<link rel="stylesheet" href="pwa.css?v=1.7.35">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1266,7 +1266,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.34"></script>
+<script src="leaderboard.js?v=1.7.35"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2220,6 +2220,7 @@ function nbInitSync(){
   db.ref('progress/'+uid+'/notebook').on('value', snap => {
     nbWords = snap.val() || {};
     nbMigrateLocalOnce();
+    nbDedupeIfNeeded();
     nbRenderIfOpen();
   });
   db.ref('progress/'+uid+'/favorites').on('value', snap => {
@@ -2229,35 +2230,82 @@ function nbInitSync(){
   });
 }
 /* Kullanıcı henüz giriş sürecini tamamlamamış olabilir; uid hazır olana
-   kadar birkaç saniye boyunca kısa aralıklarla dener. */
+   kadar (giriş formunu doldurmak dahil, uzunca sürebilir) periyodik dener. */
 (function nbWatchAuth(){
   let tries = 0;
   const iv = setInterval(() => {
     tries++;
     const uid = window.LB_getUid ? window.LB_getUid() : null;
     if(uid){ nbInitSync(); clearInterval(iv); }
-    else if(tries > 120){ clearInterval(iv); }
+    else if(tries > 600){ clearInterval(iv); } /* ~5 dakika sonra vazgeç */
   }, 500);
 })();
 
+/* BUG NOTU (düzeltildi): nbMigrateLocalOnce daha önce yalnızca bir
+   localStorage bayrağıyla korunuyordu. localStorage.setItem herhangi bir
+   sebeple (gizli sekme, depolama kısıtlaması vb.) sessizce başarısız
+   olursa, bayrak hiç kalıcı olmuyor ve her push() sonrası tekrar tetiklenen
+   'value' olayı fonksiyonu YENİDEN çalıştırıp AYNI kelimeyi tekrar tekrar
+   ekliyordu (sonsuz döngü → yüzlerce kopya). Artık bellek-içi bir bayrakla
+   (nbMigrationAttempted) sayfa boyunca KESİN olarak bir kez çalışıyor. */
+let nbMigrationAttempted = false;
+let nbDedupeAttempted = false;
+
 function nbMigrateLocalOnce(){
+  if(nbMigrationAttempted) return;
+  nbMigrationAttempted = true;
   try{
     if(!nbSyncedUid) return;
     const flagKey = 'lumira_notebook_migrated_' + nbSyncedUid;
     if(localStorage.getItem(flagKey)) return;
     const raw = localStorage.getItem('lumira_notebook_v1');
-    const local = raw ? JSON.parse(raw) : [];
+    let local = raw ? JSON.parse(raw) : [];
+    if(!Array.isArray(local)) local = [];
+    local = local.slice(0, 200);
     const db = window.LB_getDb();
-    if(Array.isArray(local) && local.length && db){
+    if(local.length && db){
+      const existing = {};
+      Object.keys(nbWords||{}).forEach(id => {
+        const it = nbWords[id]||{};
+        existing[(it.lang||'de')+'::'+nbSanitizeKey(it.w)] = true;
+      });
       local.forEach(item => {
         if(!item || !item.w) return;
+        const k = (item.lang||'de')+'::'+nbSanitizeKey(item.w);
+        if(existing[k]) return;
+        existing[k] = true;
         db.ref('progress/'+nbSyncedUid+'/notebook').push({
           w:item.w, tr:item.tr||'', ex:item.ex||'', lang:item.lang||'de', cat:'', ts: Date.now()
         });
       });
     }
-    localStorage.setItem(flagKey, '1');
+    try{ localStorage.setItem(flagKey, '1'); }catch(e){}
     try{ localStorage.removeItem('lumira_notebook_v1'); }catch(e){}
+  }catch(e){}
+}
+
+/* Kendi kendini onaran temizlik: aynı (dil + kelime) için birden fazla
+   manuel kayıt varsa (ör. yukarıdaki eski bug'dan kalanlar) yalnızca en
+   eskisini tutup gerisini tek seferde siler. Sayfa başına bir kez çalışır. */
+function nbDedupeIfNeeded(){
+  if(nbDedupeAttempted) return;
+  nbDedupeAttempted = true;
+  try{
+    if(!nbSyncedUid) return;
+    const db = window.LB_getDb(); if(!db) return;
+    const seen = {};
+    const toDelete = [];
+    Object.keys(nbWords||{}).sort().forEach(id => {
+      const it = nbWords[id] || {};
+      const key = (it.lang||'de')+'::'+nbSanitizeKey(it.w)+'::'+nbSanitizeKey(it.tr||'');
+      if(seen[key]){ toDelete.push(id); }
+      else{ seen[key] = id; }
+    });
+    if(toDelete.length){
+      const updates = {};
+      toDelete.forEach(id => { updates[id] = null; });
+      db.ref('progress/'+nbSyncedUid+'/notebook').update(updates).catch(()=>{});
+    }
   }catch(e){}
 }
 
@@ -2308,19 +2356,18 @@ function nbRender(){
 
   if(nbStudyPicking){
     const langs = nbLangsPresent(list);
-    let html = '<div class="nb-wrap">';
-    html += '<div class="nb-study-pick">';
-    html += '<div class="nb-form-title">🌍 Hangi dilde çalışmak istiyorsun?</div>';
-    html += '<p>Kelime Defterindeki kelimeler arasından önce bir dil seç, sadece o dildeki kelimelerle çalışasın.</p>';
-    html += '<div class="nb-lang-picker">';
+    let html = '<div class="nb-wrap"><div class="pm-root"><div class="pm-card">';
+    html += '<h4>🌍 Hangi Dilde Çalışmak İstiyorsun?</h4>';
+    html += '<div class="pm-sub" style="margin-bottom:12px;">Kelime Defterindeki kelimeler arasından önce bir dil seç, sadece o dildeki kelimelerle çalışasın.</div>';
+    html += '<div class="pm-lang-grid">';
     langs.forEach(code => {
-      const L = LANGS[code] || { native: code };
+      const L = LANGS[code] || { label: code };
       const count = list.filter(it => (it.lang||'de') === code).length;
-      html += '<div class="nb-lang-chip" data-nb-study-lang="'+code+'"><span class="flg">'+(LANG_FLAGS[code]||'🌐')+'</span>'+nbEsc(L.native)+'<br><span style="font-size:10px;opacity:.7;">'+count+' kelime</span></div>';
+      html += '<div class="pm-lang-card" data-nb-study-lang="'+code+'"><span class="fl">'+(LANG_FLAGS[code]||'🌐')+'</span><span class="nm">'+nbEsc(L.label)+'</span><span class="nm" style="opacity:.65;font-weight:600;">'+count+' kelime</span></div>';
     });
     html += '</div>';
-    html += '<button type="button" class="nb-btn nb-btn-ghost" id="nbStudyCancel" style="width:100%;">Vazgeç</button>';
-    html += '</div></div>';
+    html += '<button type="button" class="pm-btn small" id="nbStudyCancel" style="width:100%;margin-top:14px;">Vazgeç</button>';
+    html += '</div></div></div>';
     host.innerHTML = html;
     host.querySelectorAll('[data-nb-study-lang]').forEach(el => {
       el.onclick = () => nbStartStudy(el.getAttribute('data-nb-study-lang'));
@@ -2336,35 +2383,31 @@ function nbRender(){
   let html = '<div class="nb-wrap">';
   html += '<p class="nb-intro">Kendi eklediğin kelimeler ve favorilerine attığın kartlar burada, hesabına bağlı olarak saklanır — herkesin gördüğü hazır listelerden ayrıdır. Farklı bir cihazdan aynı hesapla girsen de kelimelerin seninle gelir.</p>';
 
-  html += '<div class="nb-form">';
-  html += '<div class="nb-form-title">'+(editing ? '✏️ Kelimeyi Düzenle' : '➕ Yeni Kelime Ekle')+'</div>';
+  html += '<div class="pm-root"><div class="pm-card">';
+  html += '<h4>'+(editing ? '✏️ Kelimeyi Düzenle' : '➕ Yeni Kelime Ekle')+'</h4>';
 
-  html += '<div class="nb-field" style="margin-bottom:8px;"><label>1) Hangi dilde? *</label></div>';
-  html += '<div class="nb-lang-picker">';
+  html += '<div class="pm-sub" style="margin-bottom:8px;">1) Hangi dilde? *</div>';
+  html += '<div class="pm-lang-grid">';
   Object.keys(LANGS).forEach(code => {
     const L = LANGS[code];
     const active = nbSelectedAddLang === code;
-    html += '<div class="nb-lang-chip'+(active?' active':'')+'" data-nb-add-lang="'+code+'"><span class="flg">'+(LANG_FLAGS[code]||'🌐')+'</span>'+nbEsc(L.native)+'</div>';
+    html += '<div class="pm-lang-card'+(active?' active':'')+'" data-nb-add-lang="'+code+'"><span class="fl">'+(LANG_FLAGS[code]||'🌐')+'</span><span class="nm">'+nbEsc(L.label)+'</span></div>';
   });
   html += '</div>';
   html += '<div class="nb-lang-required" id="nbLangWarn"></div>';
 
-  html += '<div class="nb-row">';
-  html += '<div class="nb-field"><label>Kelime *</label><input type="text" id="nbInputWord" placeholder="örn. Schmetterling" maxlength="60" value="'+nbEsc(editing?editing.w:'')+'"></div>';
-  html += '<div class="nb-field"><label>Türkçe Anlamı</label><input type="text" id="nbInputTr" placeholder="örn. kelebek" maxlength="60" value="'+nbEsc(editing?editing.tr:'')+'"></div>';
-  html += '</div>';
-  html += '<div class="nb-row">';
-  html += '<div class="nb-field"><label>Kategori (opsiyonel)</label><input type="text" id="nbInputCat" placeholder="örn. Hayvanlar" maxlength="30" value="'+nbEsc(editing?editing.cat:'')+'"></div>';
-  html += '</div>';
-  html += '<div class="nb-field" style="margin-bottom:10px;"><label>Örnek Cümle (opsiyonel)</label><textarea id="nbInputEx" placeholder="örn. Der Schmetterling fliegt im Garten.">'+nbEsc(editing?editing.ex:'')+'</textarea></div>';
-  html += '<div class="nb-form-actions">';
+  html += '<input type="text" class="pm-fill-input" id="nbInputWord" placeholder="Kelime * (örn. Schmetterling)" maxlength="60" style="margin-top:14px;margin-bottom:10px;" value="'+nbEsc(editing?editing.w:'')+'">';
+  html += '<input type="text" class="pm-fill-input" id="nbInputTr" placeholder="Türkçe anlamı (örn. kelebek)" maxlength="60" style="margin-bottom:10px;" value="'+nbEsc(editing?editing.tr:'')+'">';
+  html += '<input type="text" class="pm-fill-input" id="nbInputCat" placeholder="Kategori (opsiyonel, örn. Hayvanlar)" maxlength="30" style="margin-bottom:10px;" value="'+nbEsc(editing?editing.cat:'')+'">';
+  html += '<textarea class="pm-fill-input" id="nbInputEx" placeholder="Örnek cümle (opsiyonel)" style="margin-bottom:14px;min-height:46px;resize:vertical;font-family:inherit;font-size:14px;">'+nbEsc(editing?editing.ex:'')+'</textarea>';
+  html += '<div style="display:flex;gap:10px;">';
   if(editing){
-    html += '<button type="button" class="nb-btn nb-btn-ghost" id="nbCancelEdit">Vazgeç</button>';
-    html += '<button type="button" class="nb-btn nb-btn-primary" id="nbSaveWord">Kaydet</button>';
+    html += '<button type="button" class="pm-btn small" id="nbCancelEdit" style="flex:1;">Vazgeç</button>';
+    html += '<button type="button" class="pm-btn primary" id="nbSaveWord" style="flex:1;">Kaydet</button>';
   }else{
-    html += '<button type="button" class="nb-btn nb-btn-primary" id="nbSaveWord" style="flex:1;">Kelime Defterime Ekle</button>';
+    html += '<button type="button" class="pm-btn primary" id="nbSaveWord" style="width:100%;">Kelime Defterime Ekle</button>';
   }
-  html += '</div></div>';
+  html += '</div></div></div>';
 
   html += '<button type="button" class="nb-start" id="nbStartStudy" '+(list.length===0?'disabled':'')+'>🚀 Çalışmaya Başla ('+list.length+' kelime)</button>';
 
@@ -2422,6 +2465,14 @@ function nbRender(){
       db.ref('progress/'+uid2+'/notebook/'+nbEditingId).update({ w, tr, ex, cat, lang: nbSelectedAddLang });
       nbEditingId = null;
     }else{
+      const dupExists = Object.keys(nbWords||{}).some(id => {
+        const it = nbWords[id]||{};
+        return (it.lang||'de') === nbSelectedAddLang && nbSanitizeKey(it.w) === nbSanitizeKey(w);
+      });
+      if(dupExists){
+        alert('Bu kelime zaten Kelime Defterinde var.');
+        return;
+      }
       db.ref('progress/'+uid2+'/notebook').push({ w, tr, ex, cat, lang: nbSelectedAddLang, ts: Date.now() });
     }
     nbSelectedAddLang = null;
@@ -2508,11 +2559,29 @@ function nbToggleFavorite(){
   const key = nbFavKey(v.lang, v.w);
   const isFav = !!(nbFavorites && nbFavorites[key]);
   const ref = db.ref('progress/'+uid+'/favorites/'+key);
-  if(isFav){ ref.remove(); }
-  else{
-    ref.set({
+  if(isFav){
+    delete nbFavorites[key];
+    nbUpdateFavStar();
+    nbRenderIfOpen();
+    ref.remove().catch(err => { console.error('Favori kaldırılamadı:', err); });
+  }else{
+    const payload = {
       w: v.w, tr: v.tr||'', ex: v.ex||'', exTr: v.exTr||'', pos: v.pos||v.cat||'',
       lang: v.lang, cat: v.cat||'', ts: Date.now()
+    };
+    /* İyimser güncelleme: Firebase yanıtını beklemeden yıldızı doldur ve
+       açıksa Notlarım listesine hemen yansıt — önceki sürümde bu olmadığı
+       için favori gerçekte yazılmış olsa bile kullanıcı listede hemen
+       görmüyor, "eklenmemiş" sanıyordu. */
+    nbFavorites[key] = payload;
+    nbUpdateFavStar();
+    nbRenderIfOpen();
+    ref.set(payload).catch(err => {
+      console.error('Favori eklenemedi:', err);
+      delete nbFavorites[key];
+      nbUpdateFavStar();
+      nbRenderIfOpen();
+      alert('Favori eklenirken bir sorun oluştu, tekrar dener misin?');
     });
   }
 }
@@ -2710,7 +2779,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.34"></script>
+<script src="progress.js?v=1.7.35"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2721,22 +2790,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.34"></script>
-<script defer src="theme.js?v=1.7.34"></script>
+<script defer src="voice.js?v=1.7.35"></script>
+<script defer src="theme.js?v=1.7.35"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.34"></script>
+<script defer src="pwa.js?v=1.7.35"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.34"></script>
+<script defer src="support-badges.js?v=1.7.35"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.34"></script>
-<script defer src="analytics.js?v=1.7.34"></script>
+<script defer src="splash.js?v=1.7.35"></script>
+<script defer src="analytics.js?v=1.7.35"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.34"></script>
+<script defer src="admin.js?v=1.7.35"></script>
 </body>
 </html>
