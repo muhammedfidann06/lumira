@@ -668,9 +668,81 @@
     background-size:300% 300%;-webkit-background-clip:text;background-clip:text;color:transparent;
     animation:pmNeonShift 4s ease-in-out infinite;
   }
+
+  /* ===== NOTLARIM (kullanıcının kendi kelime defteri) =====
+     4. sekme eklendiğinde .tabs biraz daha sıkışık olmalı ki 4 kutu da
+     tek satırda, taşmadan sığsın. */
+  .tabs{gap:6px;}
+  .tab{font-size:11.8px;padding:9px 2px;}
+
+  .nb-wrap{padding:2px 0 10px;}
+  .nb-intro{
+    font-size:12.5px;color:var(--muted);line-height:1.6;margin:0 0 16px;
+    background:rgba(10,14,24,0.35);padding:10px 12px;border-radius:12px;
+  }
+  .nb-form{
+    background:linear-gradient(160deg, var(--panel-2), var(--panel));
+    -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    border:1px solid rgba(79,232,255,0.3);border-radius:18px;
+    padding:16px;margin-bottom:18px;
+  }
+  .nb-form-title{font-size:13.5px;font-weight:800;color:var(--cyan-soft);margin:0 0 12px;letter-spacing:.02em;}
+  .nb-row{display:flex;gap:8px;margin-bottom:10px;}
+  .nb-row > *{flex:1;min-width:0;}
+  .nb-field label{display:block;font-size:10.5px;color:var(--muted);margin-bottom:5px;letter-spacing:.03em;}
+  .nb-field input, .nb-field textarea{
+    width:100%;box-sizing:border-box;padding:11px 12px;border-radius:11px;
+    border:1px solid rgba(79,232,255,0.3);background:rgba(0,0,0,0.22);
+    color:var(--text);font-size:14px;font-family:inherit;
+  }
+  .nb-field textarea{resize:vertical;min-height:40px;}
+  .nb-field input:focus, .nb-field textarea:focus{outline:2px solid var(--cyan-soft);}
+  .nb-form-actions{display:flex;gap:10px;margin-top:4px;}
+  .nb-btn{
+    flex:1;padding:12px 0;border-radius:12px;border:none;cursor:pointer;
+    font-weight:700;font-size:13.5px;transition:filter .15s ease, transform .1s ease;
+  }
+  .nb-btn:active{transform:scale(.97);}
+  .nb-btn-primary{
+    background:linear-gradient(135deg,var(--cyan),var(--pink));color:#2a1420;
+    box-shadow:0 4px 18px rgba(255,95,184,0.35);
+  }
+  .nb-btn-ghost{
+    background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid rgba(130,145,179,0.3);
+  }
+  .nb-start{
+    width:100%;padding:14px 0;border-radius:14px;border:none;cursor:pointer;
+    background:linear-gradient(120deg,#4fe8ff,#9b7bff,#ff5fb8,#4fe8ff);
+    background-size:300% 300%;animation:pmNeonShift 5s ease-in-out infinite;
+    color:#04050a;font-weight:800;font-size:14.5px;margin-bottom:18px;
+    box-shadow:0 6px 24px rgba(79,232,255,0.35), 0 0 34px rgba(255,95,184,0.28);
+  }
+  .nb-start[disabled]{opacity:.45;cursor:default;animation:none;box-shadow:none;}
+  .nb-list-title{font-size:12px;color:var(--muted);margin:0 0 10px;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center;}
+  .nb-empty{
+    text-align:center;color:var(--muted);font-size:12.5px;padding:30px 14px;
+    background:rgba(10,14,24,0.3);border-radius:14px;line-height:1.6;
+  }
+  .nb-item{
+    display:flex;align-items:center;gap:10px;
+    background:var(--panel);border:1px solid rgba(79,232,255,0.14);border-radius:14px;
+    padding:12px 12px;margin-bottom:9px;
+  }
+  .nb-item-main{flex:1;min-width:0;}
+  .nb-item-w{font-size:14.5px;font-weight:700;color:var(--text);word-break:break-word;}
+  .nb-item-tr{font-size:12px;color:var(--cyan-soft);margin-top:2px;word-break:break-word;}
+  .nb-item-ex{font-size:11px;color:var(--muted);margin-top:4px;font-style:italic;word-break:break-word;}
+  .nb-item-actions{display:flex;gap:6px;flex-shrink:0;}
+  .nb-icon-btn{
+    width:32px;height:32px;border-radius:9px;border:1px solid rgba(130,145,179,0.25);
+    background:rgba(255,255,255,0.05);color:var(--text);font-size:14px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  }
+  .nb-icon-btn:active{filter:brightness(1.3);}
+  .nb-icon-btn.danger{color:var(--red);}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.32">
-<link rel="stylesheet" href="pwa.css?v=1.7.32">
+<link rel="stylesheet" href="theme.css?v=1.7.33">
+<link rel="stylesheet" href="pwa.css?v=1.7.33">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -813,6 +885,7 @@
     <div class="tab active" id="tabCards">Kartlar</div>
     <div class="tab" id="tabQuiz">Quiz</div>
     <div class="tab" id="tabPersonal">🎯 Kişisel</div>
+    <div class="tab" id="tabNotebook">📒 Notlarım</div>
   </div>
 
   <div class="chips" id="chips">
@@ -918,6 +991,7 @@
   </div>
 
   <div id="personalView" style="display:none;"></div>
+  <div id="notebookView" style="display:none;"></div>
 
   <div class="info-overlay" id="infoPanel">
     <div class="info-card">
@@ -1147,7 +1221,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.32"></script>
+<script src="leaderboard.js?v=1.7.33"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -1999,11 +2073,13 @@ function deactivateAllTabs(){
   toggleActive('tabCards', false);
   toggleActive('tabQuiz', false);
   toggleActive('tabPersonal', false);
+  toggleActive('tabNotebook', false);
   setDisplay('cardsView', 'none');
   setDisplay('quizView', 'none');
   setDisplay('doneView', 'none');
   setDisplay('mistakesView', 'none');
   setDisplay('personalView', 'none');
+  setDisplay('notebookView', 'none');
   // Kişisel mod farklı bir tema/arkaplan kullandığı için sekmeden çıkınca
   // ana chip/level seçicilerini tekrar görünür yapıyoruz.
   setDisplay('levelBox', '');
@@ -2035,6 +2111,160 @@ if($('tabPersonal')) $('tabPersonal').onclick = () => {
   setDisplay('langPair', 'none');
   if(window.PM_open) window.PM_open();
 };
+if($('tabNotebook')) $('tabNotebook').onclick = () => {
+  deactivateAllTabs();
+  toggleActive('tabNotebook', true);
+  setDisplay('notebookView', 'block');
+  setDisplay('levelBox', 'none');
+  setDisplay('chips', 'none');
+  setDisplay('langBox', 'none');
+  setDisplay('langPair', 'none');
+  nbRender();
+};
+
+/* =========================================================================
+   📒 NOTLARIM — kullanıcının kendi eklediği kelime defteri
+   Mevcut kelime kartı sistemine (deck / renderCard / nextBtn vb.) DOKUNMADAN,
+   sadece "Çalışmaya Başla" ile deck'i kullanıcının kendi kelimeleriyle
+   doldurup aynı kartlar arayüzünü yeniden kullanıyoruz. Hazır kelime
+   havuzlarıyla (VOCAB) hiç karışmaz — ayrı bir localStorage anahtarında,
+   kullanıcıya özel olarak saklanır; sayfa yenilense veya uygulama kapanıp
+   açılsa da kaybolmaz. ========================================================= */
+const NB_KEY = 'lumira_notebook_v1';
+let nbEditingId = null;
+
+function nbLoad(){
+  try{
+    const raw = localStorage.getItem(NB_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list : [];
+  }catch(e){ return []; }
+}
+function nbSave(list){
+  try{ localStorage.setItem(NB_KEY, JSON.stringify(list)); }catch(e){}
+}
+function nbEsc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function nbRender(){
+  const host = document.getElementById('notebookView');
+  if(!host) return;
+  const list = nbLoad();
+  const editing = nbEditingId != null ? list.find(w => w.id === nbEditingId) : null;
+
+  let html = '<div class="nb-wrap">';
+  html += '<p class="nb-intro">Kendi eklediğin kelimeler burada, herkesin gördüğü hazır listelerden ayrı olarak saklanır. İstediğin kadar kelime ekle, sonra "Çalışmaya Başla" ile normal kartlarla aynı şekilde çalış.</p>';
+
+  html += '<div class="nb-form">';
+  html += '<div class="nb-form-title">'+(editing ? '✏️ Kelimeyi Düzenle' : '➕ Yeni Kelime Ekle')+'</div>';
+  html += '<div class="nb-row">';
+  html += '<div class="nb-field"><label>Kelime *</label><input type="text" id="nbInputWord" placeholder="örn. Schmetterling" maxlength="60" value="'+nbEsc(editing?editing.w:'')+'"></div>';
+  html += '<div class="nb-field"><label>Türkçe Anlamı</label><input type="text" id="nbInputTr" placeholder="örn. kelebek" maxlength="60" value="'+nbEsc(editing?editing.tr:'')+'"></div>';
+  html += '</div>';
+  html += '<div class="nb-field" style="margin-bottom:10px;"><label>Örnek Cümle (opsiyonel)</label><textarea id="nbInputEx" placeholder="örn. Der Schmetterling fliegt im Garten.">'+nbEsc(editing?editing.ex:'')+'</textarea></div>';
+  html += '<div class="nb-form-actions">';
+  if(editing){
+    html += '<button type="button" class="nb-btn nb-btn-ghost" id="nbCancelEdit">Vazgeç</button>';
+    html += '<button type="button" class="nb-btn nb-btn-primary" id="nbSaveWord">Kaydet</button>';
+  }else{
+    html += '<button type="button" class="nb-btn nb-btn-primary" id="nbSaveWord" style="flex:1;">Kelime Defterime Ekle</button>';
+  }
+  html += '</div></div>';
+
+  html += '<button type="button" class="nb-start" id="nbStartStudy" '+(list.length===0?'disabled':'')+'>🚀 Çalışmaya Başla ('+list.length+' kelime)</button>';
+
+  html += '<div class="nb-list-title"><span>Kelime Defterim</span><span>'+list.length+' kelime</span></div>';
+  if(list.length === 0){
+    html += '<div class="nb-empty">Henüz kelime eklemedin.<br>İnternette, derste ya da günlük hayatta öğrendiğin bir kelimeyi yukarıdan ekleyebilirsin.</div>';
+  }else{
+    list.slice().reverse().forEach(w => {
+      html += '<div class="nb-item">';
+      html += '<div class="nb-item-main">';
+      html += '<div class="nb-item-w">'+nbEsc(w.w)+'</div>';
+      if(w.tr) html += '<div class="nb-item-tr">'+nbEsc(w.tr)+'</div>';
+      if(w.ex) html += '<div class="nb-item-ex">'+nbEsc(w.ex)+'</div>';
+      html += '</div>';
+      html += '<div class="nb-item-actions">';
+      html += '<div class="nb-icon-btn" data-nb-edit="'+w.id+'" title="Düzenle">✏️</div>';
+      html += '<div class="nb-icon-btn danger" data-nb-del="'+w.id+'" title="Sil">🗑️</div>';
+      html += '</div></div>';
+    });
+  }
+  html += '</div>';
+  host.innerHTML = html;
+
+  const wordInput = document.getElementById('nbInputWord');
+  const trInput = document.getElementById('nbInputTr');
+  const exInput = document.getElementById('nbInputEx');
+
+  const saveBtn = document.getElementById('nbSaveWord');
+  if(saveBtn) saveBtn.onclick = () => {
+    const w = (wordInput.value||'').trim();
+    const tr = (trInput.value||'').trim();
+    const ex = (exInput.value||'').trim();
+    if(!w){ wordInput.focus(); return; }
+    const current = nbLoad();
+    if(nbEditingId != null){
+      const item = current.find(x => x.id === nbEditingId);
+      if(item){ item.w = w; item.tr = tr; item.ex = ex; }
+      nbEditingId = null;
+    }else{
+      current.push({ id: Date.now()+'_'+Math.random().toString(36).slice(2,7), w, tr, ex, lang: activeLang||'de' });
+    }
+    nbSave(current);
+    nbRender();
+  };
+
+  const cancelBtn = document.getElementById('nbCancelEdit');
+  if(cancelBtn) cancelBtn.onclick = () => { nbEditingId = null; nbRender(); };
+
+  host.querySelectorAll('[data-nb-edit]').forEach(el => {
+    el.onclick = () => { nbEditingId = el.getAttribute('data-nb-edit'); nbRender(); };
+  });
+  host.querySelectorAll('[data-nb-del]').forEach(el => {
+    el.onclick = () => {
+      const id = el.getAttribute('data-nb-del');
+      if(!confirm('Bu kelimeyi silmek istediğine emin misin?')) return;
+      const current = nbLoad().filter(x => x.id !== id);
+      nbSave(current);
+      if(nbEditingId === id) nbEditingId = null;
+      nbRender();
+    };
+  });
+
+  const startBtn = document.getElementById('nbStartStudy');
+  if(startBtn) startBtn.onclick = nbStartStudy;
+}
+
+function nbStartStudy(){
+  const list = nbLoad();
+  if(list.length === 0) return;
+  deck = list.map((item, i) => {
+    const c = (typeof pair === 'function') ? pair(i) : ['#4fe8ff','#ff5fb8'];
+    return {
+      lang: item.lang || 'de',
+      level: 'ÖZEL',
+      cat: 'Notlarım',
+      w: item.w,
+      tr: item.tr || '',
+      pos: 'Kelime Defterim',
+      ex: item.ex || '',
+      exTr: '',
+      c1: c[0], c2: c[1]
+    };
+  });
+  idx = 0; flipped = false;
+  activeCat = 'Notlarım';
+  deactivateAllTabs();
+  toggleActive('tabNotebook', true);
+  setDisplay('cardsView', 'block');
+  setDisplay('langBox', 'none');
+  setDisplay('langPair', 'none');
+  renderCard();
+}
 
 /* ======================= INIT ======================= */
 renderLangPair();
@@ -2225,7 +2455,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.32"></script>
+<script src="progress.js?v=1.7.33"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2236,22 +2466,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.32"></script>
-<script defer src="theme.js?v=1.7.32"></script>
+<script defer src="voice.js?v=1.7.33"></script>
+<script defer src="theme.js?v=1.7.33"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.32"></script>
+<script defer src="pwa.js?v=1.7.33"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.32"></script>
+<script defer src="support-badges.js?v=1.7.33"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.32"></script>
-<script defer src="analytics.js?v=1.7.32"></script>
+<script defer src="splash.js?v=1.7.33"></script>
+<script defer src="analytics.js?v=1.7.33"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.32"></script>
+<script defer src="admin.js?v=1.7.33"></script>
 </body>
 </html>
