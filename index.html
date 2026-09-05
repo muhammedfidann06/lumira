@@ -800,8 +800,8 @@
   .fav-star.on{color:var(--gold);text-shadow:0 0 10px rgba(255,210,59,0.8);}
   .fav-star.off{color:rgba(255,255,255,0.35);}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.37">
-<link rel="stylesheet" href="pwa.css?v=1.7.37">
+<link rel="stylesheet" href="theme.css?v=1.7.38">
+<link rel="stylesheet" href="pwa.css?v=1.7.38">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1282,7 +1282,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.37"></script>
+<script src="leaderboard.js?v=1.7.38"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2386,14 +2386,15 @@ function nbSearchVocab(query){
   return starts.concat(contains).slice(0, 8);
 }
 function nbQuickAdd(v){
-  nbSelectedAddLang = v.lang;
-  nbEditingId = null;
-  nbPrefill = { w: v.w||'', tr: v.tr||'', ex: v.ex||'', cat: v.cat||'' };
-  nbRender();
   try{
+    if(!v) return;
+    nbSelectedAddLang = v.lang;
+    nbEditingId = null;
+    nbPrefill = { w: v.w||'', tr: v.tr||'', ex: v.ex||'', cat: v.cat||'' };
+    nbRender();
     const wi = document.getElementById('nbInputWord');
     if(wi) wi.scrollIntoView({ behavior:'smooth', block:'center' });
-  }catch(e){}
+  }catch(e){ console.error('nbQuickAdd hata:', e); }
 }
 
 function nbRender(){
@@ -2510,10 +2511,11 @@ function nbRender(){
   const searchResults = document.getElementById('nbSearchResults');
   if(searchInput && searchResults){
     let searchSeq = 0;
+    const closeResults = () => { searchResults.innerHTML = ''; searchResults.style.display = 'none'; };
     searchInput.oninput = () => {
       const q = searchInput.value.trim();
       const mySeq = ++searchSeq;
-      if(q.length < 2){ searchResults.innerHTML = ''; searchResults.style.display = 'none'; return; }
+      if(q.length < 2){ closeResults(); return; }
       nbEnsureSearchVocabReady(() => {
         if(mySeq !== searchSeq) return; /* kullanıcı yazmaya devam etmiş, eski sonucu atla */
         const matches = nbSearchVocab(q);
@@ -2526,18 +2528,35 @@ function nbRender(){
           '<div class="nb-search-item" data-nb-pick="'+i+'"><span class="nb-search-flag">'+(LANG_FLAGS[v.lang]||'🌐')+'</span><div class="nb-search-text"><b>'+nbEsc(v.w)+'</b>'+(v.tr?(' — '+nbEsc(v.tr)):'')+'</div></div>'
         ).join('');
         searchResults.style.display = 'block';
+        /* Not: 'onclick' yerine 'onmousedown' + preventDefault kullanıyoruz.
+           Arama kutusu odaklıyken bir öğeye tıklamak önce 'blur' (odak
+           kaybı) tetikler; input'un blur'da sonucu gizlemesi click'ten
+           ÖNCE gerçekleşebiliyor ve tıklama hiç işlemiyormuş gibi
+           görünüyordu. mousedown + preventDefault, blur'un hiç
+           tetiklenmesini engelleyip seçimi güvenilir hale getiriyor. */
         searchResults.querySelectorAll('[data-nb-pick]').forEach(el => {
-          el.onclick = () => {
+          el.onmousedown = (e) => {
+            e.preventDefault();
             const v = matches[parseInt(el.getAttribute('data-nb-pick'), 10)];
-            nbQuickAdd(v);
+            if(!v) return;
+            closeResults();
             searchInput.value = '';
-            searchResults.innerHTML = '';
-            searchResults.style.display = 'none';
+            nbQuickAdd(v);
           };
         });
       });
     };
-    searchInput.onblur = () => { setTimeout(() => { searchResults.style.display = 'none'; }, 150); };
+    /* Dışarı tıklanınca sonuç listesini kapat (dokümana bir kez bağlanır) */
+    if(!window._nbOutsideCloseBound){
+      window._nbOutsideCloseBound = true;
+      document.addEventListener('mousedown', (e) => {
+        const wrap = document.getElementById('nbSearchResults');
+        const input = document.getElementById('nbSearchInput');
+        if(!wrap || wrap.style.display === 'none') return;
+        if(e.target === input || wrap.contains(e.target)) return;
+        wrap.innerHTML = ''; wrap.style.display = 'none';
+      });
+    }
     searchInput.onfocus = () => { if(searchResults.innerHTML) searchResults.style.display = 'block'; };
   }
 
@@ -2879,7 +2898,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.37"></script>
+<script src="progress.js?v=1.7.38"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2890,22 +2909,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.37"></script>
-<script defer src="theme.js?v=1.7.37"></script>
+<script defer src="voice.js?v=1.7.38"></script>
+<script defer src="theme.js?v=1.7.38"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.37"></script>
+<script defer src="pwa.js?v=1.7.38"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.37"></script>
+<script defer src="support-badges.js?v=1.7.38"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.37"></script>
-<script defer src="analytics.js?v=1.7.37"></script>
+<script defer src="splash.js?v=1.7.38"></script>
+<script defer src="analytics.js?v=1.7.38"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.37"></script>
+<script defer src="admin.js?v=1.7.38"></script>
 </body>
 </html>
