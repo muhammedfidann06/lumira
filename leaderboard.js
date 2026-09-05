@@ -621,6 +621,7 @@ function initLeaderboard(){
     window.LB_getActiveSeconds = () => activeAccumulated;
     window.LB_isIdle = isIdleNow;
     window.LB_getDb = () => db;
+    window.LB_getUid = () => currentUid;
     window.LB_getUserName = () => currentName;
     window.LB_getTotalSeconds = (name, cb) => {
       if(!db || !currentUid){ cb(0); return; }
