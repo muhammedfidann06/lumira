@@ -543,6 +543,12 @@
     `;
     document.head.appendChild(style);
   }
+  /* Notlarım (index.html) sekmesi de aynı .pm-* görünümünü kullanıyor;
+     kullanıcı "Kişisel" sekmesini hiç açmadan doğrudan "Notlarım"a
+     girerse bu stil hiç eklenmemiş oluyordu (yalnızca renderHome/PM_open
+     içinde çağrılıyordu) ve form stilsiz/çıplak görünüyordu. Artık
+     dışarıdan da tetiklenebiliyor. */
+  window.PM_injectStyles = injectStyles;
 
   function renderHome(){
     injectStyles();

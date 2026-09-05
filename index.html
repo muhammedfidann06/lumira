@@ -740,6 +740,22 @@
   }
   .nb-icon-btn:active{filter:brightness(1.3);}
   .nb-icon-btn.danger{color:var(--red);}
+  .nb-search-results{
+    display:none;position:absolute;left:16px;right:16px;top:auto;margin-top:6px;
+    max-height:260px;overflow-y:auto;z-index:30;
+    background:linear-gradient(160deg,#151b30,#0d1122);
+    border:1px solid rgba(79,232,255,0.35);border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  }
+  .nb-search-item{
+    display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .nb-search-item:last-child{border-bottom:none;}
+  .nb-search-item:active, .nb-search-item:hover{background:rgba(79,232,255,0.1);}
+  .nb-search-flag{font-size:16px;flex-shrink:0;}
+  .nb-search-text{font-size:13px;color:var(--text);}
+  .nb-search-empty{padding:12px 14px;font-size:12px;color:var(--muted);text-align:center;}
   .nb-icon-btn.fav-active{color:var(--gold);border-color:rgba(255,210,59,0.5);background:rgba(255,210,59,0.12);}
   .nb-badge{
     display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.03em;
@@ -784,8 +800,8 @@
   .fav-star.on{color:var(--gold);text-shadow:0 0 10px rgba(255,210,59,0.8);}
   .fav-star.off{color:rgba(255,255,255,0.35);}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.35">
-<link rel="stylesheet" href="pwa.css?v=1.7.35">
+<link rel="stylesheet" href="theme.css?v=1.7.36">
+<link rel="stylesheet" href="pwa.css?v=1.7.36">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1266,7 +1282,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.35"></script>
+<script src="leaderboard.js?v=1.7.36"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2342,9 +2358,51 @@ function nbLangsPresent(list){
   return Object.keys(seen);
 }
 
+/* ---------------------- Hazır listede kelime arama ---------------------- */
+function nbEnsureSearchVocabReady(cb){
+  try{
+    const langs = nbSelectedAddLang ? [nbSelectedAddLang] : Object.keys(LANGS);
+    const need = langs.filter(l => !(window.VOCAB_LOADED && window.VOCAB_LOADED[l]));
+    if(!need.length || !window.ensureVocab){ cb(); return; }
+    Promise.all(need.map(l => window.ensureVocab(l))).then(cb).catch(cb);
+  }catch(e){ cb(); }
+}
+function nbSearchVocab(query){
+  const q = query.trim().toLowerCase();
+  if(!q || typeof VOCAB === 'undefined') return [];
+  const langFilter = nbSelectedAddLang;
+  const starts = [];
+  const contains = [];
+  for(let i=0; i<VOCAB.length; i++){
+    const v = VOCAB[i];
+    if(langFilter && v.lang !== langFilter) continue;
+    const w = (v.w||'').toLowerCase();
+    const tr = (v.tr||'').toLowerCase();
+    if(w.indexOf(q) === 0 || tr.indexOf(q) === 0){ starts.push(v); }
+    else if(w.indexOf(q) > -1 || tr.indexOf(q) > -1){ contains.push(v); }
+    if(starts.length >= 8) break;
+  }
+  return starts.concat(contains).slice(0, 8);
+}
+function nbQuickAdd(v){
+  const db = window.LB_getDb ? window.LB_getDb() : null;
+  const uid = window.LB_getUid ? window.LB_getUid() : null;
+  if(!db || !uid){ alert('Kelime eklemek için önce giriş yapmalısın.'); return; }
+  const dupExists = Object.keys(nbWords||{}).some(id => {
+    const it = nbWords[id]||{};
+    return (it.lang||'de') === v.lang && nbSanitizeKey(it.w) === nbSanitizeKey(v.w);
+  });
+  if(dupExists){ alert('Bu kelime zaten Kelime Defterinde var.'); return; }
+  db.ref('progress/'+uid+'/notebook').push({
+    w: v.w, tr: v.tr||'', ex: v.ex||'', cat: v.cat||'', lang: v.lang, ts: Date.now()
+  });
+  nbSelectedAddLang = v.lang;
+}
+
 function nbRender(){
   const host = document.getElementById('notebookView');
   if(!host) return;
+  if(window.PM_injectStyles) window.PM_injectStyles();
 
   const uid = window.LB_getUid ? window.LB_getUid() : null;
   if(!uid){
@@ -2383,7 +2441,15 @@ function nbRender(){
   let html = '<div class="nb-wrap">';
   html += '<p class="nb-intro">Kendi eklediğin kelimeler ve favorilerine attığın kartlar burada, hesabına bağlı olarak saklanır — herkesin gördüğü hazır listelerden ayrıdır. Farklı bir cihazdan aynı hesapla girsen de kelimelerin seninle gelir.</p>';
 
-  html += '<div class="pm-root"><div class="pm-card">';
+  html += '<div class="pm-root">';
+  html += '<div class="pm-card" style="position:relative;">';
+  html += '<h4>🔍 Kelime Ara</h4>';
+  html += '<div class="pm-sub" style="margin-bottom:10px;">Aradığın kelime hazır listelerimizde varsa, anlamı ve örnek cümlesiyle birlikte otomatik olarak Kelime Defterine eklenir.</div>';
+  html += '<input type="text" class="pm-fill-input" id="nbSearchInput" placeholder="örn. Schmetterling, hello, manzana…" autocomplete="off" autocapitalize="off" spellcheck="false">';
+  html += '<div id="nbSearchResults" class="nb-search-results"></div>';
+  html += '</div>';
+
+  html += '<div class="pm-card">';
   html += '<h4>'+(editing ? '✏️ Kelimeyi Düzenle' : '➕ Yeni Kelime Ekle')+'</h4>';
 
   html += '<div class="pm-sub" style="margin-bottom:8px;">1) Hangi dilde? *</div>';
@@ -2441,6 +2507,41 @@ function nbRender(){
   host.querySelectorAll('[data-nb-add-lang]').forEach(el => {
     el.onclick = () => { nbSelectedAddLang = el.getAttribute('data-nb-add-lang'); nbRender(); };
   });
+
+  const searchInput = document.getElementById('nbSearchInput');
+  const searchResults = document.getElementById('nbSearchResults');
+  if(searchInput && searchResults){
+    let searchSeq = 0;
+    searchInput.oninput = () => {
+      const q = searchInput.value.trim();
+      const mySeq = ++searchSeq;
+      if(q.length < 2){ searchResults.innerHTML = ''; searchResults.style.display = 'none'; return; }
+      nbEnsureSearchVocabReady(() => {
+        if(mySeq !== searchSeq) return; /* kullanıcı yazmaya devam etmiş, eski sonucu atla */
+        const matches = nbSearchVocab(q);
+        if(!matches.length){
+          searchResults.innerHTML = '<div class="nb-search-empty">Hazır listelerde bulunamadı — aşağıdan elle ekleyebilirsin.</div>';
+          searchResults.style.display = 'block';
+          return;
+        }
+        searchResults.innerHTML = matches.map((v,i) =>
+          '<div class="nb-search-item" data-nb-pick="'+i+'"><span class="nb-search-flag">'+(LANG_FLAGS[v.lang]||'🌐')+'</span><div class="nb-search-text"><b>'+nbEsc(v.w)+'</b>'+(v.tr?(' — '+nbEsc(v.tr)):'')+'</div></div>'
+        ).join('');
+        searchResults.style.display = 'block';
+        searchResults.querySelectorAll('[data-nb-pick]').forEach(el => {
+          el.onclick = () => {
+            const v = matches[parseInt(el.getAttribute('data-nb-pick'), 10)];
+            nbQuickAdd(v);
+            searchInput.value = '';
+            searchResults.innerHTML = '';
+            searchResults.style.display = 'none';
+          };
+        });
+      });
+    };
+    searchInput.onblur = () => { setTimeout(() => { searchResults.style.display = 'none'; }, 150); };
+    searchInput.onfocus = () => { if(searchResults.innerHTML) searchResults.style.display = 'block'; };
+  }
 
   const wordInput = document.getElementById('nbInputWord');
   const trInput = document.getElementById('nbInputTr');
@@ -2779,7 +2880,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.35"></script>
+<script src="progress.js?v=1.7.36"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -2790,22 +2891,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.35"></script>
-<script defer src="theme.js?v=1.7.35"></script>
+<script defer src="voice.js?v=1.7.36"></script>
+<script defer src="theme.js?v=1.7.36"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.35"></script>
+<script defer src="pwa.js?v=1.7.36"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.35"></script>
+<script defer src="support-badges.js?v=1.7.36"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.35"></script>
-<script defer src="analytics.js?v=1.7.35"></script>
+<script defer src="splash.js?v=1.7.36"></script>
+<script defer src="analytics.js?v=1.7.36"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.35"></script>
+<script defer src="admin.js?v=1.7.36"></script>
 </body>
 </html>
