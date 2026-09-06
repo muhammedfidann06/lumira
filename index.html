@@ -809,6 +809,26 @@
     border:1px solid rgba(79,232,255,0.25);background:rgba(0,0,0,0.22);color:var(--text);font-family:inherit;
     color-scheme:dark;
   }
+  .nb-cselect{position:relative;flex:1;min-width:90px;}
+  .nb-cselect-trigger{
+    padding:9px 10px;border-radius:11px;font-size:12px;cursor:pointer;
+    border:1px solid rgba(79,232,255,0.25);background:rgba(0,0,0,0.22);color:var(--text);
+    display:flex;justify-content:space-between;align-items:center;gap:6px;
+  }
+  .nb-cselect-trigger:active{border-color:var(--cyan-soft);}
+  .nb-cselect-trigger span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .nb-cselect-arrow{opacity:.6;font-size:10px;flex-shrink:0;}
+  .nb-cselect-panel{
+    position:absolute;top:100%;left:0;right:0;margin-top:6px;z-index:40;
+    max-height:220px;overflow-y:auto;
+    background:linear-gradient(160deg,#151b30,#0d1122);
+    border:1px solid rgba(79,232,255,0.35);border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  }
+  .nb-cselect-opt{padding:10px 12px;font-size:12.5px;color:var(--text);cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .nb-cselect-opt:last-child{border-bottom:none;}
+  .nb-cselect-opt:hover,.nb-cselect-opt:active{background:rgba(79,232,255,0.12);}
+  .nb-cselect-opt.active{background:rgba(79,232,255,0.18);color:var(--cyan-soft);font-weight:700;}
 
   .nb-start-secondary{
     width:100%;padding:10px 0;border-radius:13px;border:1px solid rgba(155,123,255,0.4);cursor:pointer;
@@ -859,8 +879,8 @@
   .fav-star.on{color:var(--gold);text-shadow:0 0 10px rgba(255,210,59,0.8);}
   .fav-star.off{color:rgba(255,255,255,0.35);}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.41">
-<link rel="stylesheet" href="pwa.css?v=1.7.41">
+<link rel="stylesheet" href="theme.css?v=1.7.42">
+<link rel="stylesheet" href="pwa.css?v=1.7.42">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1350,7 +1370,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.41"></script>
+<script src="leaderboard.js?v=1.7.42"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2443,6 +2463,48 @@ function nbLangsPresent(list){
   return Object.keys(seen);
 }
 
+/* ---------------------- Özel açılır menü (native <select> yerine) ----------------------
+   Native <select>'in açılır listesi tarayıcı temasını kullanır ve uygulamanın
+   koyu temasıyla uyuşmuyordu. Bunun yerine uygulamanın kendi görsel diliyle
+   (arama sonucu kutusuyla aynı stil) tamamen özel, dokunmatik-uyumlu bir
+   açılır menü. */
+function nbCSelectHtml(id, options, selectedVal, placeholderLabel){
+  const sel = options.find(o => o[0] === selectedVal) || options[0];
+  let html = '<div class="nb-cselect" id="'+id+'Box">';
+  html += '<div class="nb-cselect-trigger" id="'+id+'Trigger"><span>'+(sel[2]?sel[2]+' ':'')+sel[1]+'</span><span class="nb-cselect-arrow">▾</span></div>';
+  html += '<div class="nb-cselect-panel" id="'+id+'Panel" style="display:none;">';
+  options.forEach(o => {
+    html += '<div class="nb-cselect-opt'+(o[0]===selectedVal?' active':'')+'" data-val="'+nbEsc(o[0])+'">'+(o[2]?o[2]+' ':'')+o[1]+'</div>';
+  });
+  html += '</div></div>';
+  return html;
+}
+function nbCSelectBind(id, onChange){
+  const trigger = document.getElementById(id+'Trigger');
+  const panel = document.getElementById(id+'Panel');
+  if(!trigger || !panel) return;
+  trigger.onclick = (e) => {
+    e.stopPropagation();
+    const isOpen = panel.style.display !== 'none';
+    document.querySelectorAll('.nb-cselect-panel').forEach(p => { p.style.display = 'none'; });
+    panel.style.display = isOpen ? 'none' : 'block';
+  };
+  panel.querySelectorAll('.nb-cselect-opt').forEach(opt => {
+    opt.onmousedown = (e) => {
+      e.preventDefault();
+      panel.style.display = 'none';
+      onChange(opt.getAttribute('data-val'));
+    };
+  });
+}
+if(!window._nbCSelectOutsideBound){
+  window._nbCSelectOutsideBound = true;
+  document.addEventListener('mousedown', (e) => {
+    if(e.target.closest && e.target.closest('.nb-cselect')) return;
+    document.querySelectorAll('.nb-cselect-panel').forEach(p => { p.style.display = 'none'; });
+  });
+}
+
 /* ---------------------- Hazır listede kelime arama ---------------------- */
 function nbEnsureSearchVocabReady(cb){
   try{
@@ -2664,17 +2726,16 @@ function nbRender(){
   html += '<div class="nb-filter-bar">';
   html += '<input type="text" class="pm-fill-input" id="nbFilterInput" placeholder="🔍 Kelime Defterimde ara…" value="'+nbEsc(nbFilterText)+'">';
   html += '<div class="nb-filter-row">';
-  html += '<select id="nbFilterLangSel"><option value="">Tüm diller</option>';
-  filterLangs.forEach(code => { html += '<option value="'+code+'" '+(nbFilterLang===code?'selected':'')+'>'+(LANG_FLAGS[code]||'')+' '+nbEsc((LANGS[code]||{}).label||code)+'</option>'; });
-  html += '</select>';
-  html += '<select id="nbFilterCatSel"><option value="">Tüm kategoriler</option>';
-  filterCats.forEach(cat => { html += '<option value="'+nbEsc(cat)+'" '+(nbFilterCat===cat?'selected':'')+'>'+nbEsc(cat)+'</option>'; });
-  html += '</select>';
-  html += '<select id="nbFilterDiffSel"><option value="">Tüm seviyeler</option>';
-  html += '<option value="kolay" '+(nbFilterDiff==='kolay'?'selected':'')+'>🙂 Kolay</option>';
-  html += '<option value="orta" '+(nbFilterDiff==='orta'?'selected':'')+'>😐 Orta</option>';
-  html += '<option value="zor" '+(nbFilterDiff==='zor'?'selected':'')+'>☹️ Zor</option>';
-  html += '</select>';
+
+  const langOptions = [['','Tüm diller','']].concat(filterLangs.map(code => [code, nbEsc((LANGS[code]||{}).label||code), LANG_FLAGS[code]||'']));
+  html += nbCSelectHtml('nbFilterLang', langOptions, nbFilterLang, 'Tüm diller');
+
+  const catOptions = [['','Tüm kategoriler','']].concat(filterCats.map(cat => [cat, nbEsc(cat), '']));
+  html += nbCSelectHtml('nbFilterCat', catOptions, nbFilterCat, 'Tüm kategoriler');
+
+  const diffOptions = [['','Tüm seviyeler',''],['kolay','Kolay','🙂'],['orta','Orta','😐'],['zor','Zor','☹️']];
+  html += nbCSelectHtml('nbFilterDiff', diffOptions, nbFilterDiff, 'Tüm seviyeler');
+
   html += '</div></div>';
 
   html += '<div class="nb-list-title"><span>Kelime Defterim</span><span>'+filtered.length+' / '+list.length+' kelime</span></div>';
@@ -2716,12 +2777,10 @@ function nbRender(){
 
   const filterInput = document.getElementById('nbFilterInput');
   if(filterInput) filterInput.oninput = () => { nbFilterText = filterInput.value; nbRender(); };
-  const langSel = document.getElementById('nbFilterLangSel');
-  if(langSel) langSel.onchange = () => { nbFilterLang = langSel.value; nbRender(); };
-  const catSel = document.getElementById('nbFilterCatSel');
-  if(catSel) catSel.onchange = () => { nbFilterCat = catSel.value; nbRender(); };
-  const diffSel = document.getElementById('nbFilterDiffSel');
-  if(diffSel) diffSel.onchange = () => { nbFilterDiff = diffSel.value; nbRender(); };
+
+  nbCSelectBind('nbFilterLang', val => { nbFilterLang = val; nbRender(); });
+  nbCSelectBind('nbFilterCat', val => { nbFilterCat = val; nbRender(); });
+  nbCSelectBind('nbFilterDiff', val => { nbFilterDiff = val; nbRender(); });
 
   host.querySelectorAll('[data-nb-diff-set]').forEach(el => {
     el.onclick = () => nbSetDifficultyDirect(el.getAttribute('data-nb-diff-set'), el.getAttribute('data-nb-diff-source'), el.getAttribute('data-nb-diff-level'));
@@ -3251,7 +3310,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.41"></script>
+<script src="progress.js?v=1.7.42"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -3262,22 +3321,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.41"></script>
-<script defer src="theme.js?v=1.7.41"></script>
+<script defer src="voice.js?v=1.7.42"></script>
+<script defer src="theme.js?v=1.7.42"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.41"></script>
+<script defer src="pwa.js?v=1.7.42"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.41"></script>
+<script defer src="support-badges.js?v=1.7.42"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.41"></script>
-<script defer src="analytics.js?v=1.7.41"></script>
+<script defer src="splash.js?v=1.7.42"></script>
+<script defer src="analytics.js?v=1.7.42"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.41"></script>
+<script defer src="admin.js?v=1.7.42"></script>
 </body>
 </html>
