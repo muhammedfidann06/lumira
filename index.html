@@ -768,11 +768,14 @@
   .nb-search-empty{padding:12px 14px;font-size:12px;color:var(--muted);text-align:center;}
 
   /* ---- Zorluk seviyesi (kart üstü kutu) ---- */
+  .stage.stage-merged{margin-bottom:0;}
+  .stage.stage-merged .card, .stage.stage-merged .face{border-radius:var(--radius) var(--radius) 0 0;}
   .nb-diff-box{
-    margin-top:14px;padding:14px;border-radius:18px;
+    margin-top:0;padding:14px;border-radius:0 0 var(--radius) var(--radius);
     background:linear-gradient(160deg, var(--panel-2), var(--panel));
     -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
-    border:1px solid rgba(79,232,255,0.25);
+    border:1px solid rgba(79,232,255,0.25);border-top:1px solid rgba(79,232,255,0.1);
+    margin-bottom:18px;
   }
   .nb-diff-title{text-align:center;font-size:11px;letter-spacing:.08em;color:var(--muted);font-weight:800;margin-bottom:10px;}
   .nb-diff-row{display:flex;gap:8px;flex-wrap:wrap;}
@@ -803,6 +806,20 @@
 
   /* ---- Arama + filtreleme çubuğu (Kelime Defterim) ---- */
   .nb-filter-bar{margin-bottom:12px;}
+  .nb-filter-search-wrap{position:relative;margin-bottom:8px;}
+  .nb-filter-search-icon{
+    position:absolute;left:13px;top:50%;transform:translateY(-50%);
+    font-size:13px;opacity:.6;pointer-events:none;
+  }
+  .nb-filter-search{
+    width:100%;box-sizing:border-box;font-size:13.5px;color:var(--text);
+    background:rgba(10,14,32,0.55);border:1px solid rgba(79,232,255,0.25);
+    border-radius:12px;padding:10px 14px 10px 34px;outline:none;
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    transition:border-color .15s ease;
+  }
+  .nb-filter-search::placeholder{color:var(--muted);}
+  .nb-filter-search:focus{border-color:var(--cyan-soft);}
   .nb-filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;}
   .nb-filter-row select{
     flex:1;min-width:90px;padding:9px 8px;border-radius:11px;font-size:12px;
@@ -869,18 +886,18 @@
   }
   .nb-study-pick p{font-size:12.5px;color:var(--muted);margin:0 0 14px;}
 
-  /* kart üzerindeki favori yıldızı */
-  .fav-star{
-    position:absolute;top:12px;left:14px;font-size:19px;cursor:pointer;z-index:3;
-    filter:drop-shadow(0 0 4px rgba(0,0,0,0.4));transition:transform .15s cubic-bezier(.34,1.56,.64,1);
-    user-select:none;-webkit-user-select:none;line-height:1;
-  }
-  .fav-star:active{transform:scale(0.8);}
-  .fav-star.on{color:var(--gold);text-shadow:0 0 10px rgba(255,210,59,0.8);}
-  .fav-star.off{color:rgba(255,255,255,0.35);}
+  /* kart üzerindeki favori yıldızı — ARTIK KULLANILMIYOR:
+     pwa.js'te önceden var olan #favBtn (Ayarlar > Favorilerim) ile aynı
+     köşede oturuyordu ve daha yüksek z-index'i olduğu için TÜM tıklamaları
+     kendi üzerine alıyordu — bu yüzden bu yıldıza her basışta aslında
+     pwa.js'in eski localStorage sistemi tetikleniyordu, benimki HİÇ
+     çalışmıyordu. Artık #favBtn'in kendisini (aşağıda) Notlarım'a da
+     yazacak şekilde güncelledim; bu yıldızı tamamen gizliyoruz ki iki
+     ayrı yıldız görünmesin / çakışmasın. */
+  .fav-star{ display:none !important; }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.42">
-<link rel="stylesheet" href="pwa.css?v=1.7.42">
+<link rel="stylesheet" href="theme.css?v=1.7.43">
+<link rel="stylesheet" href="pwa.css?v=1.7.43">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1370,7 +1387,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.42"></script>
+<script src="leaderboard.js?v=1.7.43"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2319,7 +2336,8 @@ let nbSyncedUid = null;
 let nbEditingId = null;      /* düzenlenen manuel kelimenin pushId'si */
 let nbSelectedAddLang = null; /* ekleme formunda seçilen dil (zorunlu) */
 let nbPrefill = null;         /* Kelime Ara'dan seçilince formu önceden dolduran veri {w,tr,ex,cat} */
-let nbStudyPicking = false;   /* "Çalışmaya Başla" sonrası dil seçim ekranı açık mı */
+let nbStudyPicking = false;   /* false | 'lang' | 'level' — "Çalışmaya Başla" akışının hangi adımda olduğu */
+let nbStudyLang = null;       /* çalışma akışında seçilen dil (geçici) */
 let nbFilterText = '';
 let nbFilterLang = '';
 let nbFilterCat = '';
@@ -2597,11 +2615,11 @@ function nbRender(){
 
   const list = nbCombinedList();
 
-  if(nbStudyPicking){
+  if(nbStudyPicking === 'lang'){
     const langs = nbLangsPresent(list);
     let html = '<div class="nb-wrap"><div class="pm-root"><div class="pm-card">';
     html += '<h4>🌍 Hangi Dilde Çalışmak İstiyorsun?</h4>';
-    html += '<div class="pm-sub" style="margin-bottom:12px;">Kelime Defterindeki kelimeler arasından önce bir dil seç, sadece o dildeki kelimelerle çalışasın.</div>';
+    html += '<div class="pm-sub" style="margin-bottom:12px;">Kelime Defterindeki kelimeler arasından önce bir dil seç.</div>';
     html += '<div class="lang-box">';
     langs.forEach(code => {
       const L = LANGS[code] || { label: code };
@@ -2613,10 +2631,36 @@ function nbRender(){
     html += '</div></div></div>';
     host.innerHTML = html;
     host.querySelectorAll('[data-nb-study-lang]').forEach(el => {
-      el.onclick = () => nbStartStudy(el.getAttribute('data-nb-study-lang'));
+      el.onclick = () => { nbStudyLang = el.getAttribute('data-nb-study-lang'); nbStudyPicking = 'level'; nbRender(); };
     });
     const cancelStudy = document.getElementById('nbStudyCancel');
     if(cancelStudy) cancelStudy.onclick = () => { nbStudyPicking = false; nbRender(); };
+    return;
+  }
+
+  if(nbStudyPicking === 'level'){
+    const langWords = list.filter(it => (it.lang||'de') === nbStudyLang);
+    const levelsPresent = Array.from(new Set(langWords.map(it => it.level).filter(Boolean)));
+    const LEVEL_ORDER = ['A1','A2','B1','B2'];
+    levelsPresent.sort((a,b) => LEVEL_ORDER.indexOf(a) - LEVEL_ORDER.indexOf(b));
+    let html = '<div class="nb-wrap"><div class="pm-root"><div class="pm-card">';
+    html += '<h4>📊 Hangi Seviyeyle Çalışmak İstiyorsun?</h4>';
+    html += '<div class="pm-sub" style="margin-bottom:12px;">'+(LANG_FLAGS[nbStudyLang]||'')+' '+nbEsc((LANGS[nbStudyLang]||{}).label||nbStudyLang)+' kelimelerinin tümüyle ya da sadece bir seviyeyle çalışabilirsin.</div>';
+    html += '<div class="lang-box">';
+    html += '<div class="lang-opt" data-nb-study-level=""><div class="lname" style="font-size:15px;">TÜMÜ</div><div class="lname" style="opacity:.65;font-weight:600;">'+langWords.length+' kelime</div></div>';
+    levelsPresent.forEach(lv => {
+      const count = langWords.filter(it => it.level === lv).length;
+      html += '<div class="lang-opt" data-nb-study-level="'+lv+'"><div class="lname" style="font-size:15px;">'+lv+'</div><div class="lname" style="opacity:.65;font-weight:600;">'+count+' kelime</div></div>';
+    });
+    html += '</div>';
+    html += '<button type="button" class="pm-btn small" id="nbStudyBack" style="width:100%;margin-top:14px;">← Dili Değiştir</button>';
+    html += '</div></div></div>';
+    host.innerHTML = html;
+    host.querySelectorAll('[data-nb-study-level]').forEach(el => {
+      el.onclick = () => nbStartStudy(nbStudyLang, el.getAttribute('data-nb-study-level') || null);
+    });
+    const backL = document.getElementById('nbStudyBack');
+    if(backL) backL.onclick = () => { nbStudyPicking = 'lang'; nbRender(); };
     return;
   }
 
@@ -2724,7 +2768,7 @@ function nbRender(){
   }
 
   html += '<div class="nb-filter-bar">';
-  html += '<input type="text" class="pm-fill-input" id="nbFilterInput" placeholder="🔍 Kelime Defterimde ara…" value="'+nbEsc(nbFilterText)+'">';
+  html += '<div class="nb-filter-search-wrap"><span class="nb-filter-search-icon">🔍</span><input type="text" class="nb-filter-search" id="nbFilterInput" placeholder="Kelime Defterimde ara…" value="'+nbEsc(nbFilterText)+'"></div>';
   html += '<div class="nb-filter-row">';
 
   const langOptions = [['','Tüm diller','']].concat(filterLangs.map(code => [code, nbEsc((LANGS[code]||{}).label||code), LANG_FLAGS[code]||'']));
@@ -2776,7 +2820,13 @@ function nbRender(){
   host.innerHTML = html;
 
   const filterInput = document.getElementById('nbFilterInput');
-  if(filterInput) filterInput.oninput = () => { nbFilterText = filterInput.value; nbRender(); };
+  if(filterInput) filterInput.oninput = () => {
+    nbFilterText = filterInput.value;
+    const cursorPos = filterInput.selectionStart;
+    nbRender();
+    const freshInput = document.getElementById('nbFilterInput');
+    if(freshInput){ freshInput.focus(); try{ freshInput.setSelectionRange(cursorPos, cursorPos); }catch(e){} }
+  };
 
   nbCSelectBind('nbFilterLang', val => { nbFilterLang = val; nbRender(); });
   nbCSelectBind('nbFilterCat', val => { nbFilterCat = val; nbRender(); });
@@ -2916,14 +2966,14 @@ function nbRender(){
   const startBtn = document.getElementById('nbStartStudy');
   if(startBtn) startBtn.onclick = () => {
     if(nbCombinedList().length === 0) return;
-    nbStudyPicking = true;
+    nbStudyPicking = 'lang';
     nbRender();
   };
 }
 
-function nbStartStudy(lang, difficulty){
+function nbStartStudy(lang, level){
   let list = nbCombinedList().filter(it => (it.lang||'de') === lang);
-  if(difficulty) list = list.filter(it => (it.difficulty||'orta') === difficulty);
+  if(level) list = list.filter(it => (it.level||'') === level);
   if(list.length === 0) return;
   deck = list.map((item, i) => {
     const c = (typeof pair === 'function') ? pair(i) : ['#4fe8ff','#ff5fb8'];
@@ -2945,7 +2995,10 @@ function nbStartStudy(lang, difficulty){
   nbStudyPicking = false;
   deactivateAllTabs();
   toggleActive('tabNotebook', true);
+  try{document.body.classList.add('notebook-active');}catch(e){}
   setDisplay('cardsView', 'block');
+  setDisplay('levelBox', 'none');
+  setDisplay('chips', 'none');
   setDisplay('langBox', 'none');
   setDisplay('langPair', 'none');
   renderCard();
@@ -2955,8 +3008,14 @@ function nbRenderDifficultyBox(){
   const box = document.getElementById('nbDifficultyBox');
   if(!box) return;
   const v = deck[idx];
-  if(activeCat !== 'Notlarım' || !v || !v._nbId){ box.style.display = 'none'; return; }
+  const stage = document.querySelector('.stage');
+  if(activeCat !== 'Notlarım' || !v || !v._nbId){
+    box.style.display = 'none';
+    if(stage) stage.classList.remove('stage-merged');
+    return;
+  }
   box.style.display = '';
+  if(stage) stage.classList.add('stage-merged');
   box.querySelectorAll('[data-diff]').forEach(el => {
     el.classList.toggle('active', (v.difficulty||'orta') === el.getAttribute('data-diff'));
   });
@@ -3031,7 +3090,10 @@ function nbStartQuiz(lang, difficulty){
   nbQuizPicking = null;
   deactivateAllTabs();
   toggleActive('tabNotebook', true);
+  try{document.body.classList.add('notebook-active');}catch(e){}
   setDisplay('quizView', 'block');
+  setDisplay('levelBox', 'none');
+  setDisplay('chips', 'none');
   setDisplay('langBox', 'none');
   setDisplay('langPair', 'none');
   buildQuizDeck();
@@ -3061,7 +3123,7 @@ function nbToast(msg, kind){
   console.log('[Lumira]', msg);
 }
 
-function nbToggleFavorite(){
+function nbToggleFavorite(silent){
   const v = deck[idx]; if(!v) return;
   const db = window.LB_getDb ? window.LB_getDb() : null;
   const uid = window.LB_getUid ? window.LB_getUid() : null;
@@ -3074,8 +3136,8 @@ function nbToggleFavorite(){
       tries++;
       const db2 = window.LB_getDb ? window.LB_getDb() : null;
       const uid2 = window.LB_getUid ? window.LB_getUid() : null;
-      if(db2 && uid2){ clearInterval(iv); nbToggleFavorite(); }
-      else if(tries > 10){ clearInterval(iv); nbToast('Favorilere eklemek için önce giriş yapmalısın.', 'bad'); }
+      if(db2 && uid2){ clearInterval(iv); nbToggleFavorite(silent); }
+      else if(tries > 10){ clearInterval(iv); if(!silent) nbToast('Favorilere eklemek için önce giriş yapmalısın.', 'bad'); }
     }, 300);
     return;
   }
@@ -3087,13 +3149,13 @@ function nbToggleFavorite(){
     nbUpdateFavStar();
     nbRenderIfOpen();
     ref.remove().then(() => {
-      nbToast('Favorilerden çıkarıldı.');
+      if(!silent) nbToast('Favorilerden çıkarıldı.');
     }).catch(err => {
       console.error('Favori kaldırılamadı:', err);
       nbFavorites[key] = { w:v.w, tr:v.tr||'', ex:v.ex||'', exTr:v.exTr||'', pos:v.pos||v.cat||'', lang:v.lang, cat:v.cat||'', ts:Date.now() };
       nbUpdateFavStar();
       nbRenderIfOpen();
-      nbToast('Favoriden çıkarılamadı, tekrar dener misin?', 'bad');
+      if(!silent) nbToast('Favoriden çıkarılamadı, tekrar dener misin?', 'bad');
     });
   }else{
     const payload = {
@@ -3106,13 +3168,13 @@ function nbToggleFavorite(){
     nbUpdateFavStar();
     nbRenderIfOpen();
     ref.set(payload).then(() => {
-      nbToast('⭐ Favorilere eklendi — Notlarım\'da görebilirsin.');
+      if(!silent) nbToast('⭐ Favorilere eklendi — Notlarım\'da görebilirsin.');
     }).catch(err => {
       console.error('Favori eklenemedi:', err);
       delete nbFavorites[key];
       nbUpdateFavStar();
       nbRenderIfOpen();
-      nbToast('Favori eklenirken bir sorun oluştu, tekrar dener misin?', 'bad');
+      if(!silent) nbToast('Favori eklenirken bir sorun oluştu, tekrar dener misin?', 'bad');
     });
   }
 }
@@ -3120,6 +3182,15 @@ function nbToggleFavorite(){
   const el = document.getElementById(id);
   if(el) el.onclick = (e) => { e.stopPropagation(); nbToggleFavorite(); };
 });
+/* pwa.js'teki önceden var olan #favBtn (Ayarlar > Favorilerim) tıklandığında
+   da ÇAĞRILIR — böylece tek bir yıldız/tek bir tıklama hem eski
+   localStorage sistemine hem de yeni Notlarım (Firebase) sistemine birden
+   yazar. "Notlarım" çalışma modundayken (kendi kelimeni favorileme
+   mantıksız olduğu için) hiçbir şey yapmaz. */
+window.NB_toggleFavoriteFromCard = function(){
+  if(activeCat === 'Notlarım') return;
+  nbToggleFavorite(true);
+};
 
 /* ======================= INIT ======================= */
 renderLangPair();
@@ -3310,7 +3381,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.42"></script>
+<script src="progress.js?v=1.7.43"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -3321,22 +3392,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.42"></script>
-<script defer src="theme.js?v=1.7.42"></script>
+<script defer src="voice.js?v=1.7.43"></script>
+<script defer src="theme.js?v=1.7.43"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.42"></script>
+<script defer src="pwa.js?v=1.7.43"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.42"></script>
+<script defer src="support-badges.js?v=1.7.43"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.42"></script>
-<script defer src="analytics.js?v=1.7.42"></script>
+<script defer src="splash.js?v=1.7.43"></script>
+<script defer src="analytics.js?v=1.7.43"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.42"></script>
+<script defer src="admin.js?v=1.7.43"></script>
 </body>
 </html>

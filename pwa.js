@@ -745,6 +745,10 @@ function setupFavButton() {
       if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge('Favorilere ekleme')) return;
       addFavorite(c); vibrate(24); toast('⭐ ' + c.w + ' favorilere eklendi', { kind: 'good' });
     }
+    /* Aynı tıklama, Notlarım'daki hesaba-bağlı (Firebase) favori sistemine
+       de yazsın — böylece kartlardan favorilenen kelimeler artık
+       Notlarım'da da görünür. */
+    try{ window.NB_toggleFavoriteFromCard && window.NB_toggleFavoriteFromCard(); }catch(e2){}
     syncFavButton();
   };
 
@@ -2107,7 +2111,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.7.42',
+  version: '1.7.43',
   isStandalone: function () { return isStandalone; }
 };
 
