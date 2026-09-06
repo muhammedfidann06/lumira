@@ -896,8 +896,8 @@
      ayrı yıldız görünmesin / çakışmasın. */
   .fav-star{ display:none !important; }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.43">
-<link rel="stylesheet" href="pwa.css?v=1.7.43">
+<link rel="stylesheet" href="theme.css?v=1.7.44">
+<link rel="stylesheet" href="pwa.css?v=1.7.44">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1387,7 +1387,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.43"></script>
+<script src="leaderboard.js?v=1.7.44"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2958,8 +2958,23 @@ function nbRender(){
       const db = window.LB_getDb(); const uid2 = window.LB_getUid();
       if(!db || !uid2) return;
       const path = source === 'favorite' ? ('progress/'+uid2+'/favorites/'+id) : ('progress/'+uid2+'/notebook/'+id);
-      db.ref(path).remove();
+      /* İyimser güncelleme: Firebase yanıtını beklemeden hemen ekrandan
+         kaldır — ağ gecikmesi ya da bir sorun olsa bile rozet/kart hemen
+         gözden kaybolur. */
+      let backupFav = null, backupWord = null;
+      if(source === 'favorite'){ backupFav = nbFavorites[id]; delete nbFavorites[id]; }
+      else{ backupWord = nbWords[id]; delete nbWords[id]; }
       if(nbEditingId === id) nbEditingId = null;
+      nbRender();
+      db.ref(path).remove().then(() => {
+        nbToast(source === 'favorite' ? 'Favorilerden çıkarıldı.' : 'Kelime silindi.');
+      }).catch(err => {
+        console.error('Silinemedi:', err);
+        if(source === 'favorite'){ if(backupFav) nbFavorites[id] = backupFav; }
+        else{ if(backupWord) nbWords[id] = backupWord; }
+        nbRenderIfOpen();
+        nbToast('Silinemedi, tekrar dener misin?', 'bad');
+      });
     };
   });
 
@@ -3381,7 +3396,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.43"></script>
+<script src="progress.js?v=1.7.44"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -3392,22 +3407,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.43"></script>
-<script defer src="theme.js?v=1.7.43"></script>
+<script defer src="voice.js?v=1.7.44"></script>
+<script defer src="theme.js?v=1.7.44"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.43"></script>
+<script defer src="pwa.js?v=1.7.44"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.43"></script>
+<script defer src="support-badges.js?v=1.7.44"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.43"></script>
-<script defer src="analytics.js?v=1.7.43"></script>
+<script defer src="splash.js?v=1.7.44"></script>
+<script defer src="analytics.js?v=1.7.44"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.43"></script>
+<script defer src="admin.js?v=1.7.44"></script>
 </body>
 </html>
