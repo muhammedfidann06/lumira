@@ -777,7 +777,12 @@ function openFavorites() {
       it.innerHTML = '<div class="fl">' + (flags[f.lang] || '🏳️') + '</div>' +
         '<div class="w"><b>' + escapeHtml(f.w) + '</b><span>' + escapeHtml(f.tr || '') + '</span></div>' +
         '<button class="rm" aria-label="Sil">✕</button>';
-      qs('.rm', it).onclick = function () { removeFavorite(f); it.remove(); syncFavButton(); };
+      qs('.rm', it).onclick = function () {
+        removeFavorite(f);
+        try{ window.NB_unfavoriteByWord && window.NB_unfavoriteByWord(f.lang, f.w); }catch(e){}
+        it.remove();
+        syncFavButton();
+      };
       b.appendChild(it);
     });
     var exp = row('📤', 'Favorileri paylaş / indir', list.length + ' kelime');
@@ -2111,7 +2116,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.7.44',
+  version: '1.7.45',
   isStandalone: function () { return isStandalone; }
 };
 

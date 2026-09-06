@@ -896,8 +896,8 @@
      ayrı yıldız görünmesin / çakışmasın. */
   .fav-star{ display:none !important; }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.44">
-<link rel="stylesheet" href="pwa.css?v=1.7.44">
+<link rel="stylesheet" href="theme.css?v=1.7.45">
+<link rel="stylesheet" href="pwa.css?v=1.7.45">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1387,7 +1387,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.44"></script>
+<script src="leaderboard.js?v=1.7.45"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2331,7 +2331,7 @@ if($('tabNotebook')) $('tabNotebook').onclick = () => {
 const LANG_FLAGS = { de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
 const LANG_LANDMARK = { de:'🏛️', en:'🕰️', ar:'🕌', fr:'🗼', es:'⛪', ru:'🏰' };
 let nbWords = {};        /* {pushId: {w,tr,ex,lang,cat,ts}} — manuel eklenenler */
-let nbFavorites = {};    /* {favKey: {w,tr,ex,exTr,pos,lang,cat,ts}} — favorilenen kartlar */
+let nbFavorites = {};    /* ARTIK KULLANILMIYOR (geriye dönük uyumluluk için bırakıldı) — favoriler artık nbWords içinde isFavorite bayrağıyla tutuluyor. */
 let nbSyncedUid = null;
 let nbEditingId = null;      /* düzenlenen manuel kelimenin pushId'si */
 let nbSelectedAddLang = null; /* ekleme formunda seçilen dil (zorunlu) */
@@ -2349,7 +2349,7 @@ function nbSanitizeKey(s){
     .replace(/[^a-z0-9_а-яa-zğüşöçıä]/gi, '')
     .slice(0, 80) || 'x';
 }
-function nbFavKey(lang, w){ return (lang||'de') + '__' + nbSanitizeKey(w); }
+function nbFavKey(lang, w){ return 'fav_' + (lang||'de') + '_' + nbSanitizeKey(w); }
 
 function nbInitSync(){
   const db = window.LB_getDb ? window.LB_getDb() : null;
@@ -2359,14 +2359,44 @@ function nbInitSync(){
   db.ref('progress/'+uid+'/notebook').on('value', snap => {
     nbWords = snap.val() || {};
     nbMigrateLocalOnce();
+    nbMigrateOldFavoritesOnce();
     nbDedupeIfNeeded();
-    nbRenderIfOpen();
-  });
-  db.ref('progress/'+uid+'/favorites').on('value', snap => {
-    nbFavorites = snap.val() || {};
     nbUpdateFavStar();
     nbRenderIfOpen();
   });
+}
+/* ESKİ VERİ TAŞIMA: Favoriler önceden ayrı bir 'progress/{uid}/favorites'
+   düğümünde tutuluyordu ve favoriden çıkarınca kelime tamamen siliniyordu.
+   Artık favoriler de Kelime Defterinin (notebook) kalıcı bir parçası —
+   sadece 'isFavorite' bayrağıyla işaretleniyor; favoriden çıkarmak bayrağı
+   kaldırır, kelimeyi SİLMEZ. Eski düğümde kalmış veri varsa bir kereliğine
+   buraya taşınır. */
+let nbOldFavMigrationAttempted = false;
+function nbMigrateOldFavoritesOnce(){
+  if(nbOldFavMigrationAttempted) return;
+  nbOldFavMigrationAttempted = true;
+  try{
+    if(!nbSyncedUid) return;
+    const db = window.LB_getDb(); if(!db) return;
+    db.ref('progress/'+nbSyncedUid+'/favorites').once('value').then(snap => {
+      const old = snap.val();
+      if(!old) return;
+      const updates = {};
+      Object.keys(old).forEach(key => {
+        const it = old[key] || {};
+        if(!it.w) return;
+        const favId = nbFavKey(it.lang||'de', it.w);
+        if(nbWords[favId]) return; /* zaten taşınmış */
+        updates['progress/'+nbSyncedUid+'/notebook/'+favId] = {
+          w: it.w, tr: it.tr||'', ex: it.ex||'', exTr: it.exTr||'', cat: it.cat||'',
+          level: it.level||'', difficulty: it.difficulty||'orta', lang: it.lang||'de',
+          isFavorite: true, ts: it.ts || Date.now()
+        };
+      });
+      if(Object.keys(updates).length){ db.ref().update(updates); }
+      db.ref('progress/'+nbSyncedUid+'/favorites').remove();
+    }).catch(()=>{});
+  }catch(e){}
 }
 /* Kullanıcı henüz giriş sürecini tamamlamamış olabilir; uid hazır olana
    kadar (giriş formunu doldurmak dahil, uzunca sürebilir) periyodik dener. */
@@ -2466,11 +2496,7 @@ function nbCombinedList(){
   const out = [];
   Object.keys(nbWords||{}).forEach(id => {
     const it = nbWords[id] || {};
-    out.push({ id, source:'manual', w:it.w, tr:it.tr||'', ex:it.ex||'', exTr:it.exTr||'', lang:it.lang||'de', cat:it.cat||'', level:it.level||'', difficulty:it.difficulty||'orta', ts:it.ts||0 });
-  });
-  Object.keys(nbFavorites||{}).forEach(key => {
-    const it = nbFavorites[key] || {};
-    out.push({ id:key, source:'favorite', w:it.w, tr:it.tr||'', ex:it.ex||'', exTr:it.exTr||'', pos:it.pos||'', lang:it.lang||'de', cat:it.cat||'', level:it.level||'', difficulty:it.difficulty||'orta', ts:it.ts||0 });
+    out.push({ id, source: it.isFavorite ? 'favorite' : 'manual', w:it.w, tr:it.tr||'', ex:it.ex||'', exTr:it.exTr||'', pos:it.pos||'', lang:it.lang||'de', cat:it.cat||'', level:it.level||'', difficulty:it.difficulty||'orta', ts:it.ts||0 });
   });
   out.sort((a,b) => (b.ts||0) - (a.ts||0));
   return out;
@@ -2712,7 +2738,7 @@ function nbRender(){
     return;
   }
 
-  const editing = nbEditingId != null ? list.find(w => w.id === nbEditingId && w.source==='manual') : null;
+  const editing = nbEditingId != null ? list.find(w => w.id === nbEditingId) : null;
   if(editing && nbSelectedAddLang == null) nbSelectedAddLang = editing.lang;
   const formSrc = editing || nbPrefill || null;
 
@@ -2809,10 +2835,8 @@ function nbRender(){
       html += '</div>';
       html += '</div>';
       html += '<div class="nb-item-actions">';
-      if(w.source === 'manual'){
-        html += '<div class="nb-icon-btn" data-nb-edit="'+w.id+'" title="Düzenle">✏️</div>';
-      }
-      html += '<div class="nb-icon-btn danger" data-nb-del="'+w.id+'" data-nb-del-source="'+w.source+'" title="Sil">🗑️</div>';
+      html += '<div class="nb-icon-btn" data-nb-edit="'+w.id+'" title="Düzenle">✏️</div>';
+      html += '<div class="nb-icon-btn danger" data-nb-del="'+w.id+'" title="Sil">🗑️</div>';
       html += '</div></div>';
     });
   }
@@ -2952,26 +2976,22 @@ function nbRender(){
   host.querySelectorAll('[data-nb-del]').forEach(el => {
     el.onclick = () => {
       const id = el.getAttribute('data-nb-del');
-      const source = el.getAttribute('data-nb-del-source');
-      const msg = source === 'favorite' ? 'Bu kelimeyi favorilerden çıkarmak istediğine emin misin?' : 'Bu kelimeyi silmek istediğine emin misin?';
-      if(!confirm(msg)) return;
       const db = window.LB_getDb(); const uid2 = window.LB_getUid();
       if(!db || !uid2) return;
-      const path = source === 'favorite' ? ('progress/'+uid2+'/favorites/'+id) : ('progress/'+uid2+'/notebook/'+id);
-      /* İyimser güncelleme: Firebase yanıtını beklemeden hemen ekrandan
-         kaldır — ağ gecikmesi ya da bir sorun olsa bile rozet/kart hemen
-         gözden kaybolur. */
-      let backupFav = null, backupWord = null;
-      if(source === 'favorite'){ backupFav = nbFavorites[id]; delete nbFavorites[id]; }
-      else{ backupWord = nbWords[id]; delete nbWords[id]; }
+      /* Not: burası artık her zaman Kelime Defterinden (notebook) tam
+         silme demek — favori olsa bile. Sadece favoriden çıkarmak
+         isteyen kişi kartın üzerindeki ⭐'a basar (o, silmeden sadece
+         rozeti kaldırır). Bu yüzden burada onay istemiyoruz; işlem geri
+         alınamaz bir "favoriden çıkarma" değil, doğrudan bir "sil". */
+      let backupWord = nbWords[id];
+      delete nbWords[id];
       if(nbEditingId === id) nbEditingId = null;
       nbRender();
-      db.ref(path).remove().then(() => {
-        nbToast(source === 'favorite' ? 'Favorilerden çıkarıldı.' : 'Kelime silindi.');
+      db.ref('progress/'+uid2+'/notebook/'+id).remove().then(() => {
+        nbToast('Kelime defterinden silindi.');
       }).catch(err => {
         console.error('Silinemedi:', err);
-        if(source === 'favorite'){ if(backupFav) nbFavorites[id] = backupFav; }
-        else{ if(backupWord) nbWords[id] = backupWord; }
+        if(backupWord) nbWords[id] = backupWord;
         nbRenderIfOpen();
         nbToast('Silinemedi, tekrar dener misin?', 'bad');
       });
@@ -3051,11 +3071,9 @@ function nbSetDifficulty(level){
   const uid = window.LB_getUid ? window.LB_getUid() : null;
   if(!db || !uid) return;
   v.difficulty = level;
+  if(nbWords[v._nbId]) nbWords[v._nbId].difficulty = level;
   nbRenderDifficultyBox();
-  const path = (v._nbSource === 'favorite')
-    ? ('progress/'+uid+'/favorites/'+v._nbId)
-    : ('progress/'+uid+'/notebook/'+v._nbId);
-  db.ref(path).update({ difficulty: level }).catch(err => {
+  db.ref('progress/'+uid+'/notebook/'+v._nbId).update({ difficulty: level }).catch(err => {
     console.error('Zorluk seviyesi kaydedilemedi:', err);
     nbToast('Zorluk seviyesi kaydedilemedi.', 'bad');
   });
@@ -3074,11 +3092,9 @@ function nbSetDifficultyDirect(id, source, level){
   const db = window.LB_getDb ? window.LB_getDb() : null;
   const uid = window.LB_getUid ? window.LB_getUid() : null;
   if(!db || !uid) return;
-  const path = (source === 'favorite') ? ('progress/'+uid+'/favorites/'+id) : ('progress/'+uid+'/notebook/'+id);
-  if(source === 'favorite' && nbFavorites[id]) nbFavorites[id].difficulty = level;
-  if(source === 'manual' && nbWords[id]) nbWords[id].difficulty = level;
+  if(nbWords[id]) nbWords[id].difficulty = level;
   nbRenderIfOpen();
-  db.ref(path).update({ difficulty: level }).catch(err => {
+  db.ref('progress/'+uid+'/notebook/'+id).update({ difficulty: level }).catch(err => {
     console.error('Zorluk seviyesi kaydedilemedi:', err);
     nbToast('Zorluk seviyesi kaydedilemedi.', 'bad');
   });
@@ -3124,7 +3140,7 @@ function nbUpdateFavStar(){
     if(!v || inNotebookStudy){ el.style.display = 'none'; return; }
     el.style.display = '';
     const key = nbFavKey(v.lang, v.w);
-    const on = !!(nbFavorites && nbFavorites[key]);
+    const on = !!(nbWords && nbWords[key] && nbWords[key].isFavorite);
     el.textContent = on ? '★' : '☆';
     el.classList.toggle('on', on);
     el.classList.toggle('off', !on);
@@ -3138,6 +3154,9 @@ function nbToast(msg, kind){
   console.log('[Lumira]', msg);
 }
 
+/* Favoriler artık Kelime Defterinin (notebook) kalıcı bir parçası —
+   favoriden çıkarmak sadece 'isFavorite' bayrağını kaldırır, kelimeyi
+   Kelime Defterinden SİLMEZ. Silmek için Kelime Defterim'deki 🗑️ kullanılır. */
 function nbToggleFavorite(silent){
   const v = deck[idx]; if(!v) return;
   const db = window.LB_getDb ? window.LB_getDb() : null;
@@ -3156,37 +3175,41 @@ function nbToggleFavorite(silent){
     }, 300);
     return;
   }
-  const key = nbFavKey(v.lang, v.w);
-  const isFav = !!(nbFavorites && nbFavorites[key]);
-  const ref = db.ref('progress/'+uid+'/favorites/'+key);
+  const favId = nbFavKey(v.lang, v.w);
+  const existing = nbWords[favId];
+  const isFav = !!(existing && existing.isFavorite);
+  const ref = db.ref('progress/'+uid+'/notebook/'+favId);
   if(isFav){
-    delete nbFavorites[key];
+    const backup = nbWords[favId];
+    nbWords[favId] = Object.assign({}, existing, { isFavorite: false });
     nbUpdateFavStar();
     nbRenderIfOpen();
-    ref.remove().then(() => {
-      if(!silent) nbToast('Favorilerden çıkarıldı.');
+    ref.update({ isFavorite: false }).then(() => {
+      if(!silent) nbToast('Favorilerden çıkarıldı — kelime defterinden silinmedi.');
     }).catch(err => {
       console.error('Favori kaldırılamadı:', err);
-      nbFavorites[key] = { w:v.w, tr:v.tr||'', ex:v.ex||'', exTr:v.exTr||'', pos:v.pos||v.cat||'', lang:v.lang, cat:v.cat||'', ts:Date.now() };
+      nbWords[favId] = backup;
       nbUpdateFavStar();
       nbRenderIfOpen();
       if(!silent) nbToast('Favoriden çıkarılamadı, tekrar dener misin?', 'bad');
     });
   }else{
-    const payload = {
-      w: v.w, tr: v.tr||'', ex: v.ex||'', exTr: v.exTr||'', pos: v.pos||v.cat||'',
-      lang: v.lang, cat: v.cat||'', level: v.level||'', ts: Date.now()
+    const payload = existing ? Object.assign({}, existing, { isFavorite: true }) : {
+      w: v.w, tr: v.tr||'', ex: v.ex||'', exTr: v.exTr||'', pos: v.pos||'',
+      lang: v.lang, cat: v.cat||'', level: v.level||'', difficulty: 'orta',
+      isFavorite: true, ts: Date.now()
     };
     /* İyimser güncelleme: Firebase yanıtını beklemeden yıldızı doldur ve
        açıksa Notlarım listesine hemen yansıt. */
-    nbFavorites[key] = payload;
+    const backup = nbWords[favId];
+    nbWords[favId] = payload;
     nbUpdateFavStar();
     nbRenderIfOpen();
     ref.set(payload).then(() => {
       if(!silent) nbToast('⭐ Favorilere eklendi — Notlarım\'da görebilirsin.');
     }).catch(err => {
       console.error('Favori eklenemedi:', err);
-      delete nbFavorites[key];
+      if(backup) nbWords[favId] = backup; else delete nbWords[favId];
       nbUpdateFavStar();
       nbRenderIfOpen();
       if(!silent) nbToast('Favori eklenirken bir sorun oluştu, tekrar dener misin?', 'bad');
@@ -3205,6 +3228,25 @@ function nbToggleFavorite(silent){
 window.NB_toggleFavoriteFromCard = function(){
   if(activeCat === 'Notlarım') return;
   nbToggleFavorite(true);
+};
+/* Ayarlar > Favorilerim listesinden bir kelime çıkarılınca (kartın kendisi
+   o an ekranda olmayabilir, bu yüzden deck[idx] değil doğrudan kelime
+   üzerinden çalışır) — sadece 'isFavorite' bayrağını kaldırır, Kelime
+   Defterinden SİLMEZ. */
+window.NB_unfavoriteByWord = function(lang, w){
+  try{
+    const db = window.LB_getDb ? window.LB_getDb() : null;
+    const uid = window.LB_getUid ? window.LB_getUid() : null;
+    if(!db || !uid || !lang || !w) return;
+    const favId = nbFavKey(lang, w);
+    if(!nbWords[favId] || !nbWords[favId].isFavorite) return;
+    nbWords[favId].isFavorite = false;
+    nbUpdateFavStar();
+    nbRenderIfOpen();
+    db.ref('progress/'+uid+'/notebook/'+favId).update({ isFavorite: false }).catch(err => {
+      console.error('Favori kaldırılamadı:', err);
+    });
+  }catch(e){}
 };
 
 /* ======================= INIT ======================= */
@@ -3396,7 +3438,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.44"></script>
+<script src="progress.js?v=1.7.45"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -3407,22 +3449,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.44"></script>
-<script defer src="theme.js?v=1.7.44"></script>
+<script defer src="voice.js?v=1.7.45"></script>
+<script defer src="theme.js?v=1.7.45"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.44"></script>
+<script defer src="pwa.js?v=1.7.45"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.44"></script>
+<script defer src="support-badges.js?v=1.7.45"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.44"></script>
-<script defer src="analytics.js?v=1.7.44"></script>
+<script defer src="splash.js?v=1.7.45"></script>
+<script defer src="analytics.js?v=1.7.45"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.44"></script>
+<script defer src="admin.js?v=1.7.45"></script>
 </body>
 </html>
