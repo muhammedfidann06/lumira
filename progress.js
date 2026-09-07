@@ -725,6 +725,7 @@
     html += '<button class="pm-btn small" id="pmLevelTestBtn">🎓 Seviye Tespit Sınavı</button>';
     html += '<button class="pm-btn small" id="pmKnownBtn">✅ Öğrendiğim Kelimeler ('+totalKnownLang+')</button>';
     html += '<button class="pm-btn small" id="pmWeakBtn">📉 Hata Yaptığım Kelimeler</button>';
+    html += '<button class="pm-btn small" id="pmWritingBtn">✍️ Yazma Pratiği</button>';
     html += awHtml;    /* Başarımlar (mistakes butonunun altında) */
     html += supHtml;   /* Rozetler */
     html += '</div>';
@@ -758,6 +759,7 @@
     document.getElementById('pmLevelTestBtn').onclick = openLevelTestPicker;
     document.getElementById('pmKnownBtn').onclick = renderKnownWords;
     document.getElementById('pmWeakBtn').onclick = renderWeakWords;
+    document.getElementById('pmWritingBtn').onclick = renderWritingLangSelect;
     const dueBtn = document.getElementById('pmDueBtn');
     if(dueBtn) dueBtn.onclick = startDailyReview;
 
@@ -1545,33 +1547,78 @@
         html += '<div class="pm-weak-item"><div class="pm-weak-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+' <span style="color:var(--pm-accent);font-size:12px;">- '+escapeHtml(v.tr)+'</span></div><div class="pm-weak-meta">❌ Yanlış: '+(e.rec.wrong||0)+' - ✅ Doğru: '+(e.rec.correct||0)+' - 👁 Görülme: '+(e.rec.seen||0)+'<br>'+status+'</div></div>';
       });
     }
-    /* Yazma Pratiği: uygulama içi Almanca metin düzeltici (CheckYourWrite benzeri).
-       Sadece Almanca modunda gösterilir çünkü özellik Almanca'ya özel. */
-    if(activeLang === 'de'){
-      html += '<button class="pm-btn small" id="pmWritingPracticeBtn" style="margin-top:10px;">✍️ Yazma Pratiği</button>';
-    }
     html += '<button class="pm-btn primary" id="pmBackHomeBtn2">Ana Sayfaya Dön</button></div>';
     root.innerHTML = html;
     document.getElementById('pmBackHomeBtn2').onclick = renderHome;
-    const wpBtn = document.getElementById('pmWritingPracticeBtn');
-    if(wpBtn){
-      wpBtn.onclick = renderWritingPractice;
-    }
   }
 
   /* =========================================================
-     YAZMA PRATİĞİ — Almanca Metin Düzeltici (CheckYourWrite benzeri)
+     YAZMA PRATİĞİ — Çok dilli Metin Düzeltici (CheckYourWrite benzeri)
+     Akış: Dil Seç → Seviye Seç (A1-B2) → Yaz & Kontrol Et
      LanguageTool'un ücretsiz, herkese açık kontrol API'sini kullanır
      (https://api.languagetool.org/v2/check). API anahtarı gerekmez.
-     Seviyeye (A2/B1/B2/C1) göre üslup (STYLE) uyarıları filtrelenir:
-     düşük seviyelerde sadece gramer/yazım/noktalama/büyük-küçük harf
-     hataları gösterilir, üst seviyelerde üslup önerileri de eklenir.
+     A1/A2'de sadece gramer/yazım/noktalama/büyük-küçük harf hataları
+     gösterilir; B1/B2'de üslup (STYLE) önerileri de eklenir.
+     Not: Türkçe için dilbilgisi kontrolü bu ücretsiz serviste
+     sınırlı olabilir (kapsamı diğer dillere göre daha dar).
      ========================================================= */
-  let wpLevel = 'B1';
+  const WP_LANGS = [
+    { code:'en', lt:'en-US', label:'İngilizce', flag:'🇬🇧' },
+    { code:'de', lt:'de-DE', label:'Almanca',   flag:'🇩🇪' },
+    { code:'ar', lt:'ar',    label:'Arapça',    flag:'🇸🇦' },
+    { code:'fr', lt:'fr-FR', label:'Fransızca', flag:'🇫🇷' },
+    { code:'es', lt:'es-ES', label:'İspanyolca',flag:'🇪🇸' },
+    { code:'ru', lt:'ru-RU', label:'Rusça',     flag:'🇷🇺' },
+    { code:'tr', lt:'tr',    label:'Türkçe',    flag:'🇹🇷' }
+  ];
+  const WP_LEVELS = ['A1','A2','B1','B2'];
+  let wpLang = null;
+  let wpLevel = null;
   let wpBusy = false;
 
+  function wpFindLang(code){
+    for(let i=0;i<WP_LANGS.length;i++){ if(WP_LANGS[i].code===code) return WP_LANGS[i]; }
+    return null;
+  }
+
   function wpLevelShowsStyle(level){
-    return level === 'B2' || level === 'C1';
+    return level === 'B1' || level === 'B2';
+  }
+
+  /* ---- 1. adım: dil seçimi ---- */
+  function renderWritingLangSelect(){
+    injectStyles();
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">✍️ Yazma Pratiği</div><div class="pm-sub">Hangi dilde yazma pratiği yapmak istersin?</div></div>';
+    html += '<div class="pm-lang-grid">';
+    WP_LANGS.forEach(l=>{
+      html += '<div class="pm-lang-card" data-code="'+l.code+'"><div class="fl">'+l.flag+'</div><div class="nm">'+l.label+'</div></div>';
+    });
+    html += '</div>';
+    html += '<button class="pm-btn small" id="wpBackHomeBtn" style="margin-top:16px;">← Ana Sayfaya Dön</button></div>';
+    root.innerHTML = html;
+    root.querySelectorAll('.pm-lang-card').forEach(el=>{
+      el.onclick = () => { wpLang = el.getAttribute('data-code'); wpLevel = null; renderWritingLevelSelect(); };
+    });
+    document.getElementById('wpBackHomeBtn').onclick = renderHome;
+  }
+
+  /* ---- 2. adım: seviye seçimi ---- */
+  function renderWritingLevelSelect(){
+    injectStyles();
+    const lang = wpFindLang(wpLang);
+    if(!lang){ renderWritingLangSelect(); return; }
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+lang.flag+' '+lang.label+'</div><div class="pm-sub">Seviyeni seç</div></div>';
+    html += '<div class="pm-lang-grid" style="grid-template-columns:repeat(2,1fr);">';
+    WP_LEVELS.forEach(l=>{
+      html += '<div class="pm-lang-card" data-lvl="'+l+'"><div class="nm" style="font-size:16px;font-weight:800;color:#eef4ff;">'+l+'</div></div>';
+    });
+    html += '</div>';
+    html += '<button class="pm-btn small" id="wpBackLangBtn" style="margin-top:16px;">← Dili Değiştir</button></div>';
+    root.innerHTML = html;
+    root.querySelectorAll('.pm-lang-card').forEach(el=>{
+      el.onclick = () => { wpLevel = el.getAttribute('data-lvl'); renderWritingPractice(); };
+    });
+    document.getElementById('wpBackLangBtn').onclick = renderWritingLangSelect;
   }
 
   function wpBuildViews(text, matches){
@@ -1598,6 +1645,8 @@
 
   function wpRunCheck(){
     if(wpBusy) return;
+    const lang = wpFindLang(wpLang);
+    if(!lang) return;
     const ta = document.getElementById('wpInput');
     const text = ta ? ta.value.trim() : '';
     const resultBox = document.getElementById('wpResult');
@@ -1617,9 +1666,12 @@
     fetch('https://api.languagetool.org/v2/check', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'text=' + encodeURIComponent(text) + '&language=de-DE'
+      body: 'text=' + encodeURIComponent(text) + '&language=' + encodeURIComponent(lang.lt)
     })
-    .then(r=>{ if(!r.ok) throw new Error('http_'+r.status); return r.json(); })
+    .then(r=>{
+      if(!r.ok){ const e = new Error('http_'+r.status); e.isApiError = true; throw e; }
+      return r.json();
+    })
     .then(data=>{
       let matches = Array.isArray(data.matches) ? data.matches : [];
       if(!wpLevelShowsStyle(wpLevel)){
@@ -1645,11 +1697,11 @@
       }
       const listenBtn = document.getElementById('wpListenBtn');
       if(listenBtn){
-        listenBtn.onclick = () => { speak(views.count ? views.corrected : text, 'de-DE'); };
+        listenBtn.onclick = () => { speak(views.count ? views.corrected : text, lang.lt); };
       }
     })
     .catch(()=>{
-      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Kontrol sırasında bir sorun oluştu. İnternet bağlantını kontrol edip tekrar dene.</div>';
+      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Kontrol sırasında bir sorun oluştu. Bu dil için servis geçici olarak yanıt vermiyor olabilir veya internet bağlantında bir sıkıntı var - biraz sonra tekrar dene.</div>';
     })
     .finally(()=>{
       wpBusy = false;
@@ -1657,29 +1709,26 @@
     });
   }
 
+  /* ---- 3. adım: yazma & kontrol ---- */
   function renderWritingPractice(){
     injectStyles();
-    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">✍️ Yazma Pratiği</div><div class="pm-sub">Almanca metnini yaz, gramer/yazım hatalarını anında gör</div></div>';
-    html += '<div class="pm-card"><div class="wp-section-label">Seviyen</div><div class="pm-level-seg">';
-    ['A2','B1','B2','C1'].forEach(l=>{
-      html += '<div class="lvl'+(l===wpLevel?' active':'')+'" data-lvl="'+l+'">'+l+'</div>';
-    });
-    html += '</div></div>';
-    html += '<textarea class="wp-textarea" id="wpInput" maxlength="4000" placeholder="Örn: Ich habe gestern nach Deutschland gefahren."></textarea>';
+    const lang = wpFindLang(wpLang);
+    if(!lang || !wpLevel){ renderWritingLangSelect(); return; }
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">✍️ Yazma Pratiği</div>'+
+      '<div class="pm-sub">'+lang.flag+' '+lang.label+' · Seviye '+wpLevel+'</div></div>';
+    html += '<textarea class="wp-textarea" id="wpInput" maxlength="4000" placeholder="Buraya '+lang.label+' bir metin yaz..."></textarea>';
     html += '<div class="wp-counter" id="wpCounter">0 / 4000</div>';
     html += '<button class="pm-btn primary" id="wpCheckBtn">Kontrol Et</button>';
-    html += '<div class="wp-note">Ücretsiz, herkese açık LanguageTool servisi kullanılır - internet bağlantısı gerekir.</div>';
+    html += '<div class="wp-note">Ücretsiz, herkese açık LanguageTool servisi kullanılır - internet bağlantısı gerekir.'+
+      (lang.code==='tr' ? '<br>Not: Türkçe için dilbilgisi kontrolü diğer dillere göre daha sınırlı olabilir.' : '')+'</div>';
     html += '<div id="wpResult"></div>';
-    html += '<button class="pm-btn small" id="wpBackBtn">← Hata Yaptığım Kelimeler</button>';
+    html += '<button class="pm-btn small" id="wpBackLevelBtn">← Seviye Değiştir</button>';
     html += '<button class="pm-btn primary" id="wpBackHomeBtn">Ana Sayfaya Dön</button></div>';
     root.innerHTML = html;
 
     document.getElementById('wpBackHomeBtn').onclick = renderHome;
-    document.getElementById('wpBackBtn').onclick = renderWeakWords;
+    document.getElementById('wpBackLevelBtn').onclick = renderWritingLevelSelect;
     document.getElementById('wpCheckBtn').onclick = wpRunCheck;
-    root.querySelectorAll('.pm-level-seg .lvl').forEach(el=>{
-      el.onclick = () => { wpLevel = el.getAttribute('data-lvl'); renderWritingPractice(); };
-    });
     const ta = document.getElementById('wpInput');
     const counter = document.getElementById('wpCounter');
     if(ta && counter){
