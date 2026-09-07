@@ -1511,9 +1511,18 @@
         html += '<div class="pm-weak-item"><div class="pm-weak-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+' <span style="color:var(--pm-accent);font-size:12px;">- '+escapeHtml(v.tr)+'</span></div><div class="pm-weak-meta">❌ Yanlış: '+(e.rec.wrong||0)+' - ✅ Doğru: '+(e.rec.correct||0)+' - 👁 Görülme: '+(e.rec.seen||0)+'<br>'+status+'</div></div>';
       });
     }
+    /* Yazma Pratiği: CheckYourWrite Almanca metin düzeltme aracına yönlendirme.
+       Sadece Almanca modunda gösterilir çünkü site Almanca'ya özel. */
+    if(activeLang === 'de'){
+      html += '<button class="pm-btn small" id="pmWritingPracticeBtn" style="margin-top:10px;">✍️ Yazma Pratiği</button>';
+    }
     html += '<button class="pm-btn primary" id="pmBackHomeBtn2">Ana Sayfaya Dön</button></div>';
     root.innerHTML = html;
     document.getElementById('pmBackHomeBtn2').onclick = renderHome;
+    const wpBtn = document.getElementById('pmWritingPracticeBtn');
+    if(wpBtn){
+      wpBtn.onclick = () => { window.open('https://www.checkyourwrite.com/', '_blank', 'noopener'); };
+    }
   }
 
   function openPersonalMode(){
