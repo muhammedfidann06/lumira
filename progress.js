@@ -541,6 +541,40 @@
       .pm-root .pm-empty{text-align:center;padding:30px 10px;color:#8291b3;font-size:13px;}
       .pm-root .pm-loading{text-align:center;padding:40px 10px;color:#8291b3;font-size:13px;}
       .pm-root .pm-back-link{display:block;text-align:center;font-size:11.5px;color:#8291b3;margin-top:4px;cursor:pointer;text-decoration:underline;}
+      .pm-root .wp-textarea{
+        width:100%;box-sizing:border-box;min-height:140px;resize:vertical;
+        font-family:Georgia,'Iowan Old Style',serif;font-size:15px;line-height:1.6;color:#eef4ff;
+        background:var(--pm-panel);border:1px solid var(--pm-border);border-radius:14px;padding:14px 16px;outline:none;
+      }
+      .pm-root .wp-textarea:focus{border-color:var(--pm-accent);}
+      .pm-root .wp-counter{text-align:right;font-size:10.5px;color:#8291b3;margin:4px 2px 12px;}
+      .pm-root .wp-note{font-size:10.5px;color:#8291b3;text-align:center;margin:-4px 0 14px;line-height:1.5;}
+      .pm-root .wp-section-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--pm-accent);margin:4px 0 8px;}
+      .pm-root .wp-original{
+        font-family:Georgia,'Iowan Old Style',serif;font-size:15px;line-height:1.8;color:#eef4ff;
+        background:var(--pm-panel);border:1px solid var(--pm-border);border-radius:14px;padding:14px 16px;margin-bottom:14px;
+        white-space:pre-wrap;word-break:break-word;
+      }
+      .pm-root .wp-original mark.wp-err{
+        background:rgba(255,95,122,0.22);color:#ffd2d9;border-bottom:2px solid var(--pm-bad);
+        border-radius:3px;padding:0 2px;cursor:help;
+      }
+      .pm-root .wp-corrected{
+        font-family:Georgia,'Iowan Old Style',serif;font-size:15px;line-height:1.8;color:var(--pm-good);
+        background:rgba(61,255,160,0.06);border:1px solid rgba(61,255,160,0.35);border-radius:14px;padding:14px 16px;margin-bottom:14px;
+        white-space:pre-wrap;word-break:break-word;
+      }
+      .pm-root .wp-clean-msg{text-align:center;color:var(--pm-good);font-size:13px;font-weight:700;padding:16px 10px;}
+      .pm-root .wp-issue{display:flex;gap:10px;background:var(--pm-panel);border:1px solid var(--pm-border);border-radius:14px;padding:12px 14px;margin-bottom:10px;text-align:left;}
+      .pm-root .wp-issue-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:rgba(255,95,122,0.18);border:1px solid var(--pm-bad);color:#ffd2d9;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+      .pm-root .wp-issue-body{flex:1;min-width:0;}
+      .pm-root .wp-issue-orig{font-size:13.5px;color:#eef4ff;margin-bottom:3px;}
+      .pm-root .wp-issue-orig b{color:var(--pm-good);}
+      .pm-root .wp-issue-msg{font-size:11.5px;color:#8291b3;line-height:1.5;}
+      .pm-root .wp-loading{text-align:center;padding:26px 10px;color:#8291b3;font-size:13px;}
+      .pm-root .wp-error{text-align:center;padding:20px 10px;color:#ffd2d9;font-size:12.5px;background:rgba(255,95,122,0.1);border:1px solid rgba(255,95,122,0.35);border-radius:14px;margin-bottom:12px;}
+      .pm-root .wp-speak-row{display:flex;gap:8px;margin-bottom:14px;}
+      .pm-root .wp-speak-row button{flex:1;}
     `;
     document.head.appendChild(style);
   }
@@ -1511,8 +1545,8 @@
         html += '<div class="pm-weak-item"><div class="pm-weak-word" dir="'+LANGS[v.lang].dir+'">'+escapeHtml(v.w)+' <span style="color:var(--pm-accent);font-size:12px;">- '+escapeHtml(v.tr)+'</span></div><div class="pm-weak-meta">❌ Yanlış: '+(e.rec.wrong||0)+' - ✅ Doğru: '+(e.rec.correct||0)+' - 👁 Görülme: '+(e.rec.seen||0)+'<br>'+status+'</div></div>';
       });
     }
-    /* Yazma Pratiği: CheckYourWrite Almanca metin düzeltme aracına yönlendirme.
-       Sadece Almanca modunda gösterilir çünkü site Almanca'ya özel. */
+    /* Yazma Pratiği: uygulama içi Almanca metin düzeltici (CheckYourWrite benzeri).
+       Sadece Almanca modunda gösterilir çünkü özellik Almanca'ya özel. */
     if(activeLang === 'de'){
       html += '<button class="pm-btn small" id="pmWritingPracticeBtn" style="margin-top:10px;">✍️ Yazma Pratiği</button>';
     }
@@ -1521,7 +1555,135 @@
     document.getElementById('pmBackHomeBtn2').onclick = renderHome;
     const wpBtn = document.getElementById('pmWritingPracticeBtn');
     if(wpBtn){
-      wpBtn.onclick = () => { window.open('https://www.checkyourwrite.com/', '_blank', 'noopener'); };
+      wpBtn.onclick = renderWritingPractice;
+    }
+  }
+
+  /* =========================================================
+     YAZMA PRATİĞİ — Almanca Metin Düzeltici (CheckYourWrite benzeri)
+     LanguageTool'un ücretsiz, herkese açık kontrol API'sini kullanır
+     (https://api.languagetool.org/v2/check). API anahtarı gerekmez.
+     Seviyeye (A2/B1/B2/C1) göre üslup (STYLE) uyarıları filtrelenir:
+     düşük seviyelerde sadece gramer/yazım/noktalama/büyük-küçük harf
+     hataları gösterilir, üst seviyelerde üslup önerileri de eklenir.
+     ========================================================= */
+  let wpLevel = 'B1';
+  let wpBusy = false;
+
+  function wpLevelShowsStyle(level){
+    return level === 'B2' || level === 'C1';
+  }
+
+  function wpBuildViews(text, matches){
+    const sorted = matches.slice().sort((a,b)=> a.offset - b.offset);
+    let cursor = 0, origHtml = '', corrected = '', issuesHtml = '', count = 0;
+    sorted.forEach(m=>{
+      if(m.offset < cursor || m.offset > text.length) return; /* üst üste binenleri atla */
+      const errText = text.slice(m.offset, m.offset + m.length);
+      const repl = (m.replacements && m.replacements[0] && m.replacements[0].value != null) ? m.replacements[0].value : null;
+      origHtml += escapeHtml(text.slice(cursor, m.offset));
+      origHtml += '<mark class="wp-err" title="'+escapeHtml(m.message||'')+'">'+escapeHtml(errText)+'</mark>';
+      corrected += text.slice(cursor, m.offset);
+      corrected += (repl !== null) ? repl : errText;
+      count++;
+      issuesHtml += '<div class="wp-issue"><div class="wp-issue-num">'+count+'</div><div class="wp-issue-body">'+
+        '<div class="wp-issue-orig">❌ '+escapeHtml(errText)+(repl!==null ? ' → <b>'+escapeHtml(repl)+'</b>' : '')+'</div>'+
+        '<div class="wp-issue-msg">'+escapeHtml(m.shortMessage || m.message || '')+'</div></div></div>';
+      cursor = m.offset + m.length;
+    });
+    origHtml += escapeHtml(text.slice(cursor));
+    corrected += text.slice(cursor);
+    return { origHtml, corrected, issuesHtml, count };
+  }
+
+  function wpRunCheck(){
+    if(wpBusy) return;
+    const ta = document.getElementById('wpInput');
+    const text = ta ? ta.value.trim() : '';
+    const resultBox = document.getElementById('wpResult');
+    if(!text){
+      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Önce bir şeyler yaz, sonra kontrol edelim 🙂</div>';
+      return;
+    }
+    if(text.length > 4000){
+      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Metin çok uzun (max. 4000 karakter). Daha kısa bir bölüm dene.</div>';
+      return;
+    }
+    wpBusy = true;
+    const btn = document.getElementById('wpCheckBtn');
+    if(btn){ btn.disabled = true; btn.textContent = 'Kontrol ediliyor...'; }
+    if(resultBox) resultBox.innerHTML = '<div class="wp-loading">📝 Metnin kontrol ediliyor, birkaç saniye sürebilir...</div>';
+
+    fetch('https://api.languagetool.org/v2/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'text=' + encodeURIComponent(text) + '&language=de-DE'
+    })
+    .then(r=>{ if(!r.ok) throw new Error('http_'+r.status); return r.json(); })
+    .then(data=>{
+      let matches = Array.isArray(data.matches) ? data.matches : [];
+      if(!wpLevelShowsStyle(wpLevel)){
+        matches = matches.filter(m=>{
+          const catId = m.rule && m.rule.category && m.rule.category.id;
+          return catId !== 'STYLE' && catId !== 'REDUNDANCY';
+        });
+      }
+      const views = wpBuildViews(text, matches);
+      if(!resultBox) return;
+      if(views.count === 0){
+        resultBox.innerHTML = '<div class="wp-clean-msg">✅ Hata bulunamadı, harika bir metin yazmışsın!</div>'+
+          '<div class="wp-section-label">Metnin</div><div class="wp-corrected">'+escapeHtml(text)+'</div>'+
+          '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">🔊 Dinle</button></div>';
+      } else {
+        resultBox.innerHTML =
+          '<div class="wp-section-label">Bulunan Hatalar ('+views.count+')</div>'+
+          '<div class="wp-original">'+views.origHtml+'</div>'+
+          '<div class="wp-section-label">Açıklamalar</div>'+views.issuesHtml+
+          '<div class="wp-section-label">Düzeltilmiş Metin</div>'+
+          '<div class="wp-corrected">'+escapeHtml(views.corrected)+'</div>'+
+          '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">🔊 Dinle</button></div>';
+      }
+      const listenBtn = document.getElementById('wpListenBtn');
+      if(listenBtn){
+        listenBtn.onclick = () => { speak(views.count ? views.corrected : text, 'de-DE'); };
+      }
+    })
+    .catch(()=>{
+      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Kontrol sırasında bir sorun oluştu. İnternet bağlantını kontrol edip tekrar dene.</div>';
+    })
+    .finally(()=>{
+      wpBusy = false;
+      if(btn){ btn.disabled = false; btn.textContent = 'Kontrol Et'; }
+    });
+  }
+
+  function renderWritingPractice(){
+    injectStyles();
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">✍️ Yazma Pratiği</div><div class="pm-sub">Almanca metnini yaz, gramer/yazım hatalarını anında gör</div></div>';
+    html += '<div class="pm-card"><div class="wp-section-label">Seviyen</div><div class="pm-level-seg">';
+    ['A2','B1','B2','C1'].forEach(l=>{
+      html += '<div class="lvl'+(l===wpLevel?' active':'')+'" data-lvl="'+l+'">'+l+'</div>';
+    });
+    html += '</div></div>';
+    html += '<textarea class="wp-textarea" id="wpInput" maxlength="4000" placeholder="Örn: Ich habe gestern nach Deutschland gefahren."></textarea>';
+    html += '<div class="wp-counter" id="wpCounter">0 / 4000</div>';
+    html += '<button class="pm-btn primary" id="wpCheckBtn">Kontrol Et</button>';
+    html += '<div class="wp-note">Ücretsiz, herkese açık LanguageTool servisi kullanılır - internet bağlantısı gerekir.</div>';
+    html += '<div id="wpResult"></div>';
+    html += '<button class="pm-btn small" id="wpBackBtn">← Hata Yaptığım Kelimeler</button>';
+    html += '<button class="pm-btn primary" id="wpBackHomeBtn">Ana Sayfaya Dön</button></div>';
+    root.innerHTML = html;
+
+    document.getElementById('wpBackHomeBtn').onclick = renderHome;
+    document.getElementById('wpBackBtn').onclick = renderWeakWords;
+    document.getElementById('wpCheckBtn').onclick = wpRunCheck;
+    root.querySelectorAll('.pm-level-seg .lvl').forEach(el=>{
+      el.onclick = () => { wpLevel = el.getAttribute('data-lvl'); renderWritingPractice(); };
+    });
+    const ta = document.getElementById('wpInput');
+    const counter = document.getElementById('wpCounter');
+    if(ta && counter){
+      ta.addEventListener('input', ()=>{ counter.textContent = ta.value.length + ' / 4000'; });
     }
   }
 
