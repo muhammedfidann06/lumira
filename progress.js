@@ -1562,7 +1562,7 @@
      bkz. KURULUM.md → "Yazma Pratiği (AI Metin Düzeltici)".
      ========================================================= */
   const WP_AI_CONFIG = {
-    apiKey: 'BURAYA_YAPISTIR', // https://aistudio.google.com/apikey adresinden ücretsiz alınır
+    apiKey: 'AQ.Ab8RN6IhSARmM5agfmhtkV_TynVOxcnoJcuRNQ1EV7ym3gvLnw',
     model: 'gemini-flash-latest'
   };
   const WP_LANGS = [
