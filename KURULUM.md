@@ -168,17 +168,56 @@ anahtarı gerekir.
 1. https://aistudio.google.com/apikey adresine git, Google hesabınla giriş yap.
 2. **"Create API key"** butonuna bas, oluşan anahtarı kopyala.
 
+> **Not (Eylül 2026 itibarıyla):** Google, Haziran 2026'da anahtar formatını değiştirdi.
+> Yeni oluşturulan anahtarlar artık eski `AIzaSy...` yerine **`AQ.Ab...`** ile başlıyor
+> ("Auth Key"). Bu normal ve doğru bir anahtar — `AIzaSy` formatlı eski anahtarlar
+> Eylül 2026'dan itibaren zaten çalışmıyor. `AQ.` formatı native Gemini uç noktasında
+> (`generativelanguage.googleapis.com`, `x-goog-api-key` başlığıyla) sorunsuz çalışır —
+> bu projede zaten bu yöntem kullanılıyor.
+
 ### Anahtarı projeye eklemek
-`progress.js` dosyasını aç, en üste yakın yerdeki şu bloğu bul:
+Anahtar zaten `progress.js` içine eklendi (`WP_AI_CONFIG.apiKey`). İleride kendi
+anahtarınla değiştirmek istersen aynı dosyada şu bloğu bulup değiştirmen yeterli:
 
 ```js
 const WP_AI_CONFIG = {
-  apiKey: 'BURAYA_YAPISTIR', // https://aistudio.google.com/apikey adresinden ücretsiz alınır
+  apiKey: 'AQ.Ab...',   // kendi anahtarınla değiştirebilirsin
   model: 'gemini-flash-latest'
 };
 ```
 
-`'BURAYA_YAPISTIR'` yazan yere kendi anahtarını yapıştır, kaydet, yayınla (deploy et).
+### ⚠️ Bilinen sorun (Eylül 2026): "AQ." anahtarları bazı hesaplarda reddediliyor
+
+Araştırdığımda şunu buldum: Google'ın yeni **"AQ." (Auth Key)** formatına geçişi
+şu anda **sorunlu** — Google'ın kendi geliştirici forumunda (discuss.ai.google.dev),
+Haziran'dan bu yana **onlarca farklı geliştirici** aynı hatayı bildirmiş:
+
+```
+401 UNAUTHENTICATED
+"Request had invalid authentication credentials. Expected OAuth 2 access token..."
+reason: ACCESS_TOKEN_TYPE_UNSUPPORTED
+```
+
+Bu, doğrudan `generativelanguage.googleapis.com` uç noktasına (bu projenin kullandığı
+yöntem) `x-goog-api-key` header'ı veya `?key=` parametresiyle gönderilen "AQ." anahtarlarının
+**bazı hesaplarda** reddedilmesiyle oluşuyor — SDK kullanılsa da, ham `curl` ile denense de
+aynı hata çıkıyor. Google destek ekibi "hesaba özel bir durum" diyor ama net bir çözüm
+paylaşmamış; sorun aylardır (Haziran-Eylül 2026) çözülmeden devam ediyor.
+
+**Anahtarın çalışıp çalışmadığını anlamak için:** Uygulama artık hatayı ayrıntılı gösteriyor
+("Kontrol Et" sonrası çıkan mesaj + tarayıcı konsolu F12). 401 + `ACCESS_TOKEN_TYPE_UNSUPPORTED`
+görürsen, bu senin kurulumundan değil, yukarıdaki Google tarafı sorundan kaynaklanıyor demektir.
+
+**Denenebilecek çözümler (öncelik sırasıyla):**
+1. Google Cloud Console → **APIs & Services → Credentials → Create Credentials → API key**
+   yoluyla (AI Studio'daki "Get API key" kısayolu yerine) yeni bir anahtar oluşturmayı dene;
+   bazı hesaplarda bu yol hâlâ eski formatı veriyor.
+2. Projede **faturalandırmayı (billing)** aç (ücretsiz kotan yine geçerli kalır, sadece
+   hesap doğrulanmış olur) — bazı forum yanıtlarında bunun sorunu çözdüğü belirtilmiş.
+3. Google'ın resmi geri bildirim formunu doldur (discuss.ai.google.dev'deki ilgili konularda
+   linkleniyor) ve/veya birkaç gün bekleyip anahtarı yeniden oluşturmayı dene.
+4. Hiçbiri işe yaramazsa haber ver — Gemini yerine benzer ücretsiz bir alternatife
+   (ör. Groq, Mistral) geçebiliriz; mimari neredeyse hiç değişmez.
 
 ### ⚠️ Güvenlik notu (önemli, dürüst uyarı)
 Bu anahtar `progress.js` içinde **açık metin (client-side)** olarak durur — yani repo public

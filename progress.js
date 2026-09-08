@@ -1751,21 +1751,27 @@
         }
       })
     })
-    .then(r => r.json().then(data => ({ ok: r.ok, data: data })))
+    .then(r => r.json().then(data => ({ ok: r.ok, status: r.status, data: data })))
     .then(res => {
       if(!res.ok){
-        const apiMsg = res.data && res.data.error && res.data.error.message;
-        throw new Error(apiMsg || 'api_error');
+        const apiObj = res.data && res.data.error;
+        const apiMsg = apiObj && apiObj.message;
+        const apiReason = apiObj && Array.isArray(apiObj.details) && apiObj.details[0] && apiObj.details[0].reason;
+        console.error('[Yazma Pratiği] Gemini API hatası:', res.status, apiObj || res.data);
+        const e = new Error(apiMsg || ('HTTP ' + res.status));
+        e.wpStatus = res.status;
+        e.wpReason = apiReason;
+        throw e;
       }
       if(res.data.promptFeedback && res.data.promptFeedback.blockReason){
-        throw new Error('blocked');
+        throw new Error('İçerik güvenlik filtresine takıldı (blockReason: ' + res.data.promptFeedback.blockReason + ')');
       }
       const cand = res.data.candidates && res.data.candidates[0];
       const rawText = cand && cand.content && cand.content.parts && cand.content.parts[0] && cand.content.parts[0].text;
-      if(!rawText) throw new Error('empty_response');
+      if(!rawText) throw new Error('API boş yanıt döndürdü (finishReason: ' + (cand && cand.finishReason) + ')');
       let parsed;
       try{ parsed = JSON.parse(rawText); }
-      catch(e){ throw new Error('parse_error'); }
+      catch(e){ throw new Error('API yanıtı JSON olarak ayrıştırılamadı'); }
 
       const errors = Array.isArray(parsed.errors) ? parsed.errors : [];
       const correctedFull = (typeof parsed.corrected === 'string' && parsed.corrected.trim()) ? parsed.corrected : text;
@@ -1789,8 +1795,24 @@
         listenBtn.onclick = () => { speak(correctedFull, lang.tts); };
       }
     })
-    .catch(()=>{
-      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Kontrol sırasında bir sorun oluştu. İnternet bağlantını kontrol edip biraz sonra tekrar dene.</div>';
+    .catch((err)=>{
+      console.error('[Yazma Pratiği] Kontrol hatası:', err);
+      let msg = 'Kontrol sırasında bir sorun oluştu.';
+      if(err && err.wpStatus === 401){
+        msg = 'API anahtarı reddedildi (401 - kimlik doğrulama hatası). '+
+          (err.wpReason === 'ACCESS_TOKEN_TYPE_UNSUPPORTED'
+            ? 'Google şu an yeni "AQ." formatlı anahtarları bazı hesaplarda kabul etmiyor (bilinen, güncel bir Google tarafı sorunu). KURULUM.md → "Bilinen sorun" bölümüne bak.'
+            : 'API anahtarını kontrol et.');
+      } else if(err && err.wpStatus === 429){
+        msg = 'Ücretsiz kullanım kotası doldu (429). Biraz sonra tekrar dene.';
+      } else if(err && err.wpStatus){
+        msg = 'API hatası (HTTP '+err.wpStatus+'): ' + (err.message || '');
+      } else if(err && err.message){
+        msg = 'Kontrol sırasında bir sorun oluştu: ' + err.message;
+      } else {
+        msg = 'Kontrol sırasında bir sorun oluştu. İnternet bağlantını kontrol edip biraz sonra tekrar dene.';
+      }
+      if(resultBox) resultBox.innerHTML = '<div class="wp-error">'+escapeHtml(msg)+'</div>';
     })
     .finally(()=>{
       wpBusy = false;
