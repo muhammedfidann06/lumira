@@ -548,7 +548,6 @@
       }
       .pm-root .wp-textarea:focus{border-color:var(--pm-accent);}
       .pm-root .wp-counter{text-align:right;font-size:10.5px;color:#8291b3;margin:4px 2px 12px;}
-      .pm-root .wp-note{font-size:10.5px;color:#8291b3;text-align:center;margin:-4px 0 14px;line-height:1.5;}
       .pm-root .wp-section-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--pm-accent);margin:4px 0 8px;}
       .pm-root .wp-original{
         font-family:Georgia,'Iowan Old Style',serif;font-size:15px;line-height:1.8;color:#eef4ff;
@@ -1553,25 +1552,48 @@
   }
 
   /* =========================================================
-     YAZMA PRATİĞİ — Çok dilli Metin Düzeltici (CheckYourWrite benzeri)
+     YAZMA PRATİĞİ — Çok dilli AI Metin Düzeltici (CheckYourWrite benzeri)
      Akış: Dil Seç → Seviye Seç (A1-B2) → Yaz & Kontrol Et
-     LanguageTool'un ücretsiz, herkese açık kontrol API'sini kullanır
-     (https://api.languagetool.org/v2/check). API anahtarı gerekmez.
-     A1/A2'de sadece gramer/yazım/noktalama/büyük-küçük harf hataları
-     gösterilir; B1/B2'de üslup (STYLE) önerileri de eklenir.
-     Not: Türkçe için dilbilgisi kontrolü bu ücretsiz serviste
-     sınırlı olabilir (kapsamı diğer dillere göre daha dar).
+     Google Gemini API'sini (ücretsiz katman) kullanır - gerçek bir
+     TELC/Goethe sınav değerlendiricisi gibi davranmasını isteyen bir
+     komutla çalışır; özne-yüklem uyumu, kelime sırası, zaman/kip
+     uyumu, çekim/hal, bağlaç kullanımı, yazım ve noktalama dahil
+     her gerçek hatayı yakalamaya çalışır. API anahtarı gerekir,
+     bkz. KURULUM.md → "Yazma Pratiği (AI Metin Düzeltici)".
      ========================================================= */
+  const WP_AI_CONFIG = {
+    apiKey: 'BURAYA_YAPISTIR', // https://aistudio.google.com/apikey adresinden ücretsiz alınır
+    model: 'gemini-flash-latest'
+  };
   const WP_LANGS = [
-    { code:'en', lt:'en-US', label:'İngilizce', flag:'🇬🇧' },
-    { code:'de', lt:'de-DE', label:'Almanca',   flag:'🇩🇪' },
-    { code:'ar', lt:'ar',    label:'Arapça',    flag:'🇸🇦' },
-    { code:'fr', lt:'fr-FR', label:'Fransızca', flag:'🇫🇷' },
-    { code:'es', lt:'es-ES', label:'İspanyolca',flag:'🇪🇸' },
-    { code:'ru', lt:'ru-RU', label:'Rusça',     flag:'🇷🇺' },
-    { code:'tr', lt:'tr',    label:'Türkçe',    flag:'🇹🇷' }
+    { code:'en', label:'İngilizce', flag:'🇬🇧', tts:'en-US' },
+    { code:'de', label:'Almanca',   flag:'🇩🇪', tts:'de-DE' },
+    { code:'ar', label:'Arapça',    flag:'🇸🇦', tts:'ar-SA' },
+    { code:'fr', label:'Fransızca', flag:'🇫🇷', tts:'fr-FR' },
+    { code:'es', label:'İspanyolca',flag:'🇪🇸', tts:'es-ES' },
+    { code:'ru', label:'Rusça',     flag:'🇷🇺', tts:'ru-RU' },
+    { code:'tr', label:'Türkçe',    flag:'🇹🇷', tts:'tr-TR' }
   ];
   const WP_LEVELS = ['A1','A2','B1','B2'];
+  const WP_RESPONSE_SCHEMA = {
+    type: 'OBJECT',
+    properties: {
+      corrected: { type: 'STRING' },
+      errors: {
+        type: 'ARRAY',
+        items: {
+          type: 'OBJECT',
+          properties: {
+            original: { type: 'STRING' },
+            corrected: { type: 'STRING' },
+            explanation: { type: 'STRING' }
+          },
+          required: ['original','corrected','explanation']
+        }
+      }
+    },
+    required: ['corrected','errors']
+  };
   let wpLang = null;
   let wpLevel = null;
   let wpBusy = false;
@@ -1581,8 +1603,8 @@
     return null;
   }
 
-  function wpLevelShowsStyle(level){
-    return level === 'B1' || level === 'B2';
+  function wpIsConfigured(){
+    return !!WP_AI_CONFIG.apiKey && WP_AI_CONFIG.apiKey.indexOf('BURAYA_YAPISTIR') === -1;
   }
 
   /* ---- 1. adım: dil seçimi ---- */
@@ -1621,26 +1643,74 @@
     document.getElementById('wpBackLangBtn').onclick = renderWritingLangSelect;
   }
 
-  function wpBuildViews(text, matches){
-    const sorted = matches.slice().sort((a,b)=> a.offset - b.offset);
-    let cursor = 0, origHtml = '', corrected = '', issuesHtml = '', count = 0;
-    sorted.forEach(m=>{
-      if(m.offset < cursor || m.offset > text.length) return; /* üst üste binenleri atla */
-      const errText = text.slice(m.offset, m.offset + m.length);
-      const repl = (m.replacements && m.replacements[0] && m.replacements[0].value != null) ? m.replacements[0].value : null;
-      origHtml += escapeHtml(text.slice(cursor, m.offset));
-      origHtml += '<mark class="wp-err" title="'+escapeHtml(m.message||'')+'">'+escapeHtml(errText)+'</mark>';
-      corrected += text.slice(cursor, m.offset);
-      corrected += (repl !== null) ? repl : errText;
-      count++;
-      issuesHtml += '<div class="wp-issue"><div class="wp-issue-num">'+count+'</div><div class="wp-issue-body">'+
-        '<div class="wp-issue-orig">❌ '+escapeHtml(errText)+(repl!==null ? ' → <b>'+escapeHtml(repl)+'</b>' : '')+'</div>'+
-        '<div class="wp-issue-msg">'+escapeHtml(m.shortMessage || m.message || '')+'</div></div></div>';
-      cursor = m.offset + m.length;
+  /* AI'ya gönderilecek komut: sıkı bir TELC/Goethe değerlendiricisi gibi davranmasını,
+     her gerçek hatayı (özne-yüklem uyumu, kelime sırası, zaman/kip, çekim/hal, bağlaç,
+     yazım, noktalama) yakalamasını, ama doğru olan hiçbir şeyi hata saymamasını ister. */
+  function wpBuildPrompt(lang, level, text){
+    return 'Sen '+lang.label+' dilinde '+level+' seviyesindeki metinleri değerlendiren, TELC ve '+
+      'Goethe-Institut sınav standartlarında son derece titiz, deneyimli bir dil öğretmenisin. '+
+      'Aşağıdaki öğrenci metnini cümle cümle, dikkatle incele.\n\n'+
+      'Şunları MUTLAKA kontrol et, hiçbir gerçek hatayı gözden kaçırma:\n'+
+      '- Özne-yüklem uyumu (fiil çekimi, tekil/çoğul uyumu - örn. tekil özneyle çoğul fiil kullanımı)\n'+
+      '- Kelime sırası (yan cümle - ana cümle sıralaması, devrik/urulmuş yapılar, dile özgü sıralama kuralları)\n'+
+      '- Zaman ve kip uyumu (koşul cümleleri, dilek-şart kipi/subjunctive, edilgen çatı dahil)\n'+
+      '- Çekim ve hal uyumu (isim/sıfat/artikel çekimi, cinsiyet, hal - dilde varsa)\n'+
+      '- Bağlaç ve edat kullanımı, anlamca doğru bağlaç seçimi\n'+
+      '- Yazım ve noktalama\n'+
+      '- Büyük/küçük harf kuralları (dilde varsa)\n\n'+
+      'Seviyeye göre yaklaşım:\n'+
+      '- A1/A2 ise: temel gramer, çekim ve kelime sırası hatalarına odaklan; açıklamaları çok basit, anlaşılır Türkçe ile yaz.\n'+
+      '- B1/B2 ise: yukarıdakilere ek olarak daha ileri yapıları (yan cümleler, edilgen çatı, dilek kipi, bağlaçlarla anlam ilişkisi) da titizlikle kontrol et; gerekirse akıcılığı artıracak üslup önerileri de ekle.\n\n'+
+      'ÖNEMLİ KURALLAR:\n'+
+      '1. Metinde gerçekten var olan HER hatayı bul, hiçbirini atlama - özellikle özne-fiil uyumsuzluklarını ve yan cümleden sonra devrik olması gereken ana cümle sıralamasını kaçırma.\n'+
+      '2. Sadece gerçek hataları bildir; doğru olan hiçbir şeyi hata olarak gösterme.\n'+
+      '3. "original" alanı, aşağıda verilen METİN içinde birebir (harfi harfine, aynı büyük/küçük harfle) geçen bir alt dize olmalı - yeniden yazma, olduğu gibi kopyala.\n'+
+      '4. "explanation" alanını Türkçe yaz; kısa ve öğretici olsun, kuralı bir öğrenciye anlatır gibi açıkla.\n'+
+      '5. "corrected" alanına metnin TAMAMININ, tüm hatalar düzeltilmiş, doğal ve akıcı halini yaz.\n'+
+      '6. Metin zaten hatasızsa "errors" dizisini boş bırak, "corrected" alanına metni aynen yaz.\n\n'+
+      'METİN:\n"""\n'+text+'\n"""';
+  }
+
+  /* AI'nın döndürdüğü {original, corrected, explanation} listesinden, orijinal
+     metin üzerinde vurgulu (highlight) görünüm ve açıklama listesi üretir.
+     "original" metinde birebir bulunamazsa o madde sadece açıklama listesinde
+     gösterilir, vurgulama atlanır (uygulamanın çökmesini engeller). */
+  function wpBuildViews(text, errors){
+    let searchFrom = 0;
+    const located = [];
+    errors.forEach(e=>{
+      if(!e || typeof e.original !== 'string' || !e.original) return;
+      let idx = text.indexOf(e.original, searchFrom);
+      if(idx === -1) idx = text.indexOf(e.original);
+      if(idx !== -1){
+        located.push({ start: idx, end: idx + e.original.length, e });
+        searchFrom = idx + e.original.length;
+      }
     });
-    origHtml += escapeHtml(text.slice(cursor));
-    corrected += text.slice(cursor);
-    return { origHtml, corrected, issuesHtml, count };
+    located.sort((a,b)=> a.start - b.start);
+    const clean = [];
+    let cursor = 0;
+    located.forEach(m=>{
+      if(m.start < cursor) return; /* üst üste binenleri atla */
+      clean.push(m);
+      cursor = m.end;
+    });
+    let origHtml = '', cur = 0;
+    clean.forEach(m=>{
+      origHtml += escapeHtml(text.slice(cur, m.start));
+      origHtml += '<mark class="wp-err" title="'+escapeHtml(m.e.explanation||'')+'">'+escapeHtml(m.e.original)+'</mark>';
+      cur = m.end;
+    });
+    origHtml += escapeHtml(text.slice(cur));
+
+    let issuesHtml = '';
+    errors.forEach((e,i)=>{
+      if(!e) return;
+      issuesHtml += '<div class="wp-issue"><div class="wp-issue-num">'+(i+1)+'</div><div class="wp-issue-body">'+
+        '<div class="wp-issue-orig">❌ '+escapeHtml(e.original||'')+(e.corrected ? ' → <b>'+escapeHtml(e.corrected)+'</b>' : '')+'</div>'+
+        '<div class="wp-issue-msg">'+escapeHtml(e.explanation||'')+'</div></div></div>';
+    });
+    return { origHtml, issuesHtml, count: errors.length };
   }
 
   function wpRunCheck(){
@@ -1658,33 +1728,52 @@
       if(resultBox) resultBox.innerHTML = '<div class="wp-error">Metin çok uzun (max. 4000 karakter). Daha kısa bir bölüm dene.</div>';
       return;
     }
+    if(!wpIsConfigured()){
+      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Bu özellik henüz kurulmamış: <code>progress.js</code> içindeki <code>WP_AI_CONFIG.apiKey</code> alanına ücretsiz bir Gemini API anahtarı eklenmesi gerekiyor. Detay için <code>KURULUM.md</code> dosyasına bak.</div>';
+      return;
+    }
+
     wpBusy = true;
     const btn = document.getElementById('wpCheckBtn');
     if(btn){ btn.disabled = true; btn.textContent = 'Kontrol ediliyor...'; }
-    if(resultBox) resultBox.innerHTML = '<div class="wp-loading">📝 Metnin kontrol ediliyor, birkaç saniye sürebilir...</div>';
+    if(resultBox) resultBox.innerHTML = '<div class="wp-loading">📝 Metnin bir dil öğretmeni titizliğiyle inceleniyor, birkaç saniye sürebilir...</div>';
 
-    fetch('https://api.languagetool.org/v2/check', {
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + WP_AI_CONFIG.model + ':generateContent';
+    fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'text=' + encodeURIComponent(text) + '&language=' + encodeURIComponent(lang.lt)
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': WP_AI_CONFIG.apiKey },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: wpBuildPrompt(lang, wpLevel, text) }] }],
+        generationConfig: {
+          temperature: 0.2,
+          responseMimeType: 'application/json',
+          responseSchema: WP_RESPONSE_SCHEMA
+        }
+      })
     })
-    .then(r=>{
-      if(!r.ok){ const e = new Error('http_'+r.status); e.isApiError = true; throw e; }
-      return r.json();
-    })
-    .then(data=>{
-      let matches = Array.isArray(data.matches) ? data.matches : [];
-      if(!wpLevelShowsStyle(wpLevel)){
-        matches = matches.filter(m=>{
-          const catId = m.rule && m.rule.category && m.rule.category.id;
-          return catId !== 'STYLE' && catId !== 'REDUNDANCY';
-        });
+    .then(r => r.json().then(data => ({ ok: r.ok, data: data })))
+    .then(res => {
+      if(!res.ok){
+        const apiMsg = res.data && res.data.error && res.data.error.message;
+        throw new Error(apiMsg || 'api_error');
       }
-      const views = wpBuildViews(text, matches);
+      if(res.data.promptFeedback && res.data.promptFeedback.blockReason){
+        throw new Error('blocked');
+      }
+      const cand = res.data.candidates && res.data.candidates[0];
+      const rawText = cand && cand.content && cand.content.parts && cand.content.parts[0] && cand.content.parts[0].text;
+      if(!rawText) throw new Error('empty_response');
+      let parsed;
+      try{ parsed = JSON.parse(rawText); }
+      catch(e){ throw new Error('parse_error'); }
+
+      const errors = Array.isArray(parsed.errors) ? parsed.errors : [];
+      const correctedFull = (typeof parsed.corrected === 'string' && parsed.corrected.trim()) ? parsed.corrected : text;
+      const views = wpBuildViews(text, errors);
       if(!resultBox) return;
       if(views.count === 0){
         resultBox.innerHTML = '<div class="wp-clean-msg">✅ Hata bulunamadı, harika bir metin yazmışsın!</div>'+
-          '<div class="wp-section-label">Metnin</div><div class="wp-corrected">'+escapeHtml(text)+'</div>'+
+          '<div class="wp-section-label">Metnin</div><div class="wp-corrected">'+escapeHtml(correctedFull)+'</div>'+
           '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">🔊 Dinle</button></div>';
       } else {
         resultBox.innerHTML =
@@ -1692,16 +1781,16 @@
           '<div class="wp-original">'+views.origHtml+'</div>'+
           '<div class="wp-section-label">Açıklamalar</div>'+views.issuesHtml+
           '<div class="wp-section-label">Düzeltilmiş Metin</div>'+
-          '<div class="wp-corrected">'+escapeHtml(views.corrected)+'</div>'+
+          '<div class="wp-corrected">'+escapeHtml(correctedFull)+'</div>'+
           '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">🔊 Dinle</button></div>';
       }
       const listenBtn = document.getElementById('wpListenBtn');
       if(listenBtn){
-        listenBtn.onclick = () => { speak(views.count ? views.corrected : text, lang.lt); };
+        listenBtn.onclick = () => { speak(correctedFull, lang.tts); };
       }
     })
     .catch(()=>{
-      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Kontrol sırasında bir sorun oluştu. Bu dil için servis geçici olarak yanıt vermiyor olabilir veya internet bağlantında bir sıkıntı var - biraz sonra tekrar dene.</div>';
+      if(resultBox) resultBox.innerHTML = '<div class="wp-error">Kontrol sırasında bir sorun oluştu. İnternet bağlantını kontrol edip biraz sonra tekrar dene.</div>';
     })
     .finally(()=>{
       wpBusy = false;
@@ -1719,8 +1808,6 @@
     html += '<textarea class="wp-textarea" id="wpInput" maxlength="4000" placeholder="Buraya '+lang.label+' bir metin yaz..."></textarea>';
     html += '<div class="wp-counter" id="wpCounter">0 / 4000</div>';
     html += '<button class="pm-btn primary" id="wpCheckBtn">Kontrol Et</button>';
-    html += '<div class="wp-note">Ücretsiz, herkese açık LanguageTool servisi kullanılır - internet bağlantısı gerekir.'+
-      (lang.code==='tr' ? '<br>Not: Türkçe için dilbilgisi kontrolü diğer dillere göre daha sınırlı olabilir.' : '')+'</div>';
     html += '<div id="wpResult"></div>';
     html += '<button class="pm-btn small" id="wpBackLevelBtn">← Seviye Değiştir</button>';
     html += '<button class="pm-btn primary" id="wpBackHomeBtn">Ana Sayfaya Dön</button></div>';

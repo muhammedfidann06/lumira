@@ -156,4 +156,48 @@ Bunlar tarayıcı içinden mümkün değil, **native kod** gerektirir:
 
 ---
 
+## 7. Yazma Pratiği (AI Metin Düzeltici) — Gemini API anahtarı
+
+**Kişisel → Hata Yaptığım Kelimeler**'in altındaki **✍️ Yazma Pratiği** butonu; kullanıcının
+dil (İngilizce/Almanca/Arapça/Fransızca/İspanyolca/Rusça/Türkçe) ve seviye (A1-B2) seçip
+yazdığı metni gerçek bir TELC/Goethe sınav değerlendiricisi titizliğinde kontrol eden,
+Google **Gemini API**'sini kullanan bir özelliktir. Çalışması için **ücretsiz** bir API
+anahtarı gerekir.
+
+### Anahtarı almak (2 dakika, kredi kartı istemez)
+1. https://aistudio.google.com/apikey adresine git, Google hesabınla giriş yap.
+2. **"Create API key"** butonuna bas, oluşan anahtarı kopyala.
+
+### Anahtarı projeye eklemek
+`progress.js` dosyasını aç, en üste yakın yerdeki şu bloğu bul:
+
+```js
+const WP_AI_CONFIG = {
+  apiKey: 'BURAYA_YAPISTIR', // https://aistudio.google.com/apikey adresinden ücretsiz alınır
+  model: 'gemini-flash-latest'
+};
+```
+
+`'BURAYA_YAPISTIR'` yazan yere kendi anahtarını yapıştır, kaydet, yayınla (deploy et).
+
+### ⚠️ Güvenlik notu (önemli, dürüst uyarı)
+Bu anahtar `progress.js` içinde **açık metin (client-side)** olarak durur — yani repo public
+olduğu için herkes "View Source" ile görebilir. Firebase anahtarının aksine (o, güvenlik
+kuralları sayesinde herkese açık olsa da güvenlidir), bu anahtar senin ücretsiz Gemini
+kotanı kullanır. Riski azaltmak için:
+
+1. **Faturalandırma (billing) açma.** Ücretsiz katmanda kota bitince istekler sadece
+   geçici olarak reddedilir, ekstra ücret çıkmaz.
+2. Google Cloud Console → ilgili API anahtarı → **"Restrict key"** → **HTTP referrer'lar**
+   kısmına yalnızca kendi yayın adresini (`https://KULLANICI-ADIN.github.io/*`) ekle;
+   böylece anahtar başka sitelerden çağrılamaz.
+3. Kotan zaman zaman dolarsa (ücretsiz katman günlük istek sınırlıdır), yeni bir proje/anahtar
+   çıkarman yeterlidir — tek satır değişir.
+
+### Bu olmadan ne olur?
+Anahtar girilmeden buton yine çalışır ama "Kontrol Et"e basınca kullanıcıya
+"Bu özellik henüz kurulmamış..." mesajı gösterilir; uygulamanın geri kalanı etkilenmez.
+
+---
+
 Lumira · Dil Kartları — iyi çalışmalar 🌙
