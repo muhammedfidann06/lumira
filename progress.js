@@ -724,7 +724,6 @@
     html += '<button class="pm-btn small" id="pmLevelTestBtn">🎓 Seviye Tespit Sınavı</button>';
     html += '<button class="pm-btn small" id="pmKnownBtn">✅ Öğrendiğim Kelimeler ('+totalKnownLang+')</button>';
     html += '<button class="pm-btn small" id="pmWeakBtn">📉 Hata Yaptığım Kelimeler</button>';
-    html += '<button class="pm-btn small" id="pmWritingBtn">✍️ Yazma Pratiği</button>';
     html += awHtml;    /* Başarımlar (mistakes butonunun altında) */
     html += supHtml;   /* Rozetler */
     html += '</div>';
@@ -758,7 +757,6 @@
     document.getElementById('pmLevelTestBtn').onclick = openLevelTestPicker;
     document.getElementById('pmKnownBtn').onclick = renderKnownWords;
     document.getElementById('pmWeakBtn').onclick = renderWeakWords;
-    document.getElementById('pmWritingBtn').onclick = renderWritingLangSelect;
     const dueBtn = document.getElementById('pmDueBtn');
     if(dueBtn) dueBtn.onclick = startDailyReview;
 
@@ -1564,13 +1562,12 @@
      anında çalışır. Türkçe ve Arapça'da kapsamı diğer dillere göre
      daha dar olabilir. ========================================= */
   const WP_LANGS = [
-    { code:'en', label:'İngilizce', flag:'🇬🇧', tts:'en-US', lt:'en-US' },
-    { code:'de', label:'Almanca',   flag:'🇩🇪', tts:'de-DE', lt:'de-DE' },
-    { code:'ar', label:'Arapça',    flag:'🇸🇦', tts:'ar-SA', lt:'ar'    },
-    { code:'fr', label:'Fransızca', flag:'🇫🇷', tts:'fr-FR', lt:'fr'    },
-    { code:'es', label:'İspanyolca',flag:'🇪🇸', tts:'es-ES', lt:'es'    },
-    { code:'ru', label:'Rusça',     flag:'🇷🇺', tts:'ru-RU', lt:'ru-RU' },
-    { code:'tr', label:'Türkçe',    flag:'🇹🇷', tts:'tr-TR', lt:'tr'    }
+    { code:'en', tts:'en-US', lt:'en-US' },
+    { code:'de', tts:'de-DE', lt:'de-DE' },
+    { code:'ar', tts:'ar-SA', lt:'ar'    },
+    { code:'fr', tts:'fr-FR', lt:'fr'    },
+    { code:'es', tts:'es-ES', lt:'es'    },
+    { code:'ru', tts:'ru-RU', lt:'ru-RU' }
   ];
   const WP_LEVELS = ['A1','A2','B1','B2'];
   let wpLang = null;
@@ -1578,8 +1575,11 @@
   let wpBusy = false;
 
   function wpFindLang(code){
-    for(let i=0;i<WP_LANGS.length;i++){ if(WP_LANGS[i].code===code) return WP_LANGS[i]; }
-    return null;
+    const w = WP_LANGS.find(x=>x.code===code);
+    if(!w) return null;
+    const L = (typeof LANGS !== 'undefined' && LANGS[code]) ? LANGS[code] : { label: code };
+    const flag = (typeof LANG_FLAGS !== 'undefined' && LANG_FLAGS[code]) ? LANG_FLAGS[code] : '🌐';
+    return { code: w.code, tts: w.tts, lt: w.lt, label: L.label, flag: flag };
   }
 
   function wpLevelShowsStyle(level){
@@ -1590,17 +1590,20 @@
   function renderWritingLangSelect(){
     injectStyles();
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">✍️ Yazma Pratiği</div><div class="pm-sub">Hangi dilde yazma pratiği yapmak istersin?</div></div>';
-    html += '<div class="pm-lang-grid">';
+    html += '<div class="lang-box">';
     WP_LANGS.forEach(l=>{
-      html += '<div class="pm-lang-card" data-code="'+l.code+'"><div class="fl">'+l.flag+'</div><div class="nm">'+l.label+'</div></div>';
+      const L = (typeof LANGS !== 'undefined' && LANGS[l.code]) ? LANGS[l.code] : { label: l.code };
+      const landmark = (typeof LANG_LANDMARK !== 'undefined' && LANG_LANDMARK[l.code]) ? LANG_LANDMARK[l.code] : '';
+      const flag = (typeof LANG_FLAGS !== 'undefined' && LANG_FLAGS[l.code]) ? LANG_FLAGS[l.code] : '🌐';
+      html += '<div class="lang-opt" data-lang="'+l.code+'" data-wp-lang="'+l.code+'"><span class="landmark" aria-hidden="true">'+landmark+'</span><div class="flag">'+flag+'</div><div class="lname">'+escapeHtml(L.label)+'</div></div>';
     });
     html += '</div>';
-    html += '<button class="pm-btn small" id="wpBackHomeBtn" style="margin-top:16px;">← Ana Sayfaya Dön</button></div>';
+    html += '<button class="pm-btn small" id="wpBackHomeBtn" style="margin-top:16px;">← Notlarım\'a Dön</button></div>';
     root.innerHTML = html;
-    root.querySelectorAll('.pm-lang-card').forEach(el=>{
-      el.onclick = () => { wpLang = el.getAttribute('data-code'); wpLevel = null; renderWritingLevelSelect(); };
+    root.querySelectorAll('[data-wp-lang]').forEach(el=>{
+      el.onclick = () => { wpLang = el.getAttribute('data-wp-lang'); wpLevel = null; renderWritingLevelSelect(); };
     });
-    document.getElementById('wpBackHomeBtn').onclick = renderHome;
+    document.getElementById('wpBackHomeBtn').onclick = () => { const t = document.getElementById('tabNotebook'); if(t) t.click(); };
   }
 
   /* ---- 2. adım: seviye seçimi ---- */
@@ -1733,10 +1736,10 @@
     html += '<button class="pm-btn primary" id="wpCheckBtn">Kontrol Et</button>';
     html += '<div id="wpResult"></div>';
     html += '<button class="pm-btn small" id="wpBackLevelBtn">← Seviye Değiştir</button>';
-    html += '<button class="pm-btn primary" id="wpBackHomeBtn">Ana Sayfaya Dön</button></div>';
+    html += '<button class="pm-btn primary" id="wpBackHomeBtn">📒 Notlarım\'a Dön</button></div>';
     root.innerHTML = html;
 
-    document.getElementById('wpBackHomeBtn').onclick = renderHome;
+    document.getElementById('wpBackHomeBtn').onclick = () => { const t = document.getElementById('tabNotebook'); if(t) t.click(); };
     document.getElementById('wpBackLevelBtn').onclick = renderWritingLevelSelect;
     document.getElementById('wpCheckBtn').onclick = wpRunCheck;
     const ta = document.getElementById('wpInput');
@@ -1746,7 +1749,8 @@
     }
   }
 
-  function openPersonalMode(){
+  function openPersonalMode(landingFn){
+    landingFn = (typeof landingFn === 'function') ? landingFn : renderHome;
     if(!root) return;
     injectStyles();
     const name = window.LB_getUserName ? window.LB_getUserName() : '';
@@ -1755,9 +1759,9 @@
       document.getElementById('pmAskNameBtn').onclick = () => { if(window.LB_checkName) window.LB_checkName(); };
       return;
     }
-    if(dataLoaded && currentName === name){ renderHome(); return; }
+    if(dataLoaded && currentName === name){ landingFn(); return; }
     root.innerHTML = '<div class="pm-root"><div class="pm-loading">Kişisel alan yükleniyor...</div></div>';
-    loadUserData(name, renderHome);
+    loadUserData(name, landingFn);
   }
 
   window.LB_onNameReady = function(name){
@@ -1769,7 +1773,12 @@
     loadUserData(name, isVisible ? renderHome : null);
   };
 
-  window.PM_open = openPersonalMode;
+  window.PM_open = function(){ openPersonalMode(); };
+
+  /* Notlarım sekmesinden doğrudan Yazma Pratiği akışını açmak için:
+     Kişisel sekmesine geçer (isim/veri kontrolü dahil) ve Ana Sayfa
+     yerine doğrudan dil seçim ekranını gösterir. */
+  window.PM_openWritingPractice = function(){ openPersonalMode(renderWritingLangSelect); };
 
   /* Dışarıdan XP eklemek için ortak kapı: quiz doğru cevapları ve
      destek rozetleri bunu kullanır. Kaydetme ve sunucuya yazma dahil. */

@@ -896,8 +896,8 @@
      ayrı yıldız görünmesin / çakışmasın. */
   .fav-star{ display:none !important; }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.7.50">
-<link rel="stylesheet" href="pwa.css?v=1.7.50">
+<link rel="stylesheet" href="theme.css?v=1.7.52">
+<link rel="stylesheet" href="pwa.css?v=1.7.52">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1387,7 +1387,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.7.50"></script>
+<script src="leaderboard.js?v=1.7.52"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2747,13 +2747,6 @@ function nbRender(){
 
   html += '<div class="pm-root">';
   html += '<div class="pm-card" style="position:relative;">';
-  html += '<h4>🔍 Kelime Ara</h4>';
-  html += '<div class="pm-sub" style="margin-bottom:10px;">Aradığın kelime hazır listelerimizde varsa, anlamı ve örnek cümlesiyle birlikte otomatik olarak Kelime Defterine eklenir.</div>';
-  html += '<input type="text" class="pm-fill-input" id="nbSearchInput" placeholder="örn. Schmetterling, hello, manzana…" autocomplete="off" autocapitalize="off" spellcheck="false">';
-  html += '<div id="nbSearchResults" class="nb-search-results"></div>';
-  html += '</div>';
-
-  html += '<div class="pm-card">';
   html += '<h4>'+(editing ? '✏️ Kelimeyi Düzenle' : '➕ Yeni Kelime Ekle')+'</h4>';
 
   html += '<div class="pm-sub" style="margin-bottom:8px;">1) Hangi dilde? *</div>';
@@ -2766,7 +2759,14 @@ function nbRender(){
   html += '</div>';
   html += '<div class="nb-lang-required" id="nbLangWarn"></div>';
 
-  html += '<input type="text" class="pm-fill-input" id="nbInputWord" placeholder="Kelime * (örn. Schmetterling)" maxlength="60" style="margin-top:14px;margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.w:'')+'">';
+  if(!editing){
+    html += '<div class="pm-sub" style="margin:14px 0 8px;">2) Hazır sözlükte ara (opsiyonel)</div>';
+    html += '<input type="text" class="pm-fill-input" id="nbSearchInput" placeholder="🔍 örn. Schmetterling, hello, manzana…" autocomplete="off" autocapitalize="off" spellcheck="false">';
+    html += '<div id="nbSearchResults" class="nb-search-results"></div>';
+    html += '<div class="pm-sub" style="margin:14px 0 8px;">3) Bilgileri gir</div>';
+  }
+
+  html += '<input type="text" class="pm-fill-input" id="nbInputWord" placeholder="Kelime * (örn. Schmetterling)" maxlength="60" style="margin-top:'+(editing?'14px':'0')+';margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.w:'')+'">';
   html += '<input type="text" class="pm-fill-input" id="nbInputTr" placeholder="Türkçe anlamı (örn. kelebek)" maxlength="60" style="margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.tr:'')+'">';
   html += '<input type="text" class="pm-fill-input" id="nbInputCat" placeholder="Kategori (opsiyonel, örn. Hayvanlar)" maxlength="30" style="margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.cat:'')+'">';
   html += '<textarea class="pm-fill-input" id="nbInputEx" placeholder="Örnek cümle (opsiyonel)" style="margin-bottom:14px;min-height:46px;resize:vertical;font-family:inherit;font-size:14px;">'+nbEsc(formSrc?formSrc.ex:'')+'</textarea>';
@@ -2781,6 +2781,7 @@ function nbRender(){
 
   html += '<button type="button" class="nb-start" id="nbStartStudy" '+(list.length===0?'disabled':'')+'>🚀 Çalışmaya Başla ('+list.length+' kelime)</button>';
   html += '<button type="button" class="nb-start-secondary" id="nbQuizOl" '+(list.length===0?'disabled style="opacity:.4;"':'')+'>🧩 Quiz Ol</button>';
+  html += '<button type="button" class="nb-start-secondary" id="nbWritingBtn">✍️ Yazma Pratiği</button>';
 
   const filterLangs = nbLangsPresent(list);
   const filterCats = Array.from(new Set(list.map(it => it.cat).filter(Boolean))).sort();
@@ -2865,6 +2866,23 @@ function nbRender(){
     if(nbCombinedList().length === 0) return;
     nbQuizPicking = 'lang';
     nbRender();
+  };
+
+  const writingBtn = document.getElementById('nbWritingBtn');
+  if(writingBtn) writingBtn.onclick = () => {
+    /* tabPersonal'ın tıklama mantığıyla birebir aynı (bkz. yukarıdaki
+       $('tabPersonal').onclick), sadece sonunda ana sayfa yerine doğrudan
+       Yazma Pratiği'ni açar - iki ayrı openPersonalMode çağrısının yarış
+       durumuna (ve çift veri yüklemeye) yol açmaması için PM_open yerine
+       tek seferde PM_openWritingPractice çağrılır. */
+    deactivateAllTabs();
+    toggleActive('tabPersonal', true);
+    setDisplay('personalView', 'block');
+    setDisplay('levelBox', 'none');
+    setDisplay('chips', 'none');
+    setDisplay('langBox', 'none');
+    setDisplay('langPair', 'none');
+    if(window.PM_openWritingPractice) window.PM_openWritingPractice();
   };
 
   host.querySelectorAll('[data-nb-add-lang]').forEach(el => {
@@ -3438,7 +3456,7 @@ applyFilter();
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.7.50"></script>
+<script src="progress.js?v=1.7.52"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -3449,22 +3467,22 @@ applyFilter();
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.7.50"></script>
-<script defer src="theme.js?v=1.7.50"></script>
+<script defer src="voice.js?v=1.7.52"></script>
+<script defer src="theme.js?v=1.7.52"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.7.50"></script>
+<script defer src="pwa.js?v=1.7.52"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.7.50"></script>
+<script defer src="support-badges.js?v=1.7.52"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.7.50"></script>
-<script defer src="analytics.js?v=1.7.50"></script>
+<script defer src="splash.js?v=1.7.52"></script>
+<script defer src="analytics.js?v=1.7.52"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.7.50"></script>
+<script defer src="admin.js?v=1.7.52"></script>
 </body>
 </html>
