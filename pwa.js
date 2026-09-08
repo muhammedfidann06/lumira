@@ -2116,7 +2116,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.7.49',
+  version: '1.7.50',
   isStandalone: function () { return isStandalone; }
 };
 

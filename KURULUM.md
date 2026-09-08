@@ -156,87 +156,30 @@ Bunlar tarayıcı içinden mümkün değil, **native kod** gerektirir:
 
 ---
 
-## 7. Yazma Pratiği (AI Metin Düzeltici) — Gemini API anahtarı
+## 7. Yazma Pratiği (Metin Düzeltici) — kurulum gerektirmez
 
 **Kişisel → Hata Yaptığım Kelimeler**'in altındaki **✍️ Yazma Pratiği** butonu; kullanıcının
 dil (İngilizce/Almanca/Arapça/Fransızca/İspanyolca/Rusça/Türkçe) ve seviye (A1-B2) seçip
-yazdığı metni gerçek bir TELC/Goethe sınav değerlendiricisi titizliğinde kontrol eden,
-Google **Gemini API**'sini kullanan bir özelliktir. Çalışması için **ücretsiz** bir API
-anahtarı gerekir.
+yazdığı metni kontrol eden bir özelliktir. **LanguageTool**'un ücretsiz, herkese açık
+kontrol API'sini kullanır (`api.languagetool.org`, `level=picky` - en geniş kural kapsamı).
 
-### Anahtarı almak (2 dakika, kredi kartı istemez)
-1. https://aistudio.google.com/apikey adresine git, Google hesabınla giriş yap.
-2. **"Create API key"** butonuna bas, oluşan anahtarı kopyala.
+**Hiçbir API anahtarı, hesap veya kurulum gerekmez** — buton kutudan çıktığı gibi çalışır.
 
-> **Not (Eylül 2026 itibarıyla):** Google, Haziran 2026'da anahtar formatını değiştirdi.
-> Yeni oluşturulan anahtarlar artık eski `AIzaSy...` yerine **`AQ.Ab...`** ile başlıyor
-> ("Auth Key"). Bu normal ve doğru bir anahtar — `AIzaSy` formatlı eski anahtarlar
-> Eylül 2026'dan itibaren zaten çalışmıyor. `AQ.` formatı native Gemini uç noktasında
-> (`generativelanguage.googleapis.com`, `x-goog-api-key` başlığıyla) sorunsuz çalışır —
-> bu projede zaten bu yöntem kullanılıyor.
+### Kalite hakkında dürüst bir not
+LanguageTool kural tabanlı bir sistemdir; yazım, noktalama, büyük-küçük harf ve çoğu
+temel/orta düzey gramer hatasını (çekim, basit özne-yüklem uyumu vb.) iyi yakalar, ama
+bir yapay zeka dil modeli kadar derin bağlamsal/anlamsal analiz yapmaz — özellikle uzun,
+iç içe cümlelerdeki incelikli hataları bazen kaçırabilir. Buna karşılık **anında, anahtarsız
+ve tamamen ücretsiz** çalışır.
 
-### Anahtarı projeye eklemek
-Anahtar zaten `progress.js` içine eklendi (`WP_AI_CONFIG.apiKey`). İleride kendi
-anahtarınla değiştirmek istersen aynı dosyada şu bloğu bulup değiştirmen yeterli:
+**Denendi, şu an mümkün olmadı:** Google Gemini'nin yeni "AQ." formatlı API anahtarları
+(Haziran 2026'dan beri) Google'ın kendi tarafında bilinen bir 401/`ACCESS_TOKEN_TYPE_UNSUPPORTED`
+hatasıyla birçok hesapta reddediliyor; ChatGPT (OpenAI) ise hesap sahibinin kendi API
+anahtarını oluşturmasını gerektiriyor. İleride bunlardan biri (veya Groq/Mistral gibi
+anahtar gerektiren başka bir servis) eklenmek istenirse, aynı `wpRunCheck()` fonksiyonu
+kolayca o servise yönlendirilebilir — mimari buna hazır, sadece bir API anahtarı ve
+birkaç satır istek/parse kodu eklemek yeterli olur.
 
-```js
-const WP_AI_CONFIG = {
-  apiKey: 'AQ.Ab...',   // kendi anahtarınla değiştirebilirsin
-  model: 'gemini-flash-latest'
-};
-```
 
-### ⚠️ Bilinen sorun (Eylül 2026): "AQ." anahtarları bazı hesaplarda reddediliyor
-
-Araştırdığımda şunu buldum: Google'ın yeni **"AQ." (Auth Key)** formatına geçişi
-şu anda **sorunlu** — Google'ın kendi geliştirici forumunda (discuss.ai.google.dev),
-Haziran'dan bu yana **onlarca farklı geliştirici** aynı hatayı bildirmiş:
-
-```
-401 UNAUTHENTICATED
-"Request had invalid authentication credentials. Expected OAuth 2 access token..."
-reason: ACCESS_TOKEN_TYPE_UNSUPPORTED
-```
-
-Bu, doğrudan `generativelanguage.googleapis.com` uç noktasına (bu projenin kullandığı
-yöntem) `x-goog-api-key` header'ı veya `?key=` parametresiyle gönderilen "AQ." anahtarlarının
-**bazı hesaplarda** reddedilmesiyle oluşuyor — SDK kullanılsa da, ham `curl` ile denense de
-aynı hata çıkıyor. Google destek ekibi "hesaba özel bir durum" diyor ama net bir çözüm
-paylaşmamış; sorun aylardır (Haziran-Eylül 2026) çözülmeden devam ediyor.
-
-**Anahtarın çalışıp çalışmadığını anlamak için:** Uygulama artık hatayı ayrıntılı gösteriyor
-("Kontrol Et" sonrası çıkan mesaj + tarayıcı konsolu F12). 401 + `ACCESS_TOKEN_TYPE_UNSUPPORTED`
-görürsen, bu senin kurulumundan değil, yukarıdaki Google tarafı sorundan kaynaklanıyor demektir.
-
-**Denenebilecek çözümler (öncelik sırasıyla):**
-1. Google Cloud Console → **APIs & Services → Credentials → Create Credentials → API key**
-   yoluyla (AI Studio'daki "Get API key" kısayolu yerine) yeni bir anahtar oluşturmayı dene;
-   bazı hesaplarda bu yol hâlâ eski formatı veriyor.
-2. Projede **faturalandırmayı (billing)** aç (ücretsiz kotan yine geçerli kalır, sadece
-   hesap doğrulanmış olur) — bazı forum yanıtlarında bunun sorunu çözdüğü belirtilmiş.
-3. Google'ın resmi geri bildirim formunu doldur (discuss.ai.google.dev'deki ilgili konularda
-   linkleniyor) ve/veya birkaç gün bekleyip anahtarı yeniden oluşturmayı dene.
-4. Hiçbiri işe yaramazsa haber ver — Gemini yerine benzer ücretsiz bir alternatife
-   (ör. Groq, Mistral) geçebiliriz; mimari neredeyse hiç değişmez.
-
-### ⚠️ Güvenlik notu (önemli, dürüst uyarı)
-Bu anahtar `progress.js` içinde **açık metin (client-side)** olarak durur — yani repo public
-olduğu için herkes "View Source" ile görebilir. Firebase anahtarının aksine (o, güvenlik
-kuralları sayesinde herkese açık olsa da güvenlidir), bu anahtar senin ücretsiz Gemini
-kotanı kullanır. Riski azaltmak için:
-
-1. **Faturalandırma (billing) açma.** Ücretsiz katmanda kota bitince istekler sadece
-   geçici olarak reddedilir, ekstra ücret çıkmaz.
-2. Google Cloud Console → ilgili API anahtarı → **"Restrict key"** → **HTTP referrer'lar**
-   kısmına yalnızca kendi yayın adresini (`https://KULLANICI-ADIN.github.io/*`) ekle;
-   böylece anahtar başka sitelerden çağrılamaz.
-3. Kotan zaman zaman dolarsa (ücretsiz katman günlük istek sınırlıdır), yeni bir proje/anahtar
-   çıkarman yeterlidir — tek satır değişir.
-
-### Bu olmadan ne olur?
-Anahtar girilmeden buton yine çalışır ama "Kontrol Et"e basınca kullanıcıya
-"Bu özellik henüz kurulmamış..." mesajı gösterilir; uygulamanın geri kalanı etkilenmez.
-
----
 
 Lumira · Dil Kartları — iyi çalışmalar 🌙
