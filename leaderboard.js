@@ -138,7 +138,7 @@ function initLeaderboard(){
              sonra kayboluyordu. Artık iki kayıttan da YÜKSEK olan değerler
              alınıp birleştiriliyor. */
           const merged = {
-            name: displayName || newVal.name || oldVal.name || 'Kullanıcı',
+            name: displayName || newVal.name || oldVal.name || (window.t?window.t('fallback_user'):'Kullanıcı'),
             xp: Math.max(oldVal.xp || 0, newVal.xp || 0),
             totalSeconds: Math.max(oldVal.totalSeconds || 0, newVal.totalSeconds || 0),
             lastSeen: Date.now()
@@ -157,10 +157,10 @@ function initLeaderboard(){
       const uname = sanitizeUsername(rawName);
       const displayName = String(rawName||'').trim();
 
-      if(!displayName){ showLoginError('Lütfen bir kullanıcı adı yaz.'); return; }
-      if(!uname){ showLoginError('Kullanıcı adında en az bir harf/rakam olmalı.'); return; }
-      if(!password || password.length < 6){ showLoginError('Şifre en az 6 karakter olmalı.'); return; }
-      if(!authSvc){ showLoginError('Bağlantı kurulamadı, lütfen tekrar dene.'); return; }
+      if(!displayName){ showLoginError(window.t?window.t('err_no_username'):'Lütfen bir kullanıcı adı yaz.'); return; }
+      if(!uname){ showLoginError(window.t?window.t('err_invalid_username'):'Kullanıcı adında en az bir harf/rakam olmalı.'); return; }
+      if(!password || password.length < 6){ showLoginError(window.t?window.t('err_weak_password'):'Şifre en az 6 karakter olmalı.'); return; }
+      if(!authSvc){ showLoginError(window.t?window.t('err_no_connection'):'Bağlantı kurulamadı, lütfen tekrar dene.'); return; }
 
       showLoginError('');
       setSubmitLoading(true);
@@ -181,29 +181,31 @@ function initLeaderboard(){
           }catch(err2){
             console.error('Giriş hatası (signIn):', err2 && err2.code, err2 && err2.message);
             setSubmitLoading(false);
+            const unk = window.t ? window.t('err_unknown') : 'bilinmeyen hata';
             if(err2 && (err2.code === 'auth/wrong-password' || err2.code === 'auth/invalid-credential')){
-              showLoginError('Bu kullanıcı adı zaten alınmış ve şifre yanlış. Lütfen doğru şifreyi gir.');
+              showLoginError(window.t?window.t('err_username_taken'):'Bu kullanıcı adı zaten alınmış ve şifre yanlış. Lütfen doğru şifreyi gir.');
             } else if(err2 && err2.code === 'auth/too-many-requests'){
-              showLoginError('Çok fazla yanlış deneme yapıldı. Biraz sonra tekrar dene.');
+              showLoginError(window.t?window.t('err_too_many'):'Çok fazla yanlış deneme yapıldı. Biraz sonra tekrar dene.');
             } else {
-              showLoginError('Giriş başarısız (' + (err2 && err2.code || 'bilinmeyen hata') + ').');
+              showLoginError(window.t?window.t('err_login_failed')(err2 && err2.code || unk):('Giriş başarısız (' + (err2 && err2.code || unk) + ').'));
             }
           }
         } else if(err && err.code === 'auth/weak-password'){
           setSubmitLoading(false);
-          showLoginError('Şifre çok zayıf, en az 6 karakter olmalı.');
+          showLoginError(window.t?window.t('err_weak_password'):'Şifre çok zayıf, en az 6 karakter olmalı.');
         } else if(err && err.code === 'auth/invalid-email'){
           setSubmitLoading(false);
-          showLoginError('Kullanıcı adında geçersiz karakterler var, sadece harf/rakam kullan.');
+          showLoginError(window.t?window.t('err_invalid_chars'):'Kullanıcı adında geçersiz karakterler var, sadece harf/rakam kullan.');
         } else if(err && (err.code === 'auth/operation-not-allowed' || err.code === 'auth/configuration-not-found')){
           setSubmitLoading(false);
-          showLoginError('Giriş sistemi henüz etkin değil: Firebase Console > Authentication > Sign-in method kısmından "Email/Password" sağlayıcısını etkinleştirmen gerekiyor.');
+          showLoginError(window.t?window.t('err_auth_disabled'):'Giriş sistemi henüz etkin değil: Firebase Console > Authentication > Sign-in method kısmından "Email/Password" sağlayıcısını etkinleştirmen gerekiyor.');
         } else if(err && err.code === 'auth/network-request-failed'){
           setSubmitLoading(false);
-          showLoginError('İnternet bağlantısı sorunu, lütfen tekrar dene.');
+          showLoginError(window.t?window.t('err_network'):'İnternet bağlantısı sorunu, lütfen tekrar dene.');
         } else {
           setSubmitLoading(false);
-          showLoginError('Hata: ' + (err && err.code || (err && err.message) || 'bilinmeyen hata'));
+          const unk2 = window.t ? window.t('err_unknown') : 'bilinmeyen hata';
+          showLoginError(window.t?window.t('err_generic')(err && err.code || (err && err.message) || unk2):('Hata: ' + (err && err.code || (err && err.message) || unk2)));
         }
       }
     }
@@ -314,13 +316,13 @@ function initLeaderboard(){
       const el = document.getElementById('profileTimer');
       if(!el) return;
       if(!db){
-        el.textContent = `👤 ${name} — profil henüz bağlanmadı`;
+        el.textContent = `👤 ${name} — ${window.t ? window.t('profile_not_connected') : 'profil henüz bağlanmadı'}`;
         return;
       }
       db.ref('leaderboard/' + uid).on('value', (snap) => {
         const val = snap.val();
         const total = val && typeof val.totalSeconds === 'number' ? val.totalSeconds : 0;
-        el.textContent = `👤 ${name} — Toplam süren: ${fmtTime(total)}`;
+        el.textContent = window.t ? window.t('total_time_label')(name, fmtTime(total)) : `👤 ${name} — Toplam süren: ${fmtTime(total)}`;
       });
     }
 
@@ -354,7 +356,7 @@ function initLeaderboard(){
            sıralamasında bir görünüp kaybolmasının ve "XP silinmiş gibi"
            düşmesinin sebebi buydu. Artık mevcut alanlar korunuyor. */
         return Object.assign({}, prev, {
-          name: name || prev.name || 'Kullanıcı',
+          name: name || prev.name || (window.t?window.t('fallback_user'):'Kullanıcı'),
           totalSeconds: (prev.totalSeconds || 0) + seconds,
           lastSeen: Date.now()
         });
@@ -378,10 +380,11 @@ function initLeaderboard(){
       const d = Math.floor(s / 86400);
       const h = Math.floor((s % 86400) / 3600);
       const m = Math.floor((s % 3600) / 60);
-      if(d > 0) return `${d}g ${h}s`;
-      if(h > 0) return `${h}s ${m}dk`;
-      if(m > 0) return `${m}dk`;
-      return `${s}sn`;
+      const D = window.t?window.t('day_abbr'):'g', H = window.t?window.t('hour_abbr'):'s', M = window.t?window.t('min_abbr'):'dk', S = window.t?window.t('sec_abbr'):'sn';
+      if(d > 0) return `${d}${D} ${h}${H}`;
+      if(h > 0) return `${h}${H} ${m}${M}`;
+      if(m > 0) return `${m}${M}`;
+      return `${s}${S}`;
     }
 
     /* Sıralama tablosu için kısa süre.
@@ -391,13 +394,14 @@ function initLeaderboard(){
          altındaysa       → "42dk" / "35sn" */
     function fmtTimeShort(totalSeconds){
       const s = Math.max(0, Math.floor(totalSeconds || 0));
+      const D = window.t?window.t('day_abbr'):'g', H = window.t?window.t('hour_abbr'):'s', M = window.t?window.t('min_abbr'):'dk', S = window.t?window.t('sec_abbr'):'sn';
       const d = Math.floor(s / 86400);
-      if(d > 0) return `${d}g +`;
+      if(d > 0) return `${d}${D} +`;
       const h = Math.floor(s / 3600);
-      if(h > 0) return `${h}s +`;
+      if(h > 0) return `${h}${H} +`;
       const m = Math.floor(s / 60);
-      if(m > 0) return `${m}dk`;
-      return `${s}sn`;
+      if(m > 0) return `${m}${M}`;
+      return `${s}${S}`;
     }
 
     function escapeHtml(s){
@@ -428,7 +432,7 @@ function initLeaderboard(){
         const prevXp = (prev && typeof prev.xp === 'number') ? prev.xp : 0;
         const nextXp = Math.max(prevXp, xp || 0);
         return Object.assign({}, prev, {
-          name: currentName || prev.name || 'Kullanıcı',   /* ad asla boş kalmasın */
+          name: currentName || prev.name || (window.t?window.t('fallback_user'):'Kullanıcı'),   /* ad asla boş kalmasın */
           xp: nextXp,
           lastSeen: Date.now()
         });
@@ -438,11 +442,11 @@ function initLeaderboard(){
       const list = document.getElementById(elId);
       if(!list) return;
       if(!db){
-        list.innerHTML = '<div class="lb-empty">Tablo henüz bağlanmadı.</div>';
+        list.innerHTML = '<div class="lb-empty">'+(window.t?window.t('lb_not_connected'):'Tablo henüz bağlanmadı.')+'</div>';
         return;
       }
       if(!entries.length){
-        list.innerHTML = '<div class="lb-empty">Henüz kimse yok.<br>İlk sen ol! 🎉</div>';
+        list.innerHTML = '<div class="lb-empty">'+(window.t?window.t('lb_empty'):'Henüz kimse yok.<br>İlk sen ol! 🎉')+'</div>';
         return;
       }
       list.innerHTML = '';
@@ -470,28 +474,31 @@ function initLeaderboard(){
       const box = document.getElementById('myRankBox');
       if(!box) return;
       if(!db){
-        box.innerHTML = '<div class="my-rank-empty">🏅 Tablo henüz bağlanmadı.</div>';
+        box.innerHTML = '<div class="my-rank-empty">🏅 '+(window.t?window.t('lb_not_connected'):'Tablo henüz bağlanmadı.')+'</div>';
         return;
       }
       if(!currentUid){
-        box.innerHTML = '<div class="my-rank-empty">🏅 Sıralamanı görmek için giriş yap</div>';
+        box.innerHTML = '<div class="my-rank-empty">'+(window.t?window.t('lb_login_to_see_rank'):'🏅 Sıralamanı görmek için giriş yap')+'</div>';
         return;
       }
+      const noData = (window.t ? window.t('no_data_yet') : 'henüz veri yok');
+      const timeLbl = (window.t ? window.t('time_rank') : 'Süre sıralaması');
+      const levelLbl = (window.t ? window.t('level_rank') : 'Seviye sıralaması');
       const timeTxt = timeRank
         ? `<span class="my-rank-value">${timeRank}.</span><span class="my-rank-total"> / ${timeTotal}</span>`
-        : '<span class="my-rank-pending">henüz veri yok</span>';
+        : `<span class="my-rank-pending">${noData}</span>`;
       const levelTxt = levelRank
         ? `<span class="my-rank-value">${levelRank}.</span><span class="my-rank-total"> / ${levelTotal}</span>`
-        : '<span class="my-rank-pending">henüz veri yok</span>';
+        : `<span class="my-rank-pending">${noData}</span>`;
       box.innerHTML = `
         <div class="my-rank-row">
           <span class="my-rank-icon">⏱️</span>
-          <span class="my-rank-label">Süre sıralaması</span>
+          <span class="my-rank-label">${timeLbl}</span>
           ${timeTxt}
         </div>
         <div class="my-rank-row">
           <span class="my-rank-icon">⭐</span>
-          <span class="my-rank-label">Seviye sıralaması</span>
+          <span class="my-rank-label">${levelLbl}</span>
           ${levelTxt}
         </div>`;
     }
@@ -527,7 +534,7 @@ function initLeaderboard(){
         .filter(([k, v]) => v && (v.name || v.xp || v.totalSeconds))
         .map(([k, v]) => ({
           uid: k,
-          name: v.name || 'Kullanıcı',
+          name: v.name || (window.t?window.t('fallback_user'):'Kullanıcı'),
           totalSeconds: v.totalSeconds || 0,
           xp: v.xp || 0
         }));
@@ -592,7 +599,7 @@ function initLeaderboard(){
     function resolveAuth(user){
       authResolved = true;
       if(user){
-        const dn = user.displayName || 'Kullanıcı';
+        const dn = user.displayName || (window.t?window.t('fallback_user'):'Kullanıcı');
         startTrackingWithUid(user.uid, dn);
         hideNameModal();
       } else if(loginCheckPending){
