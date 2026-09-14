@@ -651,15 +651,17 @@
     const pairSentence = window.t ? window.t('lang_change_sub')(speaksLabel, learningLabel) : (speaksLabel+' konuşuyorsun, '+learningLabel+' öğreniyorsun');
     const syncNote = window.t ? window.t('pm_sync_note') : 'ilerlemen tüm cihazlarında senkron';
     html += '<div class="pm-sub">'+pairSentence+' - '+syncNote+'</div>';
-    html += '<div class="pm-lang-grid" id="pmLangSelect">';
+    html += '<div class="lang-box" id="pmLangSelect">';
     /* Ana dil hariç kalan tüm diller + (ana dil Türkçe değilse) Türkçe
-       seçeneği — ana ekrandaki dil kutusuyla BİREBİR aynı mantık. */
+       seçeneği — ana ekrandaki dil kutusuyla BİREBİR aynı mantık.
+       Kartlar/Notlarım'daki ile aynı görünüm (landmark ikonlu) kullanılır. */
     const nativeCode = (window.NATIVE_LANG || 'tr');
     let pmOpts = Object.keys(LANGS).filter(c=>c!==nativeCode);
     if(nativeCode !== 'tr') pmOpts = pmOpts.concat(['tr']);
     pmOpts.forEach(code=>{
       const label = (code==='tr') ? (window.t?window.t('lang_names').tr:'Türkçe') : (window.t?window.t('lang_names')[code]:LANGS[code].label);
-      html += '<div class="pm-lang-card '+(code===(window.isReversed&&window.isReversed()?'tr':activeLang)?'active':'')+'" data-lang="'+code+'"><span class="fl">'+(PM_FLAGS[code]||'🌐')+'</span><span class="nm">'+label+'</span></div>';
+      const landmark = (typeof LANG_LANDMARK !== 'undefined' && LANG_LANDMARK[code]) ? LANG_LANDMARK[code] : '';
+      html += '<div class="lang-opt '+(code===(window.isReversed&&window.isReversed()?'tr':activeLang)?'active':'')+'" data-lang="'+code+'"><span class="landmark" aria-hidden="true">'+landmark+'</span><div class="flag">'+(PM_FLAGS[code]||'🌐')+'</div><div class="lname">'+label+'</div></div>';
     });
     html += '</div>';
     html += '<div class="pm-level-seg" id="pmLevelSelect">';
@@ -689,7 +691,7 @@
     html += '<div class="pm-stat-box"><div class="pm-stat-num">'+totalStudied+'</div><div class="pm-stat-label">'+window.t('pm_total_studied')+'</div></div>';
     html += '<div class="pm-stat-box"><div class="pm-stat-num">'+(acc===null?'-':acc+'%')+'</div><div class="pm-stat-label">'+window.t('pm_accuracy')+'</div></div>';
     html += '</div>';
-    html += '<div class="pm-weak-meta" style="margin-top:10px;">'+(catInfo.best ? ('💪 '+window.t('pm_strongest_cat')+' <b>'+escapeHtml(catInfo.best.cat)+'</b>') : window.t('pm_not_enough_data'))+'<br>'+(catInfo.worst ? ('🎯 '+window.t('pm_weakest_cat')+' <b>'+escapeHtml(catInfo.worst.cat)+'</b>') : '')+'</div>';
+    html += '<div class="pm-weak-meta" style="margin-top:10px;">'+(catInfo.best ? ('💪 '+window.t('pm_strongest_cat')+' <b>'+escapeHtml((typeof catName==='function')?catName(catInfo.best.cat):catInfo.best.cat)+'</b>') : window.t('pm_not_enough_data'))+'<br>'+(catInfo.worst ? ('🎯 '+window.t('pm_weakest_cat')+' <b>'+escapeHtml((typeof catName==='function')?catName(catInfo.worst.cat):catInfo.worst.cat)+'</b>') : '')+'</div>';
     html += '<div class="pm-weak-meta" id="pmTotalTime" style="margin-top:6px;">⏱ '+window.t('pm_total_time_loading')+'</div>';
     html += '</div>';
 
@@ -766,7 +768,7 @@
 
     root.innerHTML = html;
 
-    document.querySelectorAll('#pmLangSelect .pm-lang-card').forEach(el=>{
+    document.querySelectorAll('#pmLangSelect .lang-opt').forEach(el=>{
       el.onclick = () => {
         const target = el.dataset.lang;
         const go = window.setLangPair ? window.setLangPair(NATIVE_LANG, target) : Promise.resolve();
@@ -900,7 +902,7 @@
   }
 
   function openLevelTestPicker(){
-    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">Seviye Tespit Sınavı</div>'+
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">'+(window.t?window.t('pm_level_test_btn'):'🎓 Seviye Tespit Sınavı')+'</div>'+
       '<div class="pm-title">'+(window.t?window.t('pm_level_test_header'):'🎓 Seviyeni Test Et')+'</div>'+
       '<div class="pm-sub">'+(window.t?window.t('pm_level_test_desc'):'Bir seviye seç · o seviyedeki TÜM kelimeler sorulur · tamamlayınca +100 XP · doğru bildiğin kelimeler bilinenler listene eklenir')+'</div></div>';
     html += '<div class="pm-lang-grid" style="grid-template-columns:1fr 1fr;">';
@@ -912,7 +914,7 @@
       let sub;
       if(locked) sub = '🔒 '+ltFmtLeft(left);
       else if(inProgress) sub = (window.t?window.t('pm_continue'):'▶ Devam et · ')+inProgress.idx+'/'+inProgress.order.length;
-      else sub = cnt+' kelime';
+      else sub = (window.t?window.t('nb_word_count')(cnt):(cnt+' kelime'));
       html += '<div class="pm-lang-card lt-lv-opt'+(locked?' locked':'')+(inProgress?' active':'')+'" data-level="'+lv+'" style="'+(locked?'opacity:.5;cursor:default;':'cursor:pointer;')+'">'+
         '<span class="nm" style="font-size:16px;font-weight:800;">'+lv+'</span>'+
         '<span class="nm" style="font-size:10px;">'+sub+'</span></div>';
@@ -943,7 +945,7 @@
     const selected = new Set();
 
     let html = '<div class="pm-root"><div class="pm-head">'+
-      '<div class="pm-eyebrow">🎓 '+level+' · Adım 2/2</div>'+
+      '<div class="pm-eyebrow">'+(window.t?('🎓 '+window.t('pm_step_2_of_2')(level)):('🎓 '+level+' · Adım 2/2'))+'</div>'+
       '<div class="pm-title">'+(window.t?window.t('cat_pick_title'):'Kategori Seç')+'</div>'+
       '<div class="pm-sub">'+(window.t?window.t('pm_lt_category_desc'):'İstediğin kategorileri seç, ya da tümünden sınava gir. Sadece seçtiğin kategorilerin kelimeleri test edilir.')+'</div></div>';
     html += '<button type="button" class="ctrl primary" id="pmLtAllCats" style="width:100%;margin-bottom:14px;">'+(window.t?window.t('pm_all_categories_btn')(pool.length):('🎯 Tüm Kategorilerden Gir ('+pool.length+' kelime)'))+'</button>';
@@ -953,8 +955,8 @@
       html += '<div class="pm-lang-card pm-cat-card" data-cat="'+escapeHtml(c)+'">'+
         '<span class="pm-cat-check">✓</span>'+
         '<span class="fl">'+emoji+'</span>'+
-        '<span class="nm">'+escapeHtml(c)+'</span>'+
-        '<span class="nm" style="font-size:9.5px;opacity:.7;">'+catCounts[c]+' kelime</span></div>';
+        '<span class="nm">'+escapeHtml((typeof catName==='function')?catName(c):c)+'</span>'+
+        '<span class="nm" style="font-size:9.5px;opacity:.7;">'+(window.t?window.t('nb_word_count')(catCounts[c]):(catCounts[c]+' kelime'))+'</span></div>';
     });
     html += '</div>';
     html += '<button type="button" class="ctrl primary" id="pmLtStartCats" style="width:100%;margin-top:16px;opacity:.4;" disabled>'+(window.t?window.t('pm_start_exam'):'Sınava Başla')+'</button>';
@@ -1009,7 +1011,7 @@
     root.innerHTML = '<div class="pm-root">'+barHtml+
       '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">'+t('quiz_prompt')+'</div>'+
       '<div class="pm-word" dir="'+FRONT_DIR(v)+'">'+escapeHtml(FRONT_W(v))+'</div>'+
-      '<div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div></div>'+
+      '<div class="pm-word-sub">'+escapeHtml(((typeof catName==='function')?catName(v.cat):v.cat)||v.pos||'')+'</div></div>'+
       '<div class="pm-options" id="pmOptions"></div>'+
       '<button type="button" class="ctrl primary" id="pmLtExit" style="width:100%;margin-top:16px;">'+(window.t?window.t('pm_save_exit'):'← Kaydet ve Çık')+'</button></div>';
     const wrap = document.getElementById('pmOptions');
@@ -1115,7 +1117,7 @@
         '<div class="level-badge">'+(v.level||'')+'</div>'+
         '<div class="tag">'+FRONT_LABEL()+'</div>'+
         '<div class="word" dir="'+FRONT_DIR(v)+'">'+escapeHtml(FRONT_W(v))+'</div>'+
-        '<div class="pos">'+escapeHtml(v.cat||v.pos||'')+'</div>'+
+        '<div class="pos">'+escapeHtml(((typeof catName==='function')?catName(v.cat):v.cat)||v.pos||'')+'</div>'+
         '<div class="example" dir="'+FRONT_DIR(v)+'">'+(FRONT_EX(v) ? colorSplit(FRONT_EX(v), FRONT_W(v), v.c1, v.c2) : '')+'</div>'+
         '<div class="speak-controls">'+
           '<div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="Normal hızda dinle">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div>'+
@@ -1209,7 +1211,7 @@
     const opts = shuffle([correctBack].concat(distractors.map(d=>BACK_W(d))));
     const barHtml = '<div class="pm-session-bar"><span>'+(window.t?window.t('pm_question_label'):'Soru')+' '+(quizIdx+1)+' / '+batch.length+'</span><span>'+(window.t?window.t('pm_step_meaning')(2,4):'Adım 2/4 - Anlam Testi')+'</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((quizIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
-      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">'+t('quiz_prompt')+'</div><div class="pm-word" dir="'+FRONT_DIR(v)+'">'+escapeHtml(FRONT_W(v))+'</div><div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle">🐢</button><span class="speak-lbl">'+t('slow_speed')+'</span></div></div><div class="speak-caption">'+t('tap_to_listen')+'</div></div>'+
+      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">'+t('quiz_prompt')+'</div><div class="pm-word" dir="'+FRONT_DIR(v)+'">'+escapeHtml(FRONT_W(v))+'</div><div class="pm-word-sub">'+escapeHtml(((typeof catName==='function')?catName(v.cat):v.cat)||v.pos||'')+'</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle">🐢</button><span class="speak-lbl">'+t('slow_speed')+'</span></div></div><div class="speak-caption">'+t('tap_to_listen')+'</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
     document.getElementById('pmRabbit').onclick = () => pmSpeak(FRONT_W(v), FRONT_VOICE(v), false);
     document.getElementById('pmTurtle').onclick = () => pmSpeak(FRONT_W(v), FRONT_VOICE(v), true);
@@ -1488,7 +1490,7 @@
     const opts = shuffle([correctBack].concat(distractors.map(d=>BACK_W(d))));
     const barHtml = '<div class="pm-session-bar"><span>Genel Tekrar ('+reviewMode.group+')</span><span>'+(reviewMode.idx+1)+' / '+reviewMode.order.length+'</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((reviewMode.idx/reviewMode.order.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
-      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">'+t('quiz_prompt')+'</div><div class="pm-word" dir="'+FRONT_DIR(v)+'">'+escapeHtml(FRONT_W(v))+'</div><div class="pm-word-sub">'+escapeHtml(v.cat||v.pos||'')+'</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle">🐢</button><span class="speak-lbl">'+t('slow_speed')+'</span></div></div><div class="speak-caption">'+t('tap_to_listen')+'</div></div>'+
+      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">'+t('quiz_prompt')+'</div><div class="pm-word" dir="'+FRONT_DIR(v)+'">'+escapeHtml(FRONT_W(v))+'</div><div class="pm-word-sub">'+escapeHtml(((typeof catName==='function')?catName(v.cat):v.cat)||v.pos||'')+'</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle">🐢</button><span class="speak-lbl">'+t('slow_speed')+'</span></div></div><div class="speak-caption">'+t('tap_to_listen')+'</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
     document.getElementById('pmRabbit').onclick = () => pmSpeak(FRONT_W(v), FRONT_VOICE(v), false);
     document.getElementById('pmTurtle').onclick = () => pmSpeak(FRONT_W(v), FRONT_VOICE(v), true);

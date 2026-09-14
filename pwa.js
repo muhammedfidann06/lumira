@@ -1399,12 +1399,17 @@ function openLanguageSettings() {
           if (window.applyFilter) window.applyFilter();
           if (document.querySelector('.pm-root') && window.PM_open) window.PM_open();
         } catch (e) { logError(e); }
-        toast('🌐 Dil ayarı güncellendi', { kind: 'good' });
+        toast(window.t?window.t('lang_setting_updated_toast'):'🌐 Dil ayarı güncellendi', { kind: 'good' });
         settingsOpen && settingsOpen.close && settingsOpen.close();
         api.close();
+        /* Yeni dil seçimi TÜM arayüzü (statik metinler dahil) etkiliyor;
+           her köşenin doğru dilde göründüğünden emin olmanın en güvenilir
+           yolu sayfayı tazelemek. Toast'ı görebilsin diye kısa bir gecikme
+           bırakılıyor. */
+        setTimeout(function(){ location.reload(); }, 700);
       }).catch(function () {
         go.disabled = false; go.textContent = t('save_apply');
-        toast('⚠️ Sözlük yüklenemedi, tekrar dene', { kind: 'bad' });
+        toast(window.t?window.t('lang_dict_load_failed_toast'):'⚠️ Sözlük yüklenemedi, tekrar dene', { kind: 'bad' });
       });
     };
     b.appendChild(go);
@@ -1815,9 +1820,9 @@ function openSettings() {
     var liteOn = document.documentElement.classList.contains('lite');
     var liteRow = row('⚡', t('set_lite_row'),
       liteOn
-        ? (liteSetting() === true ? 'Açık — süslemeler kapalı, daha akıcı'
-                                  : 'Açık (cihaz zayıf olduğu için otomatik)')
-        : 'Kapalı — tüm görsel efektler açık',
+        ? (liteSetting() === true ? (window.t?window.t('set_lite_on_desc'):'Açık — süslemeler kapalı, daha akıcı')
+                                  : (window.t?window.t('set_lite_on_auto_desc'):'Açık (cihaz zayıf olduğu için otomatik)'))
+        : (window.t?window.t('set_lite_off_desc'):'Kapalı — tüm görsel efektler açık'),
       '<div class="pwa-switch' + (liteOn ? ' on' : '') + '"></div>');
     liteRow.onclick = function () {
       var next = !document.documentElement.classList.contains('lite');
@@ -1825,10 +1830,10 @@ function openSettings() {
       store('pwa_lite', next);
       qs('.pwa-switch', liteRow).classList.toggle('on', next);
       qs('.tx span', liteRow).textContent = next
-        ? 'Açık — süslemeler kapalı, daha akıcı'
-        : 'Kapalı — tüm görsel efektler açık';
-      toast(next ? '⚡ Hafif mod açık — tam etki için sayfayı yenile'
-                 : 'Efektler geri açıldı — yenileyince tamamlanır', { kind: 'good', duration: 5000 });
+        ? (window.t?window.t('set_lite_on_desc'):'Açık — süslemeler kapalı, daha akıcı')
+        : (window.t?window.t('set_lite_off_desc'):'Kapalı — tüm görsel efektler açık');
+      toast(next ? (window.t?window.t('set_lite_on_toast'):'⚡ Hafif mod açık — tam etki için sayfayı yenile')
+                 : (window.t?window.t('set_lite_off_toast'):'Efektler geri açıldı — yenileyince tamamlanır'), { kind: 'good', duration: 5000 });
     };
     b.appendChild(liteRow);
 
@@ -1837,22 +1842,22 @@ function openSettings() {
     var s = reminderSettings();
     var permOk = notifyState() === 'granted';
     var notifRow = row('🔔', t('set_notif_row'),
-      permOk ? (s.on ? 'Her gün ' + pad(s.hour) + ':' + pad(s.min) : 'Kapalı') : 'İzin gerekiyor',
+      permOk ? (s.on ? (window.t?window.t('set_notif_daily_desc')(pad(s.hour),pad(s.min)):('Her gün ' + pad(s.hour) + ':' + pad(s.min))) : (window.t?window.t('set_notif_off_desc'):'Kapalı')) : (window.t?window.t('set_notif_need_perm'):'İzin gerekiyor'),
       '<div class="pwa-switch' + (s.on && permOk ? ' on' : '') + '"></div>');
     notifRow.onclick = function () {
       askNotifyPermission().then(function (p) {
-        if (p !== 'granted') { toast('Bildirim izni verilmedi', { kind: 'bad' }); return; }
+        if (p !== 'granted') { toast(window.t?window.t('set_notif_denied_toast'):'Bildirim izni verilmedi', { kind: 'bad' }); return; }
         var cur = reminderSettings();
         cur.on = !cur.on;
         saveReminder(cur);
         qs('.pwa-switch', notifRow).classList.toggle('on', cur.on);
-        qs('.tx span', notifRow).textContent = cur.on ? 'Her gün ' + pad(cur.hour) + ':' + pad(cur.min) : 'Kapalı';
-        if (cur.on) { subscribePush(); toast('🔔 Hatırlatma açıldı', { kind: 'good' }); }
+        qs('.tx span', notifRow).textContent = cur.on ? (window.t?window.t('set_notif_daily_desc')(pad(cur.hour),pad(cur.min)):('Her gün ' + pad(cur.hour) + ':' + pad(cur.min))) : (window.t?window.t('set_notif_off_desc'):'Kapalı');
+        if (cur.on) { subscribePush(); toast(window.t?window.t('set_notif_on_toast'):'🔔 Hatırlatma açıldı', { kind: 'good' }); }
       });
     };
     b.appendChild(notifRow);
 
-    var timeRow = row('⏰', t('set_notif_time_row'), 'Bildirimin geleceği saat',
+    var timeRow = row('⏰', t('set_notif_time_row'), (window.t?window.t('set_notif_time_desc'):'Bildirimin geleceği saat'),
       '<input class="pwa-time" type="time" value="' + pad(s.hour) + ':' + pad(s.min) + '">');
     var inp = qs('.pwa-time', timeRow);
     inp.onclick = function (e) { e.stopPropagation(); };
@@ -1862,27 +1867,27 @@ function openSettings() {
       cur.hour = parseInt(parts[0], 10) || 20;
       cur.min = parseInt(parts[1], 10) || 0;
       saveReminder(cur);
-      toast('Saat güncellendi: ' + inp.value, { kind: 'good' });
+      toast((window.t?window.t('set_notif_time_updated_toast')(inp.value):('Saat güncellendi: ' + inp.value)), { kind: 'good' });
     };
     b.appendChild(timeRow);
 
-    var testRow = row('📨', t('set_notif_test_row'), 'Çalışıyor mu diye bak');
+    var testRow = row('📨', t('set_notif_test_row'), (window.t?window.t('set_notif_test_desc'):'Çalışıyor mu diye bak'));
     testRow.onclick = function () {
       askNotifyPermission().then(function (p) {
-        if (p !== 'granted') { toast('Önce izin ver', { kind: 'bad' }); return; }
-        showNotification('Merhaba! 👋', 'Bildirimler çalışıyor. İyi çalışmalar!', './?src=notification&tab=cards');
+        if (p !== 'granted') { toast(window.t?window.t('set_notif_need_perm_first_toast'):'Önce izin ver', { kind: 'bad' }); return; }
+        showNotification((window.t?window.t('set_notif_test_title'):'Merhaba! 👋'), (window.t?window.t('set_notif_test_body'):'Bildirimler çalışıyor. İyi çalışmalar!'), './?src=notification&tab=cards');
       });
     };
     b.appendChild(testRow);
 
     /* --- Çevrimdışı --------------------------------------------------- */
-    var packRow = row('📦', t('set_offline_row'), '6 dilin tüm sözlükleri · destek rozeti gerekir');
+    var packRow = row('📦', t('set_offline_row'), (window.t?window.t('set_offline_desc'):'6 dilin tüm sözlükleri · destek rozeti gerekir'));
     var bar = document.createElement('div');
     bar.className = 'pwa-progress';
     bar.innerHTML = '<i></i>';
     cacheBar = qs('i', bar);
     packRow.onclick = function () {
-      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge('Çevrimdışı paket')) return;
+      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge(window.t?window.t('set_offline_lock_feature_name'):'Çevrimdışı paket')) return;
       downloadOfflinePack();
     };
     b.appendChild(packRow); b.appendChild(bar);
@@ -1900,7 +1905,7 @@ function openSettings() {
     favRow.onclick = function () { openFavorites(); };
     b.appendChild(favRow);
 
-    var check = row('🔍', t('set_check_row'), 'Kayıtlı ilerleme kayıtlarını say');
+    var check = row('🔍', t('set_check_row'), (window.t?window.t('set_check_desc'):'Kayıtlı ilerleme kayıtlarını say'));
     check.onclick = function () {
       var n = 0, keys = [];
       try {
@@ -1911,31 +1916,31 @@ function openSettings() {
           if (/prog|xp|streak|meta|word|badge|stat/i.test(k)) keys.push(k);
         }
       } catch (e) {}
-      toast('💾 ' + n + ' kayıt var, ' + keys.length + ' tanesi ilerleme verisi', { duration: 7000 });
+      toast((window.t?window.t('set_check_toast')(n,keys.length):('💾 ' + n + ' kayıt var, ' + keys.length + ' tanesi ilerleme verisi')), { duration: 7000 });
     };
     b.appendChild(check);
 
-    var exp = row('⬇️', t('set_export_row'), 'JSON dosyası indir veya paylaş');
+    var exp = row('⬇️', t('set_export_row'), (window.t?window.t('set_export_desc'):'JSON dosyası indir veya paylaş'));
     exp.onclick = exportAllData;
     b.appendChild(exp);
 
-    var imp = row('⬆️', t('set_import_row'), 'Daha önce indirdiğin dosyayı seç');
+    var imp = row('⬆️', t('set_import_row'), (window.t?window.t('set_import_desc'):'Daha önce indirdiğin dosyayı seç'));
     imp.onclick = importData;
     b.appendChild(imp);
 
-    var shr = row('🔗', t('set_share_row'), 'Arkadaşlarına gönder');
+    var shr = row('🔗', t('set_share_row'), (window.t?window.t('set_share_desc'):'Arkadaşlarına gönder'));
     shr.onclick = shareApp;
     b.appendChild(shr);
 
     /* --- Kurulum / güncelleme ----------------------------------------- */
     if (!isStandalone && !isTwa) {
-      var ins = row('📲', t('set_install_row'), 'Tam ekran, hızlı ve çevrimdışı');
+      var ins = row('📲', t('set_install_row'), (window.t?window.t('set_install_desc'):'Tam ekran, hızlı ve çevrimdışı'));
       ins.onclick = doInstall;
       b.appendChild(ins);
     }
 
     var myVer = (window.PWA && window.PWA.version) ? window.PWA.version : 'bilinmiyor';
-    var upd = row('🔄', t('set_update_row'), 'Çalışan sürüm: ' + myVer);
+    var upd = row('🔄', t('set_update_row'), (window.t?window.t('set_update_desc')(myVer):('Çalışan sürüm: ' + myVer)));
     var updDesc = qs('.tx span', upd);
     b.appendChild(upd);
 
@@ -1943,47 +1948,47 @@ function openSettings() {
        eski dosyalar takılı kalmış demektir. */
     swVersion(function (v) {
       if (!v) return;
-      updDesc.textContent = 'Çalışan: ' + myVer + ' · önbellek: ' + v;
+      updDesc.textContent = (window.t?window.t('set_update_cache_desc')(myVer,v):('Çalışan: ' + myVer + ' · önbellek: ' + v));
     });
 
     upd.onclick = function () {
-      if (!navigator.onLine) { toast('Güncelleme için internet gerekli', { kind: 'bad' }); return; }
-      updDesc.textContent = 'Denetleniyor…';
+      if (!navigator.onLine) { toast(window.t?window.t('set_update_need_internet_toast'):'Güncelleme için internet gerekli', { kind: 'bad' }); return; }
+      updDesc.textContent = (window.t?window.t('set_update_checking_desc'):'Denetleniyor…');
       checkForUpdate(function (state) {
         if (state === 'new') {
-          updDesc.textContent = 'Yeni sürüm indirildi';
-          toast('✨ Yeni sürüm hazır', {
-            action: 'Şimdi yükle', duration: 14000,
+          updDesc.textContent = (window.t?window.t('set_update_new_desc'):'Yeni sürüm indirildi');
+          toast(window.t?window.t('set_update_new_toast'):'✨ Yeni sürüm hazır', {
+            action: (window.t?window.t('set_update_install_now'):'Şimdi yükle'), duration: 14000,
             onAction: function () { hardRefresh(); }
           });
         } else if (state === 'error') {
-          updDesc.textContent = 'Denetlenemedi';
-          toast('Denetlenemedi', { kind: 'bad' });
+          updDesc.textContent = (window.t?window.t('set_update_error_desc'):'Denetlenemedi');
+          toast(window.t?window.t('set_update_error_toast'):'Denetlenemedi', { kind: 'bad' });
         } else {
-          updDesc.textContent = 'Çalışan sürüm: ' + myVer;
-          toast('✅ En güncel sürümdesin', { kind: 'good' });
+          updDesc.textContent = (window.t?window.t('set_update_desc')(myVer):('Çalışan sürüm: ' + myVer));
+          toast(window.t?window.t('set_update_uptodate_toast'):'✅ En güncel sürümdesin', { kind: 'good' });
         }
       });
     };
 
     /* Takılı kalan dosyalar için kesin çözüm */
-    var force = row('🧹', 'Zorla güncelle', 'Önbelleği temizler ve yeniler — verilerin silinmez');
+    var force = row('🧹', (window.t?window.t('set_force_update_row'):'Zorla güncelle'), (window.t?window.t('set_force_update_desc'):'Önbelleği temizler ve yeniler — verilerin silinmez'));
     force.onclick = function () {
-      confirmSheet('Zorla güncellensin mi?',
-        'Kayıtlı dosyalar silinip yeniden indirilecek. <b>İlerlemen, favorilerin ve ayarların silinmez.</b> Uygulama bir kez yenilenecek.',
+      confirmSheet((window.t?window.t('set_force_update_confirm_title'):'Zorla güncellensin mi?'),
+        (window.t?window.t('set_force_update_confirm_body'):'Kayıtlı dosyalar silinip yeniden indirilecek. <b>İlerlemen, favorilerin ve ayarların silinmez.</b> Uygulama bir kez yenilenecek.'),
         function () { hardRefresh(true); });
     };
     b.appendChild(force);
 
-    var net = row('📶', 'Bağlantı durumunu denetle', 'Çevrimdışı uyarısı yanlışsa buraya bak');
+    var net = row('📶', (window.t?window.t('set_net_check_row'):'Bağlantı durumunu denetle'), (window.t?window.t('set_net_check_desc'):'Çevrimdışı uyarısı yanlışsa buraya bak'));
     net.onclick = function () { refreshOnlineState(); window.PWA.netStatus(); };
     b.appendChild(net);
 
-    var bug = row('🐞', 'Hata raporu', 'Sorun mu var? Rapor gönder');
+    var bug = row('🐞', (window.t?window.t('set_bug_row'):'Hata raporu'), (window.t?window.t('set_bug_desc'):'Sorun mu var? Rapor gönder'));
     bug.onclick = openErrorReport;
     b.appendChild(bug);
 
-    var rate = row('💛', 'Puan ver', 'Play Store\'da değerlendir');
+    var rate = row('💛', (window.t?window.t('set_rate_row'):'Puan ver'), (window.t?window.t('set_rate_desc'):'Play Store\'da değerlendir'));
     rate.onclick = function () {
       store('pwa_rated', true);
       try { location.href = 'market://details?id=' + CONFIG.packageId; } catch (e) {}
@@ -1996,13 +2001,13 @@ function openSettings() {
       function injectAdmin() {
         if (adminBox.querySelector('.pwa-admin-row')) return; /* zaten eklendi */
         adminBox.insertAdjacentHTML('beforeend',
-          '<p class="pwa-note" style="margin:20px 2px 8px">Yönetici</p>');
-        var adm = row('🛡️', 'Admin Panel', 'İstatistik · XP · yasaklama');
+          '<p class="pwa-note" style="margin:20px 2px 8px">'+(window.t?window.t('set_admin_section'):'Yönetici')+'</p>');
+        var adm = row('🛡️', (window.t?window.t('set_admin_row'):'Admin Panel'), (window.t?window.t('set_admin_desc'):'İstatistik · XP · yasaklama'));
         adm.className += ' pwa-admin-row';
         adm.style.borderColor = 'rgba(255,210,59,.4)';
         adm.onclick = function () {
           if (typeof window.openAdminPanel === 'function') window.openAdminPanel();
-          else toast('Yönetici paneli yüklenemedi', { kind: 'bad' });
+          else toast(window.t?window.t('set_admin_load_fail_toast'):'Yönetici paneli yüklenemedi', { kind: 'bad' });
         };
         adminBox.appendChild(adm);
       }
@@ -2032,17 +2037,17 @@ function openSettings() {
     };
     b.appendChild(prof);
 
-    var pdfRow = row('📄', 'Kelimeleri PDF olarak indir', 'Kitap düzeninde kelime listesi · rozet gerekir');
+    var pdfRow = row('📄', (window.t?window.t('set_pdf_row'):'Kelimeleri PDF olarak indir'), (window.t?window.t('set_pdf_desc'):'Kitap düzeninde kelime listesi · rozet gerekir'));
     pdfRow.onclick = function () {
       if (typeof window.openPdfExport === 'function') window.openPdfExport();
     };
     b.appendChild(pdfRow);
 
-    var priv = row('🔒', 'Gizlilik Politikası', 'Hangi veriler saklanıyor?');
+    var priv = row('🔒', (window.t?window.t('set_privacy_row'):'Gizlilik Politikası'), (window.t?window.t('set_privacy_desc'):'Hangi veriler saklanıyor?'));
     priv.onclick = function () { window.open('privacy/', '_blank', 'noopener'); };
     b.appendChild(priv);
 
-    var supRow = row('❤️', 'Lumira\'yı Destekle', 'Rozet kazan, gelişime katkıda bulun');
+    var supRow = row('❤️', (window.t?window.t('set_support_row'):'Lumira\'yı Destekle'), (window.t?window.t('set_support_desc_row'):'Rozet kazan, gelişime katkıda bulun'));
     supRow.style.borderColor = 'rgba(255,95,184,.32)';
     supRow.onclick = function () {
       if (typeof window.openSupport === 'function') window.openSupport();
@@ -2050,9 +2055,8 @@ function openSettings() {
     b.appendChild(supRow);
 
     b.insertAdjacentHTML('beforeend',
-      '<p class="pwa-note">' + CONFIG.brand + ' · ' + CONFIG.appName +
-      ' — çevrimdışı çalışır, verilerin cihazında saklanır.<br>' +
-      'Toplam açılış: ' + (store('pwa_opens') || 1) + '</p>');
+      '<p class="pwa-note">' + (window.t ? window.t('set_footer_note')(CONFIG.brand, CONFIG.appName, (store('pwa_opens') || 1)) :
+        (CONFIG.brand + ' · ' + CONFIG.appName + ' — çevrimdışı çalışır, verilerin cihazında saklanır.<br>Toplam açılış: ' + (store('pwa_opens') || 1))) + '</p>');
   });
 }
 function pad(n) { return String(n).padStart(2, '0'); }
@@ -2217,7 +2221,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.8.0',
+  version: '1.8.1',
   isStandalone: function () { return isStandalone; }
 };
 
