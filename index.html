@@ -892,8 +892,8 @@
      ayrı yıldız görünmesin / çakışmasın. */
   .fav-star{ display:none !important; }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.8.1">
-<link rel="stylesheet" href="pwa.css?v=1.8.1">
+<link rel="stylesheet" href="theme.css?v=1.8.2">
+<link rel="stylesheet" href="pwa.css?v=1.8.2">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1034,8 +1034,8 @@
   <div class="level-box" id="levelBox"></div>
 
   <div class="tabs">
-    <div class="tab active" id="tabCards">Kartlar</div>
-    <div class="tab" id="tabQuiz">Quiz</div>
+    <div class="tab active" id="tabCards">🧠 Kartlar</div>
+    <div class="tab" id="tabQuiz">🧩 Quiz</div>
     <div class="tab" id="tabPersonal">🎯 Kişisel</div>
     <div class="tab" id="tabNotebook">📒 Notlarım</div>
   </div>
@@ -1390,7 +1390,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.8.1"></script>
+<script src="leaderboard.js?v=1.8.2"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -1427,7 +1427,7 @@ document.addEventListener('DOMContentLoaded', function(){
    metne, o da yoksa anahtarın kendisine düşer. Asla boş/undefined dönmez. */
 const I18N = {
 tr:{
-  tab_cards:"Kartlar", tab_quiz:"Quiz", tab_personal:"🎯 Kişisel", tab_notebook:"📒 Notlarım",
+  tab_cards:"🧠 Kartlar", tab_quiz:"🧩 Quiz", tab_personal:"🎯 Kişisel", tab_notebook:"📒 Notlarım",
   main_sub_full:"Seviye, dil ve kategori seç — kartına dokun, dinle, öğren",
   level_all:"TÜMÜ", cat_all:"Tümü", cat_pick:"Kategori Seç",
   tap_to_listen:"Dinlemek İçin Tıkla", tap_to_flip:"Çevirmek için karta dokun",
@@ -1585,7 +1585,7 @@ tr:{
   save_to_word_list:"Kendi kelime listene kaydet", added_to_favs_toast:"⭐ Favorilere eklendi",
   lock_pdf_feature_name:"Kelime listesi PDF", lock_pdf_msg:"Bu özellik için <b>💛</b>, <b>⭐️</b> veya <b>👑</b> rozetlerinden birine sahip olman gerekiyor.<br><br>Rozetleri ❤️ <b>Lumira'yı Destekle</b> bölümünden edinebilirsin.", lock_any_badge_msg:"Bu özelliği kullanmak için herhangi bir destek rozetine sahip olman gerekiyor — en küçüğü bile (👍🏻 Teşekkür) yeterli.<br><br>Rozetleri ❤️ <b>Lumira'yı Destekle</b> bölümünden edinebilirsin.", purchase_start_failed:"Satın alma başlatılamadı.", purchase_complete_failed:"Satın alma tamamlanamadı.", support_title:"❤️ Lumira'yı Destekle", support_desc:"Lumira'yı herkes için ücretsiz sunmaya devam etmek istiyoruz. Eğer uygulamayı faydalı bulduysanız, tamamen isteğe bağlı bir destekle yeni özelliklerin geliştirilmesine katkıda bulunabilirsiniz. Her katkı bizim için çok değerli. ❤️ 🇹🇷", pdf_export_title:"📄 Kelimeleri PDF olarak indir", pdf_export_desc:"Dil ve seviye seç, kitap düzeninde bir kelime listesi oluşturulsun.", pdf_words_not_found:"Bu seçimde kelime bulunamadı", pdf_generate_btn:"Listeyi oluştur", pdf_generating:"Hazırlanıyor…", pdf_dict_load_failed:"Sözlük yüklenemedi", pdf_popup_blocked:"Açılır pencere engellendi — tarayıcı ayarlarından izin ver", pdf_web_payment_note:"Bu satın alma yalnızca Play Store üzerinden yapılabilir. Web sürümünde ödeme alınmıyor.", lock_level_msg:function(need,lvl){ return "Bu özelliği kullanmak için en az <b>"+need+". seviye</b> olmalısın. Şu anki seviyen: <b>"+lvl+"</b>.<br><br>🎯 <b>Kişisel</b> sekmesinden çalışarak seviyeni yükseltebilirsin."; }, your_badges:function(badges){ return "Rozetlerin: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Sana rozet verildi: "+name+" · +"+xp+" özellikler açıldı"; }, purchase_success_toast:function(b,n,x){return b+' '+n+' rozeti kazandın · +'+x+' XP';}, purchase_total_label:"Toplam",},
 en:{
-  tab_cards:"Cards", tab_quiz:"Quiz", tab_personal:"🎯 Personal", tab_notebook:"📒 Notebook",
+  tab_cards:"🧠 Cards", tab_quiz:"🧩 Quiz", tab_personal:"🎯 Personal", tab_notebook:"📒 Notebook",
   main_sub_full:"Choose level, language and category — tap a card, listen, learn",
   level_all:"ALL", cat_all:"All", cat_pick:"Choose Category",
   tap_to_listen:"Tap to Listen", tap_to_flip:"Tap the card to flip",
@@ -1770,7 +1770,7 @@ en:{
   save_to_word_list:"Save to your own word list", added_to_favs_toast:"⭐ Added to favorites",
   lock_pdf_feature_name:"Word list PDF", lock_pdf_msg:"You need one of the <b>💛</b>, <b>⭐️</b> or <b>👑</b> badges to use this feature.<br><br>You can get a badge from ❤️ <b>Support Lumira</b>.", lock_any_badge_msg:"You need any support badge to use this feature — even the smallest one (👍🏻 Thanks) is enough.<br><br>You can get a badge from ❤️ <b>Support Lumira</b>.", purchase_start_failed:"Couldn't start the purchase.", purchase_complete_failed:"Couldn't complete the purchase.", support_title:"❤️ Support Lumira", support_desc:"We want to keep offering Lumira for free to everyone. If you find the app useful, you can support new feature development with a completely optional contribution. Every contribution means a lot to us. ❤️ 🇹🇷", pdf_export_title:"📄 Download words as PDF", pdf_export_desc:"Choose a language and level to generate a book-style word list.", pdf_words_not_found:"No words found for this selection", pdf_generate_btn:"Generate list", pdf_generating:"Preparing…", pdf_dict_load_failed:"Couldn't load the dictionary", pdf_popup_blocked:"Pop-up blocked — allow it in your browser settings", pdf_web_payment_note:"This purchase can only be made through the Play Store. Payments aren't accepted in the web version.", lock_level_msg:function(need,lvl){ return "You need to be at least <b>level "+need+"</b> to use this. Your current level: <b>"+lvl+"</b>.<br><br>🎯 Study in the <b>Personal</b> tab to level up."; }, your_badges:function(badges){ return "Your badges: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 You earned a badge: "+name+" · +"+xp+" features unlocked"; }, purchase_success_toast:function(b,n,x){return b+' You earned the '+n+' badge · +'+x+' XP';}, purchase_total_label:"Total",},
 de:{
-  tab_cards:"Karten", tab_quiz:"Quiz", tab_personal:"🎯 Persönlich", tab_notebook:"📒 Notizen",
+  tab_cards:"🧠 Karten", tab_quiz:"🧩 Quiz", tab_personal:"🎯 Persönlich", tab_notebook:"📒 Notizen",
   main_sub_full:"Stufe, Sprache und Kategorie wählen — Karte antippen, hören, lernen",
   level_all:"ALLE", cat_all:"Alle", cat_pick:"Kategorie wählen",
   tap_to_listen:"Zum Anhören tippen", tap_to_flip:"Zum Umdrehen antippen",
@@ -1928,7 +1928,7 @@ de:{
   save_to_word_list:"In deiner eigenen Wortliste speichern", added_to_favs_toast:"⭐ Zu Favoriten hinzugefügt",
   lock_pdf_feature_name:"Wortliste PDF", lock_pdf_msg:"Du brauchst eines der Abzeichen <b>💛</b>, <b>⭐️</b> oder <b>👑</b>, um diese Funktion zu nutzen.<br><br>Ein Abzeichen erhältst du über ❤️ <b>Lumira unterstützen</b>.", lock_any_badge_msg:"Du brauchst irgendein Unterstützer-Abzeichen für diese Funktion — selbst das kleinste (👍🏻 Danke) reicht.<br><br>Ein Abzeichen erhältst du über ❤️ <b>Lumira unterstützen</b>.", purchase_start_failed:"Kauf konnte nicht gestartet werden.", purchase_complete_failed:"Kauf konnte nicht abgeschlossen werden.", support_title:"❤️ Lumira unterstützen", support_desc:"Wir möchten Lumira weiterhin kostenlos für alle anbieten. Wenn du die App nützlich findest, kannst du mit einem völlig freiwilligen Beitrag zur Entwicklung neuer Funktionen beitragen. Jeder Beitrag bedeutet uns viel. ❤️ 🇹🇷", pdf_export_title:"📄 Wörter als PDF herunterladen", pdf_export_desc:"Wähle Sprache und Stufe für eine Wortliste im Buchformat.", pdf_words_not_found:"Keine Wörter für diese Auswahl gefunden", pdf_generate_btn:"Liste erstellen", pdf_generating:"Wird vorbereitet…", pdf_dict_load_failed:"Wörterbuch konnte nicht geladen werden", pdf_popup_blocked:"Pop-up blockiert — in den Browsereinstellungen erlauben", pdf_web_payment_note:"Dieser Kauf ist nur über den Play Store möglich. In der Webversion werden keine Zahlungen akzeptiert.", lock_level_msg:function(need,lvl){ return "Du musst mindestens <b>Stufe "+need+"</b> sein, um dies zu nutzen. Deine aktuelle Stufe: <b>"+lvl+"</b>.<br><br>🎯 Übe im Tab <b>Persönlich</b>, um aufzusteigen."; }, your_badges:function(badges){ return "Deine Abzeichen: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Du hast ein Abzeichen erhalten: "+name+" · +"+xp+" Funktionen freigeschaltet"; }, purchase_success_toast:function(b,n,x){return b+' Du hast das Abzeichen '+n+' erhalten · +'+x+' XP';}, purchase_total_label:"Gesamt",},
 ar:{
-  tab_cards:"البطاقات", tab_quiz:"اختبار", tab_personal:"🎯 شخصي", tab_notebook:"📒 ملاحظاتي",
+  tab_cards:"🧠 البطاقات", tab_quiz:"🧩 اختبار", tab_personal:"🎯 شخصي", tab_notebook:"📒 ملاحظاتي",
   main_sub_full:"اختر المستوى واللغة والفئة — اضغط على البطاقة، استمع، تعلّم",
   level_all:"الكل", cat_all:"الكل", cat_pick:"اختر الفئة",
   tap_to_listen:"اضغط للاستماع", tap_to_flip:"اضغط على البطاقة لقلبها",
@@ -2086,7 +2086,7 @@ ar:{
   save_to_word_list:"احفظه في قائمة كلماتك الخاصة", added_to_favs_toast:"⭐ أُضيف إلى المفضلة",
   lock_pdf_feature_name:"قائمة الكلمات PDF", lock_pdf_msg:"تحتاج إلى إحدى الشارات <b>💛</b> أو <b>⭐️</b> أو <b>👑</b> لاستخدام هذه الميزة.<br><br>يمكنك الحصول على شارة من ❤️ <b>ادعم Lumira</b>.", lock_any_badge_msg:"تحتاج إلى أي شارة دعم لاستخدام هذه الميزة — حتى أصغرها (👍🏻 شكراً) كافية.<br><br>يمكنك الحصول على شارة من ❤️ <b>ادعم Lumira</b>.", purchase_start_failed:"تعذّر بدء الشراء.", purchase_complete_failed:"تعذّر إتمام الشراء.", support_title:"❤️ ادعم Lumira", support_desc:"نريد الاستمرار في تقديم Lumira مجاناً للجميع. إذا وجدت التطبيق مفيداً، يمكنك المساهمة في تطوير ميزات جديدة بمساهمة اختيارية بالكامل. كل مساهمة تعني لنا الكثير. ❤️ 🇹🇷", pdf_export_title:"📄 تنزيل الكلمات كملف PDF", pdf_export_desc:"اختر اللغة والمستوى لإنشاء قائمة كلمات بتنسيق كتاب.", pdf_words_not_found:"لم يتم العثور على كلمات لهذا الاختيار", pdf_generate_btn:"إنشاء القائمة", pdf_generating:"جارٍ التحضير…", pdf_dict_load_failed:"تعذّر تحميل القاموس", pdf_popup_blocked:"تم حظر النافذة المنبثقة — اسمح بها من إعدادات المتصفح", pdf_web_payment_note:"لا يمكن إجراء هذا الشراء إلا عبر Play Store. لا تُقبل المدفوعات في النسخة الإلكترونية.", lock_level_msg:function(need,lvl){ return "يجب أن تكون في <b>المستوى "+need+"</b> على الأقل لاستخدام هذا. مستواك الحالي: <b>"+lvl+"</b>.<br><br>🎯 ادرس في تبويب <b>شخصي</b> لرفع مستواك."; }, your_badges:function(badges){ return "شاراتك: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 حصلت على شارة: "+name+" · تم فتح +"+xp+" ميزة"; }, purchase_success_toast:function(b,n,x){return b+' حصلت على شارة '+n+' · +'+x+' XP';}, purchase_total_label:"الإجمالي",},
 fr:{
-  tab_cards:"Cartes", tab_quiz:"Quiz", tab_personal:"🎯 Personnel", tab_notebook:"📒 Mes notes",
+  tab_cards:"🧠 Cartes", tab_quiz:"🧩 Quiz", tab_personal:"🎯 Personnel", tab_notebook:"📒 Mes notes",
   main_sub_full:"Choisis le niveau, la langue et la catégorie — touche une carte, écoute, apprends",
   level_all:"TOUT", cat_all:"Tout", cat_pick:"Choisir la catégorie",
   tap_to_listen:"Toucher pour écouter", tap_to_flip:"Toucher la carte pour la retourner",
@@ -2275,7 +2275,7 @@ fr:{
   save_to_word_list:"Enregistrer dans ta liste de mots", added_to_favs_toast:"⭐ Ajouté aux favoris",
   lock_pdf_feature_name:"Liste de mots PDF", lock_pdf_msg:"Tu as besoin d'un des badges <b>💛</b>, <b>⭐️</b> ou <b>👑</b> pour utiliser cette fonctionnalité.<br><br>Obtiens un badge via ❤️ <b>Soutenir Lumira</b>.", lock_any_badge_msg:"Tu as besoin de n'importe quel badge de soutien pour cette fonctionnalité — même le plus petit (👍🏻 Merci) suffit.<br><br>Obtiens un badge via ❤️ <b>Soutenir Lumira</b>.", purchase_start_failed:"Impossible de démarrer l'achat.", purchase_complete_failed:"Impossible de finaliser l'achat.", support_title:"❤️ Soutenir Lumira", support_desc:"Nous voulons continuer à proposer Lumira gratuitement à tous. Si tu trouves l'appli utile, tu peux contribuer au développement de nouvelles fonctionnalités avec une contribution totalement facultative. Chaque contribution compte énormément pour nous. ❤️ 🇹🇷", pdf_export_title:"📄 Télécharger les mots en PDF", pdf_export_desc:"Choisis une langue et un niveau pour générer une liste de mots façon livre.", pdf_words_not_found:"Aucun mot trouvé pour cette sélection", pdf_generate_btn:"Générer la liste", pdf_generating:"Préparation…", pdf_dict_load_failed:"Impossible de charger le dictionnaire", pdf_popup_blocked:"Pop-up bloquée — autorise-la dans les paramètres du navigateur", pdf_web_payment_note:"Cet achat n'est possible que via le Play Store. Les paiements ne sont pas acceptés dans la version web.", lock_level_msg:function(need,lvl){ return "Tu dois être au moins <b>niveau "+need+"</b> pour utiliser ceci. Ton niveau actuel : <b>"+lvl+"</b>.<br><br>🎯 Étudie dans l\u2019onglet <b>Personnel</b> pour monter de niveau."; }, your_badges:function(badges){ return "Tes badges : "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Tu as gagné un badge : "+name+" · +"+xp+" fonctionnalités débloquées"; }, purchase_success_toast:function(b,n,x){return b+' Tu as gagné le badge '+n+' · +'+x+' XP';}, purchase_total_label:"Total",},
 es:{
-  tab_cards:"Tarjetas", tab_quiz:"Quiz", tab_personal:"🎯 Personal", tab_notebook:"📒 Mis notas",
+  tab_cards:"🧠 Tarjetas", tab_quiz:"🧩 Quiz", tab_personal:"🎯 Personal", tab_notebook:"📒 Mis notas",
   main_sub_full:"Elige nivel, idioma y categoría — toca una tarjeta, escucha, aprende",
   level_all:"TODOS", cat_all:"Todo", cat_pick:"Elegir categoría",
   tap_to_listen:"Toca para escuchar", tap_to_flip:"Toca la tarjeta para girarla",
@@ -2435,7 +2435,7 @@ es:{
   save_to_word_list:"Guardar en tu lista de palabras", added_to_favs_toast:"⭐ Añadido a favoritos",
   lock_pdf_feature_name:"Lista de palabras PDF", lock_pdf_msg:"Necesitas una de las insignias <b>💛</b>, <b>⭐️</b> o <b>👑</b> para usar esta función.<br><br>Consigue una insignia en ❤️ <b>Apoyar a Lumira</b>.", lock_any_badge_msg:"Necesitas cualquier insignia de apoyo para esta función — incluso la más pequeña (👍🏻 Gracias) es suficiente.<br><br>Consigue una insignia en ❤️ <b>Apoyar a Lumira</b>.", purchase_start_failed:"No se pudo iniciar la compra.", purchase_complete_failed:"No se pudo completar la compra.", support_title:"❤️ Apoyar a Lumira", support_desc:"Queremos seguir ofreciendo Lumira gratis para todos. Si te resulta útil la app, puedes contribuir al desarrollo de nuevas funciones con una contribución totalmente opcional. Cada contribución significa mucho para nosotros. ❤️ 🇹🇷", pdf_export_title:"📄 Descargar palabras en PDF", pdf_export_desc:"Elige idioma y nivel para generar una lista de palabras estilo libro.", pdf_words_not_found:"No se encontraron palabras para esta selección", pdf_generate_btn:"Generar lista", pdf_generating:"Preparando…", pdf_dict_load_failed:"No se pudo cargar el diccionario", pdf_popup_blocked:"Ventana emergente bloqueada — permítela en la configuración del navegador", pdf_web_payment_note:"Esta compra solo se puede hacer a través de Play Store. No se aceptan pagos en la versión web.", lock_level_msg:function(need,lvl){ return "Debes tener al menos <b>nivel "+need+"</b> para usar esto. Tu nivel actual: <b>"+lvl+"</b>.<br><br>🎯 Estudia en la pestaña <b>Personal</b> para subir de nivel."; }, your_badges:function(badges){ return "Tus insignias: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Ganaste una insignia: "+name+" · +"+xp+" funciones desbloqueadas"; }, purchase_success_toast:function(b,n,x){return b+' Ganaste la insignia '+n+' · +'+x+' XP';}, purchase_total_label:"Total",},
 ru:{
-  tab_cards:"Карточки", tab_quiz:"Тест", tab_personal:"🎯 Личный", tab_notebook:"📒 Мои заметки",
+  tab_cards:"🧠 Карточки", tab_quiz:"🧩 Тест", tab_personal:"🎯 Личный", tab_notebook:"📒 Мои заметки",
   main_sub_full:"Выбери уровень, язык и категорию — коснись карточки, слушай, учись",
   level_all:"ВСЕ", cat_all:"Все", cat_pick:"Выбрать категорию",
   tap_to_listen:"Нажми, чтобы послушать", tap_to_flip:"Нажми на карточку, чтобы перевернуть",
@@ -4968,7 +4968,7 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.8.1"></script>
+<script src="progress.js?v=1.8.2"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -4979,22 +4979,22 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.8.1"></script>
-<script defer src="theme.js?v=1.8.1"></script>
+<script defer src="voice.js?v=1.8.2"></script>
+<script defer src="theme.js?v=1.8.2"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.8.1"></script>
+<script defer src="pwa.js?v=1.8.2"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.8.1"></script>
+<script defer src="support-badges.js?v=1.8.2"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.8.1"></script>
-<script defer src="analytics.js?v=1.8.1"></script>
+<script defer src="splash.js?v=1.8.2"></script>
+<script defer src="analytics.js?v=1.8.2"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.8.1"></script>
+<script defer src="admin.js?v=1.8.2"></script>
 </body>
 </html>

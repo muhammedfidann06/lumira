@@ -25,6 +25,10 @@
   let dataLoaded = false;
   let wordProgress = {};
   let meta = null;
+  /* Kullanıcı Yazma Pratiği ekranlarındayken, arka planda geç gelen bir
+     kimlik doğrulama/isim olayı (LB_onNameReady) onu sessizce Ana Sayfa'ya
+     ATMASIN ve bu sırada üst dil kutusunu tekrar göstermesin diye. */
+  let pmInWritingFlow = false;
 
   let batch = [];
   let batchResult = {};
@@ -585,6 +589,7 @@
   window.PM_injectStyles = injectStyles;
 
   function renderHome(){
+    pmInWritingFlow = false;
     injectStyles();
     if(!dataLoaded){
       root.innerHTML = '<div class="pm-root"><div class="pm-loading">'+(window.t?window.t('pm_loading'):'Kişisel alan yükleniyor...')+'</div></div>';
@@ -902,6 +907,7 @@
   }
 
   function openLevelTestPicker(){
+    pmInWritingFlow = false;
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">'+(window.t?window.t('pm_level_test_btn'):'🎓 Seviye Tespit Sınavı')+'</div>'+
       '<div class="pm-title">'+(window.t?window.t('pm_level_test_header'):'🎓 Seviyeni Test Et')+'</div>'+
       '<div class="pm-sub">'+(window.t?window.t('pm_level_test_desc'):'Bir seviye seç · o seviyedeki TÜM kelimeler sorulur · tamamlayınca +100 XP · doğru bildiğin kelimeler bilinenler listene eklenir')+'</div></div>';
@@ -1438,6 +1444,7 @@
   }
 
   function renderSessionSummary(){
+    pmInWritingFlow = false;
     const s = sessionStats;
     try{document.body.classList.add('pm-active');}catch(e){}
     try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
@@ -1553,6 +1560,7 @@
   }
 
   function renderKnownWords(){
+    pmInWritingFlow = false;
     const list = poolForActiveLang().filter(v=>{ const r=getRecord(v); return r && r.known; });
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">✅ '+t('pm_known')+'</div><div class="pm-sub">'+list.length+' kelime ('+(window.isReversed && window.isReversed() ? ((window.t?window.t('lang_names').tr:'Türkçe')) : ((typeof nbLangLabel==='function')?nbLangLabel(activeLang):LANGS[activeLang].label))+')</div></div>';
     if(list.length===0){
@@ -1569,6 +1577,7 @@
   }
 
   function renderWeakWords(){
+    pmInWritingFlow = false;
     const entries = Object.keys(wordProgress)
       .map(k=>({key:k, rec:wordProgress[k]}))
       .filter(e => e.rec.lang === activeLang && (e.rec.wrong||0) > 0)
@@ -1638,6 +1647,9 @@
 
   /* ---- 1. adım: dil seçimi ---- */
   function renderWritingLangSelect(){
+    pmInWritingFlow = true;
+    try{document.body.classList.add('pm-active');}catch(e){}
+    try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
     injectStyles();
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+(window.t?window.t('nb_writing_practice'):'✍️ Yazma Pratiği')+'</div><div class="pm-sub">'+(window.t?window.t('wp_choose_lang_sub'):'Hangi dilde yazma pratiği yapmak istersin?')+'</div></div>';
     html += '<div class="lang-box">';
@@ -1658,6 +1670,9 @@
 
   /* ---- 2. adım: seviye seçimi ---- */
   function renderWritingLevelSelect(){
+    pmInWritingFlow = true;
+    try{document.body.classList.add('pm-active');}catch(e){}
+    try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
     injectStyles();
     const lang = wpFindLang(wpLang);
     if(!lang){ renderWritingLangSelect(); return; }
@@ -1776,6 +1791,9 @@
 
   /* ---- 3. adım: yazma & kontrol ---- */
   function renderWritingPractice(){
+    pmInWritingFlow = true;
+    try{document.body.classList.add('pm-active');}catch(e){}
+    try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
     injectStyles();
     const lang = wpFindLang(wpLang);
     if(!lang || !wpLevel){ renderWritingLangSelect(); return; }
@@ -1818,9 +1836,13 @@
     if(dataLoaded && currentName === name){ return; } // zaten yüklü, gereksiz yeniden yüklemeyi (ve olası veri ezmeyi) engelle
     // Kişisel panel şu an görünür değilse bile veriyi sessizce yükle: bu sayede
     // meta.xp (dolayısıyla seviye liderlik tablosu) kullanıcı "Kişisel Mod"u
-    // hiç açmasa bile girişte güncellenir. Panel görünürse ayrıca render eder.
+    // hiç açmasa bile girişte güncellenir. Panel görünürse ayrıca render eder -
+    // AMA kullanıcı o an Yazma Pratiği ekranındaysa onu Ana Sayfa'ya ATMIYORUZ
+    // (bu hem akışı bölüyor hem de üstteki dil kutusunun yanlışlıkla tekrar
+    // görünmesine yol açıyordu, çünkü renderHome kendi dil kutusu gizleme
+    // mantığını çalıştırırken kullanıcı farklı bir ekrandaydı).
     const isVisible = root && root.style.display !== 'none';
-    loadUserData(name, isVisible ? renderHome : null);
+    loadUserData(name, (isVisible && !pmInWritingFlow) ? renderHome : null);
   };
 
   window.PM_open = function(){ openPersonalMode(); };
