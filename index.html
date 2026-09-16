@@ -5,6 +5,15 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+<script>
+/* Android yerleşim düzeltmeleri ilk çizimden önce etkinleşir.
+   iOS/Safari ve masaüstünün mevcut viewport/yerleşim ayarları korunur. */
+if (/Android/i.test(navigator.userAgent)) {
+  document.documentElement.classList.add('lumira-android');
+  var lumiraViewport = document.querySelector('meta[name="viewport"]');
+  lumiraViewport.setAttribute('content', lumiraViewport.content + ', interactive-widget=resizes-content');
+}
+</script>
 <title>Lumira | Dil Kartları</title>
 <meta name="description" content="6 dilde binlerce kelime kartı, quiz, seslendirme ve kişisel ilerleme takibi. Çevrimdışı çalışır.">
 <meta name="application-name" content="Lumira Dil Kartları">
@@ -893,7 +902,7 @@
   .fav-star{ display:none !important; }
 </style>
 <link rel="stylesheet" href="theme.css?v=1.8.2">
-<link rel="stylesheet" href="pwa.css?v=1.8.2">
+<link rel="stylesheet" href="pwa.css?v=1.8.3">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->

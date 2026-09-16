@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.8.2';
+const CACHE_VERSION = 'v1.8.3';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -163,7 +163,18 @@ async function networkFirst(req, cacheName) {
     return res;
   } catch (e) {
     const hit = await cache.match(req, { ignoreVary: true });
-    return hit || Response.error();
+    if (hit) return hit;
+    /* SHELL kurulumunda dosyalar sürüm eki olmadan indirilir. Yeni worker
+       devraldıktan sonraki ilk açılış çevrimdışıysa ?v= adresi henüz bu
+       önbellekte bulunmayabilir. Aynı SHELL sürümündeki çekirdek dosyaya
+       dön; diğer sorgu parametrelerini ve sözlük önbelleğini değiştirme. */
+    const coreUrl = new URL(req.url);
+    if (coreUrl.searchParams.has('v')) {
+      coreUrl.searchParams.delete('v');
+      const coreHit = await cache.match(coreUrl.href, { ignoreVary: true });
+      if (coreHit) return coreHit;
+    }
+    return Response.error();
   }
 }
 

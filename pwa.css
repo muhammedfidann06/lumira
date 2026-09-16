@@ -1146,3 +1146,121 @@ html{-webkit-overflow-scrolling:touch;}
    NOT: Burada bir de saydamlaştırma denenmişti — kaydırınca efektlerin
    solması gözle fark ediliyor ve daha rahatsız ediciydi, kaldırıldı.
    Görüntüde hiçbir değişiklik yok; yalnızca hareket bir an duruyor. */
+
+/* ============================================================================
+   ANDROID YERLEŞİMİ — v1.8.3
+   Yalnızca Android'de etkinleşir; Safari/iOS/masaüstü kuralları değişmez.
+   Sabit ekran oranı veya scale/zoom kullanmak yerine içerik akışına izin verir.
+   ========================================================================== */
+html.lumira-android{
+  --lumira-view-height:100vh;
+  --lumira-safe-top:env(safe-area-inset-top, 0px);
+  --lumira-safe-right:env(safe-area-inset-right, 0px);
+  --lumira-safe-bottom:env(safe-area-inset-bottom, 0px);
+  --lumira-safe-left:env(safe-area-inset-left, 0px);
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+@supports (height:100dvh){
+  html.lumira-android{--lumira-view-height:100dvh;}
+}
+html.lumira-android body{min-height:var(--lumira-view-height);}
+html.lumira-android .app{min-width:0;}
+
+/* Başlık ve kontrol satırları: dar/genişletilmiş yazılı ekranda kesilmesin. */
+html.lumira-android .top-row{flex-wrap:wrap;}
+html.lumira-android .top-row > :first-child{flex:1 1 120px;min-width:0;}
+html.lumira-android .top-btn-row{flex:0 0 auto;max-width:100%;flex-wrap:wrap;}
+html.lumira-android h1{overflow-wrap:anywhere;}
+@media (max-width:380px){
+  html.lumira-android h1{font-size:clamp(23px, 6.875vw, 27px);}
+}
+/* Dekor korunur; kısa ekranda kelimenin/tuşların önünü kapatmaz. */
+html.lumira-android #fg-desk{z-index:0;}
+html.lumira-android .app .tab{
+  min-height:44px;display:flex;align-items:center;justify-content:center;
+  padding:8px 4px;white-space:normal;overflow:visible;
+  overflow-wrap:anywhere;text-overflow:clip;line-height:1.35;
+}
+html.lumira-android .progress-row{gap:8px;flex-wrap:wrap;}
+html.lumira-android .progress-row > span{min-width:0;overflow-wrap:anywhere;}
+html.lumira-android button.ctrl{
+  min-width:0;min-height:44px;padding-left:8px;padding-right:8px;
+  white-space:normal;overflow-wrap:anywhere;
+}
+
+/* İki yüz aynı grid hücresinde: uzun kelime/cümle kartı büyütür.
+   300px alt sınır ve mevcut 3B çevirme animasyonu korunur. */
+html.lumira-android .card{
+  display:grid;grid-template-columns:minmax(0, 1fr);
+  height:auto;min-height:300px;
+}
+html.lumira-android .card > .face{
+  position:relative;inset:auto;grid-area:1 / 1;
+  min-width:0;min-height:300px;padding:34px 20px 24px;
+}
+html.lumira-android .face > .tag,
+html.lumira-android .face > .word,
+html.lumira-android .face > .pos,
+html.lumira-android .face > .example,
+html.lumira-android .face > .speak-controls,
+html.lumira-android .face > .speak-caption{
+  flex-shrink:0;max-width:100%;
+}
+html.lumira-android .word,
+html.lumira-android .example,
+html.lumira-android .quiz-word,
+html.lumira-android .opt,
+html.lumira-android .nb-search-text{
+  min-width:0;overflow-wrap:anywhere;word-break:normal;
+}
+html.lumira-android .pm-root .pm-lang-grid{
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+}
+html.lumira-android .pm-lang-card{min-width:0;overflow-wrap:anywhere;}
+
+/* Klavye ve sistem çubukları: görünür yükseklik, kaydırılabilir içerik.
+   interactive-widget=resizes-content desteklenmeyen sürümler bunu yok sayar.
+   dvh olmayan tarayıcılar 100vh yedeğiyle çalışmaya devam eder. */
+html.lumira-android #nameOverlay,
+html.lumira-android .info-overlay,
+html.lumira-android .cat-overlay,
+html.lumira-android #splash{
+  top:0;bottom:auto;height:var(--lumira-view-height);
+}
+html.lumira-android #nameOverlay,
+html.lumira-android .info-overlay{
+  padding:calc(16px + var(--lumira-safe-top))
+          calc(16px + var(--lumira-safe-right))
+          calc(16px + var(--lumira-safe-bottom))
+          calc(16px + var(--lumira-safe-left));
+}
+html.lumira-android .name-card{
+  min-height:0;max-height:100%;overflow-y:auto;
+  overscroll-behavior:contain;
+}
+html.lumira-android #nameOverlay{z-index:10010;}
+html.lumira-android:has(.info-overlay.open) #pwa-fab,
+html.lumira-android:has(.cat-overlay.open) #pwa-fab{visibility:hidden;}
+html.lumira-android .info-card{min-height:0;max-height:100%;}
+html.lumira-android .info-scroll{min-height:0;overscroll-behavior:contain;}
+html.lumira-android .cat-overlay{
+  padding-top:calc(12px + var(--lumira-safe-top));
+  padding-left:var(--lumira-safe-left);padding-right:var(--lumira-safe-right);
+}
+html.lumira-android .cat-panel{
+  max-height:min(calc(var(--lumira-view-height) * .72),
+                 calc(var(--lumira-view-height) - var(--lumira-safe-top) - 12px));
+}
+html.lumira-android .pwa-sheet{
+  left:var(--lumira-safe-left);right:var(--lumira-safe-right);
+  max-width:480px;margin-left:auto;margin-right:auto;
+  max-height:min(calc(var(--lumira-view-height) * .86),
+                 calc(var(--lumira-view-height) - var(--lumira-safe-top) - 12px));
+  overscroll-behavior:contain;
+}
+html.lumira-android #splash{
+  padding-left:var(--lumira-safe-left);padding-right:var(--lumira-safe-right);
+}
+html.lumira-android .splash-content{width:100%;max-width:528px;min-width:0;}
+html.lumira-android .splash-lb{touch-action:pan-y;}
