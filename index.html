@@ -902,7 +902,7 @@ if (/Android/i.test(navigator.userAgent)) {
   .fav-star{ display:none !important; }
 </style>
 <link rel="stylesheet" href="theme.css?v=1.8.2">
-<link rel="stylesheet" href="pwa.css?v=1.8.3">
+<link rel="stylesheet" href="pwa.css?v=1.8.5">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -2603,7 +2603,12 @@ ru:{
   lock_pdf_feature_name:"Список слов PDF", lock_pdf_msg:"Для этой функции нужен один из значков <b>💛</b>, <b>⭐️</b> или <b>👑</b>.<br><br>Получить значок можно в ❤️ <b>Поддержать Lumira</b>.", lock_any_badge_msg:"Для этой функции нужен любой значок поддержки — подойдёт даже самый маленький (👍🏻 Спасибо).<br><br>Получить значок можно в ❤️ <b>Поддержать Lumira</b>.", purchase_start_failed:"Не удалось начать покупку.", purchase_complete_failed:"Не удалось завершить покупку.", support_title:"❤️ Поддержать Lumira", support_desc:"Мы хотим продолжать предлагать Lumira бесплатно для всех. Если приложение тебе полезно, ты можешь поддержать разработку новых функций полностью добровольным взносом. Каждый вклад очень важен для нас. ❤️ 🇹🇷", pdf_export_title:"📄 Скачать слова в PDF", pdf_export_desc:"Выбери язык и уровень для создания списка слов в книжном формате.", pdf_words_not_found:"Слова для этого выбора не найдены", pdf_generate_btn:"Создать список", pdf_generating:"Подготовка…", pdf_dict_load_failed:"Не удалось загрузить словарь", pdf_popup_blocked:"Всплывающее окно заблокировано — разреши его в настройках браузера", pdf_web_payment_note:"Эта покупка возможна только через Play Store. В веб-версии платежи не принимаются.", lock_level_msg:function(need,lvl){ return "Тебе нужен как минимум <b>"+need+" уровень</b>, чтобы использовать это. Твой текущий уровень: <b>"+lvl+"</b>.<br><br>🎯 Занимайся во вкладке <b>Личный</b>, чтобы повысить уровень."; }, your_badges:function(badges){ return "Твои значки: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Ты получил значок: "+name+" · открыто +"+xp+" функций"; }, purchase_success_toast:function(b,n,x){return b+' Ты получил значок '+n+' · +'+x+' XP';}, purchase_total_label:"Итого",}
 };
 function t(key){
-  var lang = (window.NATIVE_LANG || 'tr');
+  /* Dil durumu ilk çizimden önce de hazır olsun. Bazı modüller (özellikle
+     Notlarım/Yazma Pratiği) ayrı script olarak yüklenir; yalnızca
+     setLangPair() sonrasındaki window değerine güvenmek, ilk açılışta veya
+     dil değişimi sırasında kısa süreli Türkçe/İngilizce karışmasına yol
+     açabiliyordu. */
+  var lang = window.NATIVE_LANG || (typeof NATIVE_LANG !== 'undefined' ? NATIVE_LANG : 'tr');
   var dict = I18N[lang] || I18N.tr;
   var v = (dict && Object.prototype.hasOwnProperty.call(dict,key)) ? dict[key] : undefined;
   if(v===undefined) v = (I18N.tr && I18N.tr[key]);
@@ -2653,6 +2658,10 @@ let REVERSED_MODE = (NATIVE_LANG !== 'tr' && TARGET_LANG === 'tr');
 let IS_CROSS = (NATIVE_LANG !== 'tr' && TARGET_LANG !== 'tr' && TARGET_LANG !== NATIVE_LANG);
 let CROSS_DECK = [];
 let activeLang = REVERSED_MODE ? NATIVE_LANG : TARGET_LANG;
+/* t() ve geç yüklenen Personal/Notebook modülleri aynı anlık durumu görsün.
+   setLangPair() bunu her değişimde tekrar günceller. */
+window.NATIVE_LANG = NATIVE_LANG;
+window.TARGET_LANG = TARGET_LANG;
 
 function isReversed(){ return REVERSED_MODE; }
 function isCross(){ return IS_CROSS; }
@@ -2671,6 +2680,32 @@ window.FRONT_W = FRONT_W; window.BACK_W = BACK_W;
 window.FRONT_EX = FRONT_EX; window.BACK_EX = BACK_EX;
 window.FRONT_DIR = FRONT_DIR; window.BACK_DIR = BACK_DIR;
 window.FRONT_VOICE = FRONT_VOICE; window.BACK_VOICE = BACK_VOICE;
+
+/* Notlarım çalışma/quiz destesindeki kayıtlar, ana Kartlar destesinden
+   bağımsız bir dil çifti taşır (ör. global hedef Almanca iken defterden
+   İngilizce seçilebilir). Ana destenin ön/arka yön yardımcıları bu öğelere
+   uygulanırsa kelime doğru olsa bile etiket, yön ve ses dili yanlış görünür.
+   Bu küçük bağlam yardımcıları yalnızca _nbPair işaretli defter öğelerinde
+   devreye girer; normal Kartlar/Quiz akışı birebir aynı kalır. */
+function isNotebookPair(v){ return !!(v && v._nbPair); }
+function cardFrontWord(v){ return isNotebookPair(v) ? (v.w || '') : FRONT_W(v); }
+function cardBackWord(v){ return isNotebookPair(v) ? (v.tr || '') : BACK_W(v); }
+function cardFrontExample(v){ return isNotebookPair(v) ? (v.ex || '') : FRONT_EX(v); }
+function cardBackExample(v){ return isNotebookPair(v) ? (v.exTr || '') : BACK_EX(v); }
+function cardFrontDir(v){ return isNotebookPair(v) ? ((LANGS[v.lang] && LANGS[v.lang].dir) || 'ltr') : FRONT_DIR(v); }
+function cardBackDir(v){ return isNotebookPair(v) ? 'ltr' : BACK_DIR(v); }
+function cardFrontVoice(v){ return isNotebookPair(v) ? ((LANGS[v.lang] && LANGS[v.lang].voice) || 'en-US') : FRONT_VOICE(v); }
+function cardBackVoice(v){ return isNotebookPair(v) ? 'tr-TR' : BACK_VOICE(v); }
+function cardFrontLabel(v){
+  if(!isNotebookPair(v)) return FRONT_LABEL();
+  const names = (typeof t === 'function' && t('lang_names')) || {};
+  return names[v.lang] || ((LANGS[v.lang] && LANGS[v.lang].label) || v.lang || '');
+}
+function cardBackLabel(v){
+  if(!isNotebookPair(v)) return BACK_LABEL();
+  const names = (typeof t === 'function' && t('lang_names')) || {};
+  return names.tr || 'Türkçe';
+}
 
 /* basePool(): tüm seviye/kategori/quiz/dağıtıcı filtrelemesi TEK NOKTADAN
    buradan geçer. CROSS modda gerçek VOCAB yerine CROSS_DECK kullanılır;
@@ -2715,8 +2750,16 @@ window.buildCrossDeck = buildCrossDeck;
    Promise döner — çağıran taraf .then() içinde render fonksiyonlarını
    (renderLangPair/rebuildLevelBox/rebuildChips/applyFilter) çalıştırmalı. */
 function setLangPair(native, target){
+  const previousNative = NATIVE_LANG;
   NATIVE_LANG = native || 'tr';
   TARGET_LANG = target || (NATIVE_LANG==='tr' ? 'de' : 'tr');
+  /* Aynı dil iki tarafta seçilirse ters/çapraz modun kaynak dili belirsiz
+     kalmasın. Ayarlar ekranı bunu zaten engeller; bu koruma eski bağlantılar
+     ve kaydedilmiş hatalı tercihler için güvenli yedektir. */
+  if(!I18N[NATIVE_LANG]) NATIVE_LANG = 'tr';
+  if(NATIVE_LANG === TARGET_LANG){
+    TARGET_LANG = (NATIVE_LANG === 'tr') ? 'de' : 'tr';
+  }
   try { localStorage.setItem('lumira_native_lang', NATIVE_LANG); } catch(e){}
   try { localStorage.setItem('lumira_target_lang', TARGET_LANG); } catch(e){}
   window.NATIVE_LANG = NATIVE_LANG;
@@ -2747,6 +2790,19 @@ function setLangPair(native, target){
   }
   return Promise.all(need).then(()=>{
     if(IS_CROSS){ CROSS_DECK = buildCrossDeck(NATIVE_LANG, TARGET_LANG); }
+    /* Dinamik Notlarım/Yazma Pratiği ekranları DOM'a sonradan kurulduğu için
+       yalnızca ana sayfanın statik metinlerini güncellemek yetmez. Native
+       arayüz dili değiştiğinde açık olan modül de aynı çevrimde yenilenir.
+       Hedef dil değişiminde bu olay gönderilmez; o değişim ilgili modülün
+       kendi seçimiyle zaten yönetilir. */
+    if(previousNative !== NATIVE_LANG){
+      try{
+        const ev = new CustomEvent('lumira:localechange', { detail:{ native:NATIVE_LANG, target:TARGET_LANG } });
+        window.dispatchEvent(ev);
+      }catch(e){
+        try{ window.onlumiraLocaleChange && window.onlumiraLocaleChange(NATIVE_LANG, TARGET_LANG); }catch(_e){}
+      }
+    }
   });
 }
 window.setLangPair = setLangPair;
@@ -3376,20 +3432,20 @@ function renderCard(){
   const v = deck[idx];
   const L = LANGS[v.lang];
   const frontWordEl = document.getElementById('frontWord');
-  frontWordEl.textContent = FRONT_W(v);
-  frontWordEl.setAttribute('dir', FRONT_DIR(v));
+  frontWordEl.textContent = cardFrontWord(v);
+  frontWordEl.setAttribute('dir', cardFrontDir(v));
   document.getElementById('frontPos').textContent = catName(v.cat) || v.pos;
-  document.getElementById('tagFront').textContent = FRONT_LABEL();
-  document.getElementById('tagBack').textContent = BACK_LABEL();
-  document.getElementById('trWord').textContent = BACK_W(v);
+  document.getElementById('tagFront').textContent = cardFrontLabel(v);
+  document.getElementById('tagBack').textContent = cardBackLabel(v);
+  document.getElementById('trWord').textContent = cardBackWord(v);
 
   const frontEx = document.getElementById('frontExample');
-  frontEx.innerHTML = colorSplit(FRONT_EX(v), FRONT_W(v), v.c1, v.c2);
-  frontEx.setAttribute('dir', FRONT_DIR(v));
+  frontEx.innerHTML = colorSplit(cardFrontExample(v), cardFrontWord(v), v.c1, v.c2);
+  frontEx.setAttribute('dir', cardFrontDir(v));
 
   const trEx = document.getElementById('trExample');
-  trEx.innerHTML = colorSplit(BACK_EX(v), BACK_W(v), v.c1, v.c2);
-  trEx.setAttribute('dir', BACK_DIR(v));
+  trEx.innerHTML = colorSplit(cardBackExample(v), cardBackWord(v), v.c1, v.c2);
+  trEx.setAttribute('dir', cardBackDir(v));
 
   document.getElementById('cardCount').textContent = `${idx+1} / ${deck.length}`;
   document.getElementById('cardCat').textContent = activeCat;
@@ -3410,12 +3466,12 @@ function renderCard(){
 document.getElementById('rabbitBtn').onclick = (e) => {
   e.stopPropagation();
   const v = deck[idx]; if(!v) return;
-  speak(FRONT_W(v), FRONT_VOICE(v));
+  speak(cardFrontWord(v), cardFrontVoice(v));
 };
 document.getElementById('turtleBtn').onclick = (e) => {
   e.stopPropagation();
   const v = deck[idx]; if(!v) return;
-  speakSlow(FRONT_W(v), FRONT_VOICE(v));
+  speakSlow(cardFrontWord(v), cardFrontVoice(v));
 };
 
 document.getElementById('card').onclick = () => {
@@ -3423,7 +3479,7 @@ document.getElementById('card').onclick = () => {
   document.getElementById('card').classList.toggle('flipped', flipped);
   const v = deck[idx];
   if(!v) return;
-  if(!flipped){ speak(FRONT_W(v), FRONT_VOICE(v)); }
+  if(!flipped){ speak(cardFrontWord(v), cardFrontVoice(v)); }
   saveCardPosition();
 };
 
@@ -3432,7 +3488,7 @@ document.getElementById('nextBtn').onclick = () => {
   idx = (idx+1) % deck.length;
   renderCard();
   const v = deck[idx];
-  speak(FRONT_W(v), FRONT_VOICE(v));
+  speak(cardFrontWord(v), cardFrontVoice(v));
   spawnShootingStar();
   saveCardPosition();
 };
@@ -3441,7 +3497,7 @@ document.getElementById('prevBtn').onclick = () => {
   idx = (idx-1+deck.length) % deck.length;
   renderCard();
   const v = deck[idx];
-  speak(FRONT_W(v), FRONT_VOICE(v));
+  speak(cardFrontWord(v), cardFrontVoice(v));
   saveCardPosition();
 };
 document.getElementById('shuffleBtn').onclick = () => {
@@ -3526,8 +3582,8 @@ function renderQuiz(){
   }
   const v = quizDeck[qIdx];
   const qWordEl = document.getElementById('quizWord');
-  qWordEl.textContent = FRONT_W(v);
-  qWordEl.setAttribute('dir', FRONT_DIR(v));
+  qWordEl.textContent = cardFrontWord(v);
+  qWordEl.setAttribute('dir', cardFrontDir(v));
   document.getElementById('quizPos').textContent = catName(v.cat) || v.pos;
   document.getElementById('quizCount').textContent = t('quiz_progress')(qIdx+1, quizDeck.length);
   document.getElementById('quizBar').style.width = `${((qIdx+1)/quizDeck.length)*100}%`;
@@ -3561,23 +3617,26 @@ function renderQuiz(){
   }
 
   answered = false;
-  const correctBack = BACK_W(v);
+  const correctBack = cardBackWord(v);
   let opts = [correctBack];
   /* Çeldiriciler artık sorunun KATEGORİSİNDEN seçiliyor — kategori yeterince
      kalabalık değilse seviyeye, o da yetmezse dile geri düşülür. Amaç:
      kelimeyi bilmeyen biri "hangisi tanıdık" diye rastgele doğru cevaba
      basamasın, gerçekten anlamı bilmesi gereksin. */
-  let pool = basePool().filter(x => x.cat===v.cat && BACK_W(x) !== correctBack);
+  const answerWord = x => isNotebookPair(v) ? x.tr : cardBackWord(x);
+  const answerPool = isNotebookPair(v) ? VOCAB.filter(x => x.lang===v.lang) : basePool();
+  const levelPool = isNotebookPair(v) ? answerPool.filter(x => x.level===v.level) : poolForLevel();
+  let pool = answerPool.filter(x => x.cat===v.cat && answerWord(x) !== correctBack);
   if(pool.length < 3){
-    let fallback = poolForLevel().filter(x => BACK_W(x) !== correctBack && !pool.some(p=>BACK_W(p)===BACK_W(x)));
+    let fallback = levelPool.filter(x => answerWord(x) !== correctBack && !pool.some(p=>answerWord(p)===answerWord(x)));
     pool = pool.concat(fallback);
   }
   if(pool.length < 3){
-    let fallback2 = basePool().filter(x => BACK_W(x) !== correctBack && !pool.some(p=>BACK_W(p)===BACK_W(x)));
+    let fallback2 = answerPool.filter(x => answerWord(x) !== correctBack && !pool.some(p=>answerWord(p)===answerWord(x)));
     pool = pool.concat(fallback2);
   }
   for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
-  opts = opts.concat(pool.slice(0,3).map(x=>BACK_W(x)));
+  opts = opts.concat(pool.slice(0,3).map(answerWord));
   for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [opts[i],opts[j]]=[opts[j],opts[i]]; }
 
   opts.forEach(o=>{
@@ -3606,7 +3665,7 @@ function selectAnswer(chosen, correct, btnEl, opts){
     /* Her doğru cevap +1 XP */
     try{ if(typeof window.PR_addXp === 'function') window.PR_addXp(1); }catch(e){}
   } else {
-    mistakes.push({ word: FRONT_W(v), correct: correct, given: chosen });
+    mistakes.push({ word: cardFrontWord(v), correct: correct, given: chosen });
   }
   
   document.getElementById('scorePill').textContent = t('quiz_score')(score);
@@ -3982,6 +4041,11 @@ function nbRenderIfOpen(){
     nbRender();
   }
 }
+/* Dil/arayüz ayarı değiştiğinde açık olan Notlarım listesini aynı anda
+   yeniden kurmak için dışarıya güvenli bir kapı. Çalışma kartları
+   cardsView'da gösterildiğinden burada yalnızca notebookView görünürken
+   render edilir; kullanıcının devam eden kart oturumu bölünmez. */
+window.NB_refreshLocale = nbRenderIfOpen;
 
 function nbEsc(s){
   return String(s==null?'':s).replace(/[&<>"']/g, c => ({
@@ -4546,7 +4610,7 @@ function nbStartStudy(lang, level){
       ex: item.ex || '',
       exTr: item.exTr || '',
       c1: c[0], c2: c[1],
-      _nbId: item.id, _nbSource: item.source, difficulty: item.difficulty || 'orta'
+      _nbPair: true, _nbId: item.id, _nbSource: item.source, difficulty: item.difficulty || 'orta'
     };
   });
   idx = 0; flipped = false;
@@ -4638,7 +4702,7 @@ function nbStartQuiz(lang, difficulty){
       w: item.w, tr: item.tr || '',
       pos: item.source === 'favorite' ? (item.pos || t('nb_favorite_tag')) : t('nb_my_notebook_tag'),
       ex: item.ex || '', exTr: item.exTr || '', c1: c[0], c2: c[1],
-      _nbId: item.id, _nbSource: item.source, difficulty: item.difficulty || 'orta'
+      _nbPair: true, _nbId: item.id, _nbSource: item.source, difficulty: item.difficulty || 'orta'
     };
   });
   activeCat = 'Notlarım';
@@ -4977,7 +5041,7 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.8.2"></script>
+<script src="progress.js?v=1.8.5"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -4994,7 +5058,7 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.8.2"></script>
+<script defer src="pwa.js?v=1.8.5"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
 <script defer src="support-badges.js?v=1.8.2"></script>

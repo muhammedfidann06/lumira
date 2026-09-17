@@ -1,6 +1,6 @@
 # Lumira — Android ekran uyumu
 
-Tarih: 16 Eylül 2026. Web önbellek sürümü: `v1.8.3`.
+Tarih: 16 Eylül 2026. Web önbellek sürümü: `v1.8.5`.
 
 Bu paket web uygulamasını düzenler. APK/AAB veya derlenmiş Android uygulaması değildir.
 Play Console'daki dört önerinin tamamının giderildiği anlamına gelmez; native
@@ -8,7 +8,7 @@ Android projesi gönderilen ZIP'te bulunmuyor.
 
 ## Yükleme
 
-`lumira-android-degisen-dosyalar.zip` içindeki şu dört dosyayı mevcut GitHub
+`lumira-android-degisen-dosyalar-v2.zip` içindeki şu dosyaları mevcut GitHub
 projenizde aynı konumdaki dosyaların yerine birlikte yükleyin:
 
 | Dosya | Değişiklik |
@@ -17,6 +17,8 @@ projenizde aynı konumdaki dosyaların yerine birlikte yükleyin:
 | `pwa.css` | Android'e özel taşma, kart yüksekliği, dar ekran, güvenli alan ve panel düzeltmeleri. |
 | `manifest.json` | PWA'nın dikey yön kilidi kaldırıldı: `orientation: any`. Mevcut native uygulamanın kilidini tek başına kaldırmaz. |
 | `sw.js` | Önbellek sürümü güncellendi; güncellemeden sonraki ilk çevrimdışı açılışta sürüm ekli CSS/JS dosyaları aynı sürümün çekirdek önbelleğinden de bulunabilir. |
+| `progress.js` | Notlarım ve Yazma Pratiği açıkken native arayüz dili değişince ekranı anında yeniler; yazılan metin ve hata sonucu korunur. Kısa Personal metinleri de seçili dile uyar. |
+| `pwa.js` | Dil ayarı değişiminde Personal ana ekranını zorla açmak yerine mevcut Notlarım/Yazma Pratiği akışını yeniler. |
 
 Bu açıklama dosyası isteğe bağlıdır; uygulamanın çalışması için gerekli değildir.
 Tam proje ZIP'i de aynı değişiklikleri içerir. İki paketi birden yüklemek gerekmez.
@@ -36,6 +38,11 @@ Bu işlem için uygulama verilerini veya kullanıcı kayıtlarını silmeyin.
   Kategori ve bilgi paneli açıkken yüzen ayar düğmesi panelin önüne geçmez.
 - Açılış ekranındaki sıralama tablosu üzerinden dikey kaydırma yapılabilir.
 - Önbellek güncellemesi sözlük önbelleğini, yerel kayıtları veya Firebase verilerini silmez.
+- Notlarım'da seçilen kelime dili, ana Kartlar dil çiftinden bağımsız tutulur;
+  kart/quiz etiketi, yazı yönü, örnek cümle ve seslendirme seçilen dile göre kalır.
+- Native arayüz dili Türkçe ↔ İngilizce (ve diğer desteklenen diller) arasında
+  değiştirilince Notlarım ve Yazma Pratiği açık akışı kaybolmaz; yazı metni ile
+  LanguageTool hata sonucu yeni arayüz diliyle yeniden çizilir.
 
 Yerleşim düzeltmeleri `html.lumira-android` altında sınırlandı. Safari/iOS ve
 masaüstündeki mevcut CSS kuralları ve viewport ayarı değiştirilmedi. Manifestteki
@@ -59,12 +66,18 @@ Chromium 153 üzerinde şu Android ekran ölçüleriyle kontroller yapıldı:
 - Eski service worker'dan yeni sürüme geçiş ve ardından çevrimdışı yeniden
   açılış ayrıca denetlendi. Test kaydı ve mevcut sözlük önbelleği korundu.
 - Değişen JavaScript ve JSON dosyalarının sözdizimi kontrol edildi.
+- Native arayüz dili İngilizce → Türkçe → İngilizce çevrilirken Notlarım ve
+  Yazma Pratiği yeniden çizildi; seçili Fransızca metin LanguageTool'a `fr`
+  olarak gönderildi ve hata vurgusu/sonucu kontrol edildi.
+- Global hedef Almanca iken Notlarım'dan İngilizce çalışma başlatıldığında
+  kartın ön etiketi/kelimesi İngilizce, arka etiketi Türkçe kaldı.
 
 Fiziksel Android/iPhone testi ve WebKit çalıştırması bu ortamda yapılamadı.
 Firebase ve dış ses servisleri yerel testlerde engellendi; canlı kullanıcı verisi
 yazılmadı. Hesap senkronizasyonu ve gerçek ses çıkışı bu testlerin kapsamı dışındadır.
-Sözlükler, hesap/Notlarım mantığı, ses kodu ve imza doğrulama dosyaları dahil
-orijinal 82 dosyanın 78'i bayt düzeyinde aynen korundu.
+Sözlük dosyaları, kimlik doğrulama, ayrı ses modülü ve imza doğrulama dosyaları dahil
+orijinal 82 kaynak dosyanın 76'sı bayt düzeyinde aynen korundu; arşivdeki yeni
+açıklama dosyasıyla birlikte toplam 83 dosya bulunur.
 
 ## Play Console'daki öneriler için gereken Android kaynakları
 

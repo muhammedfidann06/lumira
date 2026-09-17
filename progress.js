@@ -19,6 +19,22 @@
   const XP_PER_NEW_WORD = 5;
   const TASK_XP = { t1:25, t2:100, t3:300, t5:200 };
   const TASK5_SECONDS = 60*60;
+  /* Personal modülünde kalan kısa yardımcı metinler I18N'in ana akışından
+     bağımsız render edilir. Native arayüz dili değiştiğinde karışık dil
+     bırakmamak için bu kısa metinler de aynı seçime bağlanır. */
+  const PM_COPY = {
+    tr:{ weakDesc:'En çok yanlış yaptığın kelimeler', fillPlaceholder:'Buraya yaz…', nextWord:'Sonraki Kelime' },
+    en:{ weakDesc:'Words you miss most often', fillPlaceholder:'Type your answer…', nextWord:'Next Word' },
+    de:{ weakDesc:'Wörter, bei denen du am häufigsten Fehler machst', fillPlaceholder:'Hier schreiben…', nextWord:'Nächstes Wort' },
+    ar:{ weakDesc:'الكلمات التي تخطئ فيها غالبًا', fillPlaceholder:'اكتب هنا…', nextWord:'الكلمة التالية' },
+    fr:{ weakDesc:'Les mots que tu rates le plus souvent', fillPlaceholder:'Écris ici…', nextWord:'Mot suivant' },
+    es:{ weakDesc:'Palabras que más sueles fallar', fillPlaceholder:'Escribe aquí…', nextWord:'Siguiente palabra' },
+    ru:{ weakDesc:'Слова, в которых ты чаще всего ошибаешься', fillPlaceholder:'Напиши здесь…', nextWord:'Следующее слово' }
+  };
+  function pmCopy(key, fallback){
+    const lang = window.NATIVE_LANG || 'tr';
+    return (PM_COPY[lang] && PM_COPY[lang][key]) || fallback;
+  }
 
   let currentName = '';
   let currentKey = '';
@@ -1136,7 +1152,7 @@
         '<div class="example" dir="'+BACK_DIR(v)+'">'+(BACK_EX(v) ? escapeHtml(BACK_EX(v)) : '')+'</div></div>'+
         '</div></div>';
       html += '<div class="hint">Çevirmek için karta dokun</div>';
-      html += '<button class="pm-btn primary" id="pmNextCard">Sonraki Kelime</button>';
+      html += '<button class="pm-btn primary" id="pmNextCard">'+pmCopy('nextWord', 'Sonraki Kelime')+'</button>';
       html += '</div>';
       root.innerHTML = html;
       // Karta her tıklandığında SADECE kelime/Türkçe arasında geçiş yapar
@@ -1256,7 +1272,7 @@
     const opts = shuffle([correctBack].concat(distractors.map(d=>BACK_W(d))));
     const barHtml = '<div class="pm-session-bar"><span>'+(window.t?window.t('pm_question_label'):'Soru')+' '+(listenIdx+1)+' / '+batch.length+'</span><span>'+(window.t?window.t('pm_step_listening')(3,4):'Adım 3/4 - Dinleme')+'</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((listenIdx/batch.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
-      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">🎧 '+(window.t?window.t('pm_listening_prompt'):'Duydugun kelimenin anlami ne?')+'</div><div class="pm-word" style="font-size:34px;">🎙️</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="Hizli tekrar dinle">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle" title="Yavas tekrar dinle">🐢</button><span class="speak-lbl">'+t('slow_speed')+'</span></div></div><div class="speak-caption">'+t('tap_to_listen')+'</div></div>'+
+      '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">🎧 '+(window.t?window.t('pm_listening_prompt'):'Duydugun kelimenin anlami ne?')+'</div><div class="pm-word" style="font-size:34px;">🎙️</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="'+(window.t?window.t('normal_speed'):'Hızlı tekrar dinle')+'">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle" title="'+(window.t?window.t('slow_speed'):'Yavaş dinle')+'">🐢</button><span class="speak-lbl">'+t('slow_speed')+'</span></div></div><div class="speak-caption">'+t('tap_to_listen')+'</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
     const playFast = () => pmSpeak(FRONT_W(v), FRONT_VOICE(v), false);
     const playSlow = () => pmSpeak(FRONT_W(v), FRONT_VOICE(v), true);
@@ -1357,9 +1373,9 @@
       '<div class="pm-fill-row" id="pmFillRow" dir="'+FRONT_DIR(v)+'">'+escapeHtml(blanked.before)+'<b>_____</b>'+escapeHtml(blanked.after)+'</div>'+
       '<div class="pm-word-sub" style="margin-top:10px;">'+escapeHtml(BACK_EX(v)||BACK_W(v)||'')+'</div>'+
       '<div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit" title="Normal hızda dinle">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle" title="Yavaş dinle">🐢</button><span class="speak-lbl">'+t('slow_speed')+'</span></div></div><div class="speak-caption">'+t('tap_to_listen')+'</div></div>'+
-      '<input type="text" class="pm-fill-input" id="pmFillInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Buraya yaz…" style="margin-bottom:12px;">'+
+      '<input type="text" class="pm-fill-input" id="pmFillInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+pmCopy('fillPlaceholder','Buraya yaz…')+'" style="margin-bottom:12px;">'+
       '<div class="pm-fill-fb" id="pmFillFb"></div>'+
-      '<button class="pm-btn primary" id="pmFillCheck">Kontrol Et</button>'+
+      '<button class="pm-btn primary" id="pmFillCheck">'+(window.t?window.t('wp_check_btn'):'Kontrol Et')+'</button>'+
       '<button class="pm-btn primary" id="pmFillNext" style="display:none;">Devam</button></div>';
 
     document.getElementById('pmRabbit').onclick = () => pmSpeak(FRONT_EX(v), FRONT_VOICE(v), false);
@@ -1495,7 +1511,7 @@
     const distractors = pickCategoryDistractors(v, 3);
     const correctBack = BACK_W(v);
     const opts = shuffle([correctBack].concat(distractors.map(d=>BACK_W(d))));
-    const barHtml = '<div class="pm-session-bar"><span>Genel Tekrar ('+reviewMode.group+')</span><span>'+(reviewMode.idx+1)+' / '+reviewMode.order.length+'</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((reviewMode.idx/reviewMode.order.length)*100)+'%"></div></div>';
+    const barHtml = '<div class="pm-session-bar"><span>'+(window.t?window.t('pm_general_review'):'Genel Tekrar')+' ('+reviewMode.group+')</span><span>'+(reviewMode.idx+1)+' / '+reviewMode.order.length+'</span></div><div class="pm-bar" style="margin-bottom:14px;"><div class="pm-bar-fill" style="width:'+Math.round((reviewMode.idx/reviewMode.order.length)*100)+'%"></div></div>';
     root.innerHTML = '<div class="pm-root">'+barHtml+
       '<div class="pm-study-card" style="cursor:default;"><div class="pm-mode-tag">'+t('quiz_prompt')+'</div><div class="pm-word" dir="'+FRONT_DIR(v)+'">'+escapeHtml(FRONT_W(v))+'</div><div class="pm-word-sub">'+escapeHtml(((typeof catName==='function')?catName(v.cat):v.cat)||v.pos||'')+'</div><div class="speak-controls"><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmRabbit">🔊</button><span class="speak-lbl">'+t('normal_speed')+'</span></div><div class="speak-item"><button type="button" class="speak-icon-btn" id="pmTurtle">🐢</button><span class="speak-lbl">'+t('slow_speed')+'</span></div></div><div class="speak-caption">'+t('tap_to_listen')+'</div></div>'+
       '<div class="pm-options" id="pmOptions"></div></div>';
@@ -1549,7 +1565,7 @@
     persistMeta();
     const titleEyebrow = isDaily ? (window.t?window.t('pm_daily_review_completed'):'Günlük Tekrar Tamamlandı') : (window.t?window.t('pm_general_review_completed'):'Genel Tekrar Tamamlandı');
     const titleIcon = isDaily ? '📋' : '🔁';
-    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">'+titleEyebrow+'</div><div class="pm-title">'+titleIcon+' '+reviewMode.group+'</div><div class="pm-sub">'+stats.correct+' / '+stats.total+' doğru'+(isDaily ? (' · +'+(stats.total*2)+' XP') : '')+'</div></div>';
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">'+titleEyebrow+'</div><div class="pm-title">'+titleIcon+' '+reviewMode.group+'</div><div class="pm-sub">'+(window.t?window.t('quiz_final_score')(stats.correct, stats.total):(stats.correct+' / '+stats.total+' doğru'))+(isDaily ? (' · +'+(stats.total*2)+' XP') : '')+'</div></div>';
     if(stats.wrong>0){
       html += '<div class="pm-weak-meta" style="text-align:center;margin-bottom:14px;">'+(window.t?window.t('pm_returned_to_unknown')(stats.wrong):(stats.wrong+' kelime bilinmiyor listesine geri döndü, normal çalışmada tekrar karşına çıkacak.'))+'</div>';
     }
@@ -1562,7 +1578,7 @@
   function renderKnownWords(){
     pmInWritingFlow = false;
     const list = poolForActiveLang().filter(v=>{ const r=getRecord(v); return r && r.known; });
-    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">✅ '+t('pm_known')+'</div><div class="pm-sub">'+list.length+' kelime ('+(window.isReversed && window.isReversed() ? ((window.t?window.t('lang_names').tr:'Türkçe')) : ((typeof nbLangLabel==='function')?nbLangLabel(activeLang):LANGS[activeLang].label))+')</div></div>';
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">✅ '+t('pm_known')+'</div><div class="pm-sub">'+(window.t?window.t('nb_word_count')(list.length):(list.length+' kelime'))+' ('+(window.isReversed && window.isReversed() ? ((window.t?window.t('lang_names').tr:'Türkçe')) : ((typeof nbLangLabel==='function')?nbLangLabel(activeLang):LANGS[activeLang].label))+')</div></div>';
     if(list.length===0){
       html += '<div class="pm-empty">'+(window.t?window.t('pm_no_known_words'):'Henüz öğrenilmiş kelime yok - çalışmaya başla!')+'</div>';
     } else {
@@ -1587,7 +1603,7 @@
     const lookup = {};
     VOCAB.forEach(v=>{ lookup[wordKeyFor(v)] = v; });
 
-    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">📉 '+(window.t?t('pm_weak'):'Hata Yaptığın Kelimeler')+'</div><div class="pm-sub">En çok yanlış yaptığın kelimeler</div></div>';
+    let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">📉 '+(window.t?t('pm_weak'):'Hata Yaptığın Kelimeler')+'</div><div class="pm-sub">'+pmCopy('weakDesc','En çok yanlış yaptığın kelimeler')+'</div></div>';
     if(entries.length===0){
       html += '<div class="pm-empty">'+(window.t?window.t('pm_no_mistakes'):'Hic hata yapmamissin - harika! 🎉')+'</div>';
     } else {
@@ -1627,6 +1643,8 @@
   let wpLang = null;
   let wpLevel = null;
   let wpBusy = false;
+  let wpLocalePending = false;
+  let wpLastResult = null;
 
   function wpFindLang(code){
     const w = WP_LANGS.find(x=>x.code===code);
@@ -1663,7 +1681,7 @@
     html += '<button class="pm-btn small" id="wpBackHomeBtn" style="margin-top:16px;">'+(window.t?window.t('wp_back_to_notebook'):'← Notlarım\'a Dön')+'</button></div>';
     root.innerHTML = html;
     root.querySelectorAll('[data-wp-lang]').forEach(el=>{
-      el.onclick = () => { wpLang = el.getAttribute('data-wp-lang'); wpLevel = null; renderWritingLevelSelect(); };
+      el.onclick = () => { wpLang = el.getAttribute('data-wp-lang'); wpLevel = null; wpLastResult = null; renderWritingLevelSelect(); };
     });
     document.getElementById('wpBackHomeBtn').onclick = () => { const t = document.getElementById('tabNotebook'); if(t) t.click(); };
   }
@@ -1685,7 +1703,7 @@
     html += '<button class="pm-btn small" id="wpBackLangBtn" style="margin-top:16px;">'+(window.t?window.t('nb_back_change_lang'):'← Dili Değiştir')+'</button></div>';
     root.innerHTML = html;
     root.querySelectorAll('.pm-lang-card').forEach(el=>{
-      el.onclick = () => { wpLevel = el.getAttribute('data-lvl'); renderWritingPractice(); };
+      el.onclick = () => { wpLevel = el.getAttribute('data-lvl'); wpLastResult = null; renderWritingPractice(); };
     });
     document.getElementById('wpBackLangBtn').onclick = renderWritingLangSelect;
   }
@@ -1715,6 +1733,28 @@
     return { origHtml, corrected, issuesHtml, count };
   }
 
+  /* Sonucu ayrı bir render adımında tutuyoruz. Native arayüz dili
+     değiştiğinde HTML kabuğu yenilenirken metin ve hata vurguları korunur;
+     dinleme düğmesi de yeni DOM'a yeniden bağlanır. */
+  function wpRenderResult(resultBox, text, lang, views){
+    if(!resultBox || !lang || !views) return;
+    if(views.count === 0){
+      resultBox.innerHTML = '<div class="wp-clean-msg">'+(window.t?window.t('wp_clean_msg'):'✅ Hata bulunamadı, harika bir metin yazmışsın!')+'</div>'+
+        '<div class="wp-section-label">'+(window.t?window.t('wp_your_text'):'Metnin')+'</div><div class="wp-corrected">'+escapeHtml(text)+'</div>'+
+        '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">'+(window.t?window.t('wp_listen'):'🔊 Dinle')+'</button></div>';
+    } else {
+      resultBox.innerHTML =
+        '<div class="wp-section-label">'+(window.t?window.t('wp_errors_found')(views.count):('Bulunan Hatalar ('+views.count+')'))+'</div>'+
+        '<div class="wp-original">'+views.origHtml+'</div>'+
+        '<div class="wp-section-label">'+(window.t?window.t('wp_explanations'):'Açıklamalar')+'</div>'+views.issuesHtml+
+        '<div class="wp-section-label">'+(window.t?window.t('wp_corrected_text'):'Düzeltilmiş Metin')+'</div>'+
+        '<div class="wp-corrected">'+escapeHtml(views.corrected)+'</div>'+
+        '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">'+(window.t?window.t('wp_listen'):'🔊 Dinle')+'</button></div>';
+    }
+    const listenBtn = document.getElementById('wpListenBtn');
+    if(listenBtn) listenBtn.onclick = () => { speak(views.count ? views.corrected : text, lang.tts); };
+  }
+
   function wpRunCheck(){
     if(wpBusy) return;
     const lang = wpFindLang(wpLang);
@@ -1723,14 +1763,17 @@
     const text = ta ? ta.value.trim() : '';
     const resultBox = document.getElementById('wpResult');
     if(!text){
+      wpLastResult = null;
       if(resultBox) resultBox.innerHTML = '<div class="wp-error">'+(window.t?window.t('wp_empty_text'):'Önce bir şeyler yaz, sonra kontrol edelim 🙂')+'</div>';
       return;
     }
     if(text.length > 4000){
+      wpLastResult = null;
       if(resultBox) resultBox.innerHTML = '<div class="wp-error">'+(window.t?window.t('wp_too_long'):'Metin çok uzun (max. 4000 karakter). Daha kısa bir bölüm dene.')+'</div>';
       return;
     }
 
+    wpLastResult = null;
     wpBusy = true;
     const btn = document.getElementById('wpCheckBtn');
     if(btn){ btn.disabled = true; btn.textContent = (window.t?window.t('wp_checking'):'Kontrol ediliyor...'); }
@@ -1757,35 +1800,21 @@
         });
       }
       const views = wpBuildViews(text, matches);
-      if(!resultBox) return;
-      if(views.count === 0){
-        resultBox.innerHTML = '<div class="wp-clean-msg">'+(window.t?window.t('wp_clean_msg'):'✅ Hata bulunamadı, harika bir metin yazmışsın!')+'</div>'+
-          '<div class="wp-section-label">'+(window.t?window.t('wp_your_text'):'Metnin')+'</div><div class="wp-corrected">'+escapeHtml(text)+'</div>'+
-          '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">'+(window.t?window.t('wp_listen'):'🔊 Dinle')+'</button></div>';
-      } else {
-        resultBox.innerHTML =
-          '<div class="wp-section-label">'+(window.t?window.t('wp_errors_found')(views.count):('Bulunan Hatalar ('+views.count+')'))+'</div>'+
-          '<div class="wp-original">'+views.origHtml+'</div>'+
-          '<div class="wp-section-label">'+(window.t?window.t('wp_explanations'):'Açıklamalar')+'</div>'+views.issuesHtml+
-          '<div class="wp-section-label">'+(window.t?window.t('wp_corrected_text'):'Düzeltilmiş Metin')+'</div>'+
-          '<div class="wp-corrected">'+escapeHtml(views.corrected)+'</div>'+
-          '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">'+(window.t?window.t('wp_listen'):'🔊 Dinle')+'</button></div>';
-      }
-      const listenBtn = document.getElementById('wpListenBtn');
-      if(listenBtn){
-        listenBtn.onclick = () => { speak(views.count ? views.corrected : text, lang.tts); };
-      }
+      wpLastResult = { text:text, langCode:lang.code, views:views };
+      wpRenderResult(resultBox, text, lang, views);
     })
     .catch((err)=>{
       console.error('[Yazma Pratiği] Kontrol hatası:', err);
       const msg = (err && err.wpStatus)
         ? (window.t ? window.t('wp_service_error')(err.wpStatus) : ('Servis şu an yanıt vermiyor (HTTP '+err.wpStatus+'). Biraz sonra tekrar dene.'))
         : (window.t ? window.t('wp_generic_error') : 'Kontrol sırasında bir sorun oluştu. İnternet bağlantını kontrol edip biraz sonra tekrar dene.');
+      wpLastResult = null;
       if(resultBox) resultBox.innerHTML = '<div class="wp-error">'+escapeHtml(msg)+'</div>';
     })
     .finally(()=>{
       wpBusy = false;
       if(btn){ btn.disabled = false; btn.textContent = (window.t?window.t('wp_check_btn'):'Kontrol Et'); }
+      if(wpLocalePending){ wpLocalePending = false; refreshLocale(); }
     });
   }
 
@@ -1846,6 +1875,56 @@
   };
 
   window.PM_open = function(){ openPersonalMode(); };
+
+  /* Native arayüz dili ayarlardan değiştirildiğinde Notlarım ve Yazma
+     Pratiği DOM'u ana sayfa gibi otomatik çevrilmez; bu iki ekranı da açık
+     akışı bozmadan yenile. Yazma ekranındaki metni koru, sonuç panelini de
+     kaybetme — kullanıcı sadece arayüz dilini değiştirmiş olur. */
+  function refreshLocale(){
+    try{
+      const nbTab = document.getElementById('tabNotebook');
+      const nbView = document.getElementById('notebookView');
+      if(nbTab && nbTab.classList.contains('active') && nbView && nbView.style.display !== 'none'){
+        if(window.NB_refreshLocale) window.NB_refreshLocale();
+        return;
+      }
+
+      const personalTab = document.getElementById('tabPersonal');
+      if(!personalTab || !personalTab.classList.contains('active') || !root || root.style.display === 'none') return;
+
+      if(pmInWritingFlow){
+        ['langBox','langPair','levelBox','chips'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+        if(wpBusy){ wpLocalePending = true; return; }
+        const oldInput = document.getElementById('wpInput');
+        const oldValue = oldInput ? oldInput.value : '';
+        const oldResult = document.getElementById('wpResult');
+        const hadResult = !!(oldResult && oldResult.innerHTML.trim());
+        if(oldInput) renderWritingPractice();
+        else if(root.querySelector('[data-lvl]')) renderWritingLevelSelect();
+        else renderWritingLangSelect();
+        const nextInput = document.getElementById('wpInput');
+        if(nextInput){
+          nextInput.value = oldValue;
+          const counter = document.getElementById('wpCounter');
+          if(counter) counter.textContent = oldValue.length + ' / 4000';
+        }
+        const nextResult = document.getElementById('wpResult');
+        const freshLang = wpFindLang(wpLang);
+        if(nextResult && hadResult && wpLastResult && freshLang && wpLastResult.langCode === freshLang.code){
+          wpRenderResult(nextResult, wpLastResult.text, freshLang, wpLastResult.views);
+        }
+      }else if(dataLoaded){
+        renderHome();
+      }
+    }catch(e){ console.error('[Lumira] Dil arayüzü yenilenemedi:', e); }
+  }
+  window.PM_refreshLocale = refreshLocale;
+  window.onlumiraLocaleChange = function(){ refreshLocale(); };
+  window.addEventListener('lumira:localechange', function(){
+    /* setLangPair sözlük yüklemesini tamamladıktan sonra olayı gönderir;
+       mikro görev, aynı turdaki DOM güncellemelerinin bitmesini garanti eder. */
+    setTimeout(refreshLocale, 0);
+  });
 
   /* Notlarım sekmesinden doğrudan Yazma Pratiği akışını açmak için:
      Kişisel sekmesine geçer (isim/veri kontrolü dahil) ve Ana Sayfa

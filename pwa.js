@@ -1389,6 +1389,7 @@ function openLanguageSettings() {
     go.textContent = t('save_apply');
     go.onclick = function () {
       go.disabled = true; go.textContent = t('applying');
+      var preserveFlow = !!document.querySelector('#tabPersonal.active, #tabNotebook.active');
       var p = window.setLangPair ? window.setLangPair(native, target) : Promise.resolve();
       p.then(function () {
         try {
@@ -1396,17 +1397,22 @@ function openLanguageSettings() {
           if (window.renderLangPair) window.renderLangPair();
           if (window.rebuildLevelBox) window.rebuildLevelBox();
           if (window.rebuildChips) window.rebuildChips();
-          if (window.applyFilter) window.applyFilter();
-          if (document.querySelector('.pm-root') && window.PM_open) window.PM_open();
+          if (!preserveFlow && window.applyFilter) window.applyFilter();
+          /* Kişisel/Notlarım/Yazma Pratiği açıkken PM_open() çağrısı her
+             seferinde Personal ana ekranını yeniden kurup mevcut akışı
+             (özellikle yazma metnini) sıfırlıyordu. Yeni locale kapısı açık
+             ekranı kendi türünde yeniler; eski sürümle uyumluluk için PM_open
+             yalnızca bu kapı bulunamazsa yedek olarak kullanılır. */
+          if(window.PM_refreshLocale) window.PM_refreshLocale();
+          else if (document.querySelector('.pm-root') && window.PM_open) window.PM_open();
+          if(preserveFlow) ['langBox','langPair','levelBox','chips'].forEach(function(id){ var el = document.getElementById(id); if(el) el.style.display = 'none'; });
         } catch (e) { logError(e); }
         toast(window.t?window.t('lang_setting_updated_toast'):'🌐 Dil ayarı güncellendi', { kind: 'good' });
         settingsOpen && settingsOpen.close && settingsOpen.close();
         api.close();
-        /* Yeni dil seçimi TÜM arayüzü (statik metinler dahil) etkiliyor;
-           her köşenin doğru dilde göründüğünden emin olmanın en güvenilir
-           yolu sayfayı tazelemek. Toast'ı görebilsin diye kısa bir gecikme
-           bırakılıyor. */
-        setTimeout(function(){ location.reload(); }, 700);
+        /* Notlarım/Kişisel akışını ve yazılan metni canlı yenilemeyle koru.
+           Ana kart ekranında mevcut yeniden yükleme davranışını sürdür. */
+        if(!preserveFlow) setTimeout(function(){ location.reload(); }, 700);
       }).catch(function () {
         go.disabled = false; go.textContent = t('save_apply');
         toast(window.t?window.t('lang_dict_load_failed_toast'):'⚠️ Sözlük yüklenemedi, tekrar dene', { kind: 'bad' });
