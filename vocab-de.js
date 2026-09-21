@@ -65,6 +65,23 @@ add("de","A1","Zamirler","es","o (nötr)","Pronomen","Es regnet heute.","Bugün 
 add("de","A1","Zamirler","ihr","siz","Pronomen","Ihr seid meine Freunde.","Siz benim arkadaşlarımsınız.");
 add("de","A1","Zamirler","mein","benim","Pronomen","Das ist mein Buch.","Bu benim kitabım.");
 add("de","A1","Zamirler","dein","senin","Pronomen","Wie heißt dein Bruder?","Erkek kardeşinin adı ne?");
+/* Kişi zamirlerinin Akkusativ/Dativ çekimleri (Nominativ formları yukarıda
+   zaten var: ich/du/er/sie/es/wir/ihr/sie). A1-B1 arasında dağıtılmıştır. */
+add("de","A1","Zamirler","mich","beni","Pronomen (Akkusativ)","Er sieht mich nicht.","O beni görmüyor.");
+add("de","A1","Zamirler","mir","bana","Pronomen (Dativ)","Er hilft mir immer.","O bana her zaman yardım eder.");
+add("de","A1","Zamirler","dich","seni","Pronomen (Akkusativ)","Ich liebe dich sehr.","Seni çok seviyorum.");
+add("de","A1","Zamirler","dir","sana","Pronomen (Dativ)","Ich gebe dir das Buch.","Sana kitabı veriyorum.");
+add("de","A1","Zamirler","ihn","onu (erkek)","Pronomen (Akkusativ)","Ich sehe ihn jeden Tag.","Onu her gün görüyorum.");
+add("de","A1","Zamirler","ihm","ona (erkek/nötr)","Pronomen (Dativ)","Ich glaube ihm nicht.","Ona inanmıyorum.");
+add("de","A2","Zamirler","sie (Akkusativ)","onu (kadın)","Pronomen (Akkusativ)","Ich kenne sie schon lange.","Onu uzun zamandır tanıyorum.");
+add("de","A2","Zamirler","ihr (Dativ)","ona (kadın)","Pronomen (Dativ)","Ich schreibe ihr einen Brief.","Ona bir mektup yazıyorum.");
+add("de","A2","Zamirler","es (Akkusativ)","onu (nötr)","Pronomen (Akkusativ)","Ich mache es sofort.","Onu hemen yapıyorum.");
+add("de","A2","Zamirler","uns (Akkusativ)","bizi","Pronomen (Akkusativ)","Sie besucht uns morgen.","O yarın bizi ziyaret ediyor.");
+add("de","A2","Zamirler","uns (Dativ)","bize","Pronomen (Dativ)","Er zeigt uns die Stadt.","O bize şehri gösteriyor.");
+add("de","A2","Zamirler","euch (Akkusativ)","sizi","Pronomen (Akkusativ)","Ich sehe euch später.","Sizi daha sonra görürüm.");
+add("de","A2","Zamirler","euch (Dativ)","size","Pronomen (Dativ)","Ich erkläre euch die Regel.","Size kuralı açıklıyorum.");
+add("de","B1","Zamirler","sie (Akkusativ Plural)","onları","Pronomen (Akkusativ)","Ich rufe sie morgen an.","Onları yarın ararım.");
+add("de","B1","Zamirler","ihnen","onlara","Pronomen (Dativ)","Ich danke ihnen für die Hilfe.","Yardımları için onlara teşekkür ederim.");
 add("de","A1","Sayılar","zwei","iki","Zahl","Ich habe zwei Kinder.","İki çocuğum var.");
 add("de","A1","Sayılar","drei","üç","Zahl","Wir warten seit drei Stunden.","Üç saattir bekliyoruz.");
 add("de","A1","Sayılar","vier","dört","Zahl","Der Tisch hat vier Stühle.","Masanın dört sandalyesi var.");

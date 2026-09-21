@@ -1389,7 +1389,16 @@ function openLanguageSettings() {
     go.textContent = t('save_apply');
     go.onclick = function () {
       go.disabled = true; go.textContent = t('applying');
-      var preserveFlow = !!document.querySelector('#tabPersonal.active, #tabNotebook.active');
+      /* Sadece gerçekten kaybedilecek bir şey varsa (Yazma Pratiği'ne yazılmış
+         metin ya da az önce gelen bir sonuç) sayfa yenilenmez; onun dışında
+         -Notlarım dahil- her yerde güvenilir olan tam sayfa yenilemesi
+         kullanılır, çünkü dil arayüzünü HER köşede tutarlı göstermenin en
+         sağlam yolu budur. */
+      var wpInputEl = document.getElementById('wpInput');
+      var hasWpContent = !!(wpInputEl && wpInputEl.value.trim());
+      var wpResultEl = document.getElementById('wpResult');
+      var hasWpResult = !!(wpResultEl && wpResultEl.innerHTML.trim());
+      var preserveFlow = hasWpContent || hasWpResult;
       var p = window.setLangPair ? window.setLangPair(native, target) : Promise.resolve();
       p.then(function () {
         try {
@@ -1410,8 +1419,10 @@ function openLanguageSettings() {
         toast(window.t?window.t('lang_setting_updated_toast'):'🌐 Dil ayarı güncellendi', { kind: 'good' });
         settingsOpen && settingsOpen.close && settingsOpen.close();
         api.close();
-        /* Notlarım/Kişisel akışını ve yazılan metni canlı yenilemeyle koru.
-           Ana kart ekranında mevcut yeniden yükleme davranışını sürdür. */
+        /* Yazma Pratiği'nde kaybedilecek bir metin/sonuç yoksa (Notlarım ve
+           Kartlar/Kişisel dahil HER YERDE) güvenilir tam sayfa yenilemesi
+           kullanılır; sadece gerçek bir taslak varsa canlı yenilemeyle
+           korunur (yukarıdaki preserveFlow). */
         if(!preserveFlow) setTimeout(function(){ location.reload(); }, 700);
       }).catch(function () {
         go.disabled = false; go.textContent = t('save_apply');
@@ -2227,7 +2238,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.8.2',
+  version: '1.8.6',
   isStandalone: function () { return isStandalone; }
 };
 
