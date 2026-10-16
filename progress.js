@@ -1627,12 +1627,13 @@
      kural kapsamı). API anahtarı GEREKMEZ, kurulum istemez.
      A1/A2'de sadece gramer/yazım/noktalama/büyük-küçük harf hataları
      gösterilir; B1/B2'de üslup (STYLE) önerileri de eklenir.
-     Not: Bu ücretsiz, kural tabanlı bir servistir - bir dil modeli
+     Not: Türkçe kontrolü servis tarafından desteklenmiyor.
+     Bu ücretsiz, kural tabanlı bir servistir - bir dil modeli
      (AI) kadar derin anlam/bağlam analizi yapmaz, ama anahtarsız ve
      anında çalışır. Türkçe ve Arapça'da kapsamı diğer dillere göre
      daha dar olabilir. ========================================= */
   const WP_LANGS = [
-    { code:'tr', tts:'tr-TR', lt:'tr' },
+    { code:'tr', tts:'tr-TR', lt:null },
     { code:'en', tts:'en-US', lt:'en-US' },
     { code:'de', tts:'de-DE', lt:'de-DE' },
     { code:'ar', tts:'ar-SA', lt:'ar'    },
@@ -1798,6 +1799,43 @@
     if(listenBtn) listenBtn.onclick = () => { speak(views.count ? views.corrected : text, lang.tts); };
   }
 
+  const WP_ERRORS = {
+    tr:{unsupported:'Seçilen dil için otomatik yazım kontrolü henüz desteklenmiyor. Metnini burada yazabilirsin.',timeout:'Yazım kontrol servisi zamanında yanıt vermedi. Tekrar deneyebilirsin.',network:'Yazım kontrol servisine ulaşılamadı. Biraz sonra tekrar dene.',offline:'Çevrimdışısın. Kontrol için internete bağlan.',format:'Kontrol servisinden geçerli bir sonuç alınamadı. Tekrar dene.'},
+    en:{unsupported:'Automatic checking is not yet supported for this language. You can still write here.',timeout:'The checking service timed out. Please try again.',network:'The checking service could not be reached. Please try again later.',offline:'You are offline. Connect to check your text.',format:'The checking service returned an invalid result. Please try again.'},
+    de:{unsupported:'Für diese Sprache ist die automatische Prüfung noch nicht verfügbar. Du kannst hier weiter schreiben.',timeout:'Der Prüfdienst hat nicht rechtzeitig geantwortet. Versuche es erneut.',network:'Der Prüfdienst ist nicht erreichbar. Versuche es später erneut.',offline:'Du bist offline. Verbinde dich zum Prüfen mit dem Internet.',format:'Der Prüfdienst hat kein gültiges Ergebnis geliefert. Versuche es erneut.'},
+    ar:{unsupported:'التدقيق التلقائي غير مدعوم لهذه اللغة بعد. يمكنك الكتابة هنا.',timeout:'انتهت مهلة خدمة التدقيق. حاول مجدداً.',network:'تعذر الوصول إلى خدمة التدقيق. حاول لاحقاً.',offline:'أنت غير متصل. اتصل بالإنترنت لتدقيق النص.',format:'لم ترجع خدمة التدقيق نتيجة صالحة. حاول مجدداً.'},
+    fr:{unsupported:'La vérification automatique ne prend pas encore en charge cette langue. Tu peux écrire ici.',timeout:'Le service de correction a mis trop de temps à répondre. Réessaie.',network:'Le service de correction est inaccessible. Réessaie plus tard.',offline:'Tu es hors ligne. Connecte-toi pour vérifier ton texte.',format:'Le service de correction a renvoyé un résultat invalide. Réessaie.'},
+    es:{unsupported:'La revisión automática aún no admite este idioma. Puedes escribir aquí.',timeout:'El servicio de revisión tardó demasiado. Inténtalo de nuevo.',network:'No se pudo conectar con el servicio de revisión. Inténtalo más tarde.',offline:'Estás sin conexión. Conéctate para revisar el texto.',format:'El servicio de revisión devolvió un resultado no válido. Inténtalo de nuevo.'},
+    ru:{unsupported:'Автоматическая проверка этого языка пока не поддерживается. Здесь можно писать текст.',timeout:'Сервис проверки не ответил вовремя. Попробуй ещё раз.',network:'Не удалось связаться с сервисом проверки. Попробуй позже.',offline:'Нет подключения. Подключись к интернету для проверки.',format:'Сервис проверки вернул некорректный результат. Попробуй ещё раз.'}
+  };
+  function wpErrorMessage(error){
+    const copy = WP_ERRORS[window.NATIVE_LANG] || WP_ERRORS.en;
+    if(error && error.wpStatus) return window.t ? window.t('wp_service_error')(error.wpStatus) : copy.network;
+    if(error && error.name === 'AbortError') return copy.timeout;
+    if(error && error.wpKind) return copy[error.wpKind] || copy.network;
+    return navigator.onLine === false ? copy.offline : copy.network;
+  }
+  async function wpRequestCheck(text, lang){
+    if(!lang.lt){ const e = new Error('unsupported-language'); e.wpKind = 'unsupported'; throw e; }
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try{
+      // motherTongue is for false-friend rules, NOT explanation translation.
+      // Sending unsupported "tr" here makes even a German check fail with HTTP 400.
+      const response = await fetch('https://api.languagetool.org/v2/check', {
+        method:'POST', signal:controller.signal,
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:'text=' + encodeURIComponent(text) + '&language=' + encodeURIComponent(lang.lt) + '&level=picky'
+      });
+      if(!response.ok){ const e = new Error('check-service-error'); e.wpStatus = response.status; throw e; }
+      let data;
+      try{ data = await response.json(); }
+      catch(cause){ if(cause.name === 'AbortError') throw cause; const e = new Error('invalid-response'); e.wpKind = 'format'; throw e; }
+      if(!data || !Array.isArray(data.matches)){ const e = new Error('invalid-response'); e.wpKind = 'format'; throw e; }
+      return data.matches;
+    }finally{ clearTimeout(timeout); }
+  }
+
   function wpRunCheck(){
     if(wpBusy) return;
     const lang = wpFindLang(wpLang);
@@ -1822,36 +1860,23 @@
     if(btn){ btn.disabled = true; btn.textContent = (window.t?window.t('wp_checking'):'Kontrol ediliyor...'); }
     if(resultBox) resultBox.innerHTML = '<div class="wp-loading">'+(window.t?window.t('wp_loading_msg'):'📝 Metnin kontrol ediliyor, birkaç saniye sürebilir...')+'</div>';
 
-    fetch('https://api.languagetool.org/v2/check', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'text=' + encodeURIComponent(text) + '&language=' + encodeURIComponent(lang.lt) + '&motherTongue=' + encodeURIComponent(window.NATIVE_LANG || 'tr') + '&level=picky'
-    })
-    .then(r => r.json().then(data => ({ ok: r.ok, status: r.status, data: data })))
-    .then(async res => {
-      if(!res.ok){
-        console.error('[Yazma Pratiği] LanguageTool hatası:', res.status, res.data);
-        const e = new Error((res.data && res.data.message) || ('HTTP ' + res.status));
-        e.wpStatus = res.status;
-        throw e;
-      }
-      let matches = Array.isArray(res.data.matches) ? res.data.matches : [];
+    wpRequestCheck(text, lang)
+    .then(async matches => {
       if(!wpLevelShowsStyle(wpLevel)){
         matches = matches.filter(m=>{
           const catId = m.rule && m.rule.category && m.rule.category.id;
           return catId !== 'STYLE' && catId !== 'REDUNDANCY';
         });
       }
-      await wpLocalizeMessages(matches, lang.code);
+      // A translation failure must never discard successful grammar results.
+      try{ await wpLocalizeMessages(matches, lang.code); }catch(e){}
       const views = wpBuildViews(text, matches);
       wpLastResult = { text:text, langCode:lang.code, matches:matches, views:views };
       wpRenderResult(resultBox, text, lang, views);
     })
     .catch((err)=>{
       console.error('[Yazma Pratiği] Kontrol hatası:', err);
-      const msg = (err && err.wpStatus)
-        ? (window.t ? window.t('wp_service_error')(err.wpStatus) : ('Servis şu an yanıt vermiyor (HTTP '+err.wpStatus+'). Biraz sonra tekrar dene.'))
-        : (window.t ? window.t('wp_generic_error') : 'Kontrol sırasında bir sorun oluştu. İnternet bağlantını kontrol edip biraz sonra tekrar dene.');
+      const msg = wpErrorMessage(err);
       wpLastResult = null;
       if(resultBox) resultBox.innerHTML = '<div class="wp-error">'+escapeHtml(msg)+'</div>';
     })
@@ -1883,6 +1908,10 @@
     document.getElementById('wpBackHomeBtn').onclick = () => { const t = document.getElementById('tabNotebook'); if(t) t.click(); };
     document.getElementById('wpBackLevelBtn').onclick = renderWritingLevelSelect;
     document.getElementById('wpCheckBtn').onclick = wpRunCheck;
+    if(!lang.lt){
+      document.getElementById('wpCheckBtn').disabled = true;
+      document.getElementById('wpResult').textContent = wpErrorMessage({wpKind:'unsupported'});
+    }
     const ta = document.getElementById('wpInput');
     const counter = document.getElementById('wpCounter');
     if(ta && counter){

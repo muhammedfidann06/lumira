@@ -24,46 +24,84 @@
   function prepareSession() {
     try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch(e) {}
   }
-  function voiceMode() {
-    try { return localStorage.getItem('lumira_voice_mode') === 'online' ? 'online' : 'device'; }
-    catch(e) { return 'device'; }
-  }
-  function reportFailure() {
-    var messages = {
-      tr:'Ses başlatılamadı. Medya sesini kontrol edip ses düğmesine tekrar dokun.',
-      en:'Audio could not start. Check your media volume and tap the audio button again.',
-      de:'Audio konnte nicht starten. Prüfe die Medienlautstärke und tippe erneut auf die Audiotaste.',
-      fr:'Le son n’a pas démarré. Vérifie le volume et réessaie.',
-      es:'No se pudo iniciar el audio. Revisa el volumen y vuelve a pulsar.',
-      ru:'Не удалось включить звук. Проверь громкость и нажми ещё раз.',
-      ar:'تعذر تشغيل الصوت. تحقق من مستوى الصوت واضغط مرة أخرى.'
+  // Discard the removed diagnostic panel's preference: it must not strand
+  // visitors on a broken online-only selection after upgrading.
+  try { localStorage.removeItem('lumira_voice_mode'); } catch(e) {}
+  function reportFailure(fallback) {
+    var messages = fallback ? {
+      tr:'İnternet sesi alınamadı. Cihaz sesi deneniyor; iPhone’da sessiz modu kapatman gerekebilir.',
+      en:'Online audio is unavailable. Trying the device voice; you may need to turn off silent mode on iPhone.',
+      de:'Online-Audio ist nicht verfügbar. Die Gerätestimme wird versucht; schalte am iPhone bei Bedarf den Stummmodus aus.',
+      fr:'Audio en ligne indisponible. Essai de la voix de l’appareil ; désactive le mode silencieux sur iPhone si nécessaire.',
+      es:'Audio en línea no disponible. Se probará la voz del dispositivo; puede ser necesario desactivar el modo silencio en iPhone.',
+      ru:'Онлайн-аудио недоступно. Пробуем голос устройства; на iPhone может потребоваться выключить беззвучный режим.',
+      ar:'الصوت عبر الإنترنت غير متاح. سنجرب صوت الجهاز؛ قد تحتاج إلى إيقاف الوضع الصامت على iPhone.'
+    } : {
+      tr:'Ses başlatılamadı. Biraz sonra yeniden dene.', en:'Audio could not start. Please try again later.',
+      de:'Audio konnte nicht starten. Versuche es später erneut.', fr:'Le son n’a pas démarré. Réessaie plus tard.',
+      es:'No se pudo iniciar el audio. Inténtalo más tarde.', ru:'Не удалось включить звук. Попробуй позже.', ar:'تعذر تشغيل الصوت. حاول لاحقاً.'
     };
     if (window.PWA && window.PWA.toast) window.PWA.toast(messages[window.NATIVE_LANG] || messages.en, {kind:'bad'});
+  }
+  function audioChunks(text) {
+    var chars = Array.from(String(text || '').trim()), chunks = [];
+    while (chars.length) {
+      var end = Math.min(180, chars.length);
+      // Also respect the server's UTF-16 length limit for emoji/surrogates.
+      while (chars.slice(0, end).join('').length > 180) end--;
+      if (end < chars.length) {
+        for (var i = end - 1; i > end / 2; i--) {
+          if (/\s/.test(chars[i])) { end = i + 1; break; }
+        }
+      }
+      var chunk = chars.splice(0, end).join('').trim();
+      if (chunk) chunks.push(chunk);
+    }
+    return chunks;
   }
   function speakGoogle(text, lang, slow, onEnd) {
     stopAudio();
     prepareSession();
+    lastError = '';
     setStatus('online-requested');
-    var id = audioSerial, done = false;
+    var id = audioSerial, done = false, chunks = audioChunks(text), index = 0;
     function finish(ok) {
       if (done || id !== audioSerial) return;
       done = true;
       clearTimeout(audioTimer);
+      if (!ok) lastError = 'media-playback-failed';
       setStatus(ok ? 'online-ended' : 'online-error');
-      if (!ok) { lastError = 'audio-playback-failed'; reportFailure(); }
       if (onEnd) onEnd(ok);
     }
-    try {
-      if (!audio) audio = new Audio();
-      audio.src = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=' +
-        encodeURIComponent(String(lang).split('-')[0]) + '&ttsspeed=' + (slow ? '0.24' : '1') + '&q=' + encodeURIComponent(text);
-      audio.onended = function () { finish(true); };
-      audio.onerror = function () { finish(false); };
-      audio.onplaying = function () { clearTimeout(audioTimer); setStatus('online-playing'); };
-      audioTimer = setTimeout(function () { try { audio.pause(); } catch(e) {} finish(false); }, 10000);
-      var p = audio.play();
-      if (p && p.catch) p.catch(function () { finish(false); });
-    } catch (e) { finish(false); }
+    function playChunk() {
+      if (done || id !== audioSerial) return;
+      if (index >= chunks.length) { finish(true); return; }
+      try {
+        if (!audio) audio = new Audio();
+        audio.playsInline = true;
+        audio.preload = 'auto';
+        audio.src = '/.netlify/functions/tts?lang=' + encodeURIComponent(String(lang).split('-')[0]) +
+          '&slow=' + (slow ? '1' : '0') + '&text=' + encodeURIComponent(chunks[index]);
+        audio.onended = function () {
+          if (done || id !== audioSerial) return;
+          index++; playChunk();
+        };
+        audio.onerror = function () { finish(false); };
+        audio.onplaying = function () {
+          if (id !== audioSerial) return;
+          clearTimeout(audioTimer); setStatus('online-playing');
+        };
+        clearTimeout(audioTimer);
+        audioTimer = setTimeout(function () {
+          if (id !== audioSerial || done) return;
+          try { audio.pause(); } catch(e) {} finish(false);
+        }, 18000);
+        // Called directly by the user's tap. No fetch()/await before play().
+        var promise = audio.play();
+        if (promise && promise.catch) promise.catch(function () { finish(false); });
+      } catch (e) { finish(false); }
+    }
+    playChunk();
   }
   function speakNative(text, lang, rate, onResult) {
     var id = ++serial, done = false, started = false;
@@ -123,13 +161,22 @@
     else startTimer = setTimeout(start, 0);
   }
   function manualSpeak(text, lang, slow) {
-    if (voiceMode() === 'online') {
+    if (!String(text || '').trim()) return;
+    if (ios && navigator.onLine !== false) {
       stopSpeech();
-      speakGoogle(text, lang, slow, function () {});
+      // Media playback is used on iOS instead of the ringer-dependent voice.
+      speakGoogle(text, lang, slow, function (ok) {
+        if (!ok) {
+          reportFailure(true);
+          speakNative(text, lang, slow ? 0.55 : 0.92, function (nativeOK) {
+            if (!nativeOK) reportFailure(false);
+          });
+        }
+      });
       return;
     }
     speakNative(text, lang, slow ? 0.55 : 0.92, function (ok) {
-      if (!ok) speakGoogle(text, lang, slow, function () {});
+      if (!ok) speakGoogle(text, lang, slow, function (mediaOK) { if (!mediaOK) reportFailure(false); });
     });
   }
   function stopSpeech() {
@@ -139,17 +186,7 @@
     utterance = null;
     try { if (synth) synth.cancel(); } catch(e) {}
   }
-  window.VOICE_test = function (mode) {
-    lastError = '';
-    stopSpeech(); stopAudio();
-    // Tests stay separate: device failure must not automatically play online.
-    if (mode === 'online') speakGoogle('Hallo. Guten Tag.', 'de-DE', false, function () {});
-    else speakNative('Hallo. Guten Tag.', 'de-DE', 0.92, function () {});
-  };
-  window.VOICE_setMode = function (mode) {
-    try { localStorage.setItem('lumira_voice_mode', mode === 'online' ? 'online' : 'device'); } catch(e) {}
-    setStatus('mode-selected');
-  };
+  window.VOICE_stop = function () { stopSpeech(); stopAudio(); };
   window.speak = function (text, lang) {
     if (typeof soundOn !== 'undefined' && !soundOn) return;
     manualSpeak(text, lang, false);
@@ -166,7 +203,7 @@
     try { if (synth) synth.getVoices(); } catch (e) {}
   };
   window.VOICE_debug = function () {
-    return {version:'1.8.9', status:status, mode:voiceMode(), ios:ios, available:!!synth, voices:synth ? synth.getVoices().length : 0, audioSession:navigator.audioSession ? navigator.audioSession.type : 'unavailable',
+    return {version:'1.8.10', status:status, mode:ios ? 'media' : 'device', ios:ios, available:!!synth, voices:synth ? synth.getVoices().length : 0, audioSession:navigator.audioSession ? navigator.audioSession.type : 'unavailable',
       speaking:!!(synth && synth.speaking), lastError:lastError};
   };
 })();

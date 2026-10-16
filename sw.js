@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.8.9';
+const CACHE_VERSION = 'v1.8.10';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -113,6 +113,7 @@ self.addEventListener('fetch', (event) => {
      önbelleklenmez — doğrudan ağa gider. Aksi hâlde çevrimdışıyken bile
      önbellekten cevap döner ve "çevrimiçiyiz" sanılır. */
   if (url.searchParams.has('__ping')) return;
+  if (url.pathname.startsWith('/.netlify/functions/')) return;
   if (isLive(url)) return;
 
   /* 1) Sayfa açılışları */

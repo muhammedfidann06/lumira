@@ -29,3 +29,7 @@
   from = "/privacy.html"
   to = "/privacy/"
   status = 301
+
+# Same-origin MP3 delivery for iOS. No build command or package install needed.
+[functions]
+  directory = "netlify/functions"
