@@ -51,6 +51,8 @@
 
   var token = 0;
   var pending = null;
+  var activeUtterance = null;
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
   function speakNative(text, lang, rate, onResult) {
     var myToken = ++token;
@@ -60,6 +62,7 @@
       if (done || myToken !== token) return;
       done = true;
       stopKeepAlive();
+      activeUtterance = null;
       if (onResult) onResult(ok);
     }
 
@@ -72,7 +75,7 @@
     if (pending) { clearTimeout(pending); pending = null; }
     try { synth.cancel(); } catch (e) {}
 
-    pending = setTimeout(function () {
+    var start = function () {
       pending = null;
       if (myToken !== token) return;
 
@@ -97,7 +100,9 @@
           finish(false);
         };
 
+        activeUtterance = u; // Safari must retain the utterance until completion.
         synth.speak(u);
+        if (synth.paused) synth.resume();
 
         setTimeout(function () {
           if (!started && !done && myToken === token) {
@@ -108,22 +113,17 @@
       } catch (err) {
         finish(false);
       }
-    }, 0);
-    /* NOT: değer bilerek 60ms'den 0ms'e indirildi. 0ms bile asenkron
-       olduğu için Chrome'un cancel()+speak() aynı-tick yarış hatasını
-       hâlâ önlüyor, ama iOS Safari'nin çok kısa ömürlü kullanıcı-dokunuşu
-       (user-gesture) iznini artık kaçırmıyor — "bazen ses hiç çalmıyor"
-       şikayetinin kök nedeni buydu. */
+    };
+    // iOS requires speak() within the original tap; Chrome needs a new task.
+    if (isIOS) start();
+    else pending = setTimeout(start, 0);
   }
 
   function warmUpSpeech() {
     try {
       if (typeof window.loadVoices === 'function') window.loadVoices();
-      var u = new SpeechSynthesisUtterance(' ');
-      u.volume = 0;
-      u.rate = 1;
-      synth.speak(u);
-      setTimeout(function () { try { synth.cancel(); } catch (e) {} }, 250);
+      // Never queue a silent utterance or cancel later: that can cut off a tap.
+      if (synth.paused) synth.resume();
     } catch (e) {}
   }
 

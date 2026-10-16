@@ -2693,9 +2693,9 @@ function cardBackWord(v){ return isNotebookPair(v) ? (v.tr || '') : BACK_W(v); }
 function cardFrontExample(v){ return isNotebookPair(v) ? (v.ex || '') : FRONT_EX(v); }
 function cardBackExample(v){ return isNotebookPair(v) ? (v.exTr || '') : BACK_EX(v); }
 function cardFrontDir(v){ return isNotebookPair(v) ? ((LANGS[v.lang] && LANGS[v.lang].dir) || 'ltr') : FRONT_DIR(v); }
-function cardBackDir(v){ return isNotebookPair(v) ? 'ltr' : BACK_DIR(v); }
-function cardFrontVoice(v){ return isNotebookPair(v) ? ((LANGS[v.lang] && LANGS[v.lang].voice) || 'en-US') : FRONT_VOICE(v); }
-function cardBackVoice(v){ return isNotebookPair(v) ? 'tr-TR' : BACK_VOICE(v); }
+function cardBackDir(v){ return isNotebookPair(v) ? ((LANGS[v.meaningLang] || {}).dir || 'ltr') : BACK_DIR(v); }
+function cardFrontVoice(v){ return isNotebookPair(v) ? ((LANGS[v.lang] && LANGS[v.lang].voice) || (v.lang === 'tr' ? 'tr-TR' : 'en-US')) : FRONT_VOICE(v); }
+function cardBackVoice(v){ return isNotebookPair(v) ? ((LANGS[v.meaningLang] || {}).voice || 'tr-TR') : BACK_VOICE(v); }
 function cardFrontLabel(v){
   if(!isNotebookPair(v)) return FRONT_LABEL();
   const names = (typeof t === 'function' && t('lang_names')) || {};
@@ -2704,7 +2704,7 @@ function cardFrontLabel(v){
 function cardBackLabel(v){
   if(!isNotebookPair(v)) return BACK_LABEL();
   const names = (typeof t === 'function' && t('lang_names')) || {};
-  return names.tr || 'Türkçe';
+  return names[v.meaningLang || 'tr'] || 'Türkçe';
 }
 
 /* basePool(): tüm seviye/kategori/quiz/dağıtıcı filtrelemesi TEK NOKTADAN
@@ -4045,7 +4045,10 @@ function nbRenderIfOpen(){
    yeniden kurmak için dışarıya güvenli bir kapı. Çalışma kartları
    cardsView'da gösterildiğinden burada yalnızca notebookView görünürken
    render edilir; kullanıcının devam eden kart oturumu bölünmez. */
-window.NB_refreshLocale = nbRenderIfOpen;
+window.NB_refreshLocale = function(){
+  if(!nbEditingId && nbSelectedAddLang === NATIVE_LANG){ nbSelectedAddLang = null; nbPrefill = null; }
+  nbRenderIfOpen();
+};
 
 function nbEsc(s){
   return String(s==null?'':s).replace(/[&<>"']/g, c => ({
@@ -4056,6 +4059,10 @@ function nbEsc(s){
 /* Dil adını (Almanca/German/Deutsch...) kullanıcının ANA diline göre döner.
    LANGS[code].label her zaman Türkçe olduğu için, varsa I18N'in
    lang_names sözlüğünden NATIVE_LANG'e göre çevrilmiş adı kullanır. */
+function learningLanguageCodes(){
+  return ['de','en','ar','fr','es','ru','tr'].filter(code => code !== NATIVE_LANG);
+}
+window.learningLanguageCodes = learningLanguageCodes;
 function nbLangLabel(code){
   const names = (typeof t === 'function' && t('lang_names')) || {};
   return names[code] || ((LANGS[code]||{}).label) || code;
@@ -4066,7 +4073,7 @@ function nbCombinedList(){
   const out = [];
   Object.keys(nbWords||{}).forEach(id => {
     const it = nbWords[id] || {};
-    out.push({ id, source: it.isFavorite ? 'favorite' : 'manual', w:it.w, tr:it.tr||'', ex:it.ex||'', exTr:it.exTr||'', pos:it.pos||'', lang:it.lang||'de', cat:it.cat||'', level:it.level||'', difficulty:it.difficulty||'orta', ts:it.ts||0 });
+    out.push({ id, source: it.isFavorite ? 'favorite' : 'manual', w:it.w, tr:it.tr||'', ex:it.ex||'', exTr:it.exTr||'', pos:it.pos||'', meaningLang:it.meaningLang || (it.lang === 'tr' ? NATIVE_LANG : 'tr'), lang:it.lang||'de', cat:it.cat||'', level:it.level||'', difficulty:it.difficulty||'orta', ts:it.ts||0 });
   });
   out.sort((a,b) => (b.ts||0) - (a.ts||0));
   return out;
@@ -4122,7 +4129,7 @@ if(!window._nbCSelectOutsideBound){
 /* ---------------------- Hazır listede kelime arama ---------------------- */
 function nbEnsureSearchVocabReady(cb){
   try{
-    const langs = nbSelectedAddLang ? [nbSelectedAddLang] : Object.keys(LANGS);
+    const langs = nbSelectedAddLang ? [nbSelectedAddLang === 'tr' ? NATIVE_LANG : nbSelectedAddLang] : Object.keys(LANGS);
     const need = langs.filter(l => !(window.VOCAB_LOADED && window.VOCAB_LOADED[l]));
     if(!need.length || !window.ensureVocab){ cb(); return; }
     Promise.all(need.map(l => window.ensureVocab(l))).then(cb).catch(cb);
@@ -4135,8 +4142,11 @@ function nbSearchVocab(query){
   const starts = [];
   const contains = [];
   for(let i=0; i<VOCAB.length; i++){
-    const v = VOCAB[i];
-    if(langFilter && v.lang !== langFilter) continue;
+    let v = VOCAB[i];
+    if(langFilter === 'tr'){
+      if(v.lang !== NATIVE_LANG) continue;
+      v = { ...v, lang:'tr', w:v.tr, tr:v.w, ex:v.exTr, exTr:v.ex };
+    }else if(langFilter && v.lang !== langFilter) continue;
     const w = (v.w||'').toLowerCase();
     const tr = (v.tr||'').toLowerCase();
     if(w.indexOf(q) === 0 || tr.indexOf(q) === 0){ starts.push(v); }
@@ -4154,6 +4164,7 @@ function nbSearchVocab(query){
    dilbilgisel olarak doğru bir şablon cümle üretip kategoriyi "Genel"
    olarak bırakıyoruz. Kullanıcı istediği zaman elle değiştirebilir. */
 function nbFindExactVocabMatch(lang, word){
+  if(lang === 'tr') return nbSearchVocab(word).find(v => v.w.toLowerCase() === word.trim().toLowerCase()) || null;
   if(typeof VOCAB === 'undefined') return null;
   const q = word.trim().toLowerCase();
   for(let i=0;i<VOCAB.length;i++){
@@ -4376,8 +4387,8 @@ function nbRender(){
 
   html += '<div class="pm-sub" style="margin-bottom:8px;">'+t('nb_step1_lang')+'</div>';
   html += '<div class="lang-box">';
-  Object.keys(LANGS).forEach(code => {
-    const L = LANGS[code];
+  (editing ? [...new Set([...learningLanguageCodes(), editing.lang])] : learningLanguageCodes()).forEach(code => {
+    const L = LANGS[code] || { label:nbLangLabel(code) };
     const active = nbSelectedAddLang === code;
     html += '<div class="lang-opt'+(active?' active':'')+'" data-lang="'+code+'" data-nb-add-lang="'+code+'"><span class="landmark" aria-hidden="true">'+(LANG_LANDMARK[code]||'')+'</span><div class="flag">'+(LANG_FLAGS[code]||'🌐')+'</div><div class="lname">'+nbEsc(nbLangLabel(code))+'</div></div>';
   });
@@ -4392,7 +4403,7 @@ function nbRender(){
   }
 
   html += '<input type="text" class="pm-fill-input" id="nbInputWord" placeholder="'+t('nb_word_placeholder')+'" maxlength="60" style="margin-top:'+(editing?'14px':'0')+';margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.w:'')+'">';
-  html += '<input type="text" class="pm-fill-input" id="nbInputTr" placeholder="'+t('nb_meaning_placeholder')+'" maxlength="60" style="margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.tr:'')+'">';
+  html += '<input type="text" class="pm-fill-input" id="nbInputTr" placeholder="'+nbEsc(nbSelectedAddLang === 'tr' ? nbLangLabel(NATIVE_LANG) : t('nb_meaning_placeholder'))+'" maxlength="60" style="margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.tr:'')+'">';
   html += '<input type="text" class="pm-fill-input" id="nbInputCat" placeholder="'+t('nb_cat_placeholder')+'" maxlength="30" style="margin-bottom:10px;" value="'+nbEsc(formSrc?formSrc.cat:'')+'">';
   html += '<textarea class="pm-fill-input" id="nbInputEx" placeholder="'+t('nb_example_placeholder')+'" style="margin-bottom:14px;min-height:46px;resize:vertical;font-family:inherit;font-size:14px;">'+nbEsc(formSrc?formSrc.ex:'')+'</textarea>';
   html += '<div style="display:flex;gap:10px;">';
@@ -4592,7 +4603,7 @@ function nbRender(){
     cat = af.cat; ex = af.ex; exTr = af.exTr;
     const level = af.level || '';
     if(nbEditingId != null){
-      db.ref('progress/'+uid2+'/notebook/'+nbEditingId).update({ w, tr, ex, exTr, cat, level, lang: nbSelectedAddLang });
+      db.ref('progress/'+uid2+'/notebook/'+nbEditingId).update({ w, tr, ex, exTr, cat, level, meaningLang:nbSelectedAddLang === 'tr' ? NATIVE_LANG : 'tr', lang: nbSelectedAddLang });
       nbEditingId = null;
     }else{
       const dupExists = Object.keys(nbWords||{}).some(id => {
@@ -4603,7 +4614,7 @@ function nbRender(){
         alert(t('nb_duplicate_word'));
         return;
       }
-      db.ref('progress/'+uid2+'/notebook').push({ w, tr, ex, exTr, cat, level, lang: nbSelectedAddLang, ts: Date.now() });
+      db.ref('progress/'+uid2+'/notebook').push({ w, tr, ex, exTr, cat, level, meaningLang:nbSelectedAddLang === 'tr' ? NATIVE_LANG : 'tr', lang: nbSelectedAddLang, ts: Date.now() });
     }
     nbSelectedAddLang = null;
     nbPrefill = null;
@@ -4665,7 +4676,7 @@ function nbStartStudy(lang, level){
       ex: item.ex || '',
       exTr: item.exTr || '',
       c1: c[0], c2: c[1],
-      _nbPair: true, _nbId: item.id, _nbSource: item.source, difficulty: item.difficulty || 'orta'
+      meaningLang:item.meaningLang, _nbPair: true, _nbId: item.id, _nbSource: item.source, difficulty: item.difficulty || 'orta'
     };
   });
   idx = 0; flipped = false;
@@ -4757,7 +4768,7 @@ function nbStartQuiz(lang, difficulty){
       w: item.w, tr: item.tr || '',
       pos: item.source === 'favorite' ? (item.pos || t('nb_favorite_tag')) : t('nb_my_notebook_tag'),
       ex: item.ex || '', exTr: item.exTr || '', c1: c[0], c2: c[1],
-      _nbPair: true, _nbId: item.id, _nbSource: item.source, difficulty: item.difficulty || 'orta'
+      meaningLang:item.meaningLang, _nbPair: true, _nbId: item.id, _nbSource: item.source, difficulty: item.difficulty || 'orta'
     };
   });
   activeCat = 'Notlarım';

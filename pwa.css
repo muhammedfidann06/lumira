@@ -1264,3 +1264,16 @@ html.lumira-android #splash{
 }
 html.lumira-android .splash-content{width:100%;max-width:528px;min-width:0;}
 html.lumira-android .splash-lb{touch-action:pan-y;}
+
+/* Safari: isolate the two sides without changing card layout or colours. */
+.stage{-webkit-perspective:1400px;}
+.card{-webkit-transform-style:preserve-3d;}
+.card > .face{-webkit-backface-visibility:hidden;backface-visibility:hidden;}
+.card > .face-front{transform:rotateY(0deg) translateZ(1px);}
+.card > .face-back{transform:rotateY(180deg) translateZ(1px);}
+@supports (-webkit-touch-callout:none){
+  /* Backdrop filters flatten Safari's 3D faces. Existing gradients remain. */
+  .card > .face{-webkit-backdrop-filter:none !important;backdrop-filter:none !important;}
+  .card:not(.flipped) > .face-back > *,
+  .card.flipped > .face-front > *{visibility:hidden;}
+}

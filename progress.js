@@ -1632,6 +1632,7 @@
      anında çalışır. Türkçe ve Arapça'da kapsamı diğer dillere göre
      daha dar olabilir. ========================================= */
   const WP_LANGS = [
+    { code:'tr', tts:'tr-TR', lt:'tr' },
     { code:'en', tts:'en-US', lt:'en-US' },
     { code:'de', tts:'de-DE', lt:'de-DE' },
     { code:'ar', tts:'ar-SA', lt:'ar'    },
@@ -1671,7 +1672,7 @@
     injectStyles();
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+(window.t?window.t('nb_writing_practice'):'✍️ Yazma Pratiği')+'</div><div class="pm-sub">'+(window.t?window.t('wp_choose_lang_sub'):'Hangi dilde yazma pratiği yapmak istersin?')+'</div></div>';
     html += '<div class="lang-box">';
-    WP_LANGS.forEach(l=>{
+    WP_LANGS.filter(l => l.code !== (window.NATIVE_LANG || 'tr')).forEach(l=>{
       const L = (typeof LANGS !== 'undefined' && LANGS[l.code]) ? LANGS[l.code] : { label: l.code };
       const landmark = (typeof LANG_LANDMARK !== 'undefined' && LANG_LANDMARK[l.code]) ? LANG_LANDMARK[l.code] : '';
       const flag = (typeof LANG_FLAGS !== 'undefined' && LANG_FLAGS[l.code]) ? LANG_FLAGS[l.code] : '🌐';
@@ -1711,6 +1712,48 @@
   /* LanguageTool'un offset/length tabanlı 'matches' listesinden orijinal
      metin üzerinde vurgulu görünüm, açıklama listesi ve önerilen düzeltme
      üretir. */
+  // Only rule descriptions are translated; the learner's text stays local to
+  // LanguageTool. Failure keeps a native-language explanation and correction.
+  const wpMessageCache = new Map();
+  function wpMessage(m){
+    const native = window.NATIVE_LANG || 'tr';
+    if(m._messageLang === native && m._message) return m._message;
+    const fallback = {
+      tr:'Bu bölümde yazım, dilbilgisi veya ifade sorunu olabilir. Yukarıdaki önerilen düzeltmeyi kontrol et.',
+      en:'This passage may contain a spelling, grammar or wording issue. Check the suggested correction above.',
+      de:'Hier liegt möglicherweise ein Rechtschreib-, Grammatik- oder Ausdrucksfehler vor. Prüfe die vorgeschlagene Korrektur oben.',
+      ar:'قد يحتوي هذا الجزء على خطأ إملائي أو نحوي أو تعبيري. راجع التصحيح المقترح أعلاه.',
+      fr:'Ce passage peut contenir une erreur d’orthographe, de grammaire ou de formulation. Vérifie la correction proposée ci-dessus.',
+      es:'Este fragmento puede contener un error de ortografía, gramática o expresión. Revisa la corrección propuesta arriba.',
+      ru:'Возможно, здесь есть орфографическая, грамматическая или речевая ошибка. Проверь предложенное исправление выше.'
+    };
+    return fallback[native] || fallback.en;
+  }
+  async function wpLocalizeMessages(matches, source){
+    const native = window.NATIVE_LANG || 'tr';
+    await Promise.all(matches.map(async m => {
+      const message = m.message || m.shortMessage || '';
+      if(!message) return;
+      const key = native + ':' + source + ':' + message;
+      if(!wpMessageCache.has(key)){
+        const task = (async () => {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5000);
+          try{
+            const response = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=' + encodeURIComponent(native) + '&dt=t&q=' + encodeURIComponent(message), {signal:controller.signal});
+            if(!response.ok) return '';
+            const data = await response.json();
+            return Array.isArray(data[0]) ? data[0].map(part => part[0] || '').join('') : '';
+          }catch(e){ return ''; }
+          finally{ clearTimeout(timer); }
+        })();
+        wpMessageCache.set(key, task);
+      }
+      m._message = await wpMessageCache.get(key);
+      m._messageLang = native;
+    }));
+  }
+
   function wpBuildViews(text, matches){
     const sorted = matches.slice().sort((a,b)=> a.offset - b.offset);
     let cursor = 0, origHtml = '', corrected = '', issuesHtml = '', count = 0;
@@ -1719,13 +1762,13 @@
       const errText = text.slice(m.offset, m.offset + m.length);
       const repl = (m.replacements && m.replacements[0] && m.replacements[0].value != null) ? m.replacements[0].value : null;
       origHtml += escapeHtml(text.slice(cursor, m.offset));
-      origHtml += '<mark class="wp-err" title="'+escapeHtml(m.message||'')+'">'+escapeHtml(errText)+'</mark>';
+      origHtml += '<mark class="wp-err" title="'+escapeHtml(wpMessage(m))+'">'+escapeHtml(errText)+'</mark>';
       corrected += text.slice(cursor, m.offset);
       corrected += (repl !== null) ? repl : errText;
       count++;
       issuesHtml += '<div class="wp-issue"><div class="wp-issue-num">'+count+'</div><div class="wp-issue-body">'+
         '<div class="wp-issue-orig">❌ '+escapeHtml(errText)+(repl!==null ? ' → <b>'+escapeHtml(repl)+'</b>' : '')+'</div>'+
-        '<div class="wp-issue-msg">'+escapeHtml(m.shortMessage || m.message || '')+'</div></div></div>';
+        '<div class="wp-issue-msg">'+escapeHtml(wpMessage(m))+'</div></div></div>';
       cursor = m.offset + m.length;
     });
     origHtml += escapeHtml(text.slice(cursor));
@@ -1782,10 +1825,10 @@
     fetch('https://api.languagetool.org/v2/check', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'text=' + encodeURIComponent(text) + '&language=' + encodeURIComponent(lang.lt) + '&level=picky'
+      body: 'text=' + encodeURIComponent(text) + '&language=' + encodeURIComponent(lang.lt) + '&motherTongue=' + encodeURIComponent(window.NATIVE_LANG || 'tr') + '&level=picky'
     })
     .then(r => r.json().then(data => ({ ok: r.ok, status: r.status, data: data })))
-    .then(res => {
+    .then(async res => {
       if(!res.ok){
         console.error('[Yazma Pratiği] LanguageTool hatası:', res.status, res.data);
         const e = new Error((res.data && res.data.message) || ('HTTP ' + res.status));
@@ -1799,8 +1842,9 @@
           return catId !== 'STYLE' && catId !== 'REDUNDANCY';
         });
       }
+      await wpLocalizeMessages(matches, lang.code);
       const views = wpBuildViews(text, matches);
-      wpLastResult = { text:text, langCode:lang.code, views:views };
+      wpLastResult = { text:text, langCode:lang.code, matches:matches, views:views };
       wpRenderResult(resultBox, text, lang, views);
     })
     .catch((err)=>{
@@ -1911,7 +1955,7 @@
         const nextResult = document.getElementById('wpResult');
         const freshLang = wpFindLang(wpLang);
         if(nextResult && hadResult && wpLastResult && freshLang && wpLastResult.langCode === freshLang.code){
-          wpRenderResult(nextResult, wpLastResult.text, freshLang, wpLastResult.views);
+          wpRenderResult(nextResult, wpLastResult.text, freshLang, wpBuildViews(wpLastResult.text, wpLastResult.matches || []));
         }
       }else if(dataLoaded){
         renderHome();
