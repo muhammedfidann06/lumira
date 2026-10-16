@@ -1,147 +1,140 @@
-/* ============================================================================
-   voice.js — Seslendirme güvenilirliği
-
-   ── ÖNEMLİ NOT ──────────────────────────────────────────────────────────
-   SES SEÇİMİ orijinal hâlindedir: index.html içindeki pickVoice() devrede,
-   bu dosya ona dokunmaz. Burada yalnızca "nasıl konuşulduğu" iyileştirilir:
-     · Chrome'un cancel() + speak() yarış durumu (cümlenin sessizce düşmesi)
-     · ~15 sn sonra sentezleyicinin kendiliğinden duraklaması
-     · Hızlı kart geçişinde kelimenin ortasında kesilme
-     · Yavaş mod (🐢)
-   ========================================================================== */
+/* Lumira speech controller: keep iOS playback inside the user's tap. */
 (function () {
   'use strict';
-
-  if (!('speechSynthesis' in window)) return;
   var synth = window.speechSynthesis;
+  var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var serial = 0, utterance = null, startTimer = null, watchTimer = null;
+  var audio = null, audioSerial = 0, audioTimer = null;
+  var lastError = '';
 
-  /* ======================================================================
-     YAVAŞ MOD (kaplumbağa) — iki kat yavaşlatıldı
-
-     Önceki değer 0.70 idi; istek üzerine yarıya indirildi: 0.35. Bu, tane
-     tane bir okuma verir. Bu kadar düşük hızlarda bazı motorlar sesi
-     titretebildiği için iki küçük önlem alınıyor:
-
-       · Kelimenin sonuna nokta eklenir → motor kelimeyi aceleyle kesmek
-         yerine tamamlanmış bir ifade gibi bitirir.
-       · Native TTS 2.5 sn içinde başlamazsa Google TTS yedeğine düşülür
-         (o da ttsspeed=0.24 ile zaten yavaş okur).
-
-     Cihazında boğuk gelirse tek yapman gereken bu sayıyı yükseltmek:
-     0.35 → 0.45 belirgin şekilde daha temiz, hâlâ eskisinden yavaştır.
-     ==================================================================== */
-  var SLOW_RATE = 0.35;
-  var NORMAL_RATE = 0.92;      /* orijinal değer — değiştirilmedi */
-
-  var keepAlive = null;
-  function startKeepAlive() {
-    if (keepAlive) return;
-    keepAlive = setInterval(function () {
-      if (!synth.speaking) { stopKeepAlive(); return; }
-      try { if (synth.paused) synth.resume(); } catch (e) {}
-    }, 4000);
-  }
-  function stopKeepAlive() {
-    if (keepAlive) { clearInterval(keepAlive); keepAlive = null; }
-  }
-
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && synth.paused) { try { synth.resume(); } catch (e) {} }
-  });
-
-  var token = 0;
-  var pending = null;
-  var activeUtterance = null;
-  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-  function speakNative(text, lang, rate, onResult) {
-    var myToken = ++token;
-    var done = false;
-
-    function finish(ok) {
-      if (done || myToken !== token) return;
-      done = true;
-      stopKeepAlive();
-      activeUtterance = null;
-      if (onResult) onResult(ok);
+  function stopAudio() {
+    audioSerial++;
+    clearTimeout(audioTimer);
+    if (audio) {
+      audio.onended = audio.onerror = audio.onplaying = null;
+      try { audio.pause(); } catch (e) {}
     }
-
-    if (!text) { finish(false); return; }
-
-    var slow = rate && rate < 0.8;
-    var spoken = String(text);
-    if (slow && !/[.!?]$/.test(spoken)) spoken += '.';
-
-    if (pending) { clearTimeout(pending); pending = null; }
-    try { synth.cancel(); } catch (e) {}
-
-    var start = function () {
-      pending = null;
-      if (myToken !== token) return;
-
-      try {
-        var u = new SpeechSynthesisUtterance(spoken);
-
-        /* Ses seçimi orijinal fonksiyona bırakılır. */
-        var v = null;
-        try { if (typeof window.pickVoice === 'function') v = window.pickVoice(lang); } catch (e) {}
-        if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = lang; }
-
-        u.rate = slow ? SLOW_RATE : (rate || NORMAL_RATE);
-        u.pitch = 1.0;
-        u.volume = 1.0;
-
-        var started = false;
-        u.onstart = function () { started = true; startKeepAlive(); };
-        u.onend = function () { finish(true); };
-        u.onerror = function (e) {
-          /* kullanıcı yeni kelimeye geçtiyse bu hata değil */
-          if (e && (e.error === 'interrupted' || e.error === 'canceled')) { done = true; return; }
-          finish(false);
-        };
-
-        activeUtterance = u; // Safari must retain the utterance until completion.
-        synth.speak(u);
-        if (synth.paused) synth.resume();
-
-        setTimeout(function () {
-          if (!started && !done && myToken === token) {
-            try { synth.cancel(); } catch (e2) {}
-            finish(false);          /* → Google TTS yedeğine geçer */
-          }
-        }, 2500);
-      } catch (err) {
-        finish(false);
-      }
-    };
-    // iOS requires speak() within the original tap; Chrome needs a new task.
-    if (isIOS) start();
-    else pending = setTimeout(start, 0);
   }
-
-  function warmUpSpeech() {
+  function primeAudio() {
+    if (!ios) return;
     try {
-      if (typeof window.loadVoices === 'function') window.loadVoices();
-      // Never queue a silent utterance or cancel later: that can cut off a tap.
-      if (synth.paused) synth.resume();
+      if (!audio) audio = new Audio();
+      if (audio.dataset && audio.dataset.unlocked) return;
+      // A real, silent WAV primes this same element during the original tap.
+      audio.src = 'data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQIAAAAAAA==';
+      audio.playsInline = true;
+      var id = audioSerial;
+      var p = audio.play();
+      if (p && p.then) p.then(function () {
+        if (id !== audioSerial) return;
+        if (audio.dataset) audio.dataset.unlocked = '1';
+      }).catch(function () {});
     } catch (e) {}
   }
-
-  /* Sadece bu ikisi devralınır. pickVoice'a DOKUNULMAZ. */
-  window.speakNative = speakNative;
-  window.warmUpSpeech = warmUpSpeech;
-
-  window.VOICE_debug = function () {
-    var list = [];
-    try { list = synth.getVoices() || []; } catch (e) {}
-    var out = [];
-    ['de-DE', 'en-US', 'ar-SA', 'fr-FR', 'es-ES', 'ru-RU'].forEach(function (l) {
-      var v = null;
-      try { v = window.pickVoice(l); } catch (e) {}
-      out.push({ dil: l, secilen: v ? v.name : '— yok —', kod: v ? v.lang : '' });
+  function reportFailure() {
+    var messages = {
+      tr:'Ses başlatılamadı. Medya sesini kontrol edip ses düğmesine tekrar dokun.',
+      en:'Audio could not start. Check your media volume and tap the audio button again.',
+      de:'Audio konnte nicht starten. Prüfe die Medienlautstärke und tippe erneut auf die Audiotaste.',
+      fr:'Le son n’a pas démarré. Vérifie le volume et réessaie.',
+      es:'No se pudo iniciar el audio. Revisa el volumen y vuelve a pulsar.',
+      ru:'Не удалось включить звук. Проверь громкость и нажми ещё раз.',
+      ar:'تعذر تشغيل الصوت. تحقق من مستوى الصوت واضغط مرة أخرى.'
+    };
+    if (window.PWA && window.PWA.toast) window.PWA.toast(messages[window.NATIVE_LANG] || messages.en, {kind:'bad'});
+  }
+  function speakGoogle(text, lang, slow, onEnd) {
+    stopAudio();
+    var id = audioSerial, done = false;
+    function finish(ok) {
+      if (done || id !== audioSerial) return;
+      done = true;
+      clearTimeout(audioTimer);
+      if (!ok) { lastError = 'audio-playback-failed'; reportFailure(); }
+      if (onEnd) onEnd(ok);
+    }
+    try {
+      if (!audio) audio = new Audio();
+      audio.src = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=' +
+        encodeURIComponent(String(lang).split('-')[0]) + '&ttsspeed=' + (slow ? '0.24' : '1') + '&q=' + encodeURIComponent(text);
+      audio.onended = function () { finish(true); };
+      audio.onerror = function () { finish(false); };
+      audio.onplaying = function () { clearTimeout(audioTimer); };
+      audioTimer = setTimeout(function () { try { audio.pause(); } catch(e) {} finish(false); }, 10000);
+      var p = audio.play();
+      if (p && p.catch) p.catch(function () { finish(false); });
+    } catch (e) { finish(false); }
+  }
+  function speakNative(text, lang, rate, onResult) {
+    var id = ++serial, done = false, started = false;
+    clearTimeout(startTimer);
+    clearTimeout(watchTimer);
+    stopAudio();
+    primeAudio();
+    // Detach old callbacks before cancel: cancellation must not launch an old fallback.
+    if (utterance) utterance.onstart = utterance.onend = utterance.onerror = null;
+    utterance = null;
+    function finish(ok) {
+      if (done || id !== serial) return;
+      done = true;
+      clearTimeout(watchTimer);
+      utterance = null;
+      if (onResult) onResult(ok);
+    }
+    if (!text || !synth) { finish(false); return; }
+    var busy = synth.speaking || synth.pending;
+    if (busy) { try { synth.cancel(); } catch (e) {} }
+    function start() {
+      if (id !== serial) return;
+      try {
+        var u = new SpeechSynthesisUtterance(String(text));
+        utterance = u;
+        u.lang = lang || 'de-DE';
+        // Let iOS choose its installed default. A listed Siri/Premium voice
+        // can exist in getVoices() but be unavailable to web speech.
+        if (!ios && typeof window.pickVoice === 'function') {
+          var voice = window.pickVoice(u.lang);
+          if (voice) { u.voice = voice; u.lang = voice.lang; }
+        }
+        u.rate = rate < 0.8 ? (ios ? 0.55 : 0.35) : (rate || 0.92);
+        u.pitch = 1; u.volume = 1;
+        u.onstart = function () { if (id === serial) { started = true; clearTimeout(watchTimer); } };
+        u.onend = function () { finish(true); };
+        u.onerror = function (event) {
+          if (id !== serial) return;
+          lastError = event && event.error || 'speech-error';
+          finish(false);
+        };
+        // Arm before speak(): mocked or very fast implementations can start synchronously.
+        watchTimer = setTimeout(function () {
+          if (started || done || id !== serial) return;
+          lastError = 'speech-start-timeout';
+          u.onerror = u.onend = null;
+          try { synth.cancel(); } catch (e) {}
+          finish(false);
+        }, ios ? 6000 : 3500);
+        synth.speak(u);
+        if (synth.paused) synth.resume();
+      } catch (e) { lastError = String(e); finish(false); }
+    }
+    if (ios || !busy) start();
+    else startTimer = setTimeout(start, 0);
+  }
+  function manualSpeak(text, lang, slow) {
+    speakNative(text, lang, slow ? 0.55 : 0.92, function (ok) {
+      if (!ok) speakGoogle(text, lang, slow, function () {});
     });
-    if (console.table) console.table(out); else console.log(out);
-    console.log('Toplam ses sayısı:', list.length);
-    return out;
+  }
+  window.speakNative = speakNative;
+  window.speakGoogle = speakGoogle;
+  window.PM_speakGoogle = speakGoogle;
+  window.VOICE_speakManual = manualSpeak;
+  window.warmUpSpeech = function () {
+    try { if (synth) synth.getVoices(); } catch (e) {}
+  };
+  window.VOICE_debug = function () {
+    return {version:'1.8.8', ios:ios, available:!!synth,
+      speaking:!!(synth && synth.speaking), lastError:lastError};
   };
 })();

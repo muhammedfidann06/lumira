@@ -901,8 +901,8 @@ if (/Android/i.test(navigator.userAgent)) {
      ayrı yıldız görünmesin / çakışmasın. */
   .fav-star{ display:none !important; }
 </style>
-<link rel="stylesheet" href="theme.css?v=1.8.6">
-<link rel="stylesheet" href="pwa.css?v=1.8.6">
+<link rel="stylesheet" href="theme.css?v=1.8.8">
+<link rel="stylesheet" href="pwa.css?v=1.8.8">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1399,7 +1399,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.8.6"></script>
+<script src="leaderboard.js?v=1.8.8"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -3466,12 +3466,14 @@ function renderCard(){
 document.getElementById('rabbitBtn').onclick = (e) => {
   e.stopPropagation();
   const v = deck[idx]; if(!v) return;
-  speak(cardFrontWord(v), cardFrontVoice(v));
+  if(window.VOICE_speakManual) window.VOICE_speakManual(cardFrontWord(v), cardFrontVoice(v), false);
+  else speak(cardFrontWord(v), cardFrontVoice(v));
 };
 document.getElementById('turtleBtn').onclick = (e) => {
   e.stopPropagation();
   const v = deck[idx]; if(!v) return;
-  speakSlow(cardFrontWord(v), cardFrontVoice(v));
+  if(window.VOICE_speakManual) window.VOICE_speakManual(cardFrontWord(v), cardFrontVoice(v), true);
+  else speakSlow(cardFrontWord(v), cardFrontVoice(v));
 };
 
 document.getElementById('card').onclick = () => {
@@ -5107,7 +5109,7 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
   }, { once:true });
 })();
 </script>
-<script src="progress.js?v=1.8.6"></script>
+<script src="progress.js?v=1.8.8"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -5118,22 +5120,22 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.8.6"></script>
-<script defer src="theme.js?v=1.8.6"></script>
+<script defer src="voice.js?v=1.8.8"></script>
+<script defer src="theme.js?v=1.8.8"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.8.6"></script>
+<script defer src="pwa.js?v=1.8.8"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.8.6"></script>
+<script defer src="support-badges.js?v=1.8.8"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.8.6"></script>
-<script defer src="analytics.js?v=1.8.6"></script>
+<script defer src="splash.js?v=1.8.8"></script>
+<script defer src="analytics.js?v=1.8.8"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.8.6"></script>
+<script defer src="admin.js?v=1.8.8"></script>
 </body>
 </html>

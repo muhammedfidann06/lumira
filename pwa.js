@@ -1982,8 +1982,18 @@ function openSettings() {
           updDesc.textContent = (window.t?window.t('set_update_error_desc'):'Denetlenemedi');
           toast(window.t?window.t('set_update_error_toast'):'Denetlenemedi', { kind: 'bad' });
         } else {
-          updDesc.textContent = (window.t?window.t('set_update_desc')(myVer):('Çalışan sürüm: ' + myVer));
-          toast(window.t?window.t('set_update_uptodate_toast'):'✅ En güncel sürümdesin', { kind: 'good' });
+          swVersion(function (cachedVersion) {
+            var same = !cachedVersion || cachedVersion.replace(/^v/, '') === myVer.replace(/^v/, '');
+            updDesc.textContent = cachedVersion ? t('set_update_cache_desc')(myVer, cachedVersion) : t('set_update_desc')(myVer);
+            if (!same) {
+              toast(t('set_update_new_toast'), {
+                action:t('set_update_install_now'), duration:14000,
+                onAction:function () { hardRefresh(); }
+              });
+            } else {
+              toast(t('set_update_uptodate_toast'), { kind:'good' });
+            }
+          });
         }
       });
     };
@@ -2238,7 +2248,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.8.6',
+  version: '1.8.8',
   isStandalone: function () { return isStandalone; }
 };
 
