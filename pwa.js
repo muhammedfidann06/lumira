@@ -1834,6 +1834,44 @@ function openSettings() {
   if (settingsOpen) { try { settingsOpen.close(); } catch (e) {} settingsOpen = null; return; }
   settingsOpen = sheet(t('set_app_title'), CONFIG.brand + ' · ' + CONFIG.appName + (isStandalone ? ' · uygulama modu' : ''), function (b) {
 
+    var voiceTR = (window.NATIVE_LANG || 'tr') === 'tr';
+    var voiceRow = row('🔊', voiceTR ? 'Ses testi ve ses kaynağı' : 'Audio test and voice source',
+      voiceTR ? 'Cihaz ve internet sesini ayrı ayrı dene' : 'Try device and online audio separately');
+    voiceRow.onclick = function () {
+      sheet(voiceTR ? 'Ses testi' : 'Audio test', 'Lumira 1.8.9', function (body) {
+        var info = document.createElement('p');
+        info.textContent = voiceTR ? 'Her test “Hallo. Guten Tag.” der. Ses duyduğun kaynağı seç. İnternet sesi bağlantı gerektirir.' : 'Each test says “Hallo. Guten Tag.” Choose the source you can hear. Online audio requires internet.';
+        body.appendChild(info);
+        ['device', 'online'].forEach(function (mode) {
+          var name = mode === 'device' ? (voiceTR ? 'Cihaz sesi' : 'Device voice') : (voiceTR ? 'İnternet sesi' : 'Online voice');
+          var test = row('▶️', name + (voiceTR ? ' — dene' : ' — test'), 'Hallo. Guten Tag.');
+          test.onclick = function () { if(window.VOICE_test) window.VOICE_test(mode); };
+          body.appendChild(test);
+          var use = row('✓', name + (voiceTR ? ' kullan' : ' — use'), '');
+          use.onclick = function () {
+            if(window.VOICE_setMode) window.VOICE_setMode(mode);
+            toast(voiceTR ? 'Ses kaynağı kaydedildi' : 'Voice source saved');
+          };
+          body.appendChild(use);
+        });
+        var status = document.createElement('p');
+        status.style.cssText = 'white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;';
+        body.appendChild(status);
+        function refresh() {
+          var d = window.VOICE_debug ? window.VOICE_debug() : {status:'voice.js not loaded'};
+          var labels = voiceTR ? {'idle':'Henüz test yapılmadı','device-requested':'Cihaz sesi istendi','device-speaking':'Telefon konuşma başladı bildirimi verdi','device-ended':'Telefon konuşma tamamlandı bildirimi verdi','device-error':'Cihaz sesi başlatılamadı','online-requested':'İnternet sesi yükleniyor','online-playing':'İnternet sesi oynatılıyor','online-ended':'İnternet sesi tamamlandı','online-error':'İnternet sesi oynatılamadı','mode-selected':'Ses kaynağı seçildi'} : {};
+          status.textContent = (labels[d.status] || d.status) + '\n' + (voiceTR ? 'Seçili kaynak: ' : 'Selected source: ') + d.mode + '\n' + (voiceTR ? 'Kullanılabilir ses: ' : 'Available voices: ') + d.voices + (d.lastError ? '\n' + d.lastError : '');
+        }
+        refresh();
+        var listener = function () {
+          if(!status.isConnected) { window.removeEventListener('lumira:voice-status', listener); return; }
+          refresh();
+        };
+        window.addEventListener('lumira:voice-status', listener);
+      });
+    };
+    b.appendChild(voiceRow);
+
     var liteOn = document.documentElement.classList.contains('lite');
     var liteRow = row('⚡', t('set_lite_row'),
       liteOn
@@ -2248,7 +2286,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.8.8',
+  version: '1.8.9',
   isStandalone: function () { return isStandalone; }
 };
 

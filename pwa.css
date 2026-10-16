@@ -1277,3 +1277,24 @@ html.lumira-android .splash-lb{touch-action:pan-y;}
   .card:not(.flipped) > .face-back > *,
   .card.flipped > .face-front > *{visibility:hidden;}
 }
+
+/* Hide the inactive face explicitly, including browsers with broken 3D
+   backface compositing. Switch at the edge of the existing flip animation. */
+.card > .face{
+  transition:visibility 0s linear .13s;
+}
+.card:not(.flipped) > .face-front,
+.card.flipped > .face-back{visibility:visible;pointer-events:auto;}
+.card:not(.flipped) > .face-back,
+.card.flipped > .face-front{visibility:hidden;pointer-events:none;}
+.card > .face > *{visibility:inherit !important;}
+/* Keep long translations and examples in separate, growing layout rows. */
+.card{display:grid;grid-template-columns:minmax(0,1fr);height:auto;min-height:300px;}
+.card > .face{position:relative;inset:auto;grid-area:1 / 1;min-width:0;min-height:300px;padding-top:34px;}
+.card > .face > .word,
+.card > .face > .example,
+.card > .face > .tag,
+.card > .face > .pos,
+.card > .face > .speak-controls,
+.card > .face > .speak-caption{flex-shrink:0;max-width:100%;overflow-wrap:anywhere;}
+@media (prefers-reduced-motion:reduce){.card > .face{transition:none;}}
