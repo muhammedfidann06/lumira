@@ -33,3 +33,7 @@
 # Same-origin MP3 delivery for iOS. No build command or package install needed.
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[build.environment]
+  NODE_VERSION = "22"

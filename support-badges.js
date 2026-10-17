@@ -76,6 +76,12 @@
      TIERS[].sku ile BİREBİR AYNI ürün kimliğiyle "Yönetilmeyen ürün"
      (managed in-app product, tek seferlik) oluşturulmuş olmalı. */
   function purchaseTier(t) {
+    var purchaseUid = null;
+    try { purchaseUid = window.firebase.auth().currentUser.uid; } catch (e) {}
+    if (!purchaseUid) {
+      toast(window.LUMIRA_FEATURES ? window.LUMIRA_FEATURES.text('login_required') : 'Önce hesabına giriş yap.', { kind: 'bad' });
+      return;
+    }
     /* isTwa yerine DOĞRUDAN gerçek yeteneği kontrol ediyoruz: PaymentRequest +
        getDigitalGoodsService sadece gerçek, Play Billing'e bağlı bir TWA
        içinde var olur. isTwa referrer'a dayandığı için bazı Android/Chrome
@@ -101,9 +107,20 @@
             return service.acknowledge(token, 'onetime').catch(function () {});
           }
         });
-      });
-    }).then(function () {
+      }).then(function () { return token; });
+    }).then(async function (token) {
+      // Existing badge behavior is preserved. Account quotas only trust a
+      // server-verified purchase; restoration can finish a failed sync later.
+      if (!window.firebase.auth().currentUser || window.firebase.auth().currentUser.uid !== purchaseUid) return;
       window.grantSupportTier(t.amount);
+      if (window.LUMIRA_FEATURES && token) {
+        try {
+          await window.LUMIRA_FEATURES.verifyPurchase(t.sku, token, purchaseUid);
+          await window.LUMIRA_FEATURES.api('status');
+        } catch (e) {
+          toast(window.LUMIRA_FEATURES.text('purchase_verification_unavailable'), { kind: 'bad', duration: 8000 });
+        }
+      }
       if (window.openSupport) { setTimeout(window.openSupport, 300); } /* rozeti göstermek için yeniden aç */
     }).catch(function (e) {
       /* kullanıcı iptal ettiyse sessiz geç, gerçek hataysa bilgilendir */
@@ -136,6 +153,22 @@
         grid.appendChild(el);
       });
       b.appendChild(grid);
+      if (window.LUMIRA_FEATURES && typeof window.getDigitalGoodsService === 'function') {
+        var restore = document.createElement('button');
+        restore.type = 'button';
+        restore.className = 'pwa-btn';
+        restore.textContent = window.LUMIRA_FEATURES.text('restore');
+        restore.onclick = async function () {
+          restore.disabled = true;
+          try {
+            var count = await window.LUMIRA_FEATURES.restorePurchases();
+            toast(window.LUMIRA_FEATURES.text(count ? 'restored' : 'noPurchases'), { kind: 'good' });
+          } catch (e) {
+            toast(window.LUMIRA_FEATURES.errorText(e), { kind: 'bad' });
+          } finally { restore.disabled = false; }
+        };
+        b.appendChild(restore);
+      }
 
       var mine = myBadges();
       if (mine.length) {

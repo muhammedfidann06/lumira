@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.8.10';
+const CACHE_VERSION = 'v1.9.0';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -43,6 +43,9 @@ const SHELL = [
   './theme.js',
   './voice.js',
   './progress.js',
+  './feature-usage.js',
+  './live-translate.js',
+  './live-translate.css',
   './leaderboard.js',
   './vocab-core.js',
   './scene-bg.jpg',

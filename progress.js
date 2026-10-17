@@ -195,6 +195,9 @@
         /* Sunucudaki özel rozetleri (admin verdiği ya da başka cihazda kazanılan)
            KORU — yoksa bu cihazın kaydı onları silebilir. */
         if(cur && cur.awards){ meta.awards = Object.assign({}, cur.awards, meta.awards||{}); }
+        // Studying must not erase badges granted on another device or by an admin.
+        if(cur && cur.supportGrants) meta.supportGrants = cur.supportGrants;
+        else delete meta.supportGrants;
         /* İlk kayıt zamanı bir kez yazılır, bir daha değişmez — ileride
            "ilk N kişi" gibi kayıt-sırası bazlı işler için gerekli. */
         meta.joinedAt = (cur && cur.joinedAt) ? cur.joinedAt : Date.now();
@@ -1622,16 +1625,11 @@
   /* =========================================================
      YAZMA PRATİĞİ — Çok dilli Metin Düzeltici (CheckYourWrite benzeri)
      Akış: Dil Seç → Seviye Seç (A1-B2) → Yaz & Kontrol Et
-     LanguageTool'un ücretsiz, herkese açık kontrol API'sini kullanır
-     (https://api.languagetool.org/v2/check, level=picky - en geniş
-     kural kapsamı). API anahtarı GEREKMEZ, kurulum istemez.
-     A1/A2'de sadece gramer/yazım/noktalama/büyük-küçük harf hataları
-     gösterilir; B1/B2'de üslup (STYLE) önerileri de eklenir.
-     Not: Türkçe kontrolü servis tarafından desteklenmiyor.
-     Bu ücretsiz, kural tabanlı bir servistir - bir dil modeli
-     (AI) kadar derin anlam/bağlam analizi yapmaz, ama anahtarsız ve
-     anında çalışır. Türkçe ve Arapça'da kapsamı diğer dillere göre
-     daha dar olabilir. ========================================= */
+     Kontrol, hesaba bağlı 30 günlük kotayı sunucuda doğrulayan Netlify
+     işlevinden geçer. Başarısız kontrol kullanım hakkı düşürmez.
+     A1/A2'de üslup önerileri gösterilmez. Türkçe kontrolü LanguageTool
+     tarafından desteklenmediği için bu dilde kontrol düğmesi kapalıdır.
+     ========================================= */
   const WP_LANGS = [
     { code:'tr', tts:'tr-TR', lt:null },
     { code:'en', tts:'en-US', lt:'en-US' },
@@ -1672,6 +1670,7 @@
     try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
     injectStyles();
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+(window.t?window.t('nb_writing_practice'):'✍️ Yazma Pratiği')+'</div><div class="pm-sub">'+(window.t?window.t('wp_choose_lang_sub'):'Hangi dilde yazma pratiği yapmak istersin?')+'</div></div>';
+    html += '<div class="feature-quota" data-writing-quota></div>';
     html += '<div class="lang-box">';
     WP_LANGS.filter(l => l.code !== (window.NATIVE_LANG || 'tr')).forEach(l=>{
       const L = (typeof LANGS !== 'undefined' && LANGS[l.code]) ? LANGS[l.code] : { label: l.code };
@@ -1682,6 +1681,7 @@
     html += '</div>';
     html += '<button class="pm-btn small" id="wpBackHomeBtn" style="margin-top:16px;">'+(window.t?window.t('wp_back_to_notebook'):'← Notlarım\'a Dön')+'</button></div>';
     root.innerHTML = html;
+    window.LUMIRA_FEATURES.mountWriting(root.querySelector('[data-writing-quota]'));
     root.querySelectorAll('[data-wp-lang]').forEach(el=>{
       el.onclick = () => { wpLang = el.getAttribute('data-wp-lang'); wpLevel = null; wpLastResult = null; renderWritingLevelSelect(); };
     });
@@ -1697,6 +1697,7 @@
     const lang = wpFindLang(wpLang);
     if(!lang){ renderWritingLangSelect(); return; }
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+lang.flag+' '+lang.label+'</div><div class="pm-sub">'+(window.t?window.t('wp_choose_level_sub'):'Seviyeni seç')+'</div></div>';
+    html += '<div class="feature-quota" data-writing-quota></div>';
     html += '<div class="pm-lang-grid" style="grid-template-columns:repeat(2,1fr);">';
     WP_LEVELS.forEach(l=>{
       html += '<div class="pm-lang-card" data-lvl="'+l+'"><div class="nm" style="font-size:16px;font-weight:800;color:#eef4ff;">'+l+'</div></div>';
@@ -1704,6 +1705,7 @@
     html += '</div>';
     html += '<button class="pm-btn small" id="wpBackLangBtn" style="margin-top:16px;">'+(window.t?window.t('nb_back_change_lang'):'← Dili Değiştir')+'</button></div>';
     root.innerHTML = html;
+    window.LUMIRA_FEATURES.mountWriting(root.querySelector('[data-writing-quota]'));
     root.querySelectorAll('.pm-lang-card').forEach(el=>{
       el.onclick = () => { wpLevel = el.getAttribute('data-lvl'); wpLastResult = null; renderWritingPractice(); };
     });
@@ -1809,31 +1811,25 @@
     ru:{unsupported:'Автоматическая проверка этого языка пока не поддерживается. Здесь можно писать текст.',timeout:'Сервис проверки не ответил вовремя. Попробуй ещё раз.',network:'Не удалось связаться с сервисом проверки. Попробуй позже.',offline:'Нет подключения. Подключись к интернету для проверки.',format:'Сервис проверки вернул некорректный результат. Попробуй ещё раз.'}
   };
   function wpErrorMessage(error){
+    if(error && error.featureCode && window.LUMIRA_FEATURES) return window.LUMIRA_FEATURES.errorText(error);
     const copy = WP_ERRORS[window.NATIVE_LANG] || WP_ERRORS.en;
     if(error && error.wpStatus) return window.t ? window.t('wp_service_error')(error.wpStatus) : copy.network;
     if(error && error.name === 'AbortError') return copy.timeout;
     if(error && error.wpKind) return copy[error.wpKind] || copy.network;
     return navigator.onLine === false ? copy.offline : copy.network;
   }
+  let wpRetryOperation = null;
   async function wpRequestCheck(text, lang){
     if(!lang.lt){ const e = new Error('unsupported-language'); e.wpKind = 'unsupported'; throw e; }
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-    try{
-      // motherTongue is for false-friend rules, NOT explanation translation.
-      // Sending unsupported "tr" here makes even a German check fail with HTTP 400.
-      const response = await fetch('https://api.languagetool.org/v2/check', {
-        method:'POST', signal:controller.signal,
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body:'text=' + encodeURIComponent(text) + '&language=' + encodeURIComponent(lang.lt) + '&level=picky'
-      });
-      if(!response.ok){ const e = new Error('check-service-error'); e.wpStatus = response.status; throw e; }
-      let data;
-      try{ data = await response.json(); }
-      catch(cause){ if(cause.name === 'AbortError') throw cause; const e = new Error('invalid-response'); e.wpKind = 'format'; throw e; }
-      if(!data || !Array.isArray(data.matches)){ const e = new Error('invalid-response'); e.wpKind = 'format'; throw e; }
-      return data.matches;
-    }finally{ clearTimeout(timeout); }
+    const fingerprint = lang.code + '\n' + text;
+    if(!wpRetryOperation || wpRetryOperation.fingerprint !== fingerprint){
+      wpRetryOperation = { fingerprint: fingerprint, id: window.LUMIRA_FEATURES.id() };
+    }
+    const result = await window.LUMIRA_FEATURES.api('check', {
+      id: wpRetryOperation.id, text: text, language: lang.code
+    });
+    wpRetryOperation = null;
+    return result.matches;
   }
 
   function wpRunCheck(){
@@ -1882,6 +1878,7 @@
     })
     .finally(()=>{
       wpBusy = false;
+      if(window.LUMIRA_FEATURES) window.LUMIRA_FEATURES.api('status').catch(function(){});
       if(btn){ btn.disabled = false; btn.textContent = (window.t?window.t('wp_check_btn'):'Kontrol Et'); }
       if(wpLocalePending){ wpLocalePending = false; refreshLocale(); }
     });
@@ -1897,6 +1894,7 @@
     if(!lang || !wpLevel){ renderWritingLangSelect(); return; }
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+(window.t?window.t('nb_writing_practice'):'✍️ Yazma Pratiği')+'</div>'+
       '<div class="pm-sub">'+(window.t?window.t('wp_lang_level_sub')(lang.flag+' '+lang.label,wpLevel):(lang.flag+' '+lang.label+' · Seviye '+wpLevel))+'</div></div>';
+    html += '<div class="feature-quota" data-writing-quota></div>';
     html += '<textarea class="wp-textarea" id="wpInput" maxlength="4000" placeholder="'+(window.t?window.t('wp_placeholder')(lang.label):('Buraya '+lang.label+' bir metin yaz...'))+'"></textarea>';
     html += '<div class="wp-counter" id="wpCounter">0 / 4000</div>';
     html += '<button class="pm-btn primary" id="wpCheckBtn">'+(window.t?window.t('wp_check_btn'):'Kontrol Et')+'</button>';
@@ -1904,6 +1902,7 @@
     html += '<button class="pm-btn small" id="wpBackLevelBtn">'+(window.t?window.t('wp_back_level'):'← Seviye Değiştir')+'</button>';
     html += '<button class="pm-btn primary" id="wpBackHomeBtn">'+(window.t?window.t('wp_back_to_notebook'):'📒 Notlarım\'a Dön')+'</button></div>';
     root.innerHTML = html;
+    window.LUMIRA_FEATURES.mountWriting(root.querySelector('[data-writing-quota]'));
 
     document.getElementById('wpBackHomeBtn').onclick = () => { const t = document.getElementById('tabNotebook'); if(t) t.click(); };
     document.getElementById('wpBackLevelBtn').onclick = renderWritingLevelSelect;
@@ -1955,6 +1954,7 @@
      kaybetme — kullanıcı sadece arayüz dilini değiştirmiş olur. */
   function refreshLocale(){
     try{
+      if(window.LUMIRA_LIVE && window.LUMIRA_LIVE.isMounted()){ window.LUMIRA_LIVE.refreshLocale(); return; }
       const nbTab = document.getElementById('tabNotebook');
       const nbView = document.getElementById('notebookView');
       if(nbTab && nbTab.classList.contains('active') && nbView && nbView.style.display !== 'none'){
@@ -2003,6 +2003,15 @@
      Kişisel sekmesine geçer (isim/veri kontrolü dahil) ve Ana Sayfa
      yerine doğrudan dil seçim ekranını gösterir. */
   window.PM_openWritingPractice = function(){ openPersonalMode(renderWritingLangSelect); };
+  window.PM_openLiveTranslation = function(){
+    openPersonalMode(function(){
+      pmInWritingFlow = true;
+      document.body.classList.add('pm-active');
+      ['langBox','langPair','levelBox','chips'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+      window.LUMIRA_LIVE.mount(root);
+    });
+  };
+
 
   /* Dışarıdan XP eklemek için ortak kapı: quiz doğru cevapları ve
      destek rozetleri bunu kullanır. Kaydetme ve sunucuya yazma dahil. */
