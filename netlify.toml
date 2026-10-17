@@ -7,7 +7,7 @@
     Content-Type = "application/json"
     Access-Control-Allow-Origin = "*"
 
-# Service Worker asla önbelleğe alınmasın: güncellemeler anında insin
+# Service Worker önbelleğe alınmasın.
 [[headers]]
   for = "/sw.js"
   [headers.values]
@@ -18,22 +18,23 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# /privacy → /privacy/ (sondaki eğik çizgi olmadan da açılsın)
+# /privacy → /privacy/
 [[redirects]]
   from = "/privacy"
   to = "/privacy/"
   status = 301
 
-# Eski tekil dosya adıyla gelenler de doğru sayfaya gitsin
+# Eski gizlilik sayfası adresini yönlendir.
 [[redirects]]
   from = "/privacy.html"
   to = "/privacy/"
   status = 301
 
-# Same-origin MP3 delivery for iOS. No build command or package install needed.
+# Firebase Admin paketinin özgün modül yapısını koru.
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+  external_node_modules = ["firebase-admin"]
 
 [build.environment]
   NODE_VERSION = "22"
