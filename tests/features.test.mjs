@@ -8,6 +8,7 @@ import { generateKeyPairSync } from 'node:crypto';
 function fixture(amount = 0) {
   const values = new Map(), locks = new Map();
   const db = { ref(path) { return {
+    on() {}, off() {},
     async get() { await locks.get(path); return { val: () => structuredClone(values.get(path) || null) }; },
     transaction(fn) {
       const p = (locks.get(path) || Promise.resolve()).then(() => {
