@@ -5,9 +5,9 @@
   const F = window.LUMIRA_FEATURES;
   const LOCALES = ['tr-TR','de-DE','en-US','ar-SA','fr-FR','es-ES','ru-RU'];
   const FLAGS = { tr:'🇹🇷', de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
-  const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null };
+  const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null };
   const node = id => s.root?.querySelector('#' + id);
-  const active = () => s.phase === 'starting' || s.phase === 'listening';
+  const active = () => s.phase === 'starting' || s.phase === 'listening' || s.phase === 'reconnecting';
   const label = code => { const names = window.t && window.t('lang_names'); return (names && names[code]) || code.toUpperCase(); };
   const time = seconds => { seconds = Math.max(0, Math.ceil(seconds)); return Math.floor(seconds/60) + ':' + String(seconds % 60).padStart(2,'0'); };
   function error(code) { return Object.assign(new Error(code), { featureCode:code }); }
@@ -77,8 +77,15 @@
     s.remaining=data.quota.live.remainingSeconds;s.remainingAt=now;
     clearTimeout(s.deadlineTimer);
     const wait=s.leaseDeadline-now;
-    s.deadlineTimer=setTimeout(() => stop(s.remaining !== null && s.remaining <= 16 ? 'live_limit' : 'session_expired',true),Math.max(0,wait));
+    s.deadlineTimer=setTimeout(() => {
+      if(generation!==s.generation || !active())return;
+      // A lease boundary (including midnight) is not the user's Stop action.
+      // Pause the provider until a new server lease has been obtained.
+      reconnect(generation);
+      renew(generation,s.sessionId);
+    },Math.max(0,wait));
     if (data.speech) {
+      s.speech=data.speech;
       s.tokenDeadline=now+data.speech.expiresAt-data.quota.serverNow;
       if (s.recognizer) s.recognizer.authorizationToken=data.speech.token;
     }
@@ -88,25 +95,141 @@
     if (s.renewPending || generation !== s.generation || !active()) return;
     s.renewPending=true;
     try {
-      const data=await F.api('liveRenew',{id,refreshToken:s.tokenDeadline-performance.now()<60000});
+      let data;
+      try {
+        data=await F.api('liveRenew',{id,refreshToken:s.tokenDeadline-performance.now()<60000});
+      } catch(e) {
+        if(e.featureCode!=='session_expired' || generation!==s.generation || !active())throw e;
+        // Reacquire after a day reset or an expired lease. The server still
+        // enforces the daily allowance and the one-session-per-account rule.
+        data=await F.api('liveStart',{id});
+      }
       if (generation !== s.generation || !active()) { F.api('liveStop',{id}).catch(()=>{}); return; }
       applyLease(data,generation);
     } catch (e) { if(generation===s.generation)stop(e.featureCode || 'speech_unavailable',true); }
     finally { if(generation===s.generation)s.renewPending=false; }
   }
-  function releaseRecognizer() {
-    const r=s.recognizer,a=s.audio;s.recognizer=null;s.audio=null;
-    stopTracks(s.stream);s.stream=null;
-    if (!r) {try{a?.close();}catch(e){}return;}
-    let closed=false;
-    const close=()=>{if(closed)return;closed=true;try{r.close();}catch(e){}try{a?.close();}catch(e){}};
-    try{r.stopContinuousRecognitionAsync(close,close);}catch(e){close();}
-    setTimeout(close,1500);
+  function releaseRecognizer(keepMicrophone) {
+    const r=s.recognizer,a=s.audio,input=s.inputStream;
+    s.recognizer=null;s.audio=null;s.inputStream=null;
+    if(s.cancelStart){s.cancelStart();s.cancelStart=null;}
+    if(!keepMicrophone){stopTracks(s.stream);s.stream=null;}
+    return new Promise(resolve=>{
+      let closed=false,timer;
+      const close=()=>{
+        if(closed)return;closed=true;clearTimeout(timer);
+        try{r?.close();}catch(e){}try{a?.close();}catch(e){}
+        stopTracks(input);resolve();
+      };
+      if(!r){close();return;}
+      timer=setTimeout(close,1500);
+      try{r.stopContinuousRecognitionAsync(close,close);}catch(e){close();}
+    });
+  }
+  function holdScreen(generation) {
+    if(document.hidden || !navigator.wakeLock || s.wakeLock)return;
+    navigator.wakeLock.request('screen').then(lock=>{
+      if(generation!==s.generation || !active()){lock.release().catch(()=>{});return;}
+      s.wakeLock=lock;
+      lock.addEventListener('release',()=>{if(s.wakeLock===lock)s.wakeLock=null;},{once:true});
+    }).catch(()=>{});
+  }
+  function reconnect(generation) {
+    if(generation!==s.generation || !active() || s.restartPending || s.restartTimer)return;
+    s.restartPending=true;s.phase='reconnecting';s.draft=null;status('reconnecting');
+    releaseRecognizer(true).then(()=>{
+      if(generation!==s.generation || !active())return;
+      const delay=Math.min(5000,250*Math.pow(2,Math.min(s.restartAttempt++,5)));
+      s.restartTimer=setTimeout(async()=>{
+        s.restartTimer=null;s.restartPending=false;
+        if(generation!==s.generation || !active())return;
+        if(s.leaseDeadline<=performance.now()){reconnect(generation);return;}
+        try{await connectRecognizer(generation);}
+        catch(e){if(generation===s.generation && active() && e.featureCode!=='recognizer_replaced')reconnect(generation);}
+      },delay);
+    });
+  }
+  async function connectRecognizer(generation) {
+    const SDK=s.SDK,media=s.stream,speech=s.speech;
+    if(!SDK || !media || !speech || generation!==s.generation || !active())throw error('recognizer_replaced');
+    const config=SDK.SpeechTranslationConfig.fromEndpoint(new URL('wss://'+speech.region+'.stt.speech.microsoft.com/speech/universal/v2'));
+    config.authorizationToken=speech.token;
+    config.speechRecognitionLanguage='en-US';
+    config.setProperty(SDK.PropertyId.SpeechServiceConnection_LanguageIdMode,'Continuous');
+    config.addTargetLanguage(s.target);
+    const detect=SDK.AutoDetectSourceLanguageConfig.fromLanguages(LOCALES);
+    // Closing an SDK audio source can stop its tracks. Give it clones so a
+    // provider reconnection cannot destroy the user's original microphone.
+    s.inputStream=media.clone();
+    s.audio=SDK.AudioConfig.fromStreamInput(s.inputStream);
+    const recognizer=SDK.TranslationRecognizer.FromConfig(config,detect,s.audio);
+    s.recognizer=recognizer;
+    const current=()=>generation===s.generation && active() && s.recognizer===recognizer;
+    const seen=new Set();
+    function result(event,final){
+      if(!current())return;
+      const r=event.result;
+      if(!r || !r.text || (final && r.reason!==SDK.ResultReason.TranslatedSpeech))return;
+      let locale=r.language || '';
+      if(!locale){try{locale=SDK.AutoDetectSourceLanguageResult.fromResult(r).language || '';}catch(e){}}
+      if(!locale){try{locale=r.properties.getProperty(SDK.PropertyId.SpeechServiceConnection_AutoDetectSourceLanguageResult)||'';}catch(e){}}
+      if(!locale || locale.startsWith('{')){
+        try{
+          const json=JSON.parse(locale.startsWith('{')?locale:(r.json || r.properties.getProperty(SDK.PropertyId.SpeechServiceResponse_JsonResult) || '{}'));
+          locale=json.PrimaryLanguage?.Language || json.SpeechPhrase?.PrimaryLanguage?.Language || json.Language || '';
+        }catch(e){locale='';}
+      }
+      const code=locale.split('-')[0].toLowerCase();
+      if(FLAGS[code])s.detected=code;
+      let translated='';try{translated=r.translations.get(s.target)||'';}catch(e){}
+      if(!translated && code===s.target)translated=r.text;
+      const entry={original:r.text,translated};
+      if(final){
+        // Azure's translation resultId can be the same for a whole session.
+        // Audio offsets, not resultId alone, distinguish successive sentences.
+        const key=Number.isFinite(r.offset)?[r.resultId,r.offset,r.duration].join(':'):null;
+        if(key && seen.has(key))return;
+        if(key)seen.add(key);
+        s.entries.push(entry);s.draft=null;s.restartAttempt=0;s.authRetries=0;
+      }else s.draft=entry;
+      drawText();
+    }
+    recognizer.recognizing=(_,e)=>result(e,false);
+    recognizer.recognized=(_,e)=>result(e,true);
+    recognizer.canceled=(_,e)=>{
+      if(!current())return;
+      const codes=SDK.CancellationErrorCode || {},code=e?.errorCode;
+      if(code!==undefined && [codes.AuthenticationFailure,codes.Forbidden].includes(code)){
+        // The active connection may still use the preceding token. Reopen it
+        // once with the most recently renewed token before declaring failure.
+        if(s.authRetries++===0){reconnect(generation);return;}
+        stop('speech_auth_error',true);return;
+      }
+      if(code!==undefined && code===codes.TooManyRequests){stop('speech_busy',true);return;}
+      if(code!==undefined && code===codes.BadRequest){stop('speech_config_error',true);return;}
+      reconnect(generation);
+    };
+    recognizer.sessionStopped=()=>{if(current())reconnect(generation);};
+    await new Promise((resolve,reject)=>{
+      let settled=false;
+      const finish=e=>{
+        if(settled)return;settled=true;clearTimeout(timeout);
+        if(s.cancelStart===cancel)s.cancelStart=null;
+        e?reject(e):resolve();
+      };
+      const cancel=()=>finish(error('recognizer_replaced'));
+      const timeout=setTimeout(()=>finish(error('speech_unavailable')),10000);
+      s.cancelStart=cancel;
+      recognizer.startContinuousRecognitionAsync(()=>finish(),()=>finish(error('speech_unavailable')));
+    });
+    if(current()){s.phase='listening';status('listening');holdScreen(generation);}
   }
   function stop(message, bad, exiting) {
     const id=s.sessionId;
     ++s.generation;s.sessionId=null;s.phase='idle';s.renewPending=false;s.draft=null;
-    clearInterval(s.timer);clearInterval(s.tick);clearTimeout(s.deadlineTimer);
+    clearInterval(s.timer);clearInterval(s.tick);clearTimeout(s.deadlineTimer);clearTimeout(s.restartTimer);
+    s.restartTimer=null;s.restartPending=false;s.restartAttempt=0;s.authRetries=0;s.speech=null;
+    if(s.wakeLock){s.wakeLock.release().catch(()=>{});s.wakeLock=null;}
     releaseRecognizer();
     if(id){
       if(exiting)F.releaseOnExit(id);
@@ -136,52 +259,15 @@
       if(generation!==s.generation){stopTracks(media);F.api('liveStop',{id}).catch(()=>{});return;}
       applyLease(data,generation);
       if(!data.session || !data.speech)throw error('speech_unavailable');
-      const config=SDK.SpeechTranslationConfig.fromEndpoint(new URL('wss://'+data.speech.region+'.stt.speech.microsoft.com/speech/universal/v2'));
-      config.authorizationToken=data.speech.token;
-      config.speechRecognitionLanguage='en-US'; // Required placeholder; auto-detect supplies the actual language.
-      config.setProperty(SDK.PropertyId.SpeechServiceConnection_LanguageIdMode,'Continuous');
-      config.addTargetLanguage(s.target);
-      const detect=SDK.AutoDetectSourceLanguageConfig.fromLanguages(LOCALES);
-      s.audio=SDK.AudioConfig.fromStreamInput(media);
-      const recognizer=SDK.TranslationRecognizer.FromConfig(config,detect,s.audio);
-      s.recognizer=recognizer;
-      const seen=new Set();
-      function result(event,final){
-        if(generation!==s.generation || !active())return;
-        const r=event.result;
-        if(!r || !r.text || (final && r.reason!==SDK.ResultReason.TranslatedSpeech))return;
-        let locale='';
-        try{locale=SDK.AutoDetectSourceLanguageResult.fromResult(r).language || '';}catch(e){}
-        if(!locale){try{locale=r.properties.getProperty(SDK.PropertyId.SpeechServiceConnection_AutoDetectSourceLanguageResult)||'';}catch(e){}}
-        const code=locale.split('-')[0];
-        if(FLAGS[code])s.detected=code;
-        let translated='';try{translated=r.translations.get(s.target)||'';}catch(e){}
-        if(!translated && code===s.target)translated=r.text;
-        const entry={original:r.text,translated};
-        if(final){
-          if(r.resultId && seen.has(r.resultId))return;
-          if(r.resultId)seen.add(r.resultId);
-          s.entries.push(entry);s.draft=null;
-          if(s.entries.length>100)s.entries.shift();
-        }else s.draft=entry;
-        drawText();
-      }
-      recognizer.recognizing=(_,e)=>result(e,false);
-      recognizer.recognized=(_,e)=>result(e,true);
-      recognizer.canceled=()=>{if(generation===s.generation)stop('speech_unavailable',true);};
-      recognizer.sessionStopped=()=>{if(generation===s.generation && active())stop('stopped');};
+      s.SDK=SDK;
       media.getTracks().forEach(track=>track.addEventListener('ended',()=>{if(generation===s.generation)stop('microphone_unavailable',true);},{once:true}));
       s.timer=setInterval(()=>renew(generation,id),5000);
       s.tick=setInterval(drawQuota,1000);
-      await new Promise((resolve,reject)=>{
-        const timeout=setTimeout(()=>reject(error('speech_unavailable')),10000);
-        recognizer.startContinuousRecognitionAsync(()=>{clearTimeout(timeout);resolve();},()=>{clearTimeout(timeout);reject(error('speech_unavailable'));});
-      });
-      if(generation!==s.generation)return;
-      s.phase='listening';status('listening');
+      await connectRecognizer(generation);
     }catch(e){
-      stopTracks(media);
       if(generation!==s.generation)return;
+      if(e.featureCode==='recognizer_replaced')return;
+      stopTracks(media);
       const kind=e.featureCode || (e.name==='NotAllowedError' || e.name==='PermissionDeniedError' ? 'microphone_denied' : e.name==='NotFoundError' || e.name==='NotReadableError' ? 'microphone_unavailable' : 'speech_unavailable');
       stop(kind,true);
     }
@@ -229,7 +315,9 @@
     }).catch(e=>{if(s.root===root)status(e.featureCode || 'usage_unavailable',true);});
   }
   F.subscribe(quota=>{if(s.root){s.quota=quota;drawQuota();}});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden && active())stop('paused');});
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden && active()){holdScreen(s.generation);renew(s.generation,s.sessionId);}
+  });
   window.addEventListener('pagehide',()=>{if(active() || s.sessionId)stop('paused',false,true);});
   window.addEventListener('offline',()=>{if(active())stop('speech_unavailable',true);});
   window.addEventListener('lumira:featureauthchange',()=>{if(s.root){stop('login_required',true);s.entries=[];s.draft=null;drawText();}});
