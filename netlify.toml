@@ -7,7 +7,7 @@
     Content-Type = "application/json"
     Access-Control-Allow-Origin = "*"
 
-# Service Worker önbelleğe alınmasın.
+# Service Worker asla önbelleğe alınmasın: güncellemeler anında insin
 [[headers]]
   for = "/sw.js"
   [headers.values]
@@ -18,19 +18,19 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# /privacy → /privacy/
+# /privacy → /privacy/ (sondaki eğik çizgi olmadan da açılsın)
 [[redirects]]
   from = "/privacy"
   to = "/privacy/"
   status = 301
 
-# Eski gizlilik sayfası adresini yönlendir.
+# Eski tekil dosya adıyla gelenler de doğru sayfaya gitsin
 [[redirects]]
   from = "/privacy.html"
   to = "/privacy/"
   status = 301
 
-# Firebase Admin paketinin özgün modül yapısını koru.
+# Keep Firebase Admin's module structure intact in the function bundle.
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
