@@ -1,7 +1,7 @@
 import { changeUsage, summary, fault } from './_shared/feature-core.mjs';
 import { identity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from './_shared/feature-services.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.9.2' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
@@ -23,14 +23,27 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       ref = ctx.db.ref(`serverFeatureUsage/${ctx.uid}`);
       const quota = value => summary(value, ctx.tier, clock(), zone);
       const mutate = async (action, params) => {
-        let reason;
-        const result = await ref.transaction(value => {
-          reason = null;
-          try { return changeUsage(value, ctx.tier, action, params, clock(), zone); }
-          catch (e) { reason = e; return; }
-        }, undefined, false);
-        if (!result.committed) throw reason || fault('usage_unavailable', 503);
-        return result.snapshot.val();
+        // The SDK's first transaction callback can receive an uncached null,
+        // even when the server has a pending check or a live session. Returning
+        // undefined there aborts immediately, before Firebase can retry with
+        // the real value. Keep a listener while loading the authoritative
+        // value and running the compare-and-retry transaction. A get() alone
+        // is insufficient: without a listener the SDK can discard that cache.
+        const keepCurrent = () => {};
+        ref.on('value', keepCurrent);
+        try {
+          await ref.get();
+          let reason;
+          const result = await ref.transaction(value => {
+            reason = null;
+            try { return changeUsage(value, ctx.tier, action, params, clock(), zone); }
+            catch (e) { reason = e; return; }
+          }, undefined, false);
+          if (!result.committed) throw reason || fault('usage_unavailable', 503);
+          return result.snapshot.val();
+        } finally {
+          ref.off('value', keepCurrent);
+        }
       };
       if (body.action === 'status') {
         const value = (await ref.get()).val();
