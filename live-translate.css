@@ -1,6 +1,6 @@
 .feature-quota{font-size:12px;line-height:1.6;color:var(--muted,#9caac4);margin:12px 0;overflow-wrap:anywhere;}
 .feature-error{color:#ffafb7;}
-body.lt-focus #mainApp>.top-row,body.lt-focus #mainApp>.tabs,body.lt-focus #mainSub,body.lt-focus #langPair,body.lt-focus #langBox,body.lt-focus #levelBox,body.lt-focus #chips,body.lt-focus .pwa-fab,body.lt-focus #sessionBar,body.lt-focus #supportRow{display:none!important;}
+body.lt-focus #mainApp>.top-row,body.lt-focus #mainSub,body.lt-focus #langPair,body.lt-focus #langBox,body.lt-focus #levelBox,body.lt-focus #chips,body.lt-focus .pwa-fab,body.lt-focus #sessionBar,body.lt-focus #supportRow{display:none!important;}
 body.lt-focus #mainApp{padding-top:max(18px,env(safe-area-inset-top));}
 .lt-screen{max-width:760px;margin:0 auto;color:var(--text,#eef4ff);}
 .lt-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;}

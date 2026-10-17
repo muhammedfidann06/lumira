@@ -2004,12 +2004,8 @@
      yerine doğrudan dil seçim ekranını gösterir. */
   window.PM_openWritingPractice = function(){ openPersonalMode(renderWritingLangSelect); };
   window.PM_openLiveTranslation = function(){
-    openPersonalMode(function(){
-      pmInWritingFlow = true;
-      document.body.classList.add('pm-active');
-      ['langBox','langPair','levelBox','chips'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
-      window.LUMIRA_LIVE.mount(root);
-    });
+    const tab = document.getElementById('tabLiveTranslate');
+    if(tab) tab.click();
   };
 
 

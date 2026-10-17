@@ -408,7 +408,7 @@ function setupBackButton() {
   });
 
   /* Sekme/panel değişimlerinde geçmişe kayıt ekle */
-  ['tabQuiz', 'tabPersonal', 'catTrigger'].forEach(function (id) {
+  ['tabQuiz', 'tabLiveTranslate', 'tabPersonal', 'catTrigger'].forEach(function (id) {
     var el = $(id);
     if (el) el.addEventListener('click', function () { pushGuard(); }, true);
   });
@@ -446,6 +446,7 @@ function route(params, force) {
       if (lv) lv.click();
     }
     if (tab === 'quiz' && $('tabQuiz')) $('tabQuiz').click();
+    else if (tab === 'live' && $('tabLiveTranslate')) $('tabLiveTranslate').click();
     else if ((tab === 'personal' || tab === 'profile') && $('tabPersonal')) $('tabPersonal').click();
     else if (tab === 'cards' && $('tabCards')) $('tabCards').click();
 
@@ -973,7 +974,7 @@ function maybeAskRating() {
 
 /* ================================ 12 · GEÇİŞLER · DEVAM ================= */
 function setupTransitions() {
-  ['tabCards', 'tabQuiz', 'tabPersonal'].forEach(function (id) {
+  ['tabCards', 'tabQuiz', 'tabLiveTranslate', 'tabPersonal'].forEach(function (id) {
     var el = $(id);
     if (!el) return;
     el.addEventListener('click', function () {
@@ -983,7 +984,7 @@ function setupTransitions() {
         try { document.startViewTransition(function () {}); return; } catch (e) {}
       }
       var view = $('cardsView');
-      var target = id === 'tabQuiz' ? $('quizView') : (id === 'tabPersonal' ? $('personalView') : view);
+      var target = id === 'tabQuiz' ? $('quizView') : (id === 'tabLiveTranslate' ? $('liveTranslateView') : (id === 'tabPersonal' ? $('personalView') : view));
       if (target) {
         target.classList.remove('pwa-fade-in');
         void target.offsetWidth;
@@ -2248,7 +2249,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.9.2',
+  version: '1.9.3',
   isStandalone: function () { return isStandalone; }
 };
 
