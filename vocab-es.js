@@ -5937,3 +5937,6 @@ add("es","A2","Müzik","canción folclórica","halk şarkısı","isim","Cantó u
 add("es","A1","Ölçüler","medio litro","yarım litre","kalıp","Compró medio litro de leche.","Yarım litre süt aldı.");
 add("es","A1","Ölçüler","un cuarto de kilo","çeyrek kilo","kalıp","Compró un cuarto de kilo de queso.","Çeyrek kilo peynir aldı.");
 add("es","A1","Sıvı Yiyecekler","jugo de naranja","portakal suyu","isim","El jugo de naranja es fresco.","Portakal suyu tazedir.");
+
+/* İnceleme 1.9.5 — eksik temel kullanım ve teknoloji kelimeleri. */
+add("es","A2","Teknoloji","teléfono inteligente","akıllı telefon","isim","Compré un teléfono inteligente nuevo.","Yeni bir akıllı telefon aldım.");

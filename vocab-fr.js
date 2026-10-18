@@ -5963,3 +5963,6 @@ add("fr","B2","Din","théologie","teoloji","isim","La théologie étudie la natu
 add("fr","B2","Din","laïcité","laiklik","isim","La laïcité sépare la religion de l'État.","Laiklik dini devletten ayırır.");
 add("fr","B2","Din","tolérance religieuse","dini hoşgörü","isim","La tolérance religieuse favorise la paix.","Dini hoşgörü barışı destekler.");
 add("fr","A1","Sıvı Yiyecekler","jus d'orange","portakal suyu","isim","Le jus d'orange est frais.","Portakal suyu tazedir.");
+
+/* İnceleme 1.9.5 — eksik temel kullanım ve teknoloji kelimeleri. */
+add("fr","A2","Teknoloji","smartphone","akıllı telefon","isim","J'ai acheté un nouveau smartphone.","Yeni bir akıllı telefon aldım.");

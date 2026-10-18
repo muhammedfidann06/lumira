@@ -196,7 +196,9 @@ if (/Android/i.test(navigator.userAgent)) {
     font-weight:700;
   }
 
-  .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+  .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .top-row > :first-child{flex:1 1 160px;min-width:0;}
+  .top-row h1{overflow-wrap:anywhere;}
   .eyebrow{letter-spacing:.14em;text-transform:uppercase;font-size:11px;color:var(--cyan-soft);margin-bottom:4px;text-shadow:0 0 10px rgba(79,232,255,0.4);}
   h1{font-family:Georgia,'Iowan Old Style',serif;font-size:27px;margin:0 0 6px;font-weight:700;letter-spacing:.01em;}
   .lang-pair{font-size:13.5px;font-weight:700;margin-bottom:14px;}
@@ -215,7 +217,7 @@ if (/Android/i.test(navigator.userAgent)) {
   .sound-btn.on{border-color:rgba(79,232,255,0.7);box-shadow:0 0 18px rgba(79,232,255,0.35);}
   .sound-btn svg{width:20px;height:20px;stroke:var(--cyan-soft);}
   .sound-btn.off svg{stroke:var(--muted);}
-  .top-btn-row{display:flex;gap:8px;}
+  .top-btn-row{display:flex;gap:8px;flex:0 0 auto;max-width:100%;flex-wrap:wrap;}
   .sound-off-label{
     display:none;text-align:right;margin-top:-6px;margin-bottom:10px;
     font-size:11px;font-weight:800;letter-spacing:.05em;
@@ -902,10 +904,14 @@ if (/Android/i.test(navigator.userAgent)) {
      yazacak şekilde güncelledim; bu yıldızı tamamen gizliyoruz ki iki
      ayrı yıldız görünmesin / çakışmasın. */
   .fav-star{ display:none !important; }
+.example-translation-note{margin-top:8px;color:var(--muted);font-size:11px;line-height:1.5;}
+.example-translation-note[hidden]{display:none;}
+.example-translation-note button{font:inherit;color:inherit;background:transparent;border:1px solid rgba(140,190,255,.28);border-radius:9px;padding:8px 12px;min-height:44px;cursor:pointer;}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.9.3">
-<link rel="stylesheet" href="pwa.css?v=1.9.3">
-<link rel="stylesheet" href="live-translate.css?v=1.9.3">
+<link rel="stylesheet" href="theme.css?v=1.9.6">
+<link rel="stylesheet" href="pwa.css?v=1.9.6">
+<link rel="stylesheet" href="live-translate.css?v=1.9.6">
+<link rel="stylesheet" href="access-screen.css?v=1.9.6">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1293,12 +1299,15 @@ if (/Android/i.test(navigator.userAgent)) {
   </div>
 </div>
 
-<script src="vocab-core.js"></script>
+<script src="vocab-core.js?v=1.9.6"></script>
+<script src="vocab-parallel.js?v=1.9.6"></script>
+<script src="vocab-pairs.js?v=1.9.6"></script>
+<script src="vocab-identity.js?v=1.9.6"></script>
 <!-- Açılışta SADECE Almanca yükleniyor. Diğer beş dil, kullanıcı o dile
      geçtiği anda pwa.js tarafından indiriliyor. Önceden altı dosyanın altısı
      birden (5,2 MB) her açılışta ayrıştırılıyordu; telefonlarda donmanın en
      büyük sebebi buydu. -->
-<script src="vocab-de.js"></script>
+<script src="vocab-de.js?v=1.9.6"></script>
 <script>
 /* ===================== SÖZLÜKLERİN İHTİYAÇ ANINDA YÜKLENMESİ =============
    Bu kod BİLEREK index.html'in içinde: sözlük etiketlerini kaldıran dosya ile
@@ -1315,7 +1324,7 @@ window.VOCAB_LOADED = { de: true };
     if(loading[lang]) return loading[lang];
     loading[lang] = new Promise(function(res, rej){
       var sc = document.createElement('script');
-      sc.src = 'vocab-' + lang + '.js';
+      sc.src = 'vocab-' + lang + '.js?v=1.9.6';
       sc.async = false;
       sc.onload = function(){ window.VOCAB_LOADED[lang] = true; delete loading[lang]; res(true); };
       sc.onerror = function(){ delete loading[lang]; rej(new Error(lang)); };
@@ -1404,7 +1413,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.9.3"></script>
+<script src="leaderboard.js?v=1.9.6"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -2625,7 +2634,7 @@ window.t = t; window.I18N = I18N;
 /* Kelime verisi vocab-core.js + vocab-<dil>.js dosyalarından geliyor.
    Açılışta yalnızca vocab-de.js yükleniyor; diğer diller o dile geçildiğinde
    pwa.js tarafından indiriliyor
-   (bkz. yukarıdaki <script src> etiketleri). fr/es/ru şu an boş iskelettir. */
+   (bkz. yukarıdaki <script src> etiketleri). Tüm altı dilin sözlüğü mevcuttur. */
 /* ======================= CONFIG ======================= */
 const LANGS = {
   de:{ label:"Almanca", native:"Deutsch", levels:["A1","A2","B1","B2"], voice:"de-DE", dir:"ltr" },
@@ -2648,10 +2657,9 @@ const LANGS = {
                   native≠target):            iki gerçek sözlük dosyası, ORTAK TÜRKÇE KARŞILIK
                                               üzerinden eşleştirilir (ör. Almanca "Auto" ve İngilizce
                                               "car" ikisi de Türkçede "araba" ise eşleştirilir).
-                                              Hiçbir çeviri UYDURULMAZ — sadece iki insan tarafından
-                                              zaten girilmiş çeviri aynı Türkçe kelimeye çıkıyorsa
-                                              birleştirilir; belirsiz (birden fazla eşleşen) kelimeler
-                                              GÜVENLİK için tamamen atlanır.
+                                              Belirsiz kelimeler atlanır. Örnekler ayrıca tam Türkçe
+                                              cümle karşılığı veya incelenmiş paralel cümlelerle
+                                              eşleştirilir; ilgisiz örnek çeviri olarak gösterilmez.
    Veri yapısı, ilerleme kayıtları (wordKeyFor v.w'ye dayanır) ve tüm diğer
    mantık DOKUNULMADAN kalır — sadece görüntüleme ve kaynak seçim katmanı değişir. */
 let NATIVE_LANG = 'tr';
@@ -2673,11 +2681,11 @@ function isCross(){ return IS_CROSS; }
 function FRONT_W(v){ return isReversed() ? v.tr : v.w; }
 function BACK_W(v){ return isReversed() ? v.w : v.tr; }
 function FRONT_EX(v){ return isReversed() ? v.exTr : v.ex; }
-function BACK_EX(v){ return isReversed() ? v.ex : v.exTr; }
+function BACK_EX(v){ return isReversed() ? v.ex : (v.exTr || (isCross() ? window.LUMIRA_EXAMPLES?.get(v.lang,NATIVE_LANG,v.ex) : '') || ''); }
 function FRONT_DIR(v){ return isReversed() ? 'ltr' : LANGS[v.lang].dir; }
-function BACK_DIR(v){ return isReversed() ? LANGS[v.lang].dir : 'ltr'; }
+function BACK_DIR(v){ return isReversed() ? LANGS[v.lang].dir : (isCross() ? LANGS[NATIVE_LANG].dir : 'ltr'); }
 function FRONT_VOICE(v){ return isReversed() ? 'tr-TR' : LANGS[v.lang].voice; }
-function BACK_VOICE(v){ return isReversed() ? LANGS[v.lang].voice : 'tr-TR'; }
+function BACK_VOICE(v){ return isReversed() ? LANGS[v.lang].voice : (isCross() ? LANGS[NATIVE_LANG].voice : 'tr-TR'); }
 function FRONT_LABEL(){ return isReversed() ? 'Türkçe' : LANGS[activeLang].native; }
 function BACK_LABEL(){ return isReversed() ? LANGS[activeLang].native : (isCross() ? LANGS[NATIVE_LANG].native : 'Türkçe'); }
 window.isReversed = isReversed; window.isCross = isCross;
@@ -2696,7 +2704,7 @@ function isNotebookPair(v){ return !!(v && v._nbPair); }
 function cardFrontWord(v){ return isNotebookPair(v) ? (v.w || '') : FRONT_W(v); }
 function cardBackWord(v){ return isNotebookPair(v) ? (v.tr || '') : BACK_W(v); }
 function cardFrontExample(v){ return isNotebookPair(v) ? (v.ex || '') : FRONT_EX(v); }
-function cardBackExample(v){ return isNotebookPair(v) ? (v.exTr || '') : BACK_EX(v); }
+function cardBackExample(v){ return isNotebookPair(v) ? (v.exTr || window.LUMIRA_EXAMPLES?.get(v.lang,v.meaningLang||'tr',v.ex) || '') : BACK_EX(v); }
 function cardFrontDir(v){ return isNotebookPair(v) ? ((LANGS[v.lang] && LANGS[v.lang].dir) || 'ltr') : FRONT_DIR(v); }
 function cardBackDir(v){ return isNotebookPair(v) ? ((LANGS[v.meaningLang] || {}).dir || 'ltr') : BACK_DIR(v); }
 function cardFrontVoice(v){ return isNotebookPair(v) ? ((LANGS[v.lang] && LANGS[v.lang].voice) || (v.lang === 'tr' ? 'tr-TR' : 'en-US')) : FRONT_VOICE(v); }
@@ -2718,34 +2726,10 @@ function cardBackLabel(v){
 function basePool(){ return IS_CROSS ? CROSS_DECK : VOCAB.filter(v => v.lang===activeLang); }
 window.basePool = basePool;
 
-/* İki dilin ORTAK Türkçe karşılığı üzerinden eşleştirilmiş, sentetik ama
-   UYDURULMAMIŞ bir deste üretir. Yalnızca HER İKİ tarafta da tekil
-   (belirsiz olmayan) eşleşmeler kullanılır — bu yüzden %100 iki insanın
-   yazdığı gerçek çeviridir, makine çevirisi YOKTUR. */
+/* Kelime anlamları ve örnek cümleler ayrı ayrı eşleştirilir. Aynı
+   kelimeye ait iki farklı cümle hiçbir zaman birbirinin çevirisi sayılmaz. */
 function buildCrossDeck(nativeCode, targetCode){
-  function normTr(s){
-    s = String(s||'').trim().toLowerCase();
-    s = s.replace(/^(bir|biraz)\s+/,'');
-    s = s.replace(/[.!?]+$/,'');
-    return s;
-  }
-  const nativeMap = {}, targetMap = {};
-  VOCAB.forEach(v=>{
-    if(v.lang===nativeCode){ const k=normTr(v.tr); (nativeMap[k]=nativeMap[k]||[]).push(v); }
-    else if(v.lang===targetCode){ const k=normTr(v.tr); (targetMap[k]=targetMap[k]||[]).push(v); }
-  });
-  const out = [];
-  Object.keys(targetMap).forEach(k=>{
-    if(!k) return;
-    const tArr = targetMap[k], nArr = nativeMap[k];
-    if(!tArr || tArr.length!==1 || !nArr || nArr.length!==1) return; /* belirsizse atla */
-    const tW = tArr[0], nW = nArr[0];
-    out.push({
-      lang: targetCode, level: tW.level, cat: tW.cat, pos: tW.pos,
-      w: tW.w, tr: nW.w, ex: tW.ex, exTr: nW.ex, c1: tW.c1, c2: tW.c2
-    });
-  });
-  return out;
+  return window.LUMIRA_VOCAB_PAIRS.build(VOCAB, nativeCode, targetCode);
 }
 window.buildCrossDeck = buildCrossDeck;
 
@@ -3271,7 +3255,7 @@ function findStemMatch(sentence, dictWord){
   for(const target of candidates){
     let bestIdx = -1, bestLen = -1;
     for(let i = 0; i < parts.length; i++){
-      const clean2 = parts[i].toLowerCase().replace(/[^a-zçğıöşüäöüß]/gi, '');
+      const clean2 = parts[i].normalize('NFC').toLowerCase().replace(/[^\p{L}\p{M}]/gu, '');
       if(!clean2) continue;
       if(isShort){
         if(clean2 === target){ bestIdx = i; break; }
@@ -3297,14 +3281,15 @@ function findStemMatch(sentence, dictWord){
 
 function colorSplit(sentence, word, c1, c2){
   if(!sentence) return '';
+  const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const range = findStemMatch(sentence, word);
   if(!range){
-    return `<span style="color:${c1}">${sentence}</span>`;
+    return `<span style="color:${c1}">${esc(sentence)}</span>`;
   }
   const before = sentence.slice(0, range.start);
   const match = sentence.slice(range.start, range.end);
   const after = sentence.slice(range.end);
-  return `${before}<span style="color:${c1}">${match}</span><span style="color:${c2}">${after}</span>`;
+  return `${esc(before)}<span style="color:${c1}">${esc(match)}</span><span style="color:${c2}">${esc(after)}</span>`;
 }
 
 /* ======================= RENDER: LANG / LEVEL / CHIPS ======================= */
@@ -3433,6 +3418,7 @@ function renderCard(){
      document.getElementById('trWord').textContent = "";
      document.getElementById('frontExample').textContent = "";
      document.getElementById('trExample').textContent = "";
+     const exampleNote=document.getElementById('exampleTranslationNote');if(exampleNote)exampleNote.hidden=true;
      if(typeof nbUpdateFavStar === 'function') nbUpdateFavStar();
      if(typeof nbRenderDifficultyBox === 'function') nbRenderDifficultyBox();
      if(typeof nbUpdateFinishButton === 'function') nbUpdateFinishButton();
@@ -3452,9 +3438,7 @@ function renderCard(){
   frontEx.innerHTML = colorSplit(cardFrontExample(v), cardFrontWord(v), v.c1, v.c2);
   frontEx.setAttribute('dir', cardFrontDir(v));
 
-  const trEx = document.getElementById('trExample');
-  trEx.innerHTML = colorSplit(cardBackExample(v), cardBackWord(v), v.c1, v.c2);
-  trEx.setAttribute('dir', cardBackDir(v));
+  refreshCardExample();
 
   document.getElementById('cardCount').textContent = `${idx+1} / ${deck.length}`;
   document.getElementById('cardCat').textContent = activeCat;
@@ -3471,6 +3455,33 @@ function renderCard(){
   if(typeof nbRenderDifficultyBox === 'function') nbRenderDifficultyBox();
   if(typeof nbUpdateFinishButton === 'function') nbUpdateFinishButton();
 }
+
+/* Updating an asynchronously translated example must preserve the current
+   card, its flipped state, navigation position and keyboard focus. */
+function refreshCardExample(){
+  const v=deck[idx],el=document.getElementById('trExample');if(!v || !el || document.getElementById('cardsView')?.style.display==='none')return;
+  const meaning=isNotebookPair(v)?(v.meaningLang||'tr'):NATIVE_LANG;
+  const source=isNotebookPair(v)?v.lang:(isReversed()?'tr':v.lang);
+  const text=cardBackExample(v),E=window.LUMIRA_EXAMPLES;
+  el.innerHTML=colorSplit(text,cardBackWord(v),v.c1,v.c2);el.setAttribute('dir',cardBackDir(v));
+  let note=document.getElementById('exampleTranslationNote');
+  if(!note){note=document.createElement('div');note.id='exampleTranslationNote';note.className='example-translation-note';el.after(note);}
+  note.replaceChildren();note.hidden=true;
+  const needs=!isNotebookPair(v) && isCross() && !v.exTr && v.ex;
+  if(!needs){if(!text && v._exampleTranslation==='unavailable')el.textContent=window.LUMIRA_VOCAB_PAIRS.missing[meaning];return;}
+  if(!E){el.textContent=window.LUMIRA_VOCAB_PAIRS.missing[meaning];return;}
+  const cached=E.get(source,meaning,v.ex);
+  if(cached){el.innerHTML=colorSplit(cached,cardBackWord(v),v.c1,v.c2);note.textContent=E.label('automatic');note.hidden=false;return;}
+  E.request(source,meaning,v.ex);
+  const state=E.state(source,meaning,v.ex);el.textContent=E.label(state);
+  if(state!=='loading'){
+    const button=document.createElement('button');button.type='button';button.textContent=E.label('retry');button.disabled=navigator.onLine===false;
+    button.onclick=e=>{e.stopPropagation();E.request(source,meaning,v.ex,{retry:true});refreshCardExample();};note.append(button);note.hidden=false;
+  }
+  // Four nearby examples share one server request and are ready before a flip.
+  for(let n=1;n<=3;n++){const next=deck[(idx+n)%deck.length];if(next && next.lang===source && !next.exTr && next.ex)E.request(source,meaning,next.ex,{priority:1});}
+}
+window.refreshCardExample=refreshCardExample;
 
 document.getElementById('rabbitBtn').onclick = (e) => {
   e.stopPropagation();
@@ -3923,12 +3934,13 @@ let nbFilterCat = '';
 let nbFilterDiff = '';
 
 function nbSanitizeKey(s){
-  return String(s||'').toLowerCase().trim()
-    .replace(/[.#$\[\]\/\s]+/g, '_')
-    .replace(/[^a-z0-9_а-яa-zğüşöçıä]/gi, '')
-    .slice(0, 80) || 'x';
+  return 'u_'+encodeURIComponent(String(s||'').normalize('NFC').trim()).replace(/\./g,'%2E');
 }
 function nbFavKey(lang, w){ return 'fav_' + (lang||'de') + '_' + nbSanitizeKey(w); }
+function nbExistingFavId(v){
+  const exact=Object.keys(nbWords||{}).find(id=>{const it=nbWords[id];return it && (it.lang||'de')===v.lang && it.w===v.w && (it.tr||'')===(v.tr||'');});
+  return exact || nbFavKey(v.lang,v.w);
+}
 
 function nbInitSync(){
   const db = window.LB_getDb ? window.LB_getDb() : null;
@@ -4265,12 +4277,11 @@ function nbAutoFill(lang, word, currentCat, currentEx, currentExTr){
   if(match){
     if(!cat && match.cat){ cat = match.cat; filled = true; }
     if(!ex && match.ex){ ex = match.ex; filled = true; }
-    if(!exTr && match.exTr){ exTr = match.exTr; filled = true; }
+    if(!exTr && match.exTr && ex === match.ex){ exTr = match.exTr; filled = true; }
     if(match.level){ level = match.level; }
   }
   if(!cat){ cat = 'Genel'; filled = true; }
-  if(!ex && NB_TEMPLATE_EX[lang]){ ex = NB_TEMPLATE_EX[lang](word); filled = true; }
-  if(!exTr){ exTr = NB_TEMPLATE_EX_TR(word); filled = true; }
+  if(!ex && NB_TEMPLATE_EX[lang]){ ex = NB_TEMPLATE_EX[lang](word); exTr = NB_TEMPLATE_EX_TR(word); filled = true; }
   return { cat, ex, exTr, level, filled };
 }
 
@@ -4279,7 +4290,7 @@ function nbQuickAdd(v){
     if(!v) return;
     nbSelectedAddLang = v.lang;
     nbEditingId = null;
-    nbPrefill = { w: v.w||'', tr: v.tr||'', ex: v.ex||'', cat: v.cat||'', exTr: v.exTr||'' };
+    nbPrefill = { w: v.w||'', tr: v.tr||'', ex: v.ex||'', cat: v.cat||'', exTr: v.exTr||'', meaningLang:v.meaningLang || (v.lang === 'tr' ? NATIVE_LANG : 'tr') };
     nbRender();
     const wi = document.getElementById('nbInputWord');
     if(wi) wi.scrollIntoView({ behavior:'smooth', block:'center' });
@@ -4620,12 +4631,15 @@ function nbRender(){
     if(!w){ wordInput.focus(); return; }
     const db = window.LB_getDb(); const uid2 = window.LB_getUid();
     if(!db || !uid2) return;
+    const reference = (nbPrefill && nbPrefill.w === w) ? nbPrefill : (editing && editing.w === w ? editing : null);
+    if(reference && ex && ex !== reference.ex) exTr = '';
     const af = nbAutoFill(nbSelectedAddLang, w, cat, ex, exTr);
     if(af.filled) nbToast(t('nb_autofilled_toast'));
     cat = af.cat; ex = af.ex; exTr = af.exTr;
     const level = af.level || '';
+    const meaningLang = (nbPrefill && nbPrefill.w === w && nbPrefill.meaningLang) || (editing && editing.w === w && editing.meaningLang) || (nbSelectedAddLang === 'tr' ? NATIVE_LANG : 'tr');
     if(nbEditingId != null){
-      db.ref('progress/'+uid2+'/notebook/'+nbEditingId).update({ w, tr, ex, exTr, cat, level, meaningLang:nbSelectedAddLang === 'tr' ? NATIVE_LANG : 'tr', lang: nbSelectedAddLang });
+      db.ref('progress/'+uid2+'/notebook/'+nbEditingId).update({ w, tr, ex, exTr, cat, level, meaningLang, lang: nbSelectedAddLang });
       nbEditingId = null;
     }else{
       const dupExists = Object.keys(nbWords||{}).some(id => {
@@ -4636,7 +4650,7 @@ function nbRender(){
         alert(t('nb_duplicate_word'));
         return;
       }
-      db.ref('progress/'+uid2+'/notebook').push({ w, tr, ex, exTr, cat, level, meaningLang:nbSelectedAddLang === 'tr' ? NATIVE_LANG : 'tr', lang: nbSelectedAddLang, ts: Date.now() });
+      db.ref('progress/'+uid2+'/notebook').push({ w, tr, ex, exTr, cat, level, meaningLang, lang: nbSelectedAddLang, ts: Date.now() });
     }
     nbSelectedAddLang = null;
     nbPrefill = null;
@@ -4815,7 +4829,7 @@ function nbUpdateFavStar(){
     if(!el) return;
     if(!v || inNotebookStudy){ el.style.display = 'none'; return; }
     el.style.display = '';
-    const key = nbFavKey(v.lang, v.w);
+    const key = nbExistingFavId(v);
     const on = !!(nbWords && nbWords[key] && nbWords[key].isFavorite);
     el.textContent = on ? '★' : '☆';
     el.classList.toggle('on', on);
@@ -4851,8 +4865,9 @@ function nbToggleFavorite(silent){
     }, 300);
     return;
   }
-  const favId = nbFavKey(v.lang, v.w);
-  const existing = nbWords[favId];
+  const favId = nbExistingFavId(v);
+  const candidate = nbWords[favId];
+  const existing = candidate && candidate.w === v.w ? candidate : null;
   const isFav = !!(existing && existing.isFavorite);
   const ref = db.ref('progress/'+uid+'/notebook/'+favId);
   if(isFav){
@@ -4871,8 +4886,8 @@ function nbToggleFavorite(silent){
     });
   }else{
     const payload = existing ? Object.assign({}, existing, { isFavorite: true }) : {
-      w: v.w, tr: v.tr||'', ex: v.ex||'', exTr: v.exTr||'', pos: v.pos||'',
-      lang: v.lang, cat: v.cat||'', level: v.level||'', difficulty: 'orta',
+      w: v.w, tr: v.tr||'', ex: v.ex||'', exTr: (isCross() ? cardBackExample(v) : v.exTr)||'', pos: v.pos||'',
+      lang: v.lang, meaningLang: v.meaningLang || (isCross() ? NATIVE_LANG : 'tr'), cat: v.cat||'', level: v.level||'', difficulty: 'orta',
       isFavorite: true, ts: Date.now()
     };
     /* İyimser güncelleme: Firebase yanıtını beklemeden yıldızı doldur ve
@@ -5129,9 +5144,14 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
   }, { once:true });
 })();
 </script>
-<script src="feature-usage.js?v=1.9.3"></script>
-<script src="progress.js?v=1.9.3"></script>
-<script src="live-translate.js?v=1.9.3"></script>
+<script src="live-local-loader.js?v=1.9.6"></script>
+<script src="access-i18n.js?v=1.9.6"></script>
+<script src="feature-usage.js?v=1.9.6"></script>
+<script src="example-translations.js?v=1.9.6"></script>
+<script src="access-screen.js?v=1.9.6"></script>
+<script src="live-cloud.js?v=1.9.6"></script>
+<script src="progress.js?v=1.9.6"></script>
+<script src="live-translate.js?v=1.9.6"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -5142,22 +5162,22 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.9.3"></script>
-<script defer src="theme.js?v=1.9.3"></script>
+<script defer src="voice.js?v=1.9.6"></script>
+<script defer src="theme.js?v=1.9.6"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.9.3"></script>
+<script defer src="pwa.js?v=1.9.6"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.9.3"></script>
+<script defer src="support-badges.js?v=1.9.6"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.9.3"></script>
-<script defer src="analytics.js?v=1.9.3"></script>
+<script defer src="splash.js?v=1.9.6"></script>
+<script defer src="analytics.js?v=1.9.6"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.9.3"></script>
+<script defer src="admin.js?v=1.9.6"></script>
 </body>
 </html>

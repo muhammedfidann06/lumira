@@ -6430,3 +6430,9 @@ add("en","A2","Deyimler","Don't take it so seriously","bunu bu kadar ciddiye alm
 // ============================================
 // ALFABE - English Alphabet
 // ============================================
+
+/* İnceleme 1.9.5 — eksik temel kullanım ve teknoloji kelimeleri. */
+add("en","A2","Zamirler","yours","seninki","pronoun","This pen is yours.","Bu kalem seninki.");
+add("en","A2","Zamirler","hers","onunki (kadın)","pronoun","This bag is hers.","Bu çanta onunki.");
+add("en","A2","Zamirler","ours","bizimki","pronoun","This house is ours.","Bu ev bizimki.");
+add("en","A2","Zamirler","theirs","onlarınki","pronoun","This car is theirs.","Bu araba onlarınki.");

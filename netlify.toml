@@ -18,6 +18,11 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+[[headers]]
+  for = "/vendor/bergamot-0.4.9/*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
+
 # /privacy → /privacy/ (sondaki eğik çizgi olmadan da açılsın)
 [[redirects]]
   from = "/privacy"

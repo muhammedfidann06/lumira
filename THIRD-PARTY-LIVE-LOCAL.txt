@@ -1,0 +1,62 @@
+Lumira 1.9.5 — local speech and translation components
+
+No translation service account or hosted inference API is used in local mode.
+The microphone waveform and recognised text are processed in browser workers.
+Model files are downloaded from public repositories and cached on the device.
+
+1. Bergamot Translator 0.4.9 — Mozilla Public License 2.0
+   Copyright: Bergamot Translator contributors.
+   Bundled unmodified distribution files:
+     vendor/bergamot-0.4.9/translator-worker.js
+     vendor/bergamot-0.4.9/bergamot-translator-worker.js
+     vendor/bergamot-0.4.9/bergamot-translator-worker.wasm
+   Source commit: 8cc5d0495479c9ec56eafafd6bcd7fb5b929ca98
+   Corresponding source and build instructions:
+   https://github.com/browsermt/bergamot-translator/tree/8cc5d0495479c9ec56eafafd6bcd7fb5b929ca98
+   Exact distribution:
+   https://registry.npmjs.org/@browsermt/bergamot-translator/-/bergamot-translator-0.4.9.tgz
+   License: /vendor/licenses/bergamot-MPL-2.0.txt
+
+2. Firefox Translations models — Mozilla Public License 2.0
+   Copyright: Mozilla and translation-model contributors.
+   Source/training pipeline: https://github.com/mozilla/translations
+   Public registry: https://mozilla.github.io/translations/model-registry/
+   Selected models: English ↔ Turkish, German, Arabic, French, Spanish, Russian.
+   Exact versioned model URLs and SHA-256 digests: /live-local-models.json
+   The model weights are unmodified. Downloads use the public Cloud Storage
+   media endpoint, without authentication, to support browser CORS requests.
+   License: /vendor/licenses/firefox-models-MPL-2.0.txt
+
+3. Whisper Base ONNX
+   Model conversion: https://huggingface.co/Xenova/whisper-base
+   Revision: 64da57285918e20ea79ea5c88eed7197933abaa8
+   Original model: https://huggingface.co/openai/whisper-base
+   ONNX model card license: Apache License 2.0.
+   Original Whisper implementation: https://github.com/openai/whisper — MIT.
+   No fine-tuning or model-weight changes are made by Lumira.
+   License texts: /vendor/licenses/transformers-Apache-2.0.txt
+                  /vendor/licenses/whisper-MIT.txt
+
+4. Transformers.js 3.8.1 — Apache License 2.0
+   Copyright: Hugging Face and contributors.
+   https://github.com/huggingface/transformers.js/tree/3.8.1
+   Loaded from the pinned jsDelivr distribution; inference is local.
+   License: /vendor/licenses/transformers-Apache-2.0.txt
+
+5. ONNX Runtime Web — MIT
+   Copyright: Microsoft Corporation.
+   Supplied by the pinned Transformers.js distribution, not a paid service.
+   https://github.com/microsoft/onnxruntime
+   License: /vendor/licenses/onnxruntime-MIT.txt
+
+Azure Speech and Firebase remain separate existing services. Their credentials
+are not part of this package. Cevirist proprietary code, credentials, endpoints
+and account credits are not incorporated into Lumira.
+
+6. Twemoji 14.0.2 — graphics CC BY 4.0
+   Copyright 2020 Twitter, Inc and other contributors.
+   Six original SVG graphics in vendor/badges, used as support badge icons.
+   Source: https://github.com/twitter/twemoji/tree/v14.0.2/assets/svg
+   No modifications to the SVG artwork.
+   Attribution and license: /vendor/badges/ATTRIBUTION.txt
+                            /vendor/badges/LICENSE-GRAPHICS.txt

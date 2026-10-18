@@ -1,13 +1,16 @@
-/* Continuous Azure speech translation. No browser SpeechRecognition fallback:
-   the source language is actually detected from the microphone audio. */
+/* Azure → Gemini → Groq → Cloudflare → local. One microphone and account lease. */
 (function () {
   'use strict';
   const F = window.LUMIRA_FEATURES;
+  // Review link for testing the free engine without exhausting Azure first.
+  // This changes only provider selection; server-side account limits remain.
+  const LOCAL_TEST = new URLSearchParams(window.location.search).get('liveEngine') === 'local';
   const LOCALES = ['tr-TR','de-DE','en-US','ar-SA','fr-FR','es-ES','ru-RU'];
   const FLAGS = { tr:'🇹🇷', de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
-  const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null };
+  const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null, provider:'', local:null, localProgress:null, localError:false, localArm:null, switching:null, pendingAudio:null, azureStartedAt:0, azureFailures:0, providers:[], failed:new Set(), cloud:null, cloudEpoch:0, lastResult:0, awaitingSince:0, sdkTask:null };
   const node = id => s.root?.querySelector('#' + id);
-  const active = () => s.phase === 'starting' || s.phase === 'listening' || s.phase === 'reconnecting';
+  const active = () => ['starting','listening','reconnecting','preparing'].includes(s.phase);
+  const providerError = e => ['speech_unavailable','speech_not_configured','speech_auth_error','speech_busy','speech_config_error','sdk_unavailable'].includes(e?.featureCode);
   const label = code => { const names = window.t && window.t('lang_names'); return (names && names[code]) || code.toUpperCase(); };
   const time = seconds => { seconds = Math.max(0, Math.ceil(seconds)); return Math.floor(seconds/60) + ':' + String(seconds % 60).padStart(2,'0'); };
   function error(code) { return Object.assign(new Error(code), { featureCode:code }); }
@@ -19,11 +22,14 @@
     if (button) {
       button.textContent = F.text(active() ? 'stop' : 'start');
       button.setAttribute('aria-pressed', String(active()));
-      button.disabled = !active() && s.providerConfigured === false;
+      button.disabled = false;
     }
     if (select) select.disabled = active();
     if (clear) clear.disabled = active() || (!s.entries.length && !s.draft);
-    if (statusBox) { statusBox.textContent = F.text(s.message); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
+    if (statusBox) { statusBox.textContent = F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
+    const backup=node('ltBackup'), retry=node('ltBackupRetry');
+    if(backup)backup.textContent=F.text(s.localError?'local_backup_error':s.localProgress?.ready?'local_ready':s.localProgress?'local_downloading':'local_hint',{percent:s.localProgress?.percent || 0,mb:Math.ceil((s.localProgress?.total || 235000000)/1000000)});
+    if(retry){retry.hidden=!s.localError || !active() || s.provider!=='azure';retry.textContent=F.text('local_retry');}
     drawQuota();
   }
   function drawQuota() {
@@ -33,7 +39,7 @@
     const q = s.quota.live;
     if (q.limitSeconds === null) el.textContent = F.text('unlimited');
     else {
-      const left = active() && s.remaining !== null ? Math.max(0,s.remaining - (performance.now()-s.remainingAt)/1000) : q.remainingSeconds;
+      const left = active() && s.sessionId && s.remaining !== null ? Math.max(0,s.remaining - (performance.now()-s.remainingAt)/1000) : q.remainingSeconds;
       el.textContent = F.text('live',{ time:time(left), limit:q.limitSeconds/60 });
     }
     el.title = F.text('reset',{date:new Date(q.resetsAt).toLocaleString(window.NATIVE_LANG || 'tr',{timeZone:q.timeZone})}) + ' (' + q.timeZone + ')';
@@ -69,6 +75,136 @@
     });
     return s.sdkPromise;
   }
+  async function initLocal(generation) {
+    const Local=window.LUMIRA_LOCAL || await window.LUMIRA_LOCAL_READY;
+    if(generation!==s.generation || !active())return;
+    if(!Local || !(window.AudioContext || window.webkitAudioContext))return;
+    try{
+      const local=new Local({target:s.target,audioContext:s.pendingAudio,
+        onAudio:(audio,position)=>{
+          if(generation!==s.generation || !active())return;
+          s.cloud?.receive(audio,position);
+          if(s.provider==='azure' && s.phase==='listening'){
+            let energy=0;for(const v of audio)energy+=v*v;
+            if(Math.sqrt(energy/Math.max(1,audio.length))>.01 && !s.awaitingSince)s.awaitingSince=performance.now();
+            if(s.awaitingSince && performance.now()-s.awaitingSince>15000 && performance.now()-s.lastResult>15000)fallback(generation);
+          }
+        },
+        onProgress:progress=>{if(generation===s.generation){s.localProgress=progress;s.localError=false;drawControls();}},
+        onResult:entry=>{
+          if(generation!==s.generation || !active() || s.provider!=='local')return;
+          s.entries.push({original:entry.original || '',translated:entry.translated || ''});
+          s.detected=entry.language;s.draft=null;status('local_listening');drawText();
+        },
+        onError:e=>{if(generation===s.generation && s.provider==='local')stop(e.featureCode || 'local_model_error',true);},
+        onNotice:key=>{if(generation===s.generation && s.provider==='local')status(key);}
+      });
+      s.pendingAudio=null;s.local=local;
+      s.localArm=local.arm(s.stream);
+      s.localArm.catch(()=>{if(generation===s.generation){s.localError=true;drawControls();}});
+    }catch(e){s.localError=true;drawControls();}
+  }
+  function warmLocal(generation) {
+    if(!s.local)return;
+    s.local.prepare().catch(()=>{if(generation===s.generation){s.localError=true;drawControls();}});
+  }
+  function heartbeat(generation,id) {
+    clearInterval(s.timer);clearInterval(s.tick);
+    s.timer=setInterval(()=>renew(generation,id),5000);s.tick=setInterval(drawQuota,1000);
+  }
+  async function fallback(generation) {
+    if(generation!==s.generation || !active() || s.provider==='local')return;
+    if(s.switching)return s.switching;
+    if(s.provider && !s.provider.endsWith('preparing'))s.failed.add(s.provider);
+    s.switching=(async()=>{
+      const current=()=>generation===s.generation && active();
+      s.cloudEpoch++;s.cloud?.stop();s.cloud=null;
+      await releaseRecognizer(true);
+      if(!current())return;
+      for(const provider of s.providers){
+        if(s.failed.has(provider))continue;
+        s.provider=provider;s.phase='reconnecting';s.draft=null;s.awaitingSince=0;status('reconnecting');
+        const epoch=++s.cloudEpoch;
+        try {
+          const data=await F.api('liveConnect',{id:s.sessionId,provider,target:s.target},{timeoutMs:6500});
+          if(!current() || epoch!==s.cloudEpoch)return;
+          if(provider==='azure'){
+            s.SDK=await (s.sdkTask || sdk());
+            if(!current())return;
+            s.speech=data.speech;s.tokenDeadline=performance.now()+Math.max(0,data.speech.expiresAt-Date.now());
+            await connectRecognizer(generation);
+            if(s.failed.has('azure'))throw error('speech_unavailable');
+          }else{
+            if(!s.local || !window.LUMIRA_CLOUD)throw error('sdk_unavailable');
+            await s.localArm;
+            if(!current())return;
+            const previous=s.entries.slice(-3), baseOriginal=previous.map(e=>e.original).join(' '), baseTranslation=previous.map(e=>e.translated).join(' ');
+            let lastOriginal=baseOriginal,lastTranslation=baseTranslation,firstResult=true;
+            const trim=(before,value,max)=>window.LUMIRA_LOCAL?.removeOverlap?.(before,value,max) ?? value;
+            const cloud=new window.LUMIRA_CLOUD.CloudSession({provider,credential:data.credential,target:s.target,id:s.sessionId,entryId:s.sessionId+'-'+epoch,
+              onResult:entry=>{
+                if(!current() || s.cloud!==cloud || s.provider!==provider)return;
+                if(entry.id){
+                  let item=s.entries.find(e=>e.id===entry.id);
+                  if(!item){item={id:entry.id,original:'',translated:''};s.entries.push(item);}
+                  item.original=trim(baseOriginal,entry.original || '',50);item.translated=trim(baseTranslation,entry.translated || '',50);
+                }else {
+                  const original=trim(lastOriginal,entry.original || '',firstResult?50:12),translated=trim(lastTranslation,entry.translated || '',firstResult?50:12);
+                  if(original || translated)s.entries.push({original,translated});
+                  lastOriginal=entry.original || lastOriginal;lastTranslation=entry.translated || lastTranslation;firstResult=false;
+                }
+                if(FLAGS[entry.language])s.detected=entry.language;
+                s.draft=null;s.lastResult=performance.now();s.awaitingSince=0;drawText();
+              },
+              onCommit:position=>{if(current() && s.cloud===cloud)s.local?.markCommitted(position);},
+              onError:e=>{
+                if(!current() || s.cloud!==cloud)return;
+                if(['login_required','live_limit','usage_unavailable'].includes(e.featureCode)){stop(e.featureCode,true);return;}
+                if(e.featureCode==='cloud_rotate'){
+                  cloud.stop();s.cloud=null;
+                  // Normal timed session renewal is not exhausted credit.
+                  if(s.switching)return;
+                  s.provider='';fallback(generation);return;
+                }
+                if(s.switching){s.failed.add(provider);cloud.stop();return;}
+                fallback(generation);
+              }});
+            s.cloud=cloud;
+            await cloud.start();
+            if(!current() || epoch!==s.cloudEpoch){cloud.stop();return;}
+            if(s.failed.has(provider))throw error('speech_unavailable');
+            // Replay only the recent uncommitted tail; memory stays bounded.
+            const replay=s.local.recentAudio?.();
+            if(replay?.length)for(let n=0;n<replay.length;n+=1600)cloud.receive(replay.subarray(n,n+1600),Math.max(0,s.local.position-(replay.length-n-1600)/16000));
+            s.phase='listening';status('listening');holdScreen(generation);warmLocal(generation);
+          }
+          if(current())return;
+        }catch(e){
+          if(!current())return;
+          if(['login_required','live_limit','usage_unavailable','live_already_active'].includes(e.featureCode))throw e;
+          s.failed.add(provider);s.cloud?.stop();s.cloud=null;
+          await releaseRecognizer(true);
+        }
+      }
+      if(!current())return;
+      s.provider='local-preparing';s.phase='preparing';status('local_preparing');
+      clearInterval(s.timer);clearTimeout(s.deadlineTimer);
+      const oldId=s.sessionId;s.sessionId=null;
+      const released=oldId?F.api('liveStop',{id:oldId}):Promise.resolve();released.catch(()=>{});
+      if(!s.local)throw error('local_unsupported');
+      await s.localArm;await s.local.prepare();await released;
+      if(!current())return;
+      const id=F.id();s.sessionId=id;
+      const data=await F.api('liveStart',{id,provider:'local'});
+      if(!current()){F.api('liveStop',{id}).catch(()=>{});return;}
+      s.provider='local';s.tokenDeadline=Infinity;applyLease(data,generation);
+      const previous=s.entries.slice(-3);
+      s.local.start({original:previous.map(e=>e.original).join(' '),translated:previous.map(e=>e.translated).join(' ')});
+      s.draft=null;s.phase='listening';status('local_listening');heartbeat(generation,id);holdScreen(generation);
+    })().catch(e=>{if(generation===s.generation && active())stop(e.featureCode || 'speech_unavailable',true);})
+      .finally(()=>{if(generation===s.generation)s.switching=null;});
+    return s.switching;
+  }
   function applyLease(data, generation) {
     if (generation !== s.generation || !active()) return;
     s.quota = data.quota;
@@ -79,35 +215,39 @@
     const wait=s.leaseDeadline-now;
     s.deadlineTimer=setTimeout(() => {
       if(generation!==s.generation || !active())return;
-      // A lease boundary (including midnight) is not the user's Stop action.
-      // Pause the provider until a new server lease has been obtained.
-      reconnect(generation);
-      renew(generation,s.sessionId);
+      // Never continue spending after the last server-authorized second.
+      const exhausted=s.remaining!==null && s.remaining-(performance.now()-s.remainingAt)/1000<=.1;
+      stop(exhausted?'live_limit':'usage_unavailable',true);
     },Math.max(0,wait));
     if (data.speech) {
       s.speech=data.speech;
       s.tokenDeadline=now+data.speech.expiresAt-data.quota.serverNow;
-      if (s.recognizer) s.recognizer.authorizationToken=data.speech.token;
+      if (s.recognizer && s.provider==='azure') s.recognizer.authorizationToken=data.speech.token;
     }
+    if(s.provider==='local')s.local?.resume();
     drawQuota();
   }
   async function renew(generation, id) {
-    if (s.renewPending || generation !== s.generation || !active()) return;
-    s.renewPending=true;
+    if(!id || id!==s.sessionId || s.renewPending || generation!==s.generation || !active())return;
+    s.renewPending=id;
     try {
       let data;
-      try {
-        data=await F.api('liveRenew',{id,refreshToken:s.tokenDeadline-performance.now()<60000});
-      } catch(e) {
-        if(e.featureCode!=='session_expired' || generation!==s.generation || !active())throw e;
-        // Reacquire after a day reset or an expired lease. The server still
-        // enforces the daily allowance and the one-session-per-account rule.
-        data=await F.api('liveStart',{id});
-      }
-      if (generation !== s.generation || !active()) { F.api('liveStop',{id}).catch(()=>{}); return; }
+      try{data=await F.api('liveRenew',{id,provider:'local'});}
+      catch(e){if(generation!==s.generation || id!==s.sessionId || !active())return;if(e.featureCode!=='session_expired')throw e;data=await F.api('liveStart',{id,provider:'local'});}
+      if(generation!==s.generation || id!==s.sessionId || !active()){F.api('liveStop',{id}).catch(()=>{});return;}
       applyLease(data,generation);
-    } catch (e) { if(generation===s.generation)stop(e.featureCode || 'speech_unavailable',true); }
-    finally { if(generation===s.generation)s.renewPending=false; }
+      if(s.provider==='azure' && s.tokenDeadline-performance.now()<60000){
+        const epoch=s.cloudEpoch;
+        try {
+          const token=await F.api('liveConnect',{id,provider:'azure',target:s.target},{timeoutMs:6500});
+          if(generation===s.generation && epoch===s.cloudEpoch && s.provider==='azure'){
+            s.speech=token.speech;s.tokenDeadline=performance.now()+token.speech.expiresAt-Date.now();
+            if(s.recognizer)s.recognizer.authorizationToken=token.speech.token;
+          }
+        }catch(e){if(generation===s.generation && epoch===s.cloudEpoch && s.provider==='azure')fallback(generation);}
+      }
+    }catch(e){if(generation===s.generation && id===s.sessionId)stop(e.featureCode || 'usage_unavailable',true);}
+    finally{if(s.renewPending===id)s.renewPending=false;}
   }
   function releaseRecognizer(keepMicrophone) {
     const r=s.recognizer,a=s.audio,input=s.inputStream;
@@ -135,23 +275,25 @@
     }).catch(()=>{});
   }
   function reconnect(generation) {
-    if(generation!==s.generation || !active() || s.restartPending || s.restartTimer)return;
+    if(generation!==s.generation || !active() || s.provider!=='azure' || s.restartPending || s.restartTimer)return;
+    if(performance.now()-s.azureStartedAt>30000)s.azureFailures=0;
+    if(++s.azureFailures>2){fallback(generation);return;}
     s.restartPending=true;s.phase='reconnecting';s.draft=null;status('reconnecting');
     releaseRecognizer(true).then(()=>{
-      if(generation!==s.generation || !active())return;
+      if(generation!==s.generation || !active() || s.provider!=='azure')return;
       const delay=Math.min(5000,250*Math.pow(2,Math.min(s.restartAttempt++,5)));
       s.restartTimer=setTimeout(async()=>{
         s.restartTimer=null;s.restartPending=false;
-        if(generation!==s.generation || !active())return;
+        if(generation!==s.generation || !active() || s.provider!=='azure')return;
         if(s.leaseDeadline<=performance.now()){reconnect(generation);return;}
         try{await connectRecognizer(generation);}
-        catch(e){if(generation===s.generation && active() && e.featureCode!=='recognizer_replaced')reconnect(generation);}
+        catch(e){if(generation===s.generation && active() && e.featureCode!=='recognizer_replaced')fallback(generation);}
       },delay);
     });
   }
   async function connectRecognizer(generation) {
     const SDK=s.SDK,media=s.stream,speech=s.speech;
-    if(!SDK || !media || !speech || generation!==s.generation || !active())throw error('recognizer_replaced');
+    if(!SDK || !media || !speech || generation!==s.generation || !active() || s.provider!=='azure')throw error('recognizer_replaced');
     const config=SDK.SpeechTranslationConfig.fromEndpoint(new URL('wss://'+speech.region+'.stt.speech.microsoft.com/speech/universal/v2'));
     config.authorizationToken=speech.token;
     config.speechRecognitionLanguage='en-US';
@@ -164,10 +306,12 @@
     s.audio=SDK.AudioConfig.fromStreamInput(s.inputStream);
     const recognizer=SDK.TranslationRecognizer.FromConfig(config,detect,s.audio);
     s.recognizer=recognizer;
-    const current=()=>generation===s.generation && active() && s.recognizer===recognizer;
+    const captureStart=s.local?.position || 0;
+    const current=()=>generation===s.generation && active() && s.provider==='azure' && s.recognizer===recognizer;
     const seen=new Set();
     function result(event,final){
       if(!current())return;
+      s.lastResult=performance.now();s.awaitingSince=0;
       const r=event.result;
       if(!r || !r.text || (final && r.reason!==SDK.ResultReason.TranslatedSpeech))return;
       let locale=r.language || '';
@@ -190,25 +334,14 @@
         const key=Number.isFinite(r.offset)?[r.resultId,r.offset,r.duration].join(':'):null;
         if(key && seen.has(key))return;
         if(key)seen.add(key);
-        s.entries.push(entry);s.draft=null;s.restartAttempt=0;s.authRetries=0;
+        s.entries.push(entry);s.draft=null;s.restartAttempt=0;s.authRetries=0;s.azureFailures=0;
+        if(Number.isFinite(r.offset) && Number.isFinite(r.duration))s.local?.markCommitted(captureStart+(r.offset+r.duration)/10000000);
       }else s.draft=entry;
       drawText();
     }
     recognizer.recognizing=(_,e)=>result(e,false);
     recognizer.recognized=(_,e)=>result(e,true);
-    recognizer.canceled=(_,e)=>{
-      if(!current())return;
-      const codes=SDK.CancellationErrorCode || {},code=e?.errorCode;
-      if(code!==undefined && [codes.AuthenticationFailure,codes.Forbidden].includes(code)){
-        // The active connection may still use the preceding token. Reopen it
-        // once with the most recently renewed token before declaring failure.
-        if(s.authRetries++===0){reconnect(generation);return;}
-        stop('speech_auth_error',true);return;
-      }
-      if(code!==undefined && code===codes.TooManyRequests){stop('speech_busy',true);return;}
-      if(code!==undefined && code===codes.BadRequest){stop('speech_config_error',true);return;}
-      reconnect(generation);
-    };
+    recognizer.canceled=()=>{if(current()){s.failed.add('azure');s.cancelStart?.();if(!s.switching)fallback(generation);}};
     recognizer.sessionStopped=()=>{if(current())reconnect(generation);};
     await new Promise((resolve,reject)=>{
       let settled=false;
@@ -222,13 +355,15 @@
       s.cancelStart=cancel;
       recognizer.startContinuousRecognitionAsync(()=>finish(),()=>finish(error('speech_unavailable')));
     });
-    if(current()){s.phase='listening';status('listening');holdScreen(generation);}
+    if(current()){s.azureStartedAt=performance.now();s.phase='listening';status('listening');holdScreen(generation);warmLocal(generation);}
   }
   function stop(message, bad, exiting) {
     const id=s.sessionId;
-    ++s.generation;s.sessionId=null;s.phase='idle';s.renewPending=false;s.draft=null;
+    ++s.generation;s.cloudEpoch++;s.cloud?.stop();s.cloud=null;s.sessionId=null;s.phase='idle';s.renewPending=false;s.draft=null;
     clearInterval(s.timer);clearInterval(s.tick);clearTimeout(s.deadlineTimer);clearTimeout(s.restartTimer);
-    s.restartTimer=null;s.restartPending=false;s.restartAttempt=0;s.authRetries=0;s.speech=null;
+    s.restartTimer=null;s.restartPending=false;s.restartAttempt=0;s.authRetries=0;s.speech=null;s.azureFailures=0;s.provider='';s.switching=null;
+    s.local?.stop();s.local=null;s.localArm=null;
+    if(s.pendingAudio){s.pendingAudio.close().catch(()=>{});s.pendingAudio=null;}
     if(s.wakeLock){s.wakeLock.release().catch(()=>{});s.wakeLock=null;}
     releaseRecognizer();
     if(id){
@@ -238,43 +373,46 @@
       }
     }
     status(message || 'stopped',bad);drawText();
+    if(message==='live_limit')window.LUMIRA_ACCESS?.open('live_limit',s.quota);
   }
   async function start() {
     if(active())return;
     if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia){status('browser_unsupported',true);return;}
     const generation=++s.generation,id=F.id();
-    s.phase='starting';s.sessionId=id;s.draft=null;s.detected='';status('starting');drawText();
-    let media,SDK;
-    try {
-      // Request microphone access within the user's click; load SDK in parallel.
-      const mediaTask=navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(stream=>{
-        if(generation!==s.generation){stopTracks(stream);throw error('session_expired');}
-        s.stream=stream;return stream;
-      });
-      [media,SDK]=await Promise.all([mediaTask,sdk()]);
+    s.failed=new Set();s.providers=[];s.provider='';s.phase='starting';s.sessionId=id;s.draft=null;s.detected='';s.localProgress=null;s.localError=false;s.lastResult=performance.now();s.awaitingSince=0;status('starting');drawText();
+    const Audio=window.AudioContext || window.webkitAudioContext;
+    if(Audio){try{s.pendingAudio=new Audio({sampleRate:16000});}catch(e){try{s.pendingAudio=new Audio();}catch(e){}}s.pendingAudio?.resume().catch(()=>{});}
+    s.sdkTask=sdk();s.sdkTask.catch(()=>{});
+    let media;
+    try{
+      media=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
       if(generation!==s.generation){stopTracks(media);return;}
+      s.stream=media;
       if(s.releasePromise)await s.releasePromise;
       if(generation!==s.generation){stopTracks(media);return;}
-      const data=await F.api('liveStart',{id});
-      if(generation!==s.generation){stopTracks(media);F.api('liveStop',{id}).catch(()=>{});return;}
-      applyLease(data,generation);
-      if(!data.session || !data.speech)throw error('speech_unavailable');
-      s.SDK=SDK;
+      await initLocal(generation);
+      if(generation!==s.generation)return;
       media.getTracks().forEach(track=>track.addEventListener('ended',()=>{if(generation===s.generation)stop('microphone_unavailable',true);},{once:true}));
-      s.timer=setInterval(()=>renew(generation,id),5000);
-      s.tick=setInterval(drawQuota,1000);
-      await connectRecognizer(generation);
+      const configured=await F.api('status');
+      if(generation!==s.generation)return;
+      s.providers=LOCAL_TEST?[]:(configured.providers || (configured.speechConfigured?['azure']:[]));
+      const data=await F.api('liveStart',{id,provider:'local'});
+      if(generation!==s.generation){F.api('liveStop',{id}).catch(()=>{});return;}
+      applyLease(data,generation);heartbeat(generation,id);
+      await fallback(generation);
     }catch(e){
       if(generation!==s.generation)return;
-      if(e.featureCode==='recognizer_replaced')return;
-      stopTracks(media);
-      const kind=e.featureCode || (e.name==='NotAllowedError' || e.name==='PermissionDeniedError' ? 'microphone_denied' : e.name==='NotFoundError' || e.name==='NotReadableError' ? 'microphone_unavailable' : 'speech_unavailable');
+      const kind=e.featureCode || (['NotAllowedError','PermissionDeniedError'].includes(e.name)?'microphone_denied':['NotFoundError','NotReadableError'].includes(e.name)?'microphone_unavailable':'speech_unavailable');
       stop(kind,true);
     }
   }
   function shell() {
     const root=s.root;if(!root)return;
     root.innerHTML='<section class="lt-screen" id="liveTranslateScreen"><div class="lt-top"><button type="button" class="lt-back" id="ltBack"></button><h2 id="ltTitle"></h2></div><div class="lt-target"><label for="ltTarget" id="ltTargetLabel"></label><select id="ltTarget"></select></div><section class="lt-panel" aria-labelledby="ltOriginalLabel"><div class="lt-panel-head"><span id="ltOriginalLabel"></span><span class="lt-detected" id="ltDetected"></span></div><div class="lt-transcript" id="ltOriginal" dir="auto"></div></section><section class="lt-panel lt-panel-target" aria-labelledby="ltTranslationLabel"><div class="lt-panel-head"><span id="ltTranslationLabel"></span><span id="ltTargetName"></span></div><div class="lt-transcript" id="ltTranslation" dir="auto"></div></section><div class="lt-controls"><button type="button" class="lt-mic" id="ltMic" aria-pressed="false"></button><button type="button" class="lt-clear" id="ltClear"></button></div><div class="lt-status" id="ltStatus" role="status" aria-live="polite"></div><div class="feature-quota" id="ltQuota"></div><button type="button" class="lt-restore" id="ltRestore" hidden></button><p class="lt-privacy" id="ltPrivacy"></p></section>';
+    const backup=document.createElement('aside');backup.className='lt-backup';
+    backup.innerHTML='<p id="ltBackup"></p><button type="button" class="lt-restore" id="ltBackupRetry" hidden></button>';
+    node('ltPrivacy').before(backup);
+    node('ltBackupRetry').onclick=()=>{s.localError=false;drawControls();warmLocal(s.generation);};
     const select=node('ltTarget');
     Object.keys(FLAGS).forEach(code=>{const option=document.createElement('option');option.value=code;option.textContent=FLAGS[code]+' '+label(code);select.appendChild(option);});
     select.value=s.target;
@@ -310,8 +448,8 @@
     s.observer.observe(root,{childList:true,attributes:true,attributeFilter:['style']});
     F.api('status').then(data=>{
       if(s.root!==root)return;
-      s.quota=data.quota;s.providerConfigured=data.speechConfigured;
-      if(!data.speechConfigured)status('speech_not_configured',true);else drawControls();
+      s.quota=data.quota;s.providerConfigured=(data.providers || []).length>0 || data.speechConfigured;
+      if(!active() && !data.speechConfigured)status('local_hint');else drawControls();
     }).catch(e=>{if(s.root===root)status(e.featureCode || 'usage_unavailable',true);});
   }
   F.subscribe(quota=>{if(s.root){s.quota=quota;drawQuota();}});

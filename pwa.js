@@ -231,6 +231,7 @@ function registerSW() {
     var d = ev.data || {};
     if (d.type === 'CACHE_PROGRESS') onCacheProgress(d.done, d.total);
     if (d.type === 'CACHE_DONE')     onCacheDone();
+    if (d.type === 'CACHE_FAILED') toast(window.t ? window.t('download_failed') : 'İndirme tamamlanamadı', {kind:'bad'});
     if (d.type === 'NOTIFICATION_OPEN') route(new URL(d.url, location.href).searchParams, true);
     if (d.type === 'BACK_ONLINE')    refreshOnlineState();
   });
@@ -678,7 +679,8 @@ function urlB64(base64String) {
 
 /* ================================ 7 · ÇEVRİMDIŞI PAKET ================== */
 var cacheBar = null;
-function downloadOfflinePack() {
+async function downloadOfflinePack() {
+  if(window.LUMIRA_ACCESS && !await window.LUMIRA_ACCESS.require('offline'))return;
   var T = window.t || function(k){ return k; };
   if (!swReg || !swReg.active) { toast(T('sw_not_ready'), { kind: 'bad' }); return; }
   if (!navigator.onLine) { toast(T('need_internet_download'), { kind: 'bad' }); return; }
@@ -1905,7 +1907,6 @@ function openSettings() {
     bar.innerHTML = '<i></i>';
     cacheBar = qs('i', bar);
     packRow.onclick = function () {
-      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge(window.t?window.t('set_offline_lock_feature_name'):'Çevrimdışı paket')) return;
       downloadOfflinePack();
     };
     b.appendChild(packRow); b.appendChild(bar);
@@ -2249,7 +2250,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.9.3',
+  version: '1.9.6',
   isStandalone: function () { return isStandalone; }
 };
 

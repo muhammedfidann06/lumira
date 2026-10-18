@@ -16,12 +16,12 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.9.3';
+const CACHE_VERSION = 'v1.9.6';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
-const VOCAB_CACHE   = 'lumira-vocab-v1';      /* sözlükler sürümden bağımsız */
+const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
 const ASSET_CACHE   = 'lumira-assets-v1';
 const CDN_CACHE     = 'lumira-cdn-v1';
-const KEEP = [SHELL_CACHE, VOCAB_CACHE, ASSET_CACHE, CDN_CACHE];
+const KEEP = [SHELL_CACHE, VOCAB_CACHE, ASSET_CACHE, CDN_CACHE, 'lumira-local-models-v1'];
 
 const OFFLINE_URL = './offline.html';
 
@@ -44,10 +44,34 @@ const SHELL = [
   './voice.js',
   './progress.js',
   './feature-usage.js',
+  './example-translations.js',
+  './access-i18n.js',
+  './access-screen.js',
+  './access-screen.css',
+  './vendor/badges/1f44d.svg',
+  './vendor/badges/2615.svg',
+  './vendor/badges/2764.svg',
+  './vendor/badges/1f49b.svg',
+  './vendor/badges/2b50.svg',
+  './vendor/badges/1f451.svg',
+
+  './live-cloud.js',
   './live-translate.js',
+  './live-local-loader.js',
+  './live-local.mjs',
+  './live-local-audio.mjs',
+  './live-local-worker.mjs',
+  './live-local-config.mjs',
+  './live-local-core.mjs',
+  './live-local-engine.mjs',
+  './live-local-text.mjs',
+  './live-local-models.json',
   './live-translate.css',
   './leaderboard.js',
   './vocab-core.js',
+  './vocab-parallel.js',
+  './vocab-pairs.js',
+  './vocab-identity.js',
   './scene-bg.jpg',
   './icon-192.png',
   './splash-logo.png',
@@ -63,7 +87,7 @@ const VOCAB_FILES = [
   './vocab-fr.js', './vocab-es.js', './vocab-ru.js'
 ];
 
-const isVocab = (url) => /vocab-[a-z_]+\.js$/i.test(url.pathname);
+const isVocab = (url) => /vocab-(de|en|ar|fr|es|ru)\.js$/i.test(url.pathname);
 const isCDN   = (url) => /(gstatic\.com|cdnjs\.cloudflare\.com|googleapis\.com|jsdelivr\.net|unpkg\.com)$/.test(url.hostname);
 const isLive  = (url) => /(firebaseio\.com|firebasedatabase\.app|identitytoolkit|googleapis\.com\/identitytoolkit)/.test(url.hostname + url.pathname);
 const isAsset = (url) => /\.(png|jpg|jpeg|webp|svg|gif|ico|woff2?|ttf|mp3|ogg)$/i.test(url.pathname);
@@ -77,6 +101,16 @@ self.addEventListener('install', (event) => {
     await Promise.allSettled(SHELL.map((url) =>
       cache.add(new Request(url, { cache: 'reload' }))
     ));
+    // Do not activate an incomplete dictionary update. Keep a user's downloaded
+    // languages available offline, but fetch their corrected 1.9.5 contents.
+    const vocab = await caches.open(VOCAB_CACHE);
+    const previous = await caches.open('lumira-vocab-v1');
+    await Promise.all(VOCAB_FILES.map(async url => {
+      if(url.endsWith('vocab-de.js') || await previous.match(url,{ignoreSearch:true})){
+        await vocab.add(new Request(url,{cache:'reload'}));
+      }
+    }));
+    await Promise.all(['./vocab-core.js','./vocab-pairs.js','./vocab-parallel.js','./vocab-identity.js'].map(url => cache.add(new Request(url,{cache:'reload'}))));
   })());
   /* DİKKAT: Buraya bir zamanlar koşulsuz self.skipWaiting() konmuştu.
      Sayfa tarafındaki "controllerchange → location.reload()" ile birleşince
@@ -118,6 +152,9 @@ self.addEventListener('fetch', (event) => {
   if (url.searchParams.has('__ping')) return;
   if (url.pathname.startsWith('/.netlify/functions/')) return;
   if (isLive(url)) return;
+  // The local translator verifies and caches these compressed model files
+  // itself. A second CDN cache would double their storage on phones.
+  if (url.hostname === 'storage.googleapis.com' && url.pathname.includes('moz-fx-translations-data--303e-prod-translations-data')) return;
 
   /* 1) Sayfa açılışları */
   if (req.mode === 'navigate') {
@@ -148,7 +185,7 @@ self.addEventListener('fetch', (event) => {
      yayınlandığında kullanıcı eski kodu bir açılış daha görüyordu. Dosyalar
      küçük olduğu için ağ öncelikli olması daha doğru; çevrimdışında yine
      önbellekten gelir. */
-  if (url.origin === self.location.origin && /\.(js|css)$/i.test(url.pathname)) {
+  if (url.origin === self.location.origin && /\.(m?js|css)$/i.test(url.pathname)) {
     event.respondWith(networkFirst(req, SHELL_CACHE));
     return;
   }
@@ -203,7 +240,7 @@ async function handleNavigate(event) {
 
 async function cacheFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
-  const hit = await cache.match(req, { ignoreVary: true });
+  const hit = await cache.match(req, { ignoreVary: true, ignoreSearch: cacheName === VOCAB_CACHE });
   if (hit) return hit;
   try {
     const res = await fetch(req);
@@ -252,11 +289,12 @@ self.addEventListener('message', (event) => {
       const cache = await caches.open(VOCAB_CACHE);
       const list = VOCAB_FILES.slice();
       let done = 0;
+      let failed = 0;
       for (const url of list) {
         try {
-          const already = await cache.match(url);
+          const already = await cache.match(url,{ignoreSearch:true});
           if (!already) await cache.add(new Request(url, { cache: 'reload' }));
-        } catch (e) {}
+        } catch (e) { failed++; }
         done++;
         const clientsList = await self.clients.matchAll({ type: 'window' });
         clientsList.forEach((c) => c.postMessage({
@@ -264,7 +302,7 @@ self.addEventListener('message', (event) => {
         }));
       }
       const clientsList = await self.clients.matchAll({ type: 'window' });
-      clientsList.forEach((c) => c.postMessage({ type: 'CACHE_DONE' }));
+      clientsList.forEach((c) => c.postMessage({ type: failed ? 'CACHE_FAILED' : 'CACHE_DONE' }));
     })());
     return;
   }

@@ -6115,3 +6115,6 @@ add("ar","A2","Deyimler","بلا مؤاخذة","gücenmece yok","ifade","بلا 
 // ============================================
 // ALFABE - Arapça Alfabe
 // ============================================
+
+/* İnceleme 1.9.5 — eksik temel kullanım ve teknoloji kelimeleri. */
+add("ar","A1","Zamirler","أنتِ","sen (kadın)","zamir","أنتِ طالبة مجتهدة.","Sen çalışkan bir kız öğrencisin.");

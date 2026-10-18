@@ -1,0 +1,245 @@
+{
+  "version": 1,
+  "models": {
+    "tr-en": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Ftr-en%2Fstatmt_xxxxxxxxRxSxxxxxxxxxxA%2Fexported%2Flex.50.50.tren.s2t.bin.gz?alt=media",
+        "bytes": 2470683,
+        "sha256": "e06304247fc4dfd55fcab21bfc9656a28f81fcf8efb2ccb0a5796b296bfeac1b",
+        "uncompressedSha256": "d3374ab5267a73ee1aa1d926a298bd349426835f40856991ee959bc5cd4f9fce"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Ftr-en%2Fstatmt_xxxxxxxxRxSxxxxxxxxxxA%2Fexported%2Fmodel.tren.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 12362908,
+        "sha256": "0939c2d12325a2f80a92d3c3ddaf718510837d03ee59303aa963b179368ec68a",
+        "uncompressedSha256": "bd18594ac5a7f1d9997e7ea5bd80272082219cf8b1ce604766e4f207eb86abbf"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Ftr-en%2Fstatmt_xxxxxxxxRxSxxxxxxxxxxA%2Fexported%2Fvocab.tren.spm.gz?alt=media",
+        "bytes": 409060,
+        "sha256": "dfa22c3d15a6bdfb7765edc9e42c77daff8597a9ebe088fe886094ff0baeaef1",
+        "uncompressedSha256": "ed328e589a3ccd70fd3ce7773fc3c01d8b7b18c687464cacf17fd40a8c0daadd"
+      }
+    },
+    "en-tr": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-tr%2Fspring-2024_LiFGeNrEQpKdNlziG2qP_A%2Fexported%2Flex.50.50.entr.s2t.bin.gz?alt=media",
+        "bytes": 1546258,
+        "sha256": "cf74d4edec0b51affd30a43e6bd2c2274bf4ce7fd54c24fd293db2c5c4bf043d",
+        "uncompressedSha256": "3aba0be842bd4c192659c781e6fdce8eb9b2b1fff29a40d22f75da369d59f46f"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-tr%2Fspring-2024_LiFGeNrEQpKdNlziG2qP_A%2Fexported%2Fmodel.entr.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 13159314,
+        "sha256": "52d10136b1a4804879989aa9ee146e83ced75aa0ce2d371b4e582473ed6b9020",
+        "uncompressedSha256": "ea3cd4ee09de190df265c78d84260e277a9a8a3ddff05eb55d72afe7fc0fdbf4"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-tr%2Fspring-2024_LiFGeNrEQpKdNlziG2qP_A%2Fexported%2Fvocab.entr.spm.gz?alt=media",
+        "bytes": 395473,
+        "sha256": "01e55973e65a34c5efbdce3968857d4e53998b4bef131c5125a19f8e44d8f87c",
+        "uncompressedSha256": "a220363d60391f7ce3df8ec9785424dbc00c24d5786d1a4308cf8ca3ed3385c2"
+      }
+    },
+    "de-en": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fde-en%2Fretrain_hr2_WZOW24i4QJmIib61LeHfwg%2Fexported%2Flex.50.50.deen.s2t.bin.gz?alt=media",
+        "bytes": 2626658,
+        "sha256": "231e9caf62e0e867775d5f4c1f4cfae21e37c70d9bf2bd628fa468aeeb2ba869",
+        "uncompressedSha256": "113b98460468360cca68c042e1cddf49c4e1931cbb975ed04349c9a3bd607010"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fde-en%2Fretrain_hr2_WZOW24i4QJmIib61LeHfwg%2Fexported%2Fmodel.deen.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 22403755,
+        "sha256": "38b245bcfc23f6d61fd98a187436ea1320a38f41896df411b103df3e83f51681",
+        "uncompressedSha256": "3e6f7c2c2425d10824797270b382bee718ff34af2cab9308841c82ca46dc6f20"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fde-en%2Fretrain_hr2_WZOW24i4QJmIib61LeHfwg%2Fexported%2Fvocab.deen.spm.gz?alt=media",
+        "bytes": 413879,
+        "sha256": "88dcd7fdbf20dc60837ce837244d0d55b20f7079f2cbd2ba8e63530632028310",
+        "uncompressedSha256": "69f730becafa48e3bb2c244eab66456877c08959a02f2bd5519b5a3088b62f9c"
+      }
+    },
+    "en-de": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-de%2Fretrain_hr_fix_names_SCgGhxUPQ2WAECHLRtzrMg%2Fexported%2Flex.50.50.ende.s2t.bin.gz?alt=media",
+        "bytes": 2314750,
+        "sha256": "0370d79cda6fed5dfa8f9b2a0009459bd2766893825bb5b8b5114169d18da6c4",
+        "uncompressedSha256": "7ed39f1cffbd68a27ddf05bbfe068de2060f1d7e69f1a20e27ae923551dd7393"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-de%2Fretrain_hr_fix_names_SCgGhxUPQ2WAECHLRtzrMg%2Fexported%2Fmodel.ende.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 22992073,
+        "sha256": "e3a74458faba3ab2752ed8355c5e3979f13395279c8fc1bd3f54a3c2316e4975",
+        "uncompressedSha256": "8df29d9494d19f47fd5d97c6a73474c6f657e9f81c1a607c431d02befdf3810f"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-de%2Fretrain_hr_fix_names_SCgGhxUPQ2WAECHLRtzrMg%2Fexported%2Fvocab.ende.spm.gz?alt=media",
+        "bytes": 413879,
+        "sha256": "3b2ddbfac73f994f151a8994447d6b3d41ab0d3435da56f79c233f34d03e45c2",
+        "uncompressedSha256": "69f730becafa48e3bb2c244eab66456877c08959a02f2bd5519b5a3088b62f9c"
+      }
+    },
+    "ar-en": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Far-en%2Fretrain_base-memory_X9fDxFreTOCslPKzb1CXTg%2Fexported%2Flex.50.50.aren.s2t.bin.gz?alt=media",
+        "bytes": 2259861,
+        "sha256": "59335a02934f19f5e9bf171de9db8b73b5e95a69dce03a7d2fe6e9e43e3f849e",
+        "uncompressedSha256": "4b45f14dbea40d368093a13563fc1ca48457ee70c1291c82b206f3baff210081"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Far-en%2Fretrain_base-memory_X9fDxFreTOCslPKzb1CXTg%2Fexported%2Fmodel.aren.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 23224456,
+        "sha256": "31e032a402a8463a1e19c8e355529f73c0732926b22b1eadc8bade39ecc23a80",
+        "uncompressedSha256": "7b7af0282dc5f4d8805b9a298c2fa828967e3f09ca10f1942ebeea0b2cfc12fa"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Far-en%2Fretrain_base-memory_X9fDxFreTOCslPKzb1CXTg%2Fexported%2Fvocab.aren.spm.gz?alt=media",
+        "bytes": 416700,
+        "sha256": "c379c52857c2f0886ae52a255ac770e5992524782ee20bb0966deca079e9595f",
+        "uncompressedSha256": "51b4ee3f828d10015464523d0b4f5a6c086b0b2a9bde716a581001cf6c260366"
+      }
+    },
+    "en-ar": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-ar%2Fretrain_base-memory_G3CmhwG_TZext3cys-udHg%2Fexported%2Flex.50.50.enar.s2t.bin.gz?alt=media",
+        "bytes": 1639219,
+        "sha256": "b7466406d7f5e0c493bc65dc7de221aa3e6cd7f95c6fc7dd1e73759520c937ac",
+        "uncompressedSha256": "2b7194817c5dd9225ca90c0d908cc92e1d6d1f45625781a5feb037ac568d6a61"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-ar%2Fretrain_base-memory_G3CmhwG_TZext3cys-udHg%2Fexported%2Fmodel.enar.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 22857819,
+        "sha256": "88e85e33403cda6b1a529f32dc30c0977a4234285d6f8340e0d630da21b176e5",
+        "uncompressedSha256": "ae659d7045fc2e5d6ba50583586a5d94ee4358d92c019847e37b57a0e627faa8"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-ar%2Fretrain_base-memory_G3CmhwG_TZext3cys-udHg%2Fexported%2Fvocab.enar.spm.gz?alt=media",
+        "bytes": 418930,
+        "sha256": "3a4b9e81c0f73ef8ed02c254b3ae99d64f8265afa54a6b838a0870bb4f9d0369",
+        "uncompressedSha256": "8d93c54aa5e2044c416ec680b5ff9af0227bd698521666e8b1a1ea1b041fbae8"
+      }
+    },
+    "fr-en": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Ffr-en%2Fretrain_hr_EFgIftH_RrCyzl5gjemVNg%2Fexported%2Flex.50.50.fren.s2t.bin.gz?alt=media",
+        "bytes": 2649934,
+        "sha256": "395aa7767220e1bcfc085f2b2787ff98005d0075e55451f1e0832885e3d9642a",
+        "uncompressedSha256": "87c6752ea908f5f0347c10ac0cf7d80d9c2f4f20c81c90168f3e8230b56d4440"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Ffr-en%2Fretrain_hr_EFgIftH_RrCyzl5gjemVNg%2Fexported%2Fmodel.fren.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 23175075,
+        "sha256": "06b1eeedd3944260d00a393d12ec7192490c5b7c930b97212faf4d5f5c90a2ee",
+        "uncompressedSha256": "15f997bc0d13808b0b0fbd0786e684a3c8a52adcd8071844b76123fdacbf2b90"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Ffr-en%2Fretrain_hr_EFgIftH_RrCyzl5gjemVNg%2Fexported%2Fvocab.fren.spm.gz?alt=media",
+        "bytes": 409706,
+        "sha256": "8d15b219ffd32327b4cabf0d94a05a4fecb8923a4f386badbcbe5e86ede453a7",
+        "uncompressedSha256": "783abf3abe075afdf8d85d233994bef2c3a064e935ab1bed946820aff6ac002a"
+      }
+    },
+    "en-fr": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-fr%2Fretrain_hr_NLIxDbE1TBGyOTI-zwZagw%2Fexported%2Flex.50.50.enfr.s2t.bin.gz?alt=media",
+        "bytes": 2297334,
+        "sha256": "055987f0b585b61c4914fb4469e2392fda0b25d3f7784275974f920e7b631997",
+        "uncompressedSha256": "2585ed98d3af0bc949865aedeb390493d591f56870814376e73e4144c41ed059"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-fr%2Fretrain_hr_NLIxDbE1TBGyOTI-zwZagw%2Fexported%2Fmodel.enfr.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 23045432,
+        "sha256": "22cdaf3dc9a1da6e5818b5576737182467f3cd97e6fd6f94e4273eb7b56d1e3f",
+        "uncompressedSha256": "6322e296d4fecfe395a8d5723da4ec37ecbe6d7613bb1dfcf4b28e2a47498b68"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-fr%2Fretrain_hr_NLIxDbE1TBGyOTI-zwZagw%2Fexported%2Fvocab.enfr.spm.gz?alt=media",
+        "bytes": 409706,
+        "sha256": "5dcadaad8191fb4eb7677bce07098a20221dec95976a4db796f3a17cc82b4541",
+        "uncompressedSha256": "783abf3abe075afdf8d85d233994bef2c3a064e935ab1bed946820aff6ac002a"
+      }
+    },
+    "es-en": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fes-en%2Fretrain_hr_HbNjJ60BTwmVTbhfFxuduA%2Fexported%2Flex.50.50.esen.s2t.bin.gz?alt=media",
+        "bytes": 2543246,
+        "sha256": "3d7856bfa3b12804bdc80f12fd828fd9062c462113ab73fbf87c5c3b68420813",
+        "uncompressedSha256": "e2610211d3b9577d012638fe7e7e74ed7b4b708ce96b9e792e67c282a6492daa"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fes-en%2Fretrain_hr_HbNjJ60BTwmVTbhfFxuduA%2Fexported%2Fmodel.esen.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 23288494,
+        "sha256": "54247f1e057180bca1d404dfd5c12836f65bc96cef7af98e59e55acb8bd093b1",
+        "uncompressedSha256": "4aed7734152ae0045d1a69ae49c86cfda18f53c61f90e95e1d1de1c7c7c3b033"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fes-en%2Fretrain_hr_HbNjJ60BTwmVTbhfFxuduA%2Fexported%2Fvocab.esen.spm.gz?alt=media",
+        "bytes": 409312,
+        "sha256": "1658b529b8858cf2e1e8cef2c4e2d69654d77b5f714ac52205864b336dfeb3ee",
+        "uncompressedSha256": "5ae254fa9b15aa182e70fd2a6186b1333c63a29a48043a9224c6aa4fcac058ad"
+      }
+    },
+    "en-es": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-es%2Fretrain_hr_fix_names_CUAEXUHoQum_cFqh-ZAryw%2Fexported%2Flex.50.50.enes.s2t.bin.gz?alt=media",
+        "bytes": 2265250,
+        "sha256": "37a067966f28ff0ba430fddb7412bc5b07afa2cd2fd5a46d9ad74045a1a06380",
+        "uncompressedSha256": "7d51237c0a07027dcd61643cfbbb0f8c48597d19907ef53d2cae9d6bec2cf25c"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-es%2Fretrain_hr_fix_names_CUAEXUHoQum_cFqh-ZAryw%2Fexported%2Fmodel.enes.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 22698792,
+        "sha256": "fe4025fde24a4d5f80533cfb7acd53d0eb7f194dfc2d8f427f0d4563cfb6ac06",
+        "uncompressedSha256": "3b1c399511c01c84c36fae5c0524df44096288efdc8236e182b5c97d7ad2244c"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-es%2Fretrain_hr_fix_names_CUAEXUHoQum_cFqh-ZAryw%2Fexported%2Fvocab.enes.spm.gz?alt=media",
+        "bytes": 409312,
+        "sha256": "ae2760c04bc6eb5362b16e5c2f145c376bb04bac421c33ba3c0766805e6f03b3",
+        "uncompressedSha256": "5ae254fa9b15aa182e70fd2a6186b1333c63a29a48043a9224c6aa4fcac058ad"
+      }
+    },
+    "ru-en": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fru-en%2Fnext26_RSpwfHrcSUC_rKTnhOEXzw%2Fexported%2Flex.50.50.ruen.s2t.bin.gz?alt=media",
+        "bytes": 2139703,
+        "sha256": "012674431e3a248e5f647e88e254331eca37f661960ea82ceb93dab78850ccd8",
+        "uncompressedSha256": "c944e753f298bbdf6506388de7257fb48cbd12c83e2807e2c284fc323771895b"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fru-en%2Fnext26_RSpwfHrcSUC_rKTnhOEXzw%2Fexported%2Fmodel.ruen.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 22805722,
+        "sha256": "1dc70ffc7dce84d46ad13b8c1908c46f0dfbf4e2ed1daaffb8b8b04315e00aa3",
+        "uncompressedSha256": "aa0efa194b3dbd2da129ba0b8db8ef139126cb0914e57072f62061294746f1e2"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fru-en%2Fnext26_RSpwfHrcSUC_rKTnhOEXzw%2Fexported%2Fvocab.ruen.spm.gz?alt=media",
+        "bytes": 441622,
+        "sha256": "20f7d8032b12a7c1bba99784fca60ccf1d49e782f3cad8791e8cf0c2063b334c",
+        "uncompressedSha256": "de8af5f87e231ee4016cec4bb482e6b584cb1ca34dcb624fc7b8398f25bb35df"
+      }
+    },
+    "en-ru": {
+      "lexicalShortlist": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-ru%2Fretrain_base-memory_KJ23-iDVTcymG1ZldWY17w%2Fexported%2Flex.50.50.enru.s2t.bin.gz?alt=media",
+        "bytes": 1378563,
+        "sha256": "9c111984d8207f8dc6b9dd5c17ab4d18042f7c0e34105a09a35909538facc958",
+        "uncompressedSha256": "4d91839726b960e70b6d05c53d0cffd16262832b1c0e1ea99d66f412dcc6a239"
+      },
+      "model": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-ru%2Fretrain_base-memory_KJ23-iDVTcymG1ZldWY17w%2Fexported%2Fmodel.enru.intgemm.alphas.bin.gz?alt=media",
+        "bytes": 21988864,
+        "sha256": "e766bc83434f4a9ff4110abe5450043a62cd402c6a7a8bca5e3e4d83b408dcb4",
+        "uncompressedSha256": "184cb5cda528eeefc0f75f5d0035d787b71d74af135e3c5608d01ae02ecfb920"
+      },
+      "vocab": {
+        "url": "https://storage.googleapis.com/download/storage/v1/b/moz-fx-translations-data--303e-prod-translations-data/o/models%2Fen-ru%2Fretrain_base-memory_KJ23-iDVTcymG1ZldWY17w%2Fexported%2Fvocab.enru.spm.gz?alt=media",
+        "bytes": 419005,
+        "sha256": "9aa498dce5d27c02ac998c646c51a7475a421500ecdbbd1dff9ff3e77e64b21c",
+        "uncompressedSha256": "56ee63e14e8cb926c394242adc3ed7cc602644c3d33058cff2ce2959d52a6258"
+      }
+    }
+  }
+}

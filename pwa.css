@@ -1169,7 +1169,7 @@ html.lumira-android .app{min-width:0;}
 
 /* Başlık ve kontrol satırları: dar/genişletilmiş yazılı ekranda kesilmesin. */
 html.lumira-android .top-row{flex-wrap:wrap;}
-html.lumira-android .top-row > :first-child{flex:1 1 120px;min-width:0;}
+html.lumira-android .top-row > :first-child{flex:1 1 160px;min-width:0;}
 html.lumira-android .top-btn-row{flex:0 0 auto;max-width:100%;flex-wrap:wrap;}
 html.lumira-android h1{overflow-wrap:anywhere;}
 @media (max-width:380px){

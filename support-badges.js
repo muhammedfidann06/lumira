@@ -6,9 +6,8 @@
    · Seviye/rozet kilitleri (Profilim, Çevrimdışı paket, PDF)
    · Kelime listesini kitap düzeninde PDF olarak dışa aktarma
 
-   NOT: Ödeme altyapısı henüz bağlı değil. Butonlar şu an bilgilendirme
-   gösterir; Play Store yayınından sonra "In-App Purchase" akışı buraya
-   bağlanacak (bkz. grantSupportTier).
+   Play Billing makbuzları sunucuda doğrulanır. Günlük kullanım hakları
+   hesap bazında; PDF ve çevrim dışı erişim rozet ekranına bağlıdır.
    ========================================================================== */
 (function () {
   'use strict';
@@ -89,8 +88,7 @@
        gerçek satın alma kararını etkilememesi için doğrudan API varlığına
        bakıyoruz, daha güvenilir. */
     if (!window.PaymentRequest || typeof window.getDigitalGoodsService !== 'function') {
-      toast('Bu satın alma yalnızca Play Store\'dan indirilen uygulamada kullanılabilir. ' +
-            'Web sürümünde ödeme alınmıyor.', { duration: 7000 });
+      toast(window.LUMIRA_ACCESS_COPY.text('purchaseWeb'), { duration: 8000 });
       return;
     }
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: { sku: t.sku } }];
@@ -99,35 +97,23 @@
     try { request = new PaymentRequest(methodData, details); }
     catch (e) { toast(window.t?window.t('purchase_start_failed'):'Satın alma başlatılamadı.', { kind: 'bad' }); return; }
 
-    request.show().then(function (response) {
-      var token = (response.details && (response.details.token || response.details.purchaseToken)) || null;
-      return response.complete('success').then(function () {
-        return window.getDigitalGoodsService('https://play.google.com/billing').then(function (service) {
-          if (service && token && service.acknowledge) {
-            return service.acknowledge(token, 'onetime').catch(function () {});
-          }
-        });
-      }).then(function () { return token; });
-    }).then(async function (token) {
-      // Existing badge behavior is preserved. Account quotas only trust a
-      // server-verified purchase; restoration can finish a failed sync later.
-      if (!window.firebase.auth().currentUser || window.firebase.auth().currentUser.uid !== purchaseUid) return;
-      window.grantSupportTier(t.amount);
-      if (window.LUMIRA_FEATURES && token) {
-        try {
-          await window.LUMIRA_FEATURES.verifyPurchase(t.sku, token, purchaseUid);
-          await window.LUMIRA_FEATURES.api('status');
-        } catch (e) {
-          toast(window.LUMIRA_FEATURES.text('purchase_verification_unavailable'), { kind: 'bad', duration: 8000 });
-        }
+    request.show().then(async function (response) {
+      const token=response.details?.token || response.details?.purchaseToken;
+      try {
+        if(!token || !window.LUMIRA_FEATURES)throw new Error('purchase_verification_unavailable');
+        await window.LUMIRA_FEATURES.verifyPurchase(t.sku,token,purchaseUid);
+        await response.complete('success');
+        if(window.firebase.auth().currentUser?.uid!==purchaseUid)return;
+        window.grantSupportTier(t.amount);
+        window.dispatchEvent(new Event('lumira:purchaseverified'));
+        window.LUMIRA_FEATURES.api('status').catch(()=>{});
+      }catch(e){
+        try{await response.complete('fail');}catch(ignore){}
+        toast(window.LUMIRA_FEATURES?.text('purchase_verification_unavailable') || e.message,{kind:'bad',duration:8000});
       }
-      if (window.openSupport) { setTimeout(window.openSupport, 300); } /* rozeti göstermek için yeniden aç */
-    }).catch(function (e) {
-      /* kullanıcı iptal ettiyse sessiz geç, gerçek hataysa bilgilendir */
-      var msg = String((e && e.message) || e || '');
-      if (msg.toLowerCase().indexOf('cancel') === -1) {
-        toast(window.t?window.t('purchase_complete_failed'):'Satın alma tamamlanamadı.', { kind: 'bad', duration: 6000 });
-      }
+    }).catch(function(e){
+      if(e?.name==='AbortError' || /cancel/i.test(String(e?.message || e)))return;
+      toast(window.t?window.t('purchase_complete_failed'):'Satın alma tamamlanamadı.',{kind:'bad',duration:6000});
     });
   }
   window.purchaseSupportTier = purchaseTier;
@@ -211,6 +197,9 @@
       return false;
     },
     pdfBadge: function () {
+      const entitlement=window.LUMIRA_FEATURES?.entitlement();
+      if(entitlement?.tier>0 && entitlement.pdf?.remaining!==0)return true;
+      if(window.LUMIRA_ACCESS){window.LUMIRA_ACCESS.open(entitlement?.tier?'pdf_limit':'pdf_badge_required',entitlement);return false;}
       if (hasAnyPdfBadge()) return true;
       var T = window.t || function(k){ return k; };
       lockNotice(T('lock_pdf_feature_name'), T('lock_pdf_msg'));
@@ -259,7 +248,8 @@
 
   function buildPdfHtml(lang, level, words) {
     var info = LANG_INFO[lang] || LANG_INFO.de;
-    var bugun = new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const C=window.LUMIRA_ACCESS_COPY, ui=window.NATIVE_LANG || 'tr', languageNames=new Intl.DisplayNames([ui],{type:'language'});
+    var bugun = new Date().toLocaleDateString(ui, { day: 'numeric', month: 'long', year: 'numeric' });
     /* Kişi kendi ana dilinin (NATIVE_LANG) listesini indiriyorsa ve ters
        öğrenme modundaysa (Türkçe öğreniyorsa), liste de onun öğrendiği
        yönde olsun: soldaki sütun Türkçe, sağdaki kendi dili. Başka bir
@@ -287,8 +277,8 @@
               '</div>';
     }
 
-    return '<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">' +
-      '<title>Lumira ' + info.ad + ' Kelime Listesi</title>' +
+    return '<!DOCTYPE html><html lang="'+esc(ui)+'" dir="'+(ui==='ar'?'rtl':'ltr')+'"><head><meta charset="utf-8">' +
+      '<title>Lumira ' + esc(languageNames.of(lang)) + ' · '+esc(C.text('wordList'))+'</title>' +
       '<style>' +
       '@page{size:A4;margin:18mm 16mm 20mm;}' +
       '*{box-sizing:border-box;}' +
@@ -320,18 +310,17 @@
       '.noprint button{font:inherit;font-weight:700;margin-left:10px;padding:8px 18px;' +
       '   border:0;border-radius:8px;background:#4fe8ff;color:#04050a;cursor:pointer;}' +
       '</style></head><body>' +
-      '<div class="noprint">PDF olarak kaydetmek için yazdır penceresinden ' +
-      '“PDF olarak kaydet” seçeneğini seçin.<button onclick="window.print()">Yazdır / PDF</button></div>' +
+      '<div class="noprint">'+esc(C.text('pdfSave'))+'<button onclick="window.print()">'+esc(C.text('pdfPrint'))+'</button></div>' +
       '<div class="cover">' +
-        '<div class="brand">Lumira · Dil Kartları</div>' +
-        '<h1>' + (flip ? 'Türkçe' : info.ad) + ' Kelime Listesi</h1>' +
-        '<h2>' + (flip ? ('Türkçe — ' + esc(info.yerel)) : (esc(info.yerel) + ' — Türkçe')) + '</h2>' +
+        '<div class="brand">Lumira</div>' +
+        '<h1>' + esc(languageNames.of(flip?'tr':lang)) + ' · '+esc(C.text('wordList'))+'</h1>' +
+        '<h2>' + esc(languageNames.of(flip?'tr':lang)) + ' — ' + esc(languageNames.of(flip?lang:'tr')) + '</h2>' +
         '<div class="rule"></div>' +
-        '<div class="meta">Seviye: <b>' + esc(level) + '</b><br>' +
-          'Toplam <b>' + words.length + '</b> kelime<br>' + bugun + '</div>' +
+        '<div class="meta">'+esc(C.text('level'))+': <b>' + esc(level==='TÜMÜ'?C.text('all'):level) + '</b><br>' +
+          esc(C.text('words'))+': <b>' + words.length + '</b><br>' + bugun + '</div>' +
         '<div class="foot">lumira-tr.com</div>' +
       '</div>' +
-      '<h3 class="sec">' + (flip ? ('Türkçe — ' + info.ad) : (info.ad + ' — Türkçe')) + ' · ' + esc(level) + '</h3>' +
+      '<h3 class="sec">' + esc(languageNames.of(flip?'tr':lang)) + ' — ' + esc(languageNames.of(flip?lang:'tr')) + ' · ' + esc(level==='TÜMÜ'?C.text('all'):level) + '</h3>' +
       '<div class="cols">' + rows + '</div>' +
       '</body></html>';
   }
@@ -342,12 +331,12 @@
     });
   }
 
-  function openPdfExport() {
-    if (!window.LUMIRA_LOCK.anyBadge(window.t?window.t('lock_pdf_feature_name'):'Kelime listesi PDF')) return;
+  async function openPdfExport() {
+    if (!await window.LUMIRA_ACCESS.require('pdf')) return;
     if (!(window.PWA && window.PWA.sheet)) return;
 
     window.PWA.sheet(window.t?window.t('pdf_export_title'):'📄 Kelimeleri PDF olarak indir',
-      'Dil ve seviye seç, kitap düzeninde bir kelime listesi oluşturulsun.', function (b) {
+      window.LUMIRA_ACCESS_COPY.text('pdfNoteExport'), function (b) {
 
       var lang = 'de', level = 'TÜMÜ';
 
@@ -373,14 +362,11 @@
         return wrap;
       }
 
-      b.appendChild(chipRow('Dil', [
-        { v: 'de', t: '🇩🇪 Almanca' }, { v: 'en', t: '🇬🇧 İngilizce' },
-        { v: 'ar', t: '🇸🇦 Arapça' },  { v: 'fr', t: '🇫🇷 Fransızca' },
-        { v: 'es', t: '🇪🇸 İspanyolca' }, { v: 'ru', t: '🇷🇺 Rusça' }
-      ], function () { return lang; }, function (v) { lang = v; }));
+      const languageNames = new Intl.DisplayNames([window.NATIVE_LANG || 'tr'], {type:'language'});
+      b.appendChild(chipRow(window.LUMIRA_ACCESS_COPY.text('language'), ['de','en','ar','fr','es','ru'].map(code => ({v:code,t:languageNames.of(code)})), function(){return lang;}, function(v){lang=v;}));
 
-      b.appendChild(chipRow('Seviye', [
-        { v: 'TÜMÜ', t: 'Tümü' }, { v: 'A1', t: 'A1' }, { v: 'A2', t: 'A2' },
+      b.appendChild(chipRow(window.LUMIRA_ACCESS_COPY.text('level'), [
+        { v: 'TÜMÜ', t: window.LUMIRA_ACCESS_COPY.text('all') }, { v: 'A1', t: 'A1' }, { v: 'A2', t: 'A2' },
         { v: 'B1', t: 'B1' }, { v: 'B2', t: 'B2' }
       ], function () { return level; }, function (v) { level = v; }));
 
@@ -388,58 +374,40 @@
       go.type = 'button';
       go.className = 'pwa-btn';
       go.textContent = window.t?window.t('pdf_generate_btn'):'Listeyi oluştur';
-      go.onclick = function () {
-        go.disabled = true; go.textContent = window.t?window.t('pdf_generating'):'Hazırlanıyor…';
-        var finish = function () { go.disabled = false; go.textContent = window.t?window.t('pdf_generate_btn'):'Listeyi oluştur'; };
-
-        var run = function () {
-          var words = collectWords(lang, level);
-          if (!words.length) { finish(); toast(window.t?window.t('pdf_words_not_found'):'Bu seçimde kelime bulunamadı', { kind: 'bad' }); return; }
-          var html = buildPdfHtml(lang, level, words);
-          var win = window.open('', '_blank');
-          if (!win) {
-            /* iOS PWA'da açılır pencere sık engellenir — gizli iframe ile yazdır */
-            try {
-              var ifr = document.createElement('iframe');
-              ifr.setAttribute('aria-hidden', 'true');
-              ifr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0;';
-              document.body.appendChild(ifr);
-              var idoc = ifr.contentWindow.document;
-              idoc.open(); idoc.write(html); idoc.close();
-              finish();
-              setTimeout(function () {
-                try { ifr.contentWindow.focus(); ifr.contentWindow.print(); } catch (e) {}
-                setTimeout(function () { try { ifr.remove(); } catch (e) {} }, 60000);
-              }, 500);
-              toast('📄 ' + words.length + ' kelime hazır — yazdır menüsünden PDF olarak kaydet',
-                    { kind: 'good', duration: 8000 });
-            } catch (e) {
-              finish();
-              toast(window.t?window.t('pdf_popup_blocked'):'Açılır pencere engellendi — tarayıcı ayarlarından izin ver', { kind: 'bad', duration: 7000 });
-            }
-            return;
+      go.onclick = async function () {
+        go.disabled=true;go.textContent=window.t?window.t('pdf_generating'):'…';
+        const F=window.LUMIRA_FEATURES, C=window.LUMIRA_ACCESS_COPY;
+        const finish=()=>{go.disabled=false;go.textContent=window.t?window.t('pdf_generate_btn'):'PDF';};
+        // Open synchronously during the click so Safari keeps the user gesture.
+        let win=window.open('','_blank'), frame, operation, committed=false;
+        try{
+          if(win)win.document.body.textContent=C.text('checking');
+          if(window.VOCAB_LOADED && !window.VOCAB_LOADED[lang] && window.ensureVocab)await window.ensureVocab(lang);
+          const words=collectWords(lang,level);
+          if(!words.length)throw new Error(window.t('pdf_words_not_found'));
+          const html=buildPdfHtml(lang,level,words);
+          // A finite account-wide allowance requires an online reservation.
+          // Cached, verified higher badges can generate unlimited PDFs offline.
+          const entitlement=F.entitlement();
+          if(navigator.onLine){operation=F.id();await F.api('pdfBegin',{id:operation});}
+          else if(!entitlement || entitlement.tier<5)throw new Error(C.text('net'));
+          if(!win){
+            frame=document.createElement('iframe');frame.setAttribute('aria-hidden','true');frame.style.cssText='position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;';document.body.append(frame);
           }
-          win.document.open();
-          win.document.write(html);
-          win.document.close();
-          finish();
-          toast('📄 ' + words.length + ' kelime hazır — yazdır penceresinden PDF olarak kaydet',
-                { kind: 'good', duration: 7000 });
-        };
-
-        /* Seçilen dilin sözlüğü yüklü değilse önce indir */
-        if (window.VOCAB_LOADED && !window.VOCAB_LOADED[lang] && typeof window.ensureVocab === 'function') {
-          window.ensureVocab(lang).then(run).catch(function () {
-            finish(); toast(window.t?window.t('pdf_dict_load_failed'):'Sözlük yüklenemedi', { kind: 'bad' });
-          });
-        } else run();
+          const doc=win?win.document:frame.contentWindow.document;
+          if(operation){await F.api('pdfCommit',{id:operation});committed=true;}
+          doc.open();doc.write(html);doc.close();
+          if(frame){const clean=()=>{frame?.remove();frame=null;};frame.contentWindow.addEventListener('afterprint',clean,{once:true});setTimeout(()=>{try{frame?.contentWindow.focus();frame?.contentWindow.print();}catch(e){clean();}},350);setTimeout(clean,60000);}
+          toast(C.text('pdfReady',{n:words.length}),{kind:'good',duration:7000});
+        }catch(e){
+          try{win?.close();}catch(ignore){}frame?.remove();
+          if(operation && !committed)await F.api('pdfCancel',{id:operation}).catch(()=>{});
+          if(!['pdf_limit','pdf_badge_required'].includes(e.featureCode))toast(e.featureCode?F.errorText(e):e.message,{kind:'bad',duration:7000});
+        }finally{finish();}
       };
       b.appendChild(go);
 
-      b.insertAdjacentHTML('beforeend',
-        '<p class="pwa-note">Liste alfabetik sıralanır ve iki sütunlu sözlük düzeninde ' +
-        'hazırlanır. Örnek cümleler yer almaz. Açılan pencerede “Yazdır” deyip ' +
-        '<b>PDF olarak kaydet</b> seçeneğini seçebilir, oradan paylaşabilirsin.</p>');
+      const note=document.createElement('p');note.className='pwa-note';note.textContent=window.LUMIRA_ACCESS_COPY.text('pdfNoteExport');b.appendChild(note);
     });
   }
   window.openPdfExport = openPdfExport;

@@ -27,6 +27,9 @@ body.lt-focus #mainApp{padding-top:max(18px,env(safe-area-inset-top));}
 .lt-status.is-live:before{content:'●';font-size:11px;margin-inline-end:8px;}
 .lt-status.is-error{color:#ffafb7;}
 .lt-privacy{color:var(--muted,#9caac4);font-size:11px;line-height:1.65;margin-top:14px;max-width:560px;}
+.lt-backup{max-width:560px;font-size:11px;line-height:1.6;color:var(--muted,#9caac4);border-inline-start:2px solid rgba(79,232,255,.25);padding-inline-start:10px;margin-top:14px;}
+.lt-backup p{margin:0;}
+.lt-backup .lt-restore{font-size:11px;color:var(--cyan-soft,#91eaff);}
 @media(max-width:520px){.lt-top{display:block}.lt-top h2{margin-top:10px}.lt-panel{padding:16px}.lt-controls{align-items:stretch}.lt-mic{flex:1}.lt-target select{max-width:none}.lt-transcript{max-height:28vh;min-height:95px}}
 
 body.lt-focus #sessionTimer,body.lt-focus #profileTimer,body.lt-focus #myRankBox,body.lt-focus #mainApp>.credit,body.lt-focus .support-wrap,body.lt-focus #pwa-fab,body.lt-focus .flutter,body.lt-focus #sky-fx,body.lt-focus #fg-desk,body.lt-focus #grain{display:none!important;}

@@ -20,6 +20,133 @@
     ru: { operation_expired:'Проверка не завершилась вовремя. Попробуй снова; неудачная проверка не расходует лимит.', reconnecting:'Повторное подключение… Прослушивание продолжится.', speech_auth_error:'Служба речи отказала в доступе. Проверь ключ Azure и регион.', speech_busy:'Достигнут лимит подключений или квота службы. Попробуй позже.', speech_config_error:'Служба речи отклонила настройки подключения.' }
   };
   Object.keys(EXTRA).forEach(lang => Object.assign(COPY[lang], EXTRA[lang]));
+  const LOCAL = {
+    "tr": {
+      "local_preparing": "Ücretsiz çeviri hazırlanıyor… %{percent}",
+      "local_listening": "Dinleniyor · Cihazında ücretsiz çeviri",
+      "local_ready": "Ücretsiz yedek model dosyaları hazır.",
+      "local_hint": "Çevrimiçi hizmet kullanılamazsa cihazında devam eder. İlk kullanımda model dosyaları yüklenir; Wi-Fi önerilir.",
+      "local_downloading": "Ücretsiz yedek hazırlanıyor · %{percent}. İlk yükleme internet kullanır.",
+      "local_backup_error": "Ücretsiz yedek yüklenemedi. Bağlantını kontrol edip tekrar deneyebilirsin.",
+      "local_retry": "Yedeği yeniden hazırla",
+      "local_unsupported": "Bu tarayıcı cihaz içi çeviriyi desteklemiyor. Güncel Chrome veya Safari ile aç.",
+      "local_download_error": "Ücretsiz model yüklenemedi. İnternet bağlantını ve boş depolama alanını kontrol edip tekrar başlat.",
+      "local_model_error": "Cihaz içi çeviri tamamlanamadı. Cihazda yeterli bellek kalmamış olabilir; yeniden açıp deneyebilirsin.",
+      "local_too_slow": "Bu cihaz konuşmaya yetişemediği için dinleme durduruldu. Konuşmaları atlamamak için daha güçlü bir cihaz kullan.",
+      "local_audio_error": "Cihaz içi ses işleme başlatılamadı. Mikrofonu kontrol edip tekrar başlat.",
+      "local_source_unsupported": "Desteklenen dillerde konuşulması bekleniyor…",
+      "local_server_update": "Çevirinin sunucu dosyaları da güncellenmeli. Site yöneticisine bildir.",
+      "privacy": "Çevrimiçi modda sesin Azure’da işlenir. Cihaz içi modda ses ve metin cihazında işlenir; ses kaydı saklanmaz. Modeller ilk kullanımda yüklenir. Kullanım hakkın için internet bağlantısı gerekir."
+    },
+    "en": {
+      "local_preparing": "Preparing free translation… {percent}%",
+      "local_listening": "Listening · Free translation on your device",
+      "local_ready": "Free backup model files are ready.",
+      "local_hint": "If the online service is unavailable, translation continues on your device. Models download on first use; Wi-Fi is recommended.",
+      "local_downloading": "Preparing free backup · {percent}%. The first download uses internet data.",
+      "local_backup_error": "The free backup could not load. Check your connection and try again.",
+      "local_retry": "Prepare backup again",
+      "local_unsupported": "This browser does not support on-device translation. Open in a current Chrome or Safari.",
+      "local_download_error": "Could not load the free model. Check your connection and available storage, then start again.",
+      "local_model_error": "On-device translation could not finish. The device may be low on memory; reopen and try again.",
+      "local_too_slow": "Listening stopped because this device could not keep up. Use a faster device to avoid skipping speech.",
+      "local_audio_error": "On-device audio could not start. Check the microphone and try again.",
+      "local_source_unsupported": "Waiting for speech in a supported language…",
+      "local_server_update": "The translation server files also need updating. Contact the site owner.",
+      "privacy": "Online mode processes audio with Azure. On-device mode processes speech and text on your device; audio recordings are not stored. Models download on first use. An internet connection is required to verify your allowance."
+    },
+    "de": {
+      "local_preparing": "Kostenlose Übersetzung wird vorbereitet… {percent} %",
+      "local_listening": "Ich höre zu · Kostenlose Übersetzung auf deinem Gerät",
+      "local_ready": "Die Modelldateien für die kostenlose Reserve sind bereit.",
+      "local_hint": "Ist der Onlinedienst nicht verfügbar, geht es auf deinem Gerät weiter. Modelle werden beim ersten Mal geladen; WLAN wird empfohlen.",
+      "local_downloading": "Kostenlose Reserve wird vorbereitet · {percent} %. Der erste Download benötigt Internetdaten.",
+      "local_backup_error": "Die kostenlose Reserve konnte nicht geladen werden. Prüfe die Verbindung und versuche es erneut.",
+      "local_retry": "Reserve erneut vorbereiten",
+      "local_unsupported": "Dieser Browser unterstützt die Übersetzung auf dem Gerät nicht. Öffne aktuelles Chrome oder Safari.",
+      "local_download_error": "Das kostenlose Modell konnte nicht geladen werden. Prüfe Verbindung und freien Speicher und starte erneut.",
+      "local_model_error": "Die Übersetzung auf dem Gerät konnte nicht abgeschlossen werden. Vielleicht ist zu wenig Arbeitsspeicher frei. Öffne die App erneut.",
+      "local_too_slow": "Das Gerät konnte der Sprache nicht folgen. Das Zuhören wurde beendet, damit keine Sprache übersprungen wird. Verwende ein schnelleres Gerät.",
+      "local_audio_error": "Die lokale Audioverarbeitung konnte nicht starten. Prüfe das Mikrofon.",
+      "local_source_unsupported": "Warte auf eine unterstützte Sprache…",
+      "local_server_update": "Die Serverdateien für die Übersetzung müssen ebenfalls aktualisiert werden. Informiere den Betreiber.",
+      "privacy": "Im Onlinemodus verarbeitet Azure das Audio. Im lokalen Modus bleiben Sprach- und Textverarbeitung auf deinem Gerät; Aufnahmen werden nicht gespeichert. Modelle werden beim ersten Mal geladen. Dein Kontingent wird online geprüft."
+    },
+    "ar": {
+      "local_preparing": "جارٍ تجهيز الترجمة المجانية… {percent}٪",
+      "local_listening": "جارٍ الاستماع · ترجمة مجانية على جهازك",
+      "local_ready": "ملفات نماذج البديل المجاني جاهزة.",
+      "local_hint": "إذا تعذرت الخدمة عبر الإنترنت، تستمر الترجمة على جهازك. تُنزَّل النماذج عند أول استخدام؛ يُنصح بشبكة Wi-Fi.",
+      "local_downloading": "جارٍ تجهيز البديل المجاني · {percent}٪. التنزيل الأول يستهلك بيانات الإنترنت.",
+      "local_backup_error": "تعذر تحميل البديل المجاني. تحقق من الاتصال وحاول مجددًا.",
+      "local_retry": "تجهيز البديل مجددًا",
+      "local_unsupported": "هذا المتصفح لا يدعم الترجمة على الجهاز. افتح الموقع في إصدار حديث من Chrome أو Safari.",
+      "local_download_error": "تعذر تحميل النموذج المجاني. تحقق من الاتصال ومساحة التخزين ثم ابدأ مجددًا.",
+      "local_model_error": "تعذر إكمال الترجمة على الجهاز. قد تكون الذاكرة غير كافية؛ أعد فتح التطبيق وحاول مجددًا.",
+      "local_too_slow": "توقف الاستماع لأن الجهاز لم يستطع مواكبة الكلام. استخدم جهازًا أسرع لتجنب فقدان أجزاء من الحديث.",
+      "local_audio_error": "تعذر بدء معالجة الصوت على الجهاز. تحقق من الميكروفون.",
+      "local_source_unsupported": "بانتظار كلام بلغة مدعومة…",
+      "local_server_update": "يجب تحديث ملفات خادم الترجمة أيضًا. أبلغ مسؤول الموقع.",
+      "privacy": "في الوضع المتصل، تعالج Azure الصوت. في الوضع المحلي، يُعالج الصوت والنص على جهازك ولا تُحفَظ تسجيلات صوتية. تُنزَّل النماذج عند أول استخدام. يلزم الإنترنت للتحقق من حصة الاستخدام."
+    },
+    "fr": {
+      "local_preparing": "Préparation de la traduction gratuite… {percent} %",
+      "local_listening": "Écoute en cours · Traduction gratuite sur ton appareil",
+      "local_ready": "Les modèles du relais gratuit sont prêts.",
+      "local_hint": "Si le service en ligne est indisponible, la traduction continue sur ton appareil. Les modèles se téléchargent à la première utilisation ; le Wi-Fi est conseillé.",
+      "local_downloading": "Préparation du relais gratuit · {percent} %. Le premier téléchargement utilise des données Internet.",
+      "local_backup_error": "Le relais gratuit n’a pas pu être chargé. Vérifie ta connexion et réessaie.",
+      "local_retry": "Préparer à nouveau le relais",
+      "local_unsupported": "Ce navigateur ne prend pas en charge la traduction locale. Ouvre une version récente de Chrome ou Safari.",
+      "local_download_error": "Le modèle gratuit n’a pas pu être chargé. Vérifie la connexion et l’espace libre, puis recommence.",
+      "local_model_error": "La traduction locale n’a pas pu aboutir. La mémoire de l’appareil est peut-être insuffisante ; rouvre l’application et réessaie.",
+      "local_too_slow": "L’appareil ne suit pas le rythme de la parole. L’écoute a été arrêtée pour éviter de sauter des passages. Utilise un appareil plus rapide.",
+      "local_audio_error": "Le traitement audio local n’a pas pu démarrer. Vérifie le microphone.",
+      "local_source_unsupported": "En attente d’une langue prise en charge…",
+      "local_server_update": "Les fichiers du serveur de traduction doivent aussi être mis à jour. Préviens le responsable du site.",
+      "privacy": "En mode en ligne, Azure traite l’audio. En mode local, l’audio et le texte sont traités sur ton appareil ; les enregistrements ne sont pas conservés. Les modèles se téléchargent à la première utilisation. Ton quota est vérifié en ligne."
+    },
+    "es": {
+      "local_preparing": "Preparando traducción gratuita… {percent} %",
+      "local_listening": "Escuchando · Traducción gratuita en tu dispositivo",
+      "local_ready": "Los archivos del respaldo gratuito están listos.",
+      "local_hint": "Si el servicio en línea no está disponible, la traducción continúa en tu dispositivo. Los modelos se descargan la primera vez; se recomienda Wi-Fi.",
+      "local_downloading": "Preparando respaldo gratuito · {percent} %. La primera descarga usa datos de Internet.",
+      "local_backup_error": "No se pudo cargar el respaldo gratuito. Revisa la conexión e inténtalo de nuevo.",
+      "local_retry": "Preparar respaldo otra vez",
+      "local_unsupported": "Este navegador no admite la traducción en el dispositivo. Abre una versión actual de Chrome o Safari.",
+      "local_download_error": "No se pudo cargar el modelo gratuito. Revisa la conexión y el almacenamiento libre y vuelve a empezar.",
+      "local_model_error": "No se pudo completar la traducción local. Puede faltar memoria; abre de nuevo la aplicación e inténtalo otra vez.",
+      "local_too_slow": "Se detuvo la escucha porque el dispositivo no pudo seguir el ritmo. Usa uno más rápido para evitar omitir partes del audio.",
+      "local_audio_error": "No se pudo iniciar el audio local. Revisa el micrófono.",
+      "local_source_unsupported": "Esperando una lengua compatible…",
+      "local_server_update": "También hay que actualizar los archivos del servidor de traducción. Avisa al responsable del sitio.",
+      "privacy": "En modo en línea, Azure procesa el audio. En modo local, el audio y el texto se procesan en tu dispositivo; no se guardan grabaciones. Los modelos se descargan la primera vez. Se requiere Internet para verificar tu cuota."
+    },
+    "ru": {
+      "local_preparing": "Подготовка бесплатного перевода… {percent} %",
+      "local_listening": "Слушаю · Бесплатный перевод на устройстве",
+      "local_ready": "Файлы моделей для бесплатного резерва готовы.",
+      "local_hint": "Если онлайн-служба недоступна, перевод продолжится на устройстве. При первом использовании загружаются модели; рекомендуется Wi-Fi.",
+      "local_downloading": "Подготовка бесплатного резерва · {percent} %. Первая загрузка расходует интернет-трафик.",
+      "local_backup_error": "Не удалось загрузить бесплатный резерв. Проверь подключение и повтори попытку.",
+      "local_retry": "Подготовить резерв снова",
+      "local_unsupported": "Браузер не поддерживает перевод на устройстве. Открой сайт в актуальном Chrome или Safari.",
+      "local_download_error": "Не удалось загрузить бесплатную модель. Проверь подключение и свободное место, затем начни снова.",
+      "local_model_error": "Не удалось завершить перевод на устройстве. Возможно, не хватает памяти. Открой приложение заново и повтори попытку.",
+      "local_too_slow": "Устройство не успевает обрабатывать речь. Прослушивание остановлено, чтобы не пропускать фрагменты. Используй более быстрое устройство.",
+      "local_audio_error": "Не удалось запустить обработку звука на устройстве. Проверь микрофон.",
+      "local_source_unsupported": "Ожидание речи на поддерживаемом языке…",
+      "local_server_update": "Нужно обновить и серверные файлы перевода. Сообщи владельцу сайта.",
+      "privacy": "В онлайн-режиме звук обрабатывает Azure. В локальном режиме звук и текст обрабатываются на устройстве; записи не сохраняются. Модели загружаются при первом использовании. Для проверки лимита нужен Интернет."
+    }
+  };
+  Object.keys(LOCAL).forEach(lang => Object.assign(COPY[lang], LOCAL[lang]));
+  const PROVIDER_PRIVACY={"tr": "Çevrimiçi modda sesin çalışan çeviri sağlayıcısında işlenir (Azure, Gemini, Groq veya Cloudflare). Cihaz modunda ses ve metin cihazında işlenir. Uygulama ses kaydı saklamaz. Modeller ilk kullanımda indirilir; kullanım hakkını doğrulamak için internet gerekir.", "en": "Online audio is processed by the active translation provider (Azure, Gemini, Groq or Cloudflare). In device mode, speech and text are processed on your device. The app does not store recordings. Models download on first use; allowance checks require internet.", "de": "Online verarbeitet der aktive Übersetzungsdienst deine Audiodaten (Azure, Gemini, Groq oder Cloudflare). Im lokalen Modus bleiben Sprach- und Textverarbeitung auf deinem Gerät. Die App speichert keine Aufnahmen. Modelle werden beim ersten Mal geladen; das Kontingent wird online geprüft.", "ar": "في الوضع المتصل، يعالج مزود الترجمة النشط الصوت (Azure أو Gemini أو Groq أو Cloudflare). في الوضع المحلي، تتم معالجة الصوت والنص على جهازك. لا يحفظ التطبيق التسجيلات. تُنزّل النماذج عند أول استخدام؛ يلزم الإنترنت للتحقق من حصة الاستخدام.", "fr": "En ligne, le service de traduction actif traite l’audio (Azure, Gemini, Groq ou Cloudflare). En mode local, la parole et le texte sont traités sur ton appareil. L’application ne conserve pas les enregistrements. Les modèles se téléchargent au premier usage ; la vérification du quota nécessite Internet.", "es": "En línea, el proveedor de traducción activo procesa el audio (Azure, Gemini, Groq o Cloudflare). En modo local, la voz y el texto se procesan en tu dispositivo. La aplicación no guarda grabaciones. Los modelos se descargan la primera vez; verificar el cupo requiere Internet.", "ru": "В онлайн-режиме звук обрабатывает активный сервис перевода (Azure, Gemini, Groq или Cloudflare). В локальном режиме речь и текст обрабатываются на устройстве. Приложение не хранит записи. Модели загружаются при первом использовании; для проверки лимита нужен интернет."};
+  Object.keys(PROVIDER_PRIVACY).forEach(lang=>{COPY[lang].privacy=PROVIDER_PRIVACY[lang];});
+  for(const [lang,copy] of Object.entries(window.LUMIRA_ACCESS_COPY.rows)){
+    Object.assign(COPY[lang],{writing:copy.writingUsage,live:copy.liveUsage,unlimited:copy.noLimit,writing_limit:copy.limitTitle,live_limit:copy.limitTitle,pdf_limit:copy.pdfNote,pdf_badge_required:copy.needBadge});
+  }
   const listeners = new Set();
   let cached = null, cachedUid = '', cachedToken = '', authBound = false;
   const user = () => { try { return window.firebase.auth().currentUser; } catch (e) { return null; } };
@@ -33,6 +160,7 @@
   function publish(quota, uid) {
     if (!quota || user()?.uid !== uid) return;
     cached = quota; cachedUid = uid;
+    try { localStorage.setItem('lumira_entitlement_'+uid,JSON.stringify({tier:quota.tier,badge:quota.badge,pdf:quota.pdf,offline:quota.offline})); } catch(e) {}
     listeners.forEach(fn => fn(quota));
     document.querySelectorAll('[data-writing-quota]').forEach(el => { el.textContent = writingLabel(quota); el.classList.remove('feature-error'); });
   }
@@ -42,21 +170,26 @@
     const token = await u.getIdToken();
     cachedToken = token;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 25000);
+    const timer = setTimeout(() => controller.abort(), Math.min(25000,options?.timeoutMs || 25000));
+    const abort=()=>controller.abort();
+    if(options?.signal){if(options.signal.aborted)abort();else options.signal.addEventListener('abort',abort,{once:true});}
     try {
-      const response = await fetch('./.netlify/functions/features', {
+      const response = await fetch(options?.audio?'./.netlify/functions/live-audio':'./.netlify/functions/features', {
         method: 'POST', cache: 'no-store', signal: controller.signal,
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
         body: JSON.stringify(Object.assign({ action }, params)), keepalive: !!(options && options.keepalive)
       });
       let data;
       try { data = await response.json(); } catch (e) { throw fail('server_not_configured'); }
-      if (!response.ok) throw fail(data.error || 'usage_unavailable');
       if (user()?.uid !== u.uid) throw fail('login_required');
       if (data.quota) publish(data.quota, u.uid);
+      if (!response.ok) {
+        if(['writing_limit','live_limit','pdf_limit','pdf_badge_required'].includes(data.error))window.LUMIRA_ACCESS?.open(data.error,data.quota || cached);
+        throw fail(data.error || 'usage_unavailable');
+      }
       return data;
-    } catch (e) { throw e.featureCode ? e : fail('usage_unavailable'); }
-    finally { clearTimeout(timer); }
+    } catch (e) { throw e.featureCode ? e : fail(options?.audio || action==='liveConnect'?'speech_unavailable':'usage_unavailable'); }
+    finally { clearTimeout(timer);options?.signal?.removeEventListener('abort',abort); }
   }
   function writingLabel(quota) {
     const q = quota.writing;
@@ -93,7 +226,7 @@
     if (!id || !cachedToken) return;
     fetch('./.netlify/functions/features', { method: 'POST', keepalive: true, headers: { 'Content-Type':'application/json', Authorization:'Bearer ' + cachedToken }, body: JSON.stringify({ action:'liveStop', id }) }).catch(() => {});
   }
-  window.LUMIRA_FEATURES = { api, text, errorText: e => text(e?.featureCode || 'usage_unavailable'), mountWriting, verifyPurchase, restorePurchases, releaseOnExit,
+  window.LUMIRA_FEATURES = { api, audio:(params,options)=>api('audio',params,{...options,audio:true}), entitlement:()=>{const uid=user()?.uid;if(!uid)return null;if(cachedUid===uid && cached)return cached;try{return JSON.parse(localStorage.getItem('lumira_entitlement_'+uid)||'null');}catch{return null;}}, text, errorText: e => text(e?.featureCode || 'usage_unavailable'), mountWriting, verifyPurchase, restorePurchases, releaseOnExit,
     id: () => crypto.randomUUID ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(20)), n => n.toString(16).padStart(2,'0')).join(''),
     getQuota: () => cachedUid === user()?.uid ? cached : null,
     subscribe: fn => { listeners.add(fn); return () => listeners.delete(fn); }

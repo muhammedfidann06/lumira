@@ -6129,3 +6129,6 @@ add("ru","B2","Sağlık","реанимация","yoğun bakım","isim","Паци
 add("ru","B2","Sağlık","искусственная вентиляция лёгких","suni solunum cihazı","isim","Ему подключили искусственную вентиляцию лёгких.","Suni solunum cihazına bağlandı.");
 add("ru","B2","Sağlık","донорство органов","organ bağışı","isim","Донорство органов спасает жизни.","Organ bağışı hayat kurtarıyor.");
 add("ru","B2","Sağlık","трансплантация","organ nakli","isim","Трансплантация прошла успешно.","Organ nakli başarıyla gerçekleşti.");
+
+/* İnceleme 1.9.5 — eksik temel kullanım ve teknoloji kelimeleri. */
+add("ru","A2","Teknoloji","смартфон","akıllı telefon","isim","Я купил новый смартфон.","Yeni bir akıllı telefon aldım.");

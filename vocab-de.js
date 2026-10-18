@@ -53,7 +53,7 @@ add("de","A1","Sıfatlar","allein","yalnız","Adjektiv","Er lebt allein.","O yal
 add("de","A1","Sıfatlar","bekannt","tanınmış","Adjektiv","Er ist sehr bekannt.","O çok tanınmış biri.");
 add("de","A1","Sıfatlar","besser","daha iyi","Adjektiv","Mir geht es heute besser.","Bugün daha iyiyim.");
 add("de","A1","Sıfatlar","billig","ucuz","Adjektiv","Dieses T-Shirt ist sehr billig.","Bu tişört çok ucuz.");
-add("de","A1","Sıfatlar","deutsch","Alman / Almanca","Adjektiv","Er lernt schnell deutsch.","O hızlıca Almanca öğreniyor.");
+add("de","A1","Sıfatlar","deutsch","Alman / Almanca","Adjektiv","Er lernt schnell Deutsch.","O hızlıca Almanca öğreniyor.");
 add("de","A1","Sıfatlar","einfach","basit","Adjektiv","Die Prüfung war sehr einfach.","Sınav çok basitti.");
 add("de","A1","Bağlaçlar","aber","ama / fakat","Konjunktion","Ich möchte, aber ich kann nicht.","İstiyorum ama yapamam.");
 add("de","A1","Bağlaçlar","auch","da / de","Konjunktion","Ich komme auch.","Ben de geliyorum.");
@@ -6487,3 +6487,6 @@ add("de","A2","Deyimler","Man kann nie wissen","hiç belli olmaz","Ausdruck","Ma
 // ============================================
 // ALFABE - Deutsches Alphabet
 // ============================================
+
+/* İnceleme 1.9.5 — eksik temel kullanım ve teknoloji kelimeleri. */
+add("de","A1","Zamirler","Sie (höflich)","siz (resmi)","Pronomen","Sie sind sehr freundlich.","Siz çok naziksiniz.");

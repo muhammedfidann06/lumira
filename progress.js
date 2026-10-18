@@ -91,13 +91,7 @@
       lastDueCount:0
     };
   }
-  function wordKeyFor(v){
-    const raw = v.lang+'_'+v.level+'_'+v.w;
-    return raw.toLowerCase()
-      .replace(/[.#$\[\]\/\s]+/g,'_')
-      .replace(/[^a-z0-9_aoubcdefghijklmnopqrstuvwxyz]/gi,'_')
-      .slice(0,120);
-  }
+  function wordKeyFor(v){ return window.LUMIRA_VOCAB_ID.key(v); }
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
@@ -168,6 +162,8 @@
   }
   function finalizeLoad(cb){
     wordProgress = wordProgress || {};
+    VOCAB.forEach(getRecord);
+    for(const [key,record] of Object.entries(wordProgress)) if(record && record._legacyKey && record._legacyKey !== key) delete wordProgress[record._legacyKey];
     meta = Object.assign(defaultMeta(), meta || {});
     if(!meta.tasks) meta.tasks = {t1:false,t2:false,t3:false,t4:false,t5:false};
     ensureDailyRollover();
@@ -277,7 +273,17 @@
       setTimeout(()=>t.remove(), 400);
     }, 3200);
   }
-  function getRecord(v){ return wordProgress[wordKeyFor(v)] || null; }
+  function getRecord(v){
+    const key=wordKeyFor(v), old=window.LUMIRA_VOCAB_ID.legacy(v);
+    // Migrate only a legacy key that identified one word. Collided historical
+    // records cannot honestly be attributed to every Arabic/Cyrillic word.
+    if(key !== old && wordProgress[old] && window.LUMIRA_VOCAB_ID.unambiguous(v,VOCAB)){
+      if(!wordProgress[key]) wordProgress[key]=Object.assign({},wordProgress[old]);
+      wordProgress[key]._legacyKey=old;
+      delete wordProgress[old];
+    }
+    return wordProgress[key] || null;
+  }
 
   function checkThresholdTasks(){
     const t = meta.todayCount||0;
@@ -903,10 +909,10 @@
     if(!saved || saved.level !== level || !Array.isArray(saved.orderKeys)) return null;
     /* anahtarlardan gerçek kelime nesnelerini VOCAB'dan geri kur */
     const byKey = {};
-    poolForActiveLang().filter(v=>v.level===level).forEach(v=>{ byKey[wordKeyFor(v)] = v; });
+    poolForActiveLang().filter(v=>v.level===level).forEach(v=>{ byKey[wordKeyFor(v)] = v; if(window.LUMIRA_VOCAB_ID.unambiguous(v,VOCAB)) byKey[window.LUMIRA_VOCAB_ID.legacy(v)] = v; });
     const order = saved.orderKeys.map(k=>byKey[k]).filter(Boolean);
     if(order.length !== saved.orderKeys.length) return null; /* veri tutarsızsa güvenli şekilde vazgeç */
-    return { level, categories: saved.categories||null, order, idx: saved.idx, correct: saved.correct, learnedKeys: saved.learnedKeys||[] };
+    return { level, categories: saved.categories||null, order, idx: saved.idx, correct: saved.correct, learnedKeys: (saved.learnedKeys||[]).map(k=>byKey[k] ? wordKeyFor(byKey[k]) : null).filter(Boolean) };
   }
   function ltClearProgress(){ safeLocalSet(ltProgressKey(), null); }
 
@@ -1070,7 +1076,7 @@
     const y = todayStr();
     learnedKeys.forEach(k=>{
       const v = order.find(x=>wordKeyFor(x)===k);
-      let rec = wordProgress[k] || { seen:0, correct:0, wrong:0, known:false, lang:v?v.lang:activeLang, level:v?v.level:level, cat:v?v.cat:null };
+      let rec = (v && getRecord(v)) || wordProgress[k] || { seen:0, correct:0, wrong:0, known:false, lang:v?v.lang:activeLang, level:v?v.level:level, cat:v?v.cat:null };
       rec.seen = (rec.seen||0)+1;
       rec.correct = (rec.correct||0)+1;
       if(!rec.known){ rec.known = true; rec.learnedDate = y; }
@@ -1425,7 +1431,7 @@
          cümlesi yoktu, Adım 4'te hiç sorulmadı) → bu adım için nötr sayılır,
          cezalandırılmaz. */
       const bothOk = res.quizOk === true && res.listenOk === true && res.fillOk !== false;
-      let rec = wordProgress[key] || { seen:0, correct:0, wrong:0, known:false, retryAfterSession:null, lang:v.lang, level:v.level, cat:v.cat };
+      let rec = getRecord(v) || { seen:0, correct:0, wrong:0, known:false, retryAfterSession:null, lang:v.lang, level:v.level, cat:v.cat };
       rec.seen = (rec.seen||0) + 1;
       sessionStats.total++;
       if(bothOk){
@@ -1529,7 +1535,7 @@
         currentAnswered = true;
         const ok = (o === correctBack);
         const key = wordKeyFor(v);
-        let rec = wordProgress[key];
+        let rec = getRecord(v);
         if(rec){
           rec.seen = (rec.seen||0)+1;
           rec.lastSeen = Date.now();
@@ -1597,21 +1603,16 @@
 
   function renderWeakWords(){
     pmInWritingFlow = false;
-    const entries = Object.keys(wordProgress)
-      .map(k=>({key:k, rec:wordProgress[k]}))
-      .filter(e => e.rec.lang === activeLang && (e.rec.wrong||0) > 0)
-      .sort((a,b)=> (b.rec.wrong||0) - (a.rec.wrong||0))
-      .slice(0, 30);
-
-    const lookup = {};
-    VOCAB.forEach(v=>{ lookup[wordKeyFor(v)] = v; });
+    const entries = poolForActiveLang().map(v=>({key:wordKeyFor(v),rec:getRecord(v),v}))
+      .filter(e=>e.rec && (e.rec.wrong||0)>0)
+      .sort((a,b)=>(b.rec.wrong||0)-(a.rec.wrong||0)).slice(0,30);
 
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">📉 '+(window.t?t('pm_weak'):'Hata Yaptığın Kelimeler')+'</div><div class="pm-sub">'+pmCopy('weakDesc','En çok yanlış yaptığın kelimeler')+'</div></div>';
     if(entries.length===0){
       html += '<div class="pm-empty">'+(window.t?window.t('pm_no_mistakes'):'Hic hata yapmamissin - harika! 🎉')+'</div>';
     } else {
       entries.forEach(e=>{
-        const v = lookup[e.key];
+        const v = e.v;
         if(!v) return;
         const status = e.rec.known ? (window.t?window.t('pm_currently_known'):'✅ Su an bilinen kelimeler arasinda') : (window.t?window.t('pm_waiting_retry'):'⏳ Tekrar bekliyor');
         html += '<div class="pm-weak-item"><div class="pm-weak-word" dir="'+FRONT_DIR(v)+'">'+escapeHtml(FRONT_W(v))+' <span style="color:var(--pm-accent);font-size:12px;">- '+escapeHtml(BACK_W(v))+'</span></div><div class="pm-weak-meta">❌ '+(window.t?window.t('pm_wrong_label'):'Yanlış:')+' '+(e.rec.wrong||0)+' - ✅ '+(window.t?window.t('pm_correct_label'):'Doğru:')+' '+(e.rec.correct||0)+' - 👁 '+(window.t?window.t('pm_seen_label'):'Görülme:')+' '+(e.rec.seen||0)+'<br>'+status+'</div></div>';
@@ -1625,13 +1626,13 @@
   /* =========================================================
      YAZMA PRATİĞİ — Çok dilli Metin Düzeltici (CheckYourWrite benzeri)
      Akış: Dil Seç → Seviye Seç (A1-B2) → Yaz & Kontrol Et
-     Kontrol, hesaba bağlı 30 günlük kotayı sunucuda doğrulayan Netlify
+     Kontrol, hesaba bağlı kayan 24 saatlik kotayı sunucuda doğrulayan Netlify
      işlevinden geçer. Başarısız kontrol kullanım hakkı düşürmez.
-     A1/A2'de üslup önerileri gösterilmez. Türkçe kontrolü LanguageTool
-     tarafından desteklenmediği için bu dilde kontrol düğmesi kapalıdır.
+     A1/A2’de üslup önerileri gösterilmez. Türkçe ve Arapça için sunucudaki
+     yapay zekâ yedeği, diğer dillerde LanguageTool kullanılır.
      ========================================= */
   const WP_LANGS = [
-    { code:'tr', tts:'tr-TR', lt:null },
+    { code:'tr', tts:'tr-TR', lt:'tr' },
     { code:'en', tts:'en-US', lt:'en-US' },
     { code:'de', tts:'de-DE', lt:'de-DE' },
     { code:'ar', tts:'ar-SA', lt:'ar'    },
@@ -1826,7 +1827,7 @@
       wpRetryOperation = { fingerprint: fingerprint, id: window.LUMIRA_FEATURES.id() };
     }
     const result = await window.LUMIRA_FEATURES.api('check', {
-      id: wpRetryOperation.id, text: text, language: lang.code
+      id: wpRetryOperation.id, text: text, language: lang.code, uiLanguage: window.NATIVE_LANG || 'tr'
     });
     wpRetryOperation = null;
     return result.matches;
