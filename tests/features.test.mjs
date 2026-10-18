@@ -174,7 +174,8 @@ test('Play receipts are verified, acknowledged and bound to one account; cancele
   process.env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON=JSON.stringify({client_email:'qa@example.invalid',private_key:privateKey.export({type:'pkcs8',format:'pem'})});
   const records=new Map();let state=0,acknowledged=0;
   const db={ref(path){return {
-    async transaction(fn){const value=fn(records.get(path)||null);if(value===undefined)return {committed:false};records.set(path,value);return {committed:true};},
+    on(){},off(){},async get(){return{val:()=>records.get(path)??null};},
+    async transaction(fn){const value=fn(records.get(path)??null);if(value===undefined)return {committed:false};records.set(path,value);return {committed:true};},
     async set(value){records.set(path,value);}
   };}};
   try {
