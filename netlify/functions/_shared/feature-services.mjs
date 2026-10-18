@@ -1,5 +1,5 @@
 import { createHash, createSign } from 'node:crypto';
-import { fault, tierFor } from './feature-core.mjs';
+import { fault, tierFor, TIERS } from './feature-core.mjs';
 import { checkWritingAI } from './writing-ai.mjs';
 
 export const PROJECT = 'mhamzac-ca73d';
@@ -30,7 +30,10 @@ export async function identity(request) {
     services.db.ref(`progress/${claims.uid}/meta/supportGrants`).get(),
     services.db.ref(`serverFeatureEntitlements/${claims.uid}`).get()
   ]);
-  return { ...services, uid: claims.uid, tier: tierFor(grants.val(), verified.val()) };
+  const g=grants.val()||{},v=verified.val()||{};
+  const supportAmounts=TIERS.filter(t=>t.amount>0 && v[t.amount]!==false && (g[t.amount]===true || v[t.amount]===true)).map(t=>t.amount);
+  const revokedSupport=TIERS.filter(t=>t.amount>0 && v[t.amount]===false).map(t=>t.amount);
+  return { ...services, uid: claims.uid, tier:{...tierFor(g,v),supportAmounts,revokedSupport} };
 }
 export async function speechToken() {
   const key = process.env.AZURE_SPEECH_KEY, region = process.env.AZURE_SPEECH_REGION;
@@ -107,6 +110,17 @@ export async function verifyPlayPurchase(ctx, sku, token) {
     return value || { uid: ctx.uid, sku, at: Date.now() };
   }, undefined, false);
   if (!claim.committed) throw fault('purchase_already_linked', 409);
-  await ctx.db.ref(`serverFeatureEntitlements/${ctx.uid}/${amounts[sku]}`).set(true);
+  await grantVerifiedEntitlement(ctx,amounts[sku]);
   return amounts[sku];
+}
+
+// A purchase restore cannot undo a deliberate administrative revocation.
+export async function grantVerifiedEntitlement(ctx,amount){
+  const ref=ctx.db.ref(`serverFeatureEntitlements/${ctx.uid}/${amount}`),listener=()=>{};
+  ref.on('value',listener);
+  try{
+    await ref.get();
+    const result=await ref.transaction(value=>value===false?undefined:true,undefined,false);
+    if(!result.committed)throw fault('purchase_revoked',403);
+  }finally{ref.off('value',listener);}
 }

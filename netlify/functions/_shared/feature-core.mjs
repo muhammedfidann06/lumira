@@ -13,8 +13,8 @@ export const TIERS = [
 export function fault(code, status = 400) {
   return Object.assign(new Error(code), { code, status });
 }
-export function tierFor(...grants) {
-  return TIERS.slice().reverse().find(t => t.amount === 0 || grants.some(g => g?.[t.amount] === true)) || TIERS[0];
+export function tierFor(grants,verified) {
+  return TIERS.slice().reverse().find(t => t.amount === 0 || (verified?.[t.amount]!==false && (grants?.[t.amount]===true || verified?.[t.amount]===true))) || TIERS[0];
 }
 export function dayKey(now, zone = 'Europe/Vienna') {
   return new Intl.DateTimeFormat('en-CA', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(now));
@@ -73,6 +73,7 @@ export function summary(value, tier, now, zone = 'Europe/Vienna') {
   const starts = Object.values(s.live.intervals).filter(i => i.end > i.start).map(i => Math.max(i.start, now - WINDOW_MS));
   return {
     serverNow: now, tier: tier.amount, badge: tier.badge,
+    ...(tier.supportAmounts?{supportAmounts:tier.supportAmounts,revokedSupport:tier.revokedSupport||[]}:{}),
     writing: { limit: tier.count, used: events.length, remaining: tier.count === null ? null : Math.max(0, tier.count - events.length - pending), resetsAt: events.length ? Math.min(...events.map(e => e.at)) + WINDOW_MS : null },
     live: { limitSeconds: tier.minutes === null ? null : tier.minutes * 60, usedSeconds, remainingSeconds: tier.minutes === null ? null : Math.max(0, tier.minutes * 60 - usedSeconds), resetsAt: starts.length ? Math.min(...starts) + WINDOW_MS : null, timeZone: zone },
     pdf: { limit: tier.amount === 0 ? 0 : tier.amount === 1 ? 5 : null, used: s.pdf.count, remaining: tier.amount === 0 ? 0 : tier.amount === 1 ? Math.max(0, 5 - s.pdf.count - Object.keys(s.pdf.pending).length) : null },
