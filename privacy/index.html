@@ -66,7 +66,7 @@
     <img src="../icon-192.png" alt="Lumira">
     <div class="brand">Lumira · Dil Kartları</div>
     <h1>Gizlilik Politikası</h1>
-    <div class="updated">Son güncelleme: 6 Ağustos 2026</div>
+    <div class="updated">Son güncelleme: 18 Ekim 2026</div>
   </header>
 
   <div class="box">
@@ -104,8 +104,8 @@
   </table>
   <p>
     E-posta adresi, telefon numarası, konum, kişi listesi, fotoğraf veya
-    cihaz kimliği <b>toplamıyoruz</b>. Uygulama kamera, mikrofon, konum veya
-    rehber izni istemez.
+    cihaz kimliği <b>toplamıyoruz</b>. Uygulama kamera, konum veya rehber izni
+    istemez. Canlı çeviri için yalnızca özelliği başlattığınızda mikrofon izni istenir.
   </p>
 
   <h3>2.3. Otomatik toplanan veriler</h3>
@@ -116,6 +116,32 @@
   </p>
 
   <h2>3. Verilerin Saklandığı Yer</h2>
+  <h3>Sesli canlı çeviri</h3>
+  <p>
+    Canlı çeviride yapılandırılmış hizmetler sırasıyla Microsoft Azure Speech,
+    Google Gemini, Groq ve Cloudflare’dır. Sesiniz, konuşma metniniz ve seçtiğiniz
+    çeviri dili, o anda çalışan sağlayıcıya tanıma ve çeviri amacıyla iletilir.
+    Bir hizmet kullanılamadığında sıradakine otomatik geçilebilir. Groq ve
+    Cloudflare modunda kısa ses parçaları Lumira’nın Netlify sunucu işlevinden
+    ilgili sağlayıcıya aktarılır; uygulama bu sesleri veya çeviri metinlerini
+    veritabanına kalıcı olarak kaydetmez. Sağlayıcıların kendi saklama ve kullanım
+    koşulları ilgili hizmetin politikasına tabidir.
+    Bulut hizmetleri kullanılamadığında desteklenen cihazlarda ücretsiz cihaz
+    motoruna geçilir. Bu yedek modda konuşma tanıma ve çeviri cihazınızda yapılır; sesiniz ve konuşma
+    metniniz uygulamanın sunucusuna ya da bir çeviri API’sine gönderilmez.
+    Ses yalnızca işlenmek üzere kısa süreli bellekte tutulur ve kalıcı olarak
+    kaydedilmez. Durdur düğmesi mikrofon erişimini kapatır.
+  </p>
+  <p>
+    Açık konuşma modeli ilk kullanımda Hugging Face üzerinden, Firefox çeviri
+    modelleri Mozilla’nın herkese açık Google Cloud Storage deposundan,
+    çalışma bileşenleri jsDelivr ve Lumira üzerinden cihazınıza yüklenebilir
+    ve tarayıcı önbelleğinde tutulur.
+    Bu indirmeler normal internet bağlantı bilgilerini ilgili sağlayıcılara
+    iletir; konuşma içeriğiniz indirme isteğine eklenmez. Kullanım hakkınızın
+    doğrulanması için internet bağlantısı gerekir.
+    <a href="/THIRD-PARTY-LIVE-LOCAL.txt">Açık kaynak bileşenleri ve lisansları</a>.
+  </p>
   <p>
     Sunucu tarafındaki veriler Google Firebase (Realtime Database ve
     Authentication) altyapısında saklanır. Google’ın gizlilik politikası:
@@ -125,6 +151,28 @@
     Kelime seslendirmesi için cihazınızın kendi ses motoru kullanılır. Cihaz
     seslendirmesi çalışmadığında, yalnızca okunacak kelime Google’ın
     seslendirme servisine iletilir; bu istek kimliğinizle ilişkilendirilmez.
+  </p>
+
+  <h3>Yazma kontrolü ve kullanım hakları</h3>
+  <p>
+    Kontrol için gönderdiğiniz metin, seçilen dile göre LanguageTool’a veya
+    sunucuda yapılandırılmış Google Gemini / Groq hizmetine iletilir. Lumira
+    yazma metninizi kullanım sayacına kaydetmez. Hesabınızın son 24 saatlik
+    yazma ve mikrofon kullanım süreleri, PDF oluşturma sayısı ve doğrulanmış
+    destek rozeti hakları Firebase’de saklanır. Google Play satın alımlarının
+    doğrulanması için ürün kimliği ve satın alma makbuzu sunucuda işlenir.
+    Cihazda saklanan hak özeti çevrimdışı erişimde kullanılabilir.
+  </p>
+
+  <h3>Örnek cümle çevirileri</h3>
+  <p>
+    Hazır sözlükteki bir örneğin seçtiğiniz dilde çevirisi yoksa, yalnızca
+    o hazır cümle ve dil kodları Gemini, Groq veya Cloudflare hizmetine
+    gönderilebilir. Kişisel defterinize yazdığınız özel cümleler bu akışa
+    gönderilmez. Otomatik çeviriler bu şekilde işaretlenir; öğrenen kişinin
+    kimliğini içermeyen sonuç ortak sunucu önbelleğinde ve çevrimdışı gösterim
+    için cihazınızda saklanabilir. İstek sınırları için hesaba bağlı kısa süreli
+    sayaç tutulur; ses ve yazma pratiği haklarından kullanım düşülmez.
   </p>
 
   <h2>4. Verilerin Paylaşımı</h2>
