@@ -1,5 +1,6 @@
 import { createHash, createSign } from 'node:crypto';
 import { fault, tierFor } from './feature-core.mjs';
+import { checkWritingAI } from './writing-ai.mjs';
 
 export const PROJECT = 'mhamzac-ca73d';
 export const DATABASE = 'https://mhamzac-ca73d-default-rtdb.firebaseio.com';
@@ -35,18 +36,22 @@ export async function speechToken() {
   const key = process.env.AZURE_SPEECH_KEY, region = process.env.AZURE_SPEECH_REGION;
   if (!key || !/^[a-z0-9-]+$/.test(region || '')) throw fault('speech_not_configured', 503);
   if (speechCache?.expiresAt > Date.now() + 60000) return speechCache;
-  const response = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issueToken`, {
-    method: 'POST', headers: { 'Ocp-Apim-Subscription-Key': key }, signal: AbortSignal.timeout(8000)
-  });
-  if (!response.ok) throw fault('speech_unavailable', 502);
-  const token = (await response.text()).trim();
+  let token;
+  try {
+    const response = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issueToken`, {
+      method: 'POST', headers: { 'Ocp-Apim-Subscription-Key': key }, signal: AbortSignal.timeout(8000)
+    });
+    if (!response.ok) throw new Error('provider_unavailable');
+    token = (await response.text()).trim();
+  } catch { throw fault('speech_unavailable', 502); }
   if (!token || token.length > 20000) throw fault('speech_unavailable', 502);
   speechCache = { token, region, expiresAt: Date.now() + 9 * 60000 };
   return speechCache;
 }
-export async function checkWriting(text, language) {
-  const languages = { de: 'de-DE', en: 'en-US', ar: 'ar', fr: 'fr', es: 'es', ru: 'ru-RU' };
+export async function checkWriting(text, language, uiLanguage = 'tr') {
+  const languages = { tr: 'tr', de: 'de-DE', en: 'en-US', ar: 'ar', fr: 'fr', es: 'es', ru: 'ru-RU' };
   if (!languages[language]) throw fault('unsupported_language', 422);
+  if (language === 'ar' || language === 'tr') return checkWritingAI(text, language, uiLanguage);
   const body = new URLSearchParams({ text, language: languages[language], level: 'picky' });
   if (process.env.LANGUAGETOOL_USERNAME && process.env.LANGUAGETOOL_API_KEY) {
     body.set('username', process.env.LANGUAGETOOL_USERNAME);
