@@ -1,0 +1,306 @@
+{
+  "version": "1.9.5",
+  "records": 36726,
+  "emptyFields": 0,
+  "byLanguage": {
+    "de": {
+      "total": 6474,
+      "levels": {
+        "A1": 1413,
+        "A2": 1581,
+        "B1": 1933,
+        "B2": 1547
+      }
+    },
+    "en": {
+      "total": 6352,
+      "levels": {
+        "A1": 1755,
+        "A2": 1253,
+        "B1": 1430,
+        "B2": 1914
+      }
+    },
+    "ar": {
+      "total": 5876,
+      "levels": {
+        "A1": 1451,
+        "A2": 718,
+        "B1": 2047,
+        "B2": 1660
+      }
+    },
+    "fr": {
+      "total": 5961,
+      "levels": {
+        "A1": 1243,
+        "A2": 1021,
+        "B1": 2189,
+        "B2": 1508
+      }
+    },
+    "es": {
+      "total": 5935,
+      "levels": {
+        "A1": 1234,
+        "A2": 1017,
+        "B1": 2176,
+        "B2": 1508
+      }
+    },
+    "ru": {
+      "total": 6128,
+      "levels": {
+        "A1": 1284,
+        "A2": 1059,
+        "B1": 2248,
+        "B2": 1537
+      }
+    }
+  },
+  "crossPairs": [
+    {
+      "native": "de",
+      "target": "en",
+      "cards": 5081,
+      "reviewed": 11,
+      "sameSentence": 1611,
+      "unavailable": 3459
+    },
+    {
+      "native": "de",
+      "target": "ar",
+      "cards": 4810,
+      "reviewed": 3,
+      "sameSentence": 1810,
+      "unavailable": 2997
+    },
+    {
+      "native": "de",
+      "target": "fr",
+      "cards": 3758,
+      "reviewed": 2,
+      "sameSentence": 381,
+      "unavailable": 3375
+    },
+    {
+      "native": "de",
+      "target": "es",
+      "cards": 3749,
+      "reviewed": 5,
+      "sameSentence": 398,
+      "unavailable": 3346
+    },
+    {
+      "native": "de",
+      "target": "ru",
+      "cards": 3828,
+      "reviewed": 5,
+      "sameSentence": 1114,
+      "unavailable": 2709
+    },
+    {
+      "native": "en",
+      "target": "de",
+      "cards": 5090,
+      "reviewed": 18,
+      "sameSentence": 1616,
+      "unavailable": 3456
+    },
+    {
+      "native": "en",
+      "target": "ar",
+      "cards": 4593,
+      "reviewed": 3,
+      "sameSentence": 1204,
+      "unavailable": 3386
+    },
+    {
+      "native": "en",
+      "target": "fr",
+      "cards": 3259,
+      "reviewed": 2,
+      "sameSentence": 207,
+      "unavailable": 3050
+    },
+    {
+      "native": "en",
+      "target": "es",
+      "cards": 3249,
+      "reviewed": 4,
+      "sameSentence": 196,
+      "unavailable": 3049
+    },
+    {
+      "native": "en",
+      "target": "ru",
+      "cards": 3307,
+      "reviewed": 5,
+      "sameSentence": 463,
+      "unavailable": 2839
+    },
+    {
+      "native": "ar",
+      "target": "de",
+      "cards": 4815,
+      "reviewed": 19,
+      "sameSentence": 1816,
+      "unavailable": 2980
+    },
+    {
+      "native": "ar",
+      "target": "en",
+      "cards": 4590,
+      "reviewed": 10,
+      "sameSentence": 1198,
+      "unavailable": 3382
+    },
+    {
+      "native": "ar",
+      "target": "fr",
+      "cards": 3127,
+      "reviewed": 2,
+      "sameSentence": 202,
+      "unavailable": 2923
+    },
+    {
+      "native": "ar",
+      "target": "es",
+      "cards": 3117,
+      "reviewed": 4,
+      "sameSentence": 226,
+      "unavailable": 2887
+    },
+    {
+      "native": "ar",
+      "target": "ru",
+      "cards": 3185,
+      "reviewed": 5,
+      "sameSentence": 479,
+      "unavailable": 2701
+    },
+    {
+      "native": "fr",
+      "target": "de",
+      "cards": 3757,
+      "reviewed": 18,
+      "sameSentence": 375,
+      "unavailable": 3364
+    },
+    {
+      "native": "fr",
+      "target": "en",
+      "cards": 3253,
+      "reviewed": 11,
+      "sameSentence": 197,
+      "unavailable": 3045
+    },
+    {
+      "native": "fr",
+      "target": "ar",
+      "cards": 3122,
+      "reviewed": 2,
+      "sameSentence": 205,
+      "unavailable": 2915
+    },
+    {
+      "native": "fr",
+      "target": "es",
+      "cards": 5815,
+      "reviewed": 5,
+      "sameSentence": 3761,
+      "unavailable": 2049
+    },
+    {
+      "native": "fr",
+      "target": "ru",
+      "cards": 5813,
+      "reviewed": 6,
+      "sameSentence": 1724,
+      "unavailable": 4083
+    },
+    {
+      "native": "es",
+      "target": "de",
+      "cards": 3747,
+      "reviewed": 18,
+      "sameSentence": 393,
+      "unavailable": 3336
+    },
+    {
+      "native": "es",
+      "target": "en",
+      "cards": 3244,
+      "reviewed": 11,
+      "sameSentence": 193,
+      "unavailable": 3040
+    },
+    {
+      "native": "es",
+      "target": "ar",
+      "cards": 3111,
+      "reviewed": 2,
+      "sameSentence": 225,
+      "unavailable": 2884
+    },
+    {
+      "native": "es",
+      "target": "fr",
+      "cards": 5814,
+      "reviewed": 2,
+      "sameSentence": 3793,
+      "unavailable": 2019
+    },
+    {
+      "native": "es",
+      "target": "ru",
+      "cards": 5801,
+      "reviewed": 6,
+      "sameSentence": 2384,
+      "unavailable": 3411
+    },
+    {
+      "native": "ru",
+      "target": "de",
+      "cards": 3828,
+      "reviewed": 18,
+      "sameSentence": 1107,
+      "unavailable": 2703
+    },
+    {
+      "native": "ru",
+      "target": "en",
+      "cards": 3302,
+      "reviewed": 10,
+      "sameSentence": 463,
+      "unavailable": 2829
+    },
+    {
+      "native": "ru",
+      "target": "ar",
+      "cards": 3183,
+      "reviewed": 2,
+      "sameSentence": 477,
+      "unavailable": 2704
+    },
+    {
+      "native": "ru",
+      "target": "fr",
+      "cards": 5814,
+      "reviewed": 2,
+      "sameSentence": 1739,
+      "unavailable": 4073
+    },
+    {
+      "native": "ru",
+      "target": "es",
+      "cards": 5803,
+      "reviewed": 5,
+      "sameSentence": 2390,
+      "unavailable": 3408
+    }
+  ],
+  "reviewedParallelGroups": 44,
+  "addedWords": 9,
+  "semanticReview": "Structural/provenance checks cover the full corpus. Full independent linguistic review of every existing word and sentence was not performed. An unavailable cross-language example translation is explicitly marked instead of substituting an unrelated sentence."
+}

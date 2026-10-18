@@ -2,9 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
+import {readFile} from 'node:fs/promises';
 import { once } from 'node:events';
 import { initializeApp, deleteApp } from 'firebase-admin/app';
 import { getDatabase } from 'firebase-admin/database';
+import { createExamplesHandler } from '../netlify/functions/examples.mjs';
 import { createHandler } from '../netlify/functions/features.mjs';
 import { TIERS } from '../netlify/functions/_shared/feature-core.mjs';
 import { sha256 } from '../netlify/functions/_shared/feature-services.mjs';
@@ -69,10 +71,10 @@ test('real Firebase: writing commits, cold renewals last an hour, quotas stay at
     failWriting = false;
     assert.equal((await call({ action: 'status' }, 'writer', TIERS[0])).quota.writing.used, 1);
 
-    const concurrent = await Promise.all(Array.from({ length: 8 }, (_, i) => call({ ...body, id: 'concurrent-writing-' + i }, 'limited', TIERS[0])));
-    assert.equal(concurrent.filter(r => r.status === 200).length, 5);
-    assert.equal(concurrent.filter(r => r.error === 'writing_limit').length, 3);
-    assert.equal((await call({ action: 'status' }, 'limited', TIERS[0])).quota.writing.used, 5);
+    const concurrent = await Promise.all(Array.from({ length: 12 }, (_, i) => call({ ...body, id: 'concurrent-writing-' + i }, 'limited', TIERS[0])));
+    assert.equal(concurrent.filter(r => r.status === 200).length, 10);
+    assert.equal(concurrent.filter(r => r.error === 'writing_limit').length, 2);
+    assert.equal((await call({ action: 'status' }, 'limited', TIERS[0])).quota.writing.used, 10);
 
     const id = 'live-emulator-session-123456';
     const started = await call({ action: 'liveStart', id });
@@ -92,6 +94,44 @@ test('real Firebase: writing commits, cold renewals last an hour, quotas stay at
     assert.equal(stopped.session, null);
     assert.equal(stopped.quota.live.usedSeconds, 3600);
     console.log('Writing/refund/concurrent quotas and 720 cold-client renewals passed. Provider checks:', writingCalls);
+    const rules = await readFile(new URL('../firebase-security-rules.json',import.meta.url),'utf8');
+    const applied = await fetch('http://127.0.0.1:9000/.settings/rules.json?ns=demo-lumira-default-rtdb', {method:'PUT',headers:{Authorization:'Bearer owner','Content-Type':'application/json'},body:rules});
+    assert.equal(applied.status,200,await applied.text());
+    const owner=initializeApp(options,'rules-owner'),member=initializeApp({...options,databaseAuthVariableOverride:{uid:'member'}},'rules-member'),manager=initializeApp({...options,databaseAuthVariableOverride:{uid:'manager'}},'rules-manager');
+    try{
+      const db=getDatabase(owner),userDb=getDatabase(member),adminDb=getDatabase(manager);
+      await db.ref().update({'admins/manager':true,'progress/member/meta/xp':7,'progress/member/meta/supportGrants/5':true,'serverFeatureUsage/member/hidden':42,'serverFeatureEntitlements/member/5':true});
+      await userDb.ref('progress/member/words/test').set({seen:1,correct:1});
+      await userDb.ref('progress/member/meta/xp').set(8);
+      await assert.rejects(userDb.ref('progress/member/meta/xp').set(7),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('progress/member/meta/supportGrants/100').set(true),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('progress/member/meta').set({xp:8,supportGrants:{100:true}}),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('progress/member/meta/supportGrants').set({'100':{nested:true}}),/permission[ _]denied/i);
+      await userDb.ref('progress/member/meta').set({xp:9,supportGrants:{5:true},studySessionCount:2});
+      await userDb.ref('progress/member/meta/supportGrants/5').set(true);
+      await adminDb.ref('progress/member/meta/supportGrants/50').set(true);
+      assert.equal((await userDb.ref('progress/member/meta/supportGrants/50').get()).val(),true);
+      await assert.rejects(userDb.ref('progress/other/words/test').set({seen:1}),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('serverFeatureUsage/member/hidden').get(),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('serverFeatureUsage/member').set({}),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('serverFeatureEntitlements/member/100').set(true),/permission[ _]denied/i);
+      assert.equal((await adminDb.ref('progress/member/meta/xp').get()).val(),9);
+      // Anonymous public leaderboard remains available; private progress does not.
+      const anonymous=initializeApp({...options,databaseAuthVariableOverride:null},'rules-anonymous');
+      try{await getDatabase(anonymous).ref('leaderboard').get();await assert.rejects(getDatabase(anonymous).ref('progress/member').get(),/permission[ _]denied/i);}finally{await deleteApp(anonymous);}
+      console.log('PASS: 16 real Firebase rules scenarios: account progress, XP, gifts, forgery and private server records.');
+      let exampleCalls=0;
+      const exampleRequest=async()=>{const app=initializeApp(options,'example-cold-'+(++sequence));try{const handler=createExamplesHandler({identity:async()=>({uid:'example-learner',db:getDatabase(app)}),translateExamples:async()=>{exampleCalls++;await new Promise(r=>setTimeout(r,60));return new Map([[0,{text:'أنت لطيف جداً.',provider:'fixture'}]]);}},()=>now);const response=await handler(new Request('https://lumira.test/.netlify/functions/examples',{method:'POST',body:JSON.stringify({source:'de',target:'ar',texts:['Du bist sehr nett.']})}));return{status:response.status,...await response.json()};}finally{await deleteApp(app);}};
+      const generated=await Promise.all(Array.from({length:6},()=>exampleRequest()));
+      assert(generated.some(r=>r.status===200));assert.equal(exampleCalls,1);
+      const cached=await exampleRequest();assert.equal(cached.examples[0].translation,'أنت لطيف جداً.');assert.equal(exampleCalls,1);
+      assert.equal((await db.ref('serverFeatureUsage/example-learner').get()).val(),null);
+      await assert.rejects(userDb.ref('serverExampleTranslations').get(),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('serverExampleBudget/project').set({count:0}),/permission[ _]denied/i);
+      console.log('PASS: real Firebase example caching across 6 cold SDK clients; one generation, independent quotas and private counters.');
+
+    }finally{await Promise.all([owner,member,manager].map(deleteApp));}
+
   } finally {
     for (const { db } of clients.values()) await deleteApp(db.app);
     emulator.kill();

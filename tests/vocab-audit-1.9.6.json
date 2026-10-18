@@ -1,0 +1,324 @@
+{
+  "version": "1.9.6",
+  "records": 36726,
+  "emptyFields": 0,
+  "byLanguage": {
+    "de": {
+      "total": 6474,
+      "levels": {
+        "A1": 1413,
+        "A2": 1581,
+        "B1": 1933,
+        "B2": 1547
+      }
+    },
+    "en": {
+      "total": 6352,
+      "levels": {
+        "A1": 1755,
+        "A2": 1253,
+        "B1": 1430,
+        "B2": 1914
+      }
+    },
+    "ar": {
+      "total": 5876,
+      "levels": {
+        "A1": 1451,
+        "A2": 718,
+        "B1": 2047,
+        "B2": 1660
+      }
+    },
+    "fr": {
+      "total": 5961,
+      "levels": {
+        "A1": 1243,
+        "A2": 1021,
+        "B1": 2189,
+        "B2": 1508
+      }
+    },
+    "es": {
+      "total": 5935,
+      "levels": {
+        "A1": 1234,
+        "A2": 1017,
+        "B1": 2176,
+        "B2": 1508
+      }
+    },
+    "ru": {
+      "total": 6128,
+      "levels": {
+        "A1": 1284,
+        "A2": 1059,
+        "B1": 2248,
+        "B2": 1537
+      }
+    }
+  },
+  "crossPairs": [
+    {
+      "native": "de",
+      "target": "en",
+      "cards": 5081,
+      "reviewed": 15,
+      "sameSentence": 1607,
+      "automaticOnDemand": 3459
+    },
+    {
+      "native": "de",
+      "target": "ar",
+      "cards": 4810,
+      "reviewed": 5,
+      "sameSentence": 1808,
+      "automaticOnDemand": 2997
+    },
+    {
+      "native": "de",
+      "target": "fr",
+      "cards": 3758,
+      "reviewed": 2,
+      "sameSentence": 381,
+      "automaticOnDemand": 3375
+    },
+    {
+      "native": "de",
+      "target": "es",
+      "cards": 3749,
+      "reviewed": 6,
+      "sameSentence": 397,
+      "automaticOnDemand": 3346
+    },
+    {
+      "native": "de",
+      "target": "ru",
+      "cards": 3828,
+      "reviewed": 8,
+      "sameSentence": 1111,
+      "automaticOnDemand": 2709
+    },
+    {
+      "native": "en",
+      "target": "de",
+      "cards": 5090,
+      "reviewed": 33,
+      "sameSentence": 1611,
+      "automaticOnDemand": 3446
+    },
+    {
+      "native": "en",
+      "target": "ar",
+      "cards": 4593,
+      "reviewed": 5,
+      "sameSentence": 1203,
+      "automaticOnDemand": 3385
+    },
+    {
+      "native": "en",
+      "target": "fr",
+      "cards": 3259,
+      "reviewed": 2,
+      "sameSentence": 207,
+      "automaticOnDemand": 3050
+    },
+    {
+      "native": "en",
+      "target": "es",
+      "cards": 3249,
+      "reviewed": 4,
+      "sameSentence": 196,
+      "automaticOnDemand": 3049
+    },
+    {
+      "native": "en",
+      "target": "ru",
+      "cards": 3307,
+      "reviewed": 7,
+      "sameSentence": 462,
+      "automaticOnDemand": 2838
+    },
+    {
+      "native": "ar",
+      "target": "de",
+      "cards": 4815,
+      "reviewed": 32,
+      "sameSentence": 1811,
+      "automaticOnDemand": 2972
+    },
+    {
+      "native": "ar",
+      "target": "en",
+      "cards": 4590,
+      "reviewed": 12,
+      "sameSentence": 1196,
+      "automaticOnDemand": 3382
+    },
+    {
+      "native": "ar",
+      "target": "fr",
+      "cards": 3127,
+      "reviewed": 2,
+      "sameSentence": 202,
+      "automaticOnDemand": 2923
+    },
+    {
+      "native": "ar",
+      "target": "es",
+      "cards": 3117,
+      "reviewed": 5,
+      "sameSentence": 225,
+      "automaticOnDemand": 2887
+    },
+    {
+      "native": "ar",
+      "target": "ru",
+      "cards": 3185,
+      "reviewed": 6,
+      "sameSentence": 478,
+      "automaticOnDemand": 2701
+    },
+    {
+      "native": "fr",
+      "target": "de",
+      "cards": 3757,
+      "reviewed": 35,
+      "sameSentence": 374,
+      "automaticOnDemand": 3348
+    },
+    {
+      "native": "fr",
+      "target": "en",
+      "cards": 3253,
+      "reviewed": 14,
+      "sameSentence": 196,
+      "automaticOnDemand": 3043
+    },
+    {
+      "native": "fr",
+      "target": "ar",
+      "cards": 3122,
+      "reviewed": 5,
+      "sameSentence": 205,
+      "automaticOnDemand": 2912
+    },
+    {
+      "native": "fr",
+      "target": "es",
+      "cards": 5815,
+      "reviewed": 6,
+      "sameSentence": 3761,
+      "automaticOnDemand": 2048
+    },
+    {
+      "native": "fr",
+      "target": "ru",
+      "cards": 5813,
+      "reviewed": 9,
+      "sameSentence": 1723,
+      "automaticOnDemand": 4081
+    },
+    {
+      "native": "es",
+      "target": "de",
+      "cards": 3747,
+      "reviewed": 34,
+      "sameSentence": 391,
+      "automaticOnDemand": 3322
+    },
+    {
+      "native": "es",
+      "target": "en",
+      "cards": 3244,
+      "reviewed": 14,
+      "sameSentence": 193,
+      "automaticOnDemand": 3037
+    },
+    {
+      "native": "es",
+      "target": "ar",
+      "cards": 3111,
+      "reviewed": 5,
+      "sameSentence": 224,
+      "automaticOnDemand": 2882
+    },
+    {
+      "native": "es",
+      "target": "fr",
+      "cards": 5814,
+      "reviewed": 2,
+      "sameSentence": 3793,
+      "automaticOnDemand": 2019
+    },
+    {
+      "native": "es",
+      "target": "ru",
+      "cards": 5801,
+      "reviewed": 9,
+      "sameSentence": 2382,
+      "automaticOnDemand": 3410
+    },
+    {
+      "native": "ru",
+      "target": "de",
+      "cards": 3828,
+      "reviewed": 32,
+      "sameSentence": 1103,
+      "automaticOnDemand": 2693
+    },
+    {
+      "native": "ru",
+      "target": "en",
+      "cards": 3302,
+      "reviewed": 13,
+      "sameSentence": 462,
+      "automaticOnDemand": 2827
+    },
+    {
+      "native": "ru",
+      "target": "ar",
+      "cards": 3183,
+      "reviewed": 5,
+      "sameSentence": 476,
+      "automaticOnDemand": 2702
+    },
+    {
+      "native": "ru",
+      "target": "fr",
+      "cards": 5814,
+      "reviewed": 2,
+      "sameSentence": 1739,
+      "automaticOnDemand": 4073
+    },
+    {
+      "native": "ru",
+      "target": "es",
+      "cards": 5803,
+      "reviewed": 6,
+      "sameSentence": 2389,
+      "automaticOnDemand": 3408
+    }
+  ],
+  "reviewedParallelGroups": 74,
+  "parallelTexts": 518,
+  "addedWordsSinceOriginal": 9,
+  "addedWordsThisVersion": 0,
+  "totals": {
+    "directions": 30,
+    "cards": 124965,
+    "reviewed": 335,
+    "sameSentence": 32306,
+    "automaticOnDemand": 92324
+  },
+  "knownPublicSentenceSources": {
+    "tr": 23938,
+    "de": 6420,
+    "en": 6274,
+    "ar": 5758,
+    "fr": 5915,
+    "es": 5935,
+    "ru": 6128
+  },
+  "semanticReview": "Complete structural and provenance audit. Not every existing word, Turkish pivot, source example or automatic translation has been independently reviewed by a linguist. On-demand examples are not pre-generated: configured provider availability and internet/sign-in are required for an uncached example. Cached results are labeled automatic and available on the same device offline."
+}

@@ -1,0 +1,559 @@
+{
+  "method": "Real pinned Whisper/Bergamot inference in headless Chromium with WASM, one inference thread. Exact model assets served by a local QA fixture. Public cross-origin access checked separately from the Lumira origin.",
+  "speech": [
+    {
+      "expected": "de",
+      "seconds": 8.706,
+      "output": {
+        "original": "die Vereinten Nationen hoffen zu dem einen Form einrichten zu können, der den von der globalen Erwärmung betroffenen Ländern helfen soll mit den Auswirkungen fertig zu werden.",
+        "translated": "Birleşmiş Milletler, küresel ısınmadan etkilenen ülkelere etkileriyle başa çıkmak için yardımcı olmak için bir form oluşturabilmeyi umuyor.",
+        "language": "de"
+      }
+    },
+    {
+      "expected": "tr",
+      "seconds": 6.934100000000559,
+      "output": {
+        "original": "İbrahim'le ailesinin yaşımının çok açık havada geçiyordu.",
+        "translated": "İbrahim'le ailesinin yaşımının çok açık havada geçiyordu.",
+        "language": "tr"
+      }
+    },
+    {
+      "expected": "ar",
+      "seconds": 9.566399999999442,
+      "output": {
+        "original": "تطيح التقنية الحل من خلال الزيارات المايدانية الفتراضية يمكن للتلوب مشاهدة تقطع الآثارية البلمات حفة أو زيارة حوض الأسميك أو الإسنمتع بالفن الجميل أسناء جلوسهم زمالاءهم في الصف",
+        "translated": "Teknoloji, sanal alan ziyaretleri yoluyla çözümü devirdi.talm, balsamların balsamları keselerini veya asmik havzayı ziyaret edebileceğini veya sınıfta oturan güzel sanat Asnaa'nın tadını çıkarabileceğini izleyebilir.",
+        "language": "ar"
+      }
+    },
+    {
+      "expected": "fr",
+      "seconds": 7.499299999999813,
+      "output": {
+        "original": "La police a déclaré qu'il semblerait que le corps se trouvaient là depuis un jour environ.",
+        "translated": "Polis, cesedin yaklaşık bir gündür orada olduğunu söyledi.",
+        "language": "fr"
+      }
+    },
+    {
+      "expected": "es",
+      "seconds": 7.695199999999255,
+      "output": {
+        "original": "No se han producido cambios en la población original que aún precisan de las mismas adaptaciones que en el pasado.",
+        "translated": "Orijinal nüfusta, geçmişteki gibi hala aynı uyarlamalara ihtiyaç duyan hiçbir değişiklik olmamıştı.",
+        "language": "es"
+      }
+    },
+    {
+      "expected": "ru",
+      "seconds": 7.960599999999627,
+      "output": {
+        "original": "Они по-прежнему стараются определить, насколько большим было столкновение и как пострадают земля.",
+        "translated": "Hala çarpışmanın ne kadar büyük olduğunu ve dünyanın nasıl acı çekeceğini belirlemeye çalışıyorlar.",
+        "language": "ru"
+      }
+    },
+    {
+      "expected": "en",
+      "seconds": 6.625399999999441,
+      "output": {
+        "original": "He built a Wi-Fi doorbell, he said.",
+        "translated": "Bir Wi-Fi kapı zili inşa etti, dedi.",
+        "language": "en"
+      }
+    }
+  ],
+  "textTranslationDirections": [
+    {
+      "from": "de",
+      "to": "tr",
+      "text": "Die Vereinten Nationen hoffen zudem, einen Fonds einrichten zu können, der den von der globalen Erwärmung betroffenen Ländern helfen soll, mit den Auswirkungen fertig zu werden.",
+      "translated": "Birleşmiş Milletler ayrıca, küresel ısınmadan etkilenen ülkelerin etkiyle başa çıkmasına yardımcı olmak için bir fon kurmayı umuyor.",
+      "seconds": 0.7842999999998137,
+      "loaded": [
+        "en-tr",
+        "de-en"
+      ]
+    },
+    {
+      "from": "ar",
+      "to": "tr",
+      "text": "تتيح التقنية الحل من خلال الزيارات الميدانية الافتراضية. يمكن للطلاب مشاهدة القطع الأثرية بالمتحف أو زيارة حوض الأسماك أو الاستمتاع بالفن الجميل أثناء جلوسهم زملائهم في الصف.",
+      "translated": "Teknoloji, sanal saha ziyaretleri yoluyla çözüm sağlar. Öğrenciler müzenin eserlerini görebilir, akvaryumları ziyaret edebilir veya sınıf arkadaşları otururken güzel sanatın tadını çıkarabilirler.",
+      "seconds": 0.5857000000001863,
+      "loaded": [
+        "en-tr",
+        "ar-en"
+      ]
+    },
+    {
+      "from": "fr",
+      "to": "tr",
+      "text": "La police a déclaré qu’il semblerait que le corps se trouvait là depuis un jour environ.",
+      "translated": "Polis, cesedin yaklaşık bir gündür orada olduğunu söyledi.",
+      "seconds": 0.475,
+      "loaded": [
+        "en-tr",
+        "fr-en"
+      ]
+    },
+    {
+      "from": "es",
+      "to": "tr",
+      "text": "No se han producido cambios en la población original, que aún precisan de las mismas adaptaciones que en el pasado.",
+      "translated": "Orijinal nüfusta, hala geçmişteki gibi aynı uyarlamalara ihtiyaç duyan hiçbir değişiklik olmamıştı.",
+      "seconds": 0.5244000000003726,
+      "loaded": [
+        "en-tr",
+        "es-en"
+      ]
+    },
+    {
+      "from": "ru",
+      "to": "tr",
+      "text": "Они по-прежнему стараются определить, насколько большим было столкновение и как пострадает Земля.",
+      "translated": "Hala çarpışmanın ne kadar büyük olduğunu ve Dünya'nın nasıl acı çekeceğini belirlemeye çalışıyorlar.",
+      "seconds": 0.5107000000001862,
+      "loaded": [
+        "en-tr",
+        "ru-en"
+      ]
+    },
+    {
+      "from": "en",
+      "to": "tr",
+      "text": "He built a WiFi door bell, he said.",
+      "translated": "Bir WiFi kapı zili yaptı, dedi.",
+      "seconds": 0.017,
+      "loaded": [
+        "en-tr"
+      ]
+    },
+    {
+      "from": "de",
+      "to": "en",
+      "text": "Die Vereinten Nationen hoffen zudem, einen Fonds einrichten zu können, der den von der globalen Erwärmung betroffenen Ländern helfen soll, mit den Auswirkungen fertig zu werden.",
+      "translated": "The United Nations also hopes to set up a fund to help countries affected by global warming cope with the impact.",
+      "seconds": 0.5665,
+      "loaded": [
+        "de-en"
+      ]
+    },
+    {
+      "from": "tr",
+      "to": "en",
+      "text": "İbrani ailesinin yaşamının çoğu açık havada geçiyordu.",
+      "translated": "Most of the life of the Hebrew family was in the open air.",
+      "seconds": 0.3145,
+      "loaded": [
+        "tr-en"
+      ]
+    },
+    {
+      "from": "ar",
+      "to": "en",
+      "text": "تتيح التقنية الحل من خلال الزيارات الميدانية الافتراضية. يمكن للطلاب مشاهدة القطع الأثرية بالمتحف أو زيارة حوض الأسماك أو الاستمتاع بالفن الجميل أثناء جلوسهم زملائهم في الصف.",
+      "translated": "Technology allows solution through virtual field visits. Students can see the museum’s artifacts, visit the aquarium, or enjoy beautiful art as their classmates sit.",
+      "seconds": 0.6276000000005588,
+      "loaded": [
+        "ar-en"
+      ]
+    },
+    {
+      "from": "fr",
+      "to": "en",
+      "text": "La police a déclaré qu’il semblerait que le corps se trouvait là depuis un jour environ.",
+      "translated": "Police said it looks like the body has been there for about a day.",
+      "seconds": 0.4615999999996275,
+      "loaded": [
+        "fr-en"
+      ]
+    },
+    {
+      "from": "es",
+      "to": "en",
+      "text": "No se han producido cambios en la población original, que aún precisan de las mismas adaptaciones que en el pasado.",
+      "translated": "There have been no changes in the original population, which still need the same adaptations as in the past.",
+      "seconds": 0.49980000000074504,
+      "loaded": [
+        "es-en"
+      ]
+    },
+    {
+      "from": "ru",
+      "to": "en",
+      "text": "Они по-прежнему стараются определить, насколько большим было столкновение и как пострадает Земля.",
+      "translated": "They are still trying to determine how big the collision was and how the Earth will suffer.",
+      "seconds": 0.448,
+      "loaded": [
+        "ru-en"
+      ]
+    },
+    {
+      "from": "tr",
+      "to": "de",
+      "text": "İbrani ailesinin yaşamının çoğu açık havada geçiyordu.",
+      "translated": "Der größte Teil des Lebens der hebräischen Familie stand im Freien.",
+      "seconds": 0.5313000000007451,
+      "loaded": [
+        "en-de",
+        "tr-en"
+      ]
+    },
+    {
+      "from": "ar",
+      "to": "de",
+      "text": "تتيح التقنية الحل من خلال الزيارات الميدانية الافتراضية. يمكن للطلاب مشاهدة القطع الأثرية بالمتحف أو زيارة حوض الأسماك أو الاستمتاع بالفن الجميل أثناء جلوسهم زملائهم في الصف.",
+      "translated": "Technologie ermöglicht Lösung durch virtuelle Feldbesuche. Die Schüler können die Artefakte des Museums sehen, das Aquarium besuchen oder schöne Kunst genießen, während ihre Klassenkameraden sitzen.",
+      "seconds": 0.6867000000001863,
+      "loaded": [
+        "en-de",
+        "ar-en"
+      ]
+    },
+    {
+      "from": "fr",
+      "to": "de",
+      "text": "La police a déclaré qu’il semblerait que le corps se trouvait là depuis un jour environ.",
+      "translated": "Die Polizei sagte, es sieht so aus, als wäre die Leiche dort seit etwa einem Tag.",
+      "seconds": 0.5213999999994412,
+      "loaded": [
+        "en-de",
+        "fr-en"
+      ]
+    },
+    {
+      "from": "es",
+      "to": "de",
+      "text": "No se han producido cambios en la población original, que aún precisan de las mismas adaptaciones que en el pasado.",
+      "translated": "Es gab keine Veränderungen in der ursprünglichen Bevölkerung, die immer noch die gleichen Anpassungen benötigen wie in der Vergangenheit.",
+      "seconds": 0.5269000000003725,
+      "loaded": [
+        "en-de",
+        "es-en"
+      ]
+    },
+    {
+      "from": "ru",
+      "to": "de",
+      "text": "Они по-прежнему стараются определить, насколько большим было столкновение и как пострадает Земля.",
+      "translated": "Sie versuchen immer noch herauszufinden, wie groß die Kollision war und wie die Erde leiden wird.",
+      "seconds": 0.5146000000005588,
+      "loaded": [
+        "en-de",
+        "ru-en"
+      ]
+    },
+    {
+      "from": "en",
+      "to": "de",
+      "text": "He built a WiFi door bell, he said.",
+      "translated": "Er habe eine WiFi-Türglocke gebaut, sagte er.",
+      "seconds": 0.029,
+      "loaded": [
+        "en-de"
+      ]
+    },
+    {
+      "from": "de",
+      "to": "ar",
+      "text": "Die Vereinten Nationen hoffen zudem, einen Fonds einrichten zu können, der den von der globalen Erwärmung betroffenen Ländern helfen soll, mit den Auswirkungen fertig zu werden.",
+      "translated": "كما تأمل الأمم المتحدة في إنشاء صندوق لمساعدة البلدان المتضررة من ظاهرة الاحتباس الحراري على مواجهة هذا التأثير.",
+      "seconds": 0.7235,
+      "loaded": [
+        "en-ar",
+        "de-en"
+      ]
+    },
+    {
+      "from": "tr",
+      "to": "ar",
+      "text": "İbrani ailesinin yaşamının çoğu açık havada geçiyordu.",
+      "translated": "معظم حياة العائلة العبرية كانت في الهواء الطلق.",
+      "seconds": 0.325,
+      "loaded": [
+        "en-ar",
+        "tr-en"
+      ]
+    },
+    {
+      "from": "fr",
+      "to": "ar",
+      "text": "La police a déclaré qu’il semblerait que le corps se trouvait là depuis un jour environ.",
+      "translated": "وقالت الشرطة إنه يبدو أن الجثة موجودة منذ حوالي يوم.",
+      "seconds": 0.5083999999994412,
+      "loaded": [
+        "en-ar",
+        "fr-en"
+      ]
+    },
+    {
+      "from": "es",
+      "to": "ar",
+      "text": "No se han producido cambios en la población original, que aún precisan de las mismas adaptaciones que en el pasado.",
+      "translated": "لم تكن هناك أي تغييرات في السكان الأصليين ، الذين لا يزالون بحاجة إلى نفس التكيفات كما في الماضي.",
+      "seconds": 0.564,
+      "loaded": [
+        "en-ar",
+        "es-en"
+      ]
+    },
+    {
+      "from": "ru",
+      "to": "ar",
+      "text": "Они по-прежнему стараются определить, насколько большим было столкновение и как пострадает Земля.",
+      "translated": "لا يزالون يحاولون تحديد حجم الاصطدام وكيف ستعاني الأرض.",
+      "seconds": 0.505,
+      "loaded": [
+        "en-ar",
+        "ru-en"
+      ]
+    },
+    {
+      "from": "en",
+      "to": "ar",
+      "text": "He built a WiFi door bell, he said.",
+      "translated": "لقد بنى جرس باب الواي فاي، قال.",
+      "seconds": 0.025799999999813736,
+      "loaded": [
+        "en-ar"
+      ]
+    },
+    {
+      "from": "de",
+      "to": "fr",
+      "text": "Die Vereinten Nationen hoffen zudem, einen Fonds einrichten zu können, der den von der globalen Erwärmung betroffenen Ländern helfen soll, mit den Auswirkungen fertig zu werden.",
+      "translated": "L'ONU espère également mettre en place un fonds pour aider les pays touchés par le réchauffement climatique à faire face à l'impact.",
+      "seconds": 0.8417999999998137,
+      "loaded": [
+        "en-fr",
+        "de-en"
+      ]
+    },
+    {
+      "from": "tr",
+      "to": "fr",
+      "text": "İbrani ailesinin yaşamının çoğu açık havada geçiyordu.",
+      "translated": "La plus grande partie de la vie de la famille hébraïque était en plein air.",
+      "seconds": 0.35819999999925495,
+      "loaded": [
+        "en-fr",
+        "tr-en"
+      ]
+    },
+    {
+      "from": "ar",
+      "to": "fr",
+      "text": "تتيح التقنية الحل من خلال الزيارات الميدانية الافتراضية. يمكن للطلاب مشاهدة القطع الأثرية بالمتحف أو زيارة حوض الأسماك أو الاستمتاع بالفن الجميل أثناء جلوسهم زملائهم في الصف.",
+      "translated": "La technologie permet une solution grâce à des visites de terrain virtuelles. Les élèves peuvent voir les artefacts du musée, visiter l'aquarium ou profiter d'un bel art pendant que leurs camarades de classe s'assoient.",
+      "seconds": 0.6470999999996274,
+      "loaded": [
+        "en-fr",
+        "ar-en"
+      ]
+    },
+    {
+      "from": "es",
+      "to": "fr",
+      "text": "No se han producido cambios en la población original, que aún precisan de las mismas adaptaciones que en el pasado.",
+      "translated": "Il n'y a pas eu de changement dans la population d'origine, qui a encore besoin des mêmes adaptations que par le passé.",
+      "seconds": 0.5575,
+      "loaded": [
+        "en-fr",
+        "es-en"
+      ]
+    },
+    {
+      "from": "ru",
+      "to": "fr",
+      "text": "Они по-прежнему стараются определить, насколько большим было столкновение и как пострадает Земля.",
+      "translated": "Ils essaient toujours de déterminer à quel point la collision a été grande et comment la Terre va souffrir.",
+      "seconds": 0.5127000000001862,
+      "loaded": [
+        "en-fr",
+        "ru-en"
+      ]
+    },
+    {
+      "from": "en",
+      "to": "fr",
+      "text": "He built a WiFi door bell, he said.",
+      "translated": "Il a construit une cloche de porte WiFi, dit-il.",
+      "seconds": 0.027,
+      "loaded": [
+        "en-fr"
+      ]
+    },
+    {
+      "from": "de",
+      "to": "es",
+      "text": "Die Vereinten Nationen hoffen zudem, einen Fonds einrichten zu können, der den von der globalen Erwärmung betroffenen Ländern helfen soll, mit den Auswirkungen fertig zu werden.",
+      "translated": "Las Naciones Unidas también esperan establecer un fondo para ayudar a los países afectados por el calentamiento global a hacer frente al impacto.",
+      "seconds": 0.7252999999998138,
+      "loaded": [
+        "en-es",
+        "de-en"
+      ]
+    },
+    {
+      "from": "tr",
+      "to": "es",
+      "text": "İbrani ailesinin yaşamının çoğu açık havada geçiyordu.",
+      "translated": "La mayor parte de la vida de la familia hebrea estaba al aire libre.",
+      "seconds": 0.3297000000001863,
+      "loaded": [
+        "en-es",
+        "tr-en"
+      ]
+    },
+    {
+      "from": "ar",
+      "to": "es",
+      "text": "تتيح التقنية الحل من خلال الزيارات الميدانية الافتراضية. يمكن للطلاب مشاهدة القطع الأثرية بالمتحف أو زيارة حوض الأسماك أو الاستمتاع بالفن الجميل أثناء جلوسهم زملائهم في الصف.",
+      "translated": "La tecnología permite la solución a través de visitas virtuales de campo. Los estudiantes pueden ver los artefactos del museo, visitar el acuario o disfrutar de un hermoso arte mientras sus compañeros de clase se sientan.",
+      "seconds": 0.675,
+      "loaded": [
+        "en-es",
+        "ar-en"
+      ]
+    },
+    {
+      "from": "fr",
+      "to": "es",
+      "text": "La police a déclaré qu’il semblerait que le corps se trouvait là depuis un jour environ.",
+      "translated": "La policía dijo que parece que el cuerpo ha estado allí durante aproximadamente un día.",
+      "seconds": 0.5369000000003725,
+      "loaded": [
+        "en-es",
+        "fr-en"
+      ]
+    },
+    {
+      "from": "ru",
+      "to": "es",
+      "text": "Они по-прежнему стараются определить, насколько большим было столкновение и как пострадает Земля.",
+      "translated": "Todavía están tratando de determinar qué tan grande fue la colisión y cómo sufrirá la Tierra.",
+      "seconds": 0.47770000000018625,
+      "loaded": [
+        "en-es",
+        "ru-en"
+      ]
+    },
+    {
+      "from": "en",
+      "to": "es",
+      "text": "He built a WiFi door bell, he said.",
+      "translated": "Construió una campana de la puerta WiFi, dijo.",
+      "seconds": 0.026200000000186265,
+      "loaded": [
+        "en-es"
+      ]
+    },
+    {
+      "from": "de",
+      "to": "ru",
+      "text": "Die Vereinten Nationen hoffen zudem, einen Fonds einrichten zu können, der den von der globalen Erwärmung betroffenen Ländern helfen soll, mit den Auswirkungen fertig zu werden.",
+      "translated": "Организация Объединенных Наций также надеется создать фонд для оказания помощи странам, пострадавшим от глобального потепления, справиться с последствиями.",
+      "seconds": 0.797,
+      "loaded": [
+        "en-ru",
+        "de-en"
+      ]
+    },
+    {
+      "from": "tr",
+      "to": "ru",
+      "text": "İbrani ailesinin yaşamının çoğu açık havada geçiyordu.",
+      "translated": "Большая часть жизни еврейской семьи находилась на открытом воздухе.",
+      "seconds": 0.33009999999962747,
+      "loaded": [
+        "en-ru",
+        "tr-en"
+      ]
+    },
+    {
+      "from": "ar",
+      "to": "ru",
+      "text": "تتيح التقنية الحل من خلال الزيارات الميدانية الافتراضية. يمكن للطلاب مشاهدة القطع الأثرية بالمتحف أو زيارة حوض الأسماك أو الاستمتاع بالفن الجميل أثناء جلوسهم زملائهم في الصف.",
+      "translated": "Технология позволяет решение через виртуальные полевые визиты. Студенты могут увидеть артефакты музея, посетить аквариум или насладиться прекрасным искусством, когда сидят их одноклассники.",
+      "seconds": 0.6263999999994412,
+      "loaded": [
+        "en-ru",
+        "ar-en"
+      ]
+    },
+    {
+      "from": "fr",
+      "to": "ru",
+      "text": "La police a déclaré qu’il semblerait que le corps se trouvait là depuis un jour environ.",
+      "translated": "Полиция заявила, что, похоже, тело было там около дня.",
+      "seconds": 0.4907999999998137,
+      "loaded": [
+        "en-ru",
+        "fr-en"
+      ]
+    },
+    {
+      "from": "es",
+      "to": "ru",
+      "text": "No se han producido cambios en la población original, que aún precisan de las mismas adaptaciones que en el pasado.",
+      "translated": "Не произошло никаких изменений в первоначальном населении, которое все еще нуждается в той же адаптации, что и в прошлом.",
+      "seconds": 0.5293000000007451,
+      "loaded": [
+        "en-ru",
+        "es-en"
+      ]
+    },
+    {
+      "from": "en",
+      "to": "ru",
+      "text": "He built a WiFi door bell, he said.",
+      "translated": "Он построил дверной звонок WiFi, сказал он.",
+      "seconds": 0.027200000000186266,
+      "loaded": [
+        "en-ru"
+      ]
+    }
+  ],
+  "audioWorkletCapture": {
+    "captured": [
+      {
+        "original": "And so my fellow America",
+        "translated": "Ve böylece Amerika'nın arkadaşı",
+        "language": "en"
+      },
+      {
+        "original": "Ask not what your country can do for you, ask what you can do for your country.",
+        "translated": "Ülkenizin sizin için ne yapabileceğini sor, ülkeniz için neler yapabileceğinizi sorun.",
+        "language": "en"
+      }
+    ],
+    "errors": []
+  },
+  "downloadAndCache": {
+    "faults": 2,
+    "retryPassed": true,
+    "cacheRepair": true,
+    "cachePreserved": true,
+    "noDuplicateModelCache": true,
+    "pageErrors": [],
+    "missingFiles": []
+  },
+  "publicModelCORS": {
+    "passed": 36,
+    "total": 36
+  },
+  "notTested": [
+    "Real Azure account credentials/quota depletion",
+    "Real production Firebase account writes",
+    "Physical Android/iPhone or a real three-hour phone session"
+  ],
+  "speechSource": "Google FLEURS, CC BY 4.0: https://huggingface.co/datasets/google/fleurs",
+  "notes": [
+    "Speech recognition makes mistakes, especially in tested Turkish and Arabic recordings.",
+    "Text-only timing excludes speech accumulation and recognition.",
+    "Simulated three-hour quota/heartbeat tests are separate from these real-model tests."
+  ]
+}

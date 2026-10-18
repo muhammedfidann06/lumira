@@ -1,0 +1,2781 @@
+{
+  "access-chromium": {
+    "pass": 119,
+    "errors": [],
+    "results": [
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "tr",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "en",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "de",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ar",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "fr",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "es",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "chromium",
+        "language": "ru",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      }
+    ]
+  },
+  "access-firefox": {
+    "pass": 119,
+    "errors": [],
+    "results": [
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "tr",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "en",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "de",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ar",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "fr",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "es",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "firefox",
+        "language": "ru",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      }
+    ]
+  },
+  "access-webkit": {
+    "pass": 119,
+    "errors": [],
+    "results": [
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 320,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 320,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 360,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 360,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 375,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 375,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 390,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 390,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 430,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 430,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 768,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 768,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 1024,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 1024,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 1440,
+        "reason": "live_limit",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "width": 1440,
+        "reason": "pdf_badge_required",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "tr",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "en",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "de",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ar",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "fr",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "es",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      },
+      {
+        "engine": "webkit",
+        "language": "ru",
+        "reason": "PDF generation and escaping",
+        "pass": true
+      }
+    ]
+  },
+  "full-app": {
+    "pass": true,
+    "scenarios": 47,
+    "results": [
+      {
+        "name": "de → tr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "en → tr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ar → tr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "fr → tr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "es → tr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ru → tr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "tr → de real card rendering",
+        "pass": true
+      },
+      {
+        "name": "en → de real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ar → de real card rendering",
+        "pass": true
+      },
+      {
+        "name": "fr → de real card rendering",
+        "pass": true
+      },
+      {
+        "name": "es → de real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ru → de real card rendering",
+        "pass": true
+      },
+      {
+        "name": "tr → en real card rendering",
+        "pass": true
+      },
+      {
+        "name": "de → en real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ar → en real card rendering",
+        "pass": true
+      },
+      {
+        "name": "fr → en real card rendering",
+        "pass": true
+      },
+      {
+        "name": "es → en real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ru → en real card rendering",
+        "pass": true
+      },
+      {
+        "name": "tr → ar real card rendering",
+        "pass": true
+      },
+      {
+        "name": "de → ar real card rendering",
+        "pass": true
+      },
+      {
+        "name": "en → ar real card rendering",
+        "pass": true
+      },
+      {
+        "name": "fr → ar real card rendering",
+        "pass": true
+      },
+      {
+        "name": "es → ar real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ru → ar real card rendering",
+        "pass": true
+      },
+      {
+        "name": "tr → fr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "de → fr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "en → fr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ar → fr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "es → fr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ru → fr real card rendering",
+        "pass": true
+      },
+      {
+        "name": "tr → es real card rendering",
+        "pass": true
+      },
+      {
+        "name": "de → es real card rendering",
+        "pass": true
+      },
+      {
+        "name": "en → es real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ar → es real card rendering",
+        "pass": true
+      },
+      {
+        "name": "fr → es real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ru → es real card rendering",
+        "pass": true
+      },
+      {
+        "name": "tr → ru real card rendering",
+        "pass": true
+      },
+      {
+        "name": "de → ru real card rendering",
+        "pass": true
+      },
+      {
+        "name": "en → ru real card rendering",
+        "pass": true
+      },
+      {
+        "name": "ar → ru real card rendering",
+        "pass": true
+      },
+      {
+        "name": "fr → ru real card rendering",
+        "pass": true
+      },
+      {
+        "name": "es → ru real card rendering",
+        "pass": true
+      },
+      {
+        "name": "reported du Arabic example shown correctly in real card DOM",
+        "pass": true
+      },
+      {
+        "name": "cross-language favourite keeps native language and aligned sentence",
+        "pass": true
+      },
+      {
+        "name": "two Arabic favourites save independently",
+        "pass": true
+      },
+      {
+        "name": "personal practice opens after Unicode identity migration",
+        "pass": true
+      },
+      {
+        "name": "notebook still opens with saved favourites",
+        "pass": true
+      }
+    ]
+  },
+  "controller": {
+    "pass": 15,
+    "results": [
+      {
+        "name": "Azure starts with continuous source-language recognition and original/translated panels",
+        "pass": true
+      },
+      {
+        "name": "Azure quota/failure → Gemini without a new microphone prompt or transcript loss",
+        "pass": true
+      },
+      {
+        "name": "Gemini failure → Groq; real browser PCM/WAV transport and target-language request",
+        "pass": true
+      },
+      {
+        "name": "Groq exhausted → Cloudflare, preserving previous provider text",
+        "pass": true
+      },
+      {
+        "name": "all configured cloud services fail → prepared local engine, same microphone",
+        "pass": true
+      },
+      {
+        "name": "three simulated hours on local fallback with more than 2100 actual heartbeat callbacks",
+        "pass": true
+      },
+      {
+        "name": "Stop closes microphone and local processing",
+        "pass": true
+      },
+      {
+        "name": "free tier stops at 20 min and opens badge screen only when allowance is exhausted",
+        "pass": true
+      },
+      {
+        "name": "Stop during credential request ignores the late response",
+        "pass": true
+      },
+      {
+        "name": "normal timed Gemini session rotation preserves earlier transcript and renews credentials",
+        "pass": true
+      },
+      {
+        "name": "SDK start exception advances to the next cloud provider",
+        "pass": true
+      },
+      {
+        "name": "all four credential/quota failures exhaust the chain in order and select local",
+        "pass": true
+      },
+      {
+        "name": "silence does not trigger a false provider timeout",
+        "pass": true
+      },
+      {
+        "name": "sustained speech without provider results triggers the no-response fallback",
+        "pass": true
+      },
+      {
+        "name": "microphone permission denial consumes no server session and shows no upgrade screen",
+        "pass": true
+      }
+    ],
+    "errors": [],
+    "heartbeatCallbacks": 2160,
+    "providerOutputs": "controlled fixtures, not live cloud inference"
+  },
+  "sw": {
+    "pass": true,
+    "scenarios": 15,
+    "results": [
+      "activation preserves downloaded local models and purges obsolete versions",
+      "offline updated de dictionary with query version",
+      "offline updated ar dictionary with query version",
+      "offline core module loads from shell",
+      "offline parallel module loads from shell",
+      "offline pairs module loads from shell",
+      "offline identity module loads from shell",
+      "a failed offline dictionary download never announces success",
+      "retry completes all six dictionary downloads",
+      "full offline pack de",
+      "full offline pack en",
+      "full offline pack ar",
+      "full offline pack fr",
+      "full offline pack es",
+      "full offline pack ru"
+    ]
+  }
+}
