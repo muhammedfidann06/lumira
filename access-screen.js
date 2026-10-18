@@ -57,11 +57,11 @@ function open(reason,quota){
 async function requireFeature(feature){
  const F=window.LUMIRA_FEATURES;
  let user;try{user=window.firebase.auth().currentUser;}catch{}
- if(!user){open(feature==='pdf'?'pdf_badge_required':'offline',{tier:0});return false;}
+ if(!user){window.PWA?.toast(F?.text('login_required'),{kind:'bad'});return false;}
  let quota;
  try{quota=navigator.onLine?(await F.api('status')).quota:F.entitlement();}
- catch{window.PWA?.toast(T('net'),{kind:'bad'});return false;}
- if(!quota){window.PWA?.toast(T('net'),{kind:'bad'});return false;}
+ catch(error){window.PWA?.toast(navigator.onLine?F.errorText(error):T('net'),{kind:'bad'});return false;}
+ if(!quota){window.PWA?.toast(navigator.onLine?F.text('usage_unavailable'):T('net'),{kind:'bad'});return false;}
  if(!quota.tier){open(feature==='pdf'?'pdf_badge_required':'offline',quota);return false;}
  if(feature==='pdf' && quota.pdf?.remaining===0){open('pdf_limit',quota);return false;}
  return true;

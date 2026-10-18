@@ -43,7 +43,17 @@
       localStorage.setItem(k, JSON.stringify(v)); return v;
     } catch (e) { return null; }
   }
-  function myBadges() { return store(KEY) || []; }
+  function account(){try{return window.firebase.auth().currentUser?.uid||'';}catch(e){return'';}}
+  function myBadges(){
+    const uid=account();if(!uid)return[];
+    const policy=window.LUMIRA_FEATURES?.entitlement();
+    if(Array.isArray(policy?.supportAmounts))return TIERS.filter(t=>policy.supportAmounts.includes(t.amount)).map(t=>t.badge);
+    const revoked=policy?.revokedSupport||[];
+    return (store(KEY+'_'+uid)||[]).filter(b=>!TIERS.some(t=>t.badge===b && revoked.includes(t.amount)));
+  }
+  function saveBadges(list){const uid=account();if(uid)store(KEY+'_'+uid,list);}
+  function revoked(amount){return !!window.LUMIRA_FEATURES?.entitlement()?.revokedSupport?.includes(amount);}
+
   function hasBadge(b) { return myBadges().indexOf(b) > -1; }
   function hasAnyPdfBadge() { return PDF_BADGES.some(hasBadge); }
   function myLevel() {
@@ -60,9 +70,9 @@
   window.grantSupportTier = function (amount) {
     var t = null;
     for (var i = 0; i < TIERS.length; i++) if (TIERS[i].amount === amount) t = TIERS[i];
-    if (!t) return false;
+    if (!t || revoked(amount)) return false;
     var list = myBadges();
-    if (list.indexOf(t.badge) === -1) { list.push(t.badge); store(KEY, list); }
+    if (list.indexOf(t.badge) === -1) { list.push(t.badge); saveBadges(list); }
     try { if (typeof window.PR_addXp === 'function') window.PR_addXp(t.xp, tierName(t)); } catch (e) {}
     toast((window.t ? window.t('purchase_success_toast')(t.badge, tierName(t), t.xp) : (t.badge + ' ' + t.name + ' rozeti kazandın · +' + t.xp + ' XP')), { kind: 'good', duration: 6000 });
     return true;
@@ -91,6 +101,7 @@
       toast(window.LUMIRA_ACCESS_COPY.text('purchaseWeb'), { duration: 8000 });
       return;
     }
+    if(revoked(t.amount)){toast(({tr:'Bu rozet hesabında yönetici tarafından kaldırıldı.',en:'An administrator has removed this badge from your account.',de:'Dieses Abzeichen wurde von einem Administrator aus deinem Konto entfernt.',ar:'أزال المسؤول هذه الشارة من حسابك.',fr:'Un administrateur a retiré ce badge de ton compte.',es:'Un administrador ha retirado esta insignia de tu cuenta.',ru:'Администратор удалил этот значок из твоего аккаунта.'})[window.NATIVE_LANG||'tr']||'An administrator has removed this badge from your account.',{kind:'bad'});return;}
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: { sku: t.sku } }];
     var details = { total: { label: (window.t ? window.t('purchase_total_label') : 'Toplam'), amount: { currency: 'TRY', value: '0' } } };
     var request;
@@ -135,6 +146,7 @@
           '<span class="sup-eur">~' + t.amount + ' €</span>' +
           '<span class="sup-badge">' + t.badge + '</span>' +
           '<span class="sup-xp">+' + t.xp + ' XP</span>';
+        el.disabled=revoked(t.amount);
         el.onclick = function () { purchaseTier(t); };
         grid.appendChild(el);
       });
@@ -418,29 +430,33 @@
      okunur ve rozet yerel listeye eklenir; böylece SATIN ALMIŞ GİBİ tüm
      özellikler (PDF, Profilim vb.) açılır ve "Lumira'yı Destekle"de görünür.
      XP ödülü admin tarafında bir kez eklenir; burada tekrar eklenmez. */
-  function syncSupportGrants() {
-    try {
-      if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
-      var u = firebase.auth().currentUser; if (!u) return;
-      firebase.database().ref('progress/' + u.uid + '/meta/supportGrants').once('value').then(function (sn) {
-        var g = sn.val() || {}; var list = myBadges(); var changed = false; var got = [];
-        TIERS.forEach(function (t) {
-          if (g[t.amount] && list.indexOf(t.badge) === -1) {
-            list.push(t.badge); changed = true; got.push(t.badge + ' ' + tierName(t));
-          }
-        });
-        if (changed) {
-          store(KEY, list);
-          toast('🎁 Sana rozet verildi: ' + got.join(', ') + ' · özellikler açıldı', { kind: 'good', duration: 8000 });
-        }
-      }).catch(function () {});
-    } catch (e) {}
+  let grantRef=null,grantListener=null,policySignature='';
+  function syncSupportGrants(){
+    if(grantRef && grantListener)grantRef.off('value',grantListener);
+    grantRef=null;grantListener=null;
+    const uid=account();if(!uid)return;
+    grantRef=firebase.database().ref('progress/'+uid+'/meta/supportGrants');
+    grantListener=function(snap){
+      if(account()!==uid)return;
+      const grants=snap.val()||{};
+      // An explicit false removes the local mirror even before the API reply.
+      saveBadges(myBadges().filter(b=>!TIERS.some(t=>t.badge===b && grants[t.amount]===false)));
+      window.LUMIRA_FEATURES?.api('status').catch(()=>{});
+    };
+    grantRef.on('value',grantListener,function(){});
   }
-  (function initGiftSync() {
-    try {
-      if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-        firebase.auth().onAuthStateChanged(function (u) { if (u) syncSupportGrants(); });
-      } else { setTimeout(initGiftSync, 800); }
-    } catch (e) { setTimeout(initGiftSync, 800); }
+  function bindPolicy(){
+    const F=window.LUMIRA_FEATURES;if(!F)return;
+    F.subscribe(function(quota){
+      if(!Array.isArray(quota.supportAmounts))return;
+      const signature=account()+':'+quota.supportAmounts.join(',')+':'+(quota.revokedSupport||[]).join(',');
+      saveBadges(TIERS.filter(t=>quota.supportAmounts.includes(t.amount)).map(t=>t.badge));
+      if(signature!==policySignature){policySignature=signature;window.PR_refreshBadges?.();}
+    });
+  }
+  bindPolicy();
+  (function initGiftSync(){
+    try{if(typeof firebase!=='undefined' && firebase.apps?.length){firebase.auth().onAuthStateChanged(syncSupportGrants);}else setTimeout(initGiftSync,800);}catch(e){setTimeout(initGiftSync,800);}
   })();
+
 })();

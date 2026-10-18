@@ -51,7 +51,7 @@ async function flush(){
   const account=user();if(!account)throw Error('login');
   const token=await Promise.race([account.getIdToken(),new Promise((resolve,reject)=>controller.signal.addEventListener('abort',()=>reject(Error('missing')),{once:true}))]);if(user()?.uid!==uid || epoch!==authEpoch)throw Error('login');
   let result,response;
-  try{response=await fetch('./.netlify/functions/examples',{method:'POST',cache:'no-store',signal:controller.signal,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({source:first.source,target:first.target,texts:jobs.map(j=>j.text)})});result=await response.json();}finally{clearTimeout(timer);}
+  try{response=await fetch(root.LUMIRA_BACKEND?.url('examples') || '/.netlify/functions/examples',{method:'POST',credentials:'omit',cache:'no-store',signal:controller.signal,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({source:first.source,target:first.target,texts:jobs.map(j=>j.text)})});result=await response.json();}finally{clearTimeout(timer);}
   if(user()?.uid!==uid || epoch!==authEpoch)throw Error('login');
   if(!response.ok || result?.source!==first.source || result?.target!==first.target || !Array.isArray(result.examples))throw Error(response.status===401?'login':'missing');
   const wanted=new Set(jobs.map(j=>j.text));

@@ -38,19 +38,23 @@
   /* =========================================================== ANA PANEL */
   function openAdmin() {
     if (!sheet()) return;
-    window.PWA.sheet('🛡️ Yönetici Paneli', 'Yalnızca yönetici hesabında görünür.', function (b) {
+    window.PWA.sheet('🛡️ Yönetici Paneli', 'Yalnızca yönetici hesabında görünür.', function (b, panel) {
       var rows = [
         ['📊', 'Kullanım istatistikleri', 'Günlük kullanıcı, olaylar, quiz hunisi', openStats],
         ['⭐', 'XP gönder',               'Bir kullanıcıya XP ekle',                openXp],
         ['🏅', 'Başarım rozeti ver',      'Özel başarım rozeti (Başarımlar)',       openGiveBadge],
         ['💛', 'Destek rozeti ver',       'Satın alma gibi açar (PDF vb. + XP)',    openGiveSupport],
+        ['🗑️', window.LUMIRA_ADMIN_BADGES.text('title'), window.LUMIRA_ADMIN_BADGES.text('sub'), window.LUMIRA_ADMIN_BADGES.open],
         ['🎓', 'Seviye aktar',            'Bir seviyenin tüm kelimelerini bilinene ekle', openTransferLevel],
         ['🚫', 'Kullanıcı yasakla',       'Hesabı kapat, ilerlemesini kaldır',      openBan],
         ['✅', 'Yasağı kaldır',           'Hesabı aç, ilerlemesini geri getir',     openUnban]
       ];
       rows.forEach(function (r) {
         var el = mkRow(r[0], r[1], r[2]);
-        el.onclick = r[3];
+        el.onclick = function () {
+          if(r[3] === window.LUMIRA_ADMIN_BADGES.open) panel.close();
+          r[3]();
+        };
         b.appendChild(el);
       });
       b.insertAdjacentHTML('beforeend',
@@ -590,11 +594,11 @@
          toplu update ile yaz (N kişi için 1 okuma turu + 1 yazma). */
       function grantToUids(uids, chosen){
         var amount = chosen[0], xp = chosen[3];
-        return Promise.all(uids.map(function(uid){
+        return window.LUMIRA_ADMIN_BADGES.allow(uids,amount).then(function(){return Promise.all(uids.map(function(uid){
           return d.ref('progress/' + uid + '/meta/xp').once('value').then(function(sn){
             return { uid: uid, cur: (typeof sn.val()==='number') ? sn.val() : 0 };
           });
-        })).then(function(results){
+        }));}).then(function(results){
           var updates = {};
           results.forEach(function(r){
             var next = r.cur + xp;
@@ -613,16 +617,8 @@
           var u = picker.get();
           if (!u) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
           send.disabled = true; send.textContent = 'Veriliyor…';
-          var amount = chosen[0], xp = chosen[3];
-          d.ref('progress/' + u.uid + '/meta/xp').once('value').then(function (sn) {
-            var cur = typeof sn.val() === 'number' ? sn.val() : (u.xp || 0);
-            var next = cur + xp;
-            return Promise.all([
-              d.ref('progress/' + u.uid + '/meta/supportGrants/' + amount).set(true),
-              d.ref('progress/' + u.uid + '/meta/xp').set(next),
-              d.ref('leaderboard/' + u.uid).update({ xp: next, name: u.name })
-            ]);
-          }).then(function () {
+          var xp=chosen[3];
+          grantToUids([u.uid],chosen).then(function () {
             send.disabled = false; syncMode();
             var m = me();
             if (m && m.uid === u.uid) {

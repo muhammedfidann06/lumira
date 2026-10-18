@@ -27,8 +27,10 @@
     if (select) select.disabled = active();
     if (clear) clear.disabled = active() || (!s.entries.length && !s.draft);
     if (statusBox) { statusBox.textContent = F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
-    const backup=node('ltBackup'), retry=node('ltBackupRetry');
-    if(backup)backup.textContent=F.text(s.localError?'local_backup_error':s.localProgress?.ready?'local_ready':s.localProgress?'local_downloading':'local_hint',{percent:s.localProgress?.percent || 0,mb:Math.ceil((s.localProgress?.total || 235000000)/1000000)});
+    const backup=node('ltBackup'), retry=node('ltBackupRetry'), backupBox=node('ltBackupBox');
+    const showBackup=active() && (s.localError || (s.localProgress && !s.localProgress.ready));
+    if(backupBox)backupBox.hidden=!showBackup;
+    if(backup)backup.textContent=showBackup?F.text(s.localError?'local_backup_error':'local_downloading',{percent:s.localProgress?.percent || 0,mb:Math.ceil((s.localProgress?.total || 235000000)/1000000)}):'';
     if(retry){retry.hidden=!s.localError || !active() || s.provider!=='azure';retry.textContent=F.text('local_retry');}
     drawQuota();
   }
@@ -408,10 +410,10 @@
   }
   function shell() {
     const root=s.root;if(!root)return;
-    root.innerHTML='<section class="lt-screen" id="liveTranslateScreen"><div class="lt-top"><button type="button" class="lt-back" id="ltBack"></button><h2 id="ltTitle"></h2></div><div class="lt-target"><label for="ltTarget" id="ltTargetLabel"></label><select id="ltTarget"></select></div><section class="lt-panel" aria-labelledby="ltOriginalLabel"><div class="lt-panel-head"><span id="ltOriginalLabel"></span><span class="lt-detected" id="ltDetected"></span></div><div class="lt-transcript" id="ltOriginal" dir="auto"></div></section><section class="lt-panel lt-panel-target" aria-labelledby="ltTranslationLabel"><div class="lt-panel-head"><span id="ltTranslationLabel"></span><span id="ltTargetName"></span></div><div class="lt-transcript" id="ltTranslation" dir="auto"></div></section><div class="lt-controls"><button type="button" class="lt-mic" id="ltMic" aria-pressed="false"></button><button type="button" class="lt-clear" id="ltClear"></button></div><div class="lt-status" id="ltStatus" role="status" aria-live="polite"></div><div class="feature-quota" id="ltQuota"></div><button type="button" class="lt-restore" id="ltRestore" hidden></button><p class="lt-privacy" id="ltPrivacy"></p></section>';
-    const backup=document.createElement('aside');backup.className='lt-backup';
+    root.innerHTML='<section class="lt-screen" id="liveTranslateScreen"><div class="lt-top"><button type="button" class="lt-back" id="ltBack"></button><h2 id="ltTitle"></h2></div><div class="lt-target"><label for="ltTarget" id="ltTargetLabel"></label><select id="ltTarget"></select></div><section class="lt-panel" aria-labelledby="ltOriginalLabel"><div class="lt-panel-head"><span id="ltOriginalLabel"></span><span class="lt-detected" id="ltDetected"></span></div><div class="lt-transcript" id="ltOriginal" dir="auto"></div></section><section class="lt-panel lt-panel-target" aria-labelledby="ltTranslationLabel"><div class="lt-panel-head"><span id="ltTranslationLabel"></span><span id="ltTargetName"></span></div><div class="lt-transcript" id="ltTranslation" dir="auto"></div></section><div class="lt-controls"><button type="button" class="lt-mic" id="ltMic" aria-pressed="false"></button><button type="button" class="lt-clear" id="ltClear"></button></div><div class="lt-status" id="ltStatus" role="status" aria-live="polite"></div><div class="feature-quota" id="ltQuota"></div><button type="button" class="lt-restore" id="ltRestore" hidden></button></section>';
+    const backup=document.createElement('aside');backup.id='ltBackupBox';backup.className='lt-backup';backup.hidden=true;
     backup.innerHTML='<p id="ltBackup"></p><button type="button" class="lt-restore" id="ltBackupRetry" hidden></button>';
-    node('ltPrivacy').before(backup);
+    node('liveTranslateScreen').append(backup);
     node('ltBackupRetry').onclick=()=>{s.localError=false;drawControls();warmLocal(s.generation);};
     const select=node('ltTarget');
     Object.keys(FLAGS).forEach(code=>{const option=document.createElement('option');option.value=code;option.textContent=FLAGS[code]+' '+label(code);select.appendChild(option);});
@@ -427,7 +429,7 @@
   }
   function refreshLocale(){
     if(!s.root)return;
-    const copy={ltBack:'back',ltTitle:'title',ltTargetLabel:'target',ltOriginalLabel:'original',ltTranslationLabel:'translation',ltClear:'clear',ltPrivacy:'privacy',ltRestore:'restore'};
+    const copy={ltBack:'back',ltTitle:'title',ltTargetLabel:'target',ltOriginalLabel:'original',ltTranslationLabel:'translation',ltClear:'clear',ltRestore:'restore'};
     Object.keys(copy).forEach(id=>{if(node(id))node(id).textContent=F.text(copy[id]);});
     node('ltTarget')?.querySelectorAll('option').forEach(option=>{option.textContent=FLAGS[option.value]+' '+label(option.value);});
     if(node('ltTargetName'))node('ltTargetName').textContent=FLAGS[s.target]+' '+label(s.target);
@@ -449,7 +451,7 @@
     F.api('status').then(data=>{
       if(s.root!==root)return;
       s.quota=data.quota;s.providerConfigured=(data.providers || []).length>0 || data.speechConfigured;
-      if(!active() && !data.speechConfigured)status('local_hint');else drawControls();
+      drawControls();
     }).catch(e=>{if(s.root===root)status(e.featureCode || 'usage_unavailable',true);});
   }
   F.subscribe(quota=>{if(s.root){s.quota=quota;drawQuota();}});

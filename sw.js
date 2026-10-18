@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.9.6';
+const CACHE_VERSION = 'v1.9.8';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -39,10 +39,12 @@ const SHELL = [
   './analytics.js',
   './splash.js',
   './admin.js',
+  './admin-badges.js',
   './theme.css',
   './theme.js',
   './voice.js',
   './progress.js',
+  './backend.js',
   './feature-usage.js',
   './example-translations.js',
   './access-i18n.js',

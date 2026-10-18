@@ -80,7 +80,8 @@
         if (!audio) audio = new Audio();
         audio.playsInline = true;
         audio.preload = 'auto';
-        audio.src = '/.netlify/functions/tts?lang=' + encodeURIComponent(String(lang).split('-')[0]) +
+        audio.crossOrigin = 'anonymous';
+        audio.src = (window.LUMIRA_BACKEND?.url('tts') || '/.netlify/functions/tts') + '?lang=' + encodeURIComponent(String(lang).split('-')[0]) +
           '&slow=' + (slow ? '1' : '0') + '&text=' + encodeURIComponent(chunks[index]);
         audio.onended = function () {
           if (done || id !== audioSerial) return;
@@ -203,7 +204,7 @@
     try { if (synth) synth.getVoices(); } catch (e) {}
   };
   window.VOICE_debug = function () {
-    return {version:'1.8.10', status:status, mode:ios ? 'media' : 'device', ios:ios, available:!!synth, voices:synth ? synth.getVoices().length : 0, audioSession:navigator.audioSession ? navigator.audioSession.type : 'unavailable',
+    return {version:'1.9.8', status:status, mode:ios ? 'media' : 'device', ios:ios, available:!!synth, voices:synth ? synth.getVoices().length : 0, audioSession:navigator.audioSession ? navigator.audioSession.type : 'unavailable',
       speaking:!!(synth && synth.speaking), lastError:lastError};
   };
 })();

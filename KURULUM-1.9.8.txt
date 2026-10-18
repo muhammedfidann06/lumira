@@ -1,0 +1,37 @@
+LUMIRA 1.9.8 — SADECE DEĞİŞEN DOSYALAR
+
+1) ZIP'i aç. ZIP dosyasının kendisini yükleme.
+   İçindeki dosyaları ve klasörleri, klasör yapısını koruyarak GitHub'daki
+   muhammedfidann06/lumira deposunun main dalındaki ana dizinine yükle.
+   index.html, sw.js ve package.json ana dizinde kalmalı.
+   Mevcut dosyaların üzerine yaz ve değişiklikleri tek commit ile kaydet.
+
+2) Netlify'da aynı commit'in bir kez yayımlanması yeterlidir.
+   Otomatik dağıtım zaten başladıysa ikinci bir dağıtım başlatma.
+   Yayın tamamlanmadan GitHub Pages'teki sunucu özellikleri eski Netlify
+   işlevlerine bağlanır. Publish directory: .  Build command: boş olabilir.
+   Yeni API anahtarı gerekmez; mevcut ortam değişkenlerini koru.
+   Bu sürüm için ek Firebase kuralı değişikliği yoktur.
+
+3) GitHub Pages yayını ve Netlify dağıtımı tamamlanınca şu bağlantıyı aç:
+   https://muhammedfidann06.github.io/lumira/?lumira_update=1.9.8&__ping=lumira-update-198
+   Ayarlarda 1.9.8 görünmeli. İndirilmiş sözlükleri ve cihaz modellerini
+   silmek veya tarayıcının tüm verilerini temizlemek gerekmez.
+
+YENİ: Yönetici Paneli → Rozet kaldır.
+Destek / başarım / tüm rozetler; tek kişi / herkesten seçilebilir.
+Kullanıcı seç, kaldırılacak rozeti belirle, işlemi onayla.
+XP ve çalışma ilerlemesi korunur. Kaldırılan destek rozetinin ek hakları
+kapanır; kalan başka destek rozeti varsa onun hakları geçerli olur.
+İşlem sunucuda admins/<yönetici UID> = true yetkisiyle korunur.
+Gerektiğinde mevcut “Destek rozeti ver” yoluyla yeniden verilebilir.
+
+KONTROL SONUÇLARI
+743 otomatik test geçti; isteğe bağlı Firebase emülatörü testi ayrıca geçti.
+Yedi dilde 320/768/1366 px rozet ekranları, 205 test hesabında toplu kaldırma,
+iki ardışık sürüm güncellemesi, yavaş indirme durumu, sözlük/model koruması,
+96 uygulama/sözlük tarayıcı senaryosu ve beş Netlify işlevinin paketlenip
+bağımsız yüklenmesi kontrol edildi.
+Gerçek hesaplarda rozet silinmedi. Canlı ortama dağıtım yapılmadı.
+API sağlayıcılarının gerçek anahtarları ve fiziksel iOS/Android cihazları
+bu ortamda test edilmedi.

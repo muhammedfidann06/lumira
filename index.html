@@ -77,6 +77,8 @@ if (/Android/i.test(navigator.userAgent)) {
 <link rel="preload" as="image" href="./scene-bg.jpg">
 <link rel="preload" as="image" href="./icon-192.png">
 
+<script src="backend.js?v=1.9.8"></script>
+
 <!-- Firebase SDK'sı erkenden indirilsin: sıralama tablosu ilk ziyarette
      gecikmesin. preload, tarayıcıya üçünü paralel indirtir. -->
 <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" crossorigin>
@@ -895,23 +897,17 @@ if (/Android/i.test(navigator.userAgent)) {
   }
   .nb-study-pick p{font-size:12.5px;color:var(--muted);margin:0 0 14px;}
 
-  /* kart üzerindeki favori yıldızı — ARTIK KULLANILMIYOR:
-     pwa.js'te önceden var olan #favBtn (Ayarlar > Favorilerim) ile aynı
-     köşede oturuyordu ve daha yüksek z-index'i olduğu için TÜM tıklamaları
-     kendi üzerine alıyordu — bu yüzden bu yıldıza her basışta aslında
-     pwa.js'in eski localStorage sistemi tetikleniyordu, benimki HİÇ
-     çalışmıyordu. Artık #favBtn'in kendisini (aşağıda) Notlarım'a da
-     yazacak şekilde güncelledim; bu yıldızı tamamen gizliyoruz ki iki
-     ayrı yıldız görünmesin / çakışmasın. */
+  /* Kartta tek bir görünür yıldız bulunur. PWA yıldızı ve eski kart
+     eylemleri aynı Notlarım kaydını kullanır; eski simgeler gizli kalır. */
   .fav-star{ display:none !important; }
 .example-translation-note{margin-top:8px;color:var(--muted);font-size:11px;line-height:1.5;}
 .example-translation-note[hidden]{display:none;}
 .example-translation-note button{font:inherit;color:inherit;background:transparent;border:1px solid rgba(140,190,255,.28);border-radius:9px;padding:8px 12px;min-height:44px;cursor:pointer;}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.9.6">
-<link rel="stylesheet" href="pwa.css?v=1.9.6">
-<link rel="stylesheet" href="live-translate.css?v=1.9.6">
-<link rel="stylesheet" href="access-screen.css?v=1.9.6">
+<link rel="stylesheet" href="theme.css?v=1.9.8">
+<link rel="stylesheet" href="pwa.css?v=1.9.8">
+<link rel="stylesheet" href="live-translate.css?v=1.9.8">
+<link rel="stylesheet" href="access-screen.css?v=1.9.8">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1299,15 +1295,15 @@ if (/Android/i.test(navigator.userAgent)) {
   </div>
 </div>
 
-<script src="vocab-core.js?v=1.9.6"></script>
-<script src="vocab-parallel.js?v=1.9.6"></script>
-<script src="vocab-pairs.js?v=1.9.6"></script>
-<script src="vocab-identity.js?v=1.9.6"></script>
+<script src="vocab-core.js?v=1.9.8"></script>
+<script src="vocab-parallel.js?v=1.9.8"></script>
+<script src="vocab-pairs.js?v=1.9.8"></script>
+<script src="vocab-identity.js?v=1.9.8"></script>
 <!-- Açılışta SADECE Almanca yükleniyor. Diğer beş dil, kullanıcı o dile
      geçtiği anda pwa.js tarafından indiriliyor. Önceden altı dosyanın altısı
      birden (5,2 MB) her açılışta ayrıştırılıyordu; telefonlarda donmanın en
      büyük sebebi buydu. -->
-<script src="vocab-de.js?v=1.9.6"></script>
+<script src="vocab-de.js?v=1.9.8"></script>
 <script>
 /* ===================== SÖZLÜKLERİN İHTİYAÇ ANINDA YÜKLENMESİ =============
    Bu kod BİLEREK index.html'in içinde: sözlük etiketlerini kaldıran dosya ile
@@ -1324,7 +1320,7 @@ window.VOCAB_LOADED = { de: true };
     if(loading[lang]) return loading[lang];
     loading[lang] = new Promise(function(res, rej){
       var sc = document.createElement('script');
-      sc.src = 'vocab-' + lang + '.js?v=1.9.6';
+      sc.src = 'vocab-' + lang + '.js?v=1.9.8';
       sc.async = false;
       sc.onload = function(){ window.VOCAB_LOADED[lang] = true; delete loading[lang]; res(true); };
       sc.onerror = function(){ delete loading[lang]; rej(new Error(lang)); };
@@ -1413,7 +1409,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.9.6"></script>
+<script src="leaderboard.js?v=1.9.8"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -1603,7 +1599,7 @@ tr:{
   pm_currently_known:"✅ Şu an bilinen kelimeler arasında", pm_waiting_retry:"⏳ Tekrar bekliyor", toast_level_test_done:function(lvl){ return "Seviye tespit sınavı: "+lvl+" tamamlandı"; },
 
   fallback_user:"Kullanıcı", lb_not_connected:"Tablo henüz bağlanmadı.", lb_empty:"Henüz kimse yok.<br>İlk sen ol! 🎉", lb_login_to_see_rank:"🏅 Sıralamanı görmek için giriş yap",
-  fav_title:"⭐ Favorilerim", fav_sub:"Kaydettiğin kelimeler cihazında saklanır.", fav_empty:"Henüz favori yok.<br>Kartın sağ üstündeki ☆ ile ekleyebilirsin.", fav_share_row:"Favorileri paylaş / indir", download_failed:"İndirme başarısız", share_app_text:"6 dilde kelime kartları, quiz ve seslendirme — çevrimdışı da çalışıyor 🌙", copied_clipboard:"📋 Panoya kopyalandı", copy_failed:"Kopyalanamadı", backup_title:"İlerleme yedeğim", backup_restored:"✅ Yedek geri yüklendi, yenileniyor…", file_unreadable:"Dosya okunamadı", err_report_title:"🐞 Hata raporu", err_no_records:"Kayıtlı hata yok — her şey yolunda.", err_none_logged:"🎉 Hiç hata kaydedilmemiş.", err_share_row:"Raporu paylaş / indir", err_share_desc:"Cihaz bilgisi + son hatalar", err_report_title2:"Hata raporu", err_clear_row:"Kayıtları temizle", cleared:"Temizlendi", rate_title:"⭐ Beğendin mi?", rate_sub:"Uygulamayı puanlaman bize çok yardımcı olur.", rate_now:"Play Store'da puan ver", rate_time:"30 saniye sürer", rate_later:"Sonra hatırlat", rate_later_desc:"1 hafta sonra tekrar sorulur", rate_never:"Bir daha sorma", word_count:function(n){ return n+" kelime"; }, fav_export_title:function(d){ return "Lumira · Dil Kartları — Favorilerim ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" indirildi"; }, err_records_found:function(n){ return n+" kayıt bulundu."; },
+  fav_title:"⭐ Favorilerim", fav_sub:"Favorilerin Notlarım bölümünde ve hesabında saklanır.", fav_empty:"Henüz favori yok.<br>Kartın sağ üstündeki ☆ ile ekleyebilirsin.", fav_share_row:"Favorileri paylaş / indir", download_failed:"İndirme başarısız", share_app_text:"6 dilde kelime kartları, quiz ve seslendirme — çevrimdışı da çalışıyor 🌙", copied_clipboard:"📋 Panoya kopyalandı", copy_failed:"Kopyalanamadı", backup_title:"İlerleme yedeğim", backup_restored:"✅ Yedek geri yüklendi, yenileniyor…", file_unreadable:"Dosya okunamadı", err_report_title:"🐞 Hata raporu", err_no_records:"Kayıtlı hata yok — her şey yolunda.", err_none_logged:"🎉 Hiç hata kaydedilmemiş.", err_share_row:"Raporu paylaş / indir", err_share_desc:"Cihaz bilgisi + son hatalar", err_report_title2:"Hata raporu", err_clear_row:"Kayıtları temizle", cleared:"Temizlendi", rate_title:"⭐ Beğendin mi?", rate_sub:"Uygulamayı puanlaman bize çok yardımcı olur.", rate_now:"Play Store'da puan ver", rate_time:"30 saniye sürer", rate_later:"Sonra hatırlat", rate_later_desc:"1 hafta sonra tekrar sorulur", rate_never:"Bir daha sorma", word_count:function(n){ return n+" kelime"; }, fav_export_title:function(d){ return "Lumira · Dil Kartları — Favorilerim ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" indirildi"; }, err_records_found:function(n){ return n+" kayıt bulundu."; },
   back_to_exit:"Çıkmak için geri tuşuna tekrar bas", installing:"Kuruluyor…", install_add_title:"Ana ekrana ekle", install_add_desc:"Tam ekran, çevrimdışı ve daha hızlı", install_go:"Yükle", install_added:"🎉 Uygulama ana ekranına eklendi!", ios_install_title:"📲 Ana ekrana ekle", ios_install_desc:"Uygulamayı tam ekran ve çevrimdışı kullanmak için:", ios_step1_title:"Safari'de paylaş simgesine dokun", ios_step1_desc:"Alt çubuktaki ⬆️ simgesi", ios_step2_title:"\"Ana Ekrana Ekle\"yi seç", ios_step2_desc:"Listede aşağı kaydırman gerekebilir", ios_step3_title:"\"Ekle\"ye dokun", ios_step3_desc:"Uygulama ana ekranında belirir", ios_install_note:"Not: iOS'ta bu adım yalnızca Safari üzerinden çalışır. Ekledikten sonra bildirimler de (iOS 16.4+) etkinleştirilebilir.", resume_action:"Devam", resume_not_found:"Bu kart artık listede yok", sw_not_ready:"Service Worker henüz hazır değil", need_internet_download:"İndirmek için internet gerekli", downloading_dicts:"📦 Sözlükler indiriliyor…", offline_pack_ready:"✅ Çevrimdışı paket hazır — internet olmadan da çalışır", daily_word_title:"🌙 Günün kelimesi", daily_word_not_loaded:"Kartlar henüz yüklenmedi. Birkaç saniye sonra tekrar dene.", listen_row:"Dinle", listen_desc:"Telaffuzu seslendir", add_to_favs:"Favorilere ekle", added_toast:"⭐ Eklendi", share_row:"Paylaş", share_desc:"Arkadaşına gönder", removed_from_favs:"Favorilerden çıkarıldı", copy_to_clipboard:"Panoya kopyala", shared_content_title:"📥 Paylaşılan metin", shared_content_desc:"Başka bir uygulamadan gönderdiğin içerik:", resume_prompt:function(word,pos){ return '📖 "'+word+'"'+pos+' — kaldığın yerden devam?'; }, resume_returned:function(word){ return "✅ "+word+" kartına dönüldü"; },
   save_to_word_list:"Kendi kelime listene kaydet", added_to_favs_toast:"⭐ Favorilere eklendi",
   lock_pdf_feature_name:"Kelime listesi PDF", lock_pdf_msg:"Bu özellik için <b>💛</b>, <b>⭐️</b> veya <b>👑</b> rozetlerinden birine sahip olman gerekiyor.<br><br>Rozetleri ❤️ <b>Lumira'yı Destekle</b> bölümünden edinebilirsin.", lock_any_badge_msg:"Bu özelliği kullanmak için herhangi bir destek rozetine sahip olman gerekiyor — en küçüğü bile (👍🏻 Teşekkür) yeterli.<br><br>Rozetleri ❤️ <b>Lumira'yı Destekle</b> bölümünden edinebilirsin.", purchase_start_failed:"Satın alma başlatılamadı.", purchase_complete_failed:"Satın alma tamamlanamadı.", support_title:"❤️ Lumira'yı Destekle", support_desc:"Lumira'yı herkes için ücretsiz sunmaya devam etmek istiyoruz. Eğer uygulamayı faydalı bulduysanız, tamamen isteğe bağlı bir destekle yeni özelliklerin geliştirilmesine katkıda bulunabilirsiniz. Her katkı bizim için çok değerli. ❤️ 🇹🇷", pdf_export_title:"📄 Kelimeleri PDF olarak indir", pdf_export_desc:"Dil ve seviye seç, kitap düzeninde bir kelime listesi oluşturulsun.", pdf_words_not_found:"Bu seçimde kelime bulunamadı", pdf_generate_btn:"Listeyi oluştur", pdf_generating:"Hazırlanıyor…", pdf_dict_load_failed:"Sözlük yüklenemedi", pdf_popup_blocked:"Açılır pencere engellendi — tarayıcı ayarlarından izin ver", pdf_web_payment_note:"Bu satın alma yalnızca Play Store üzerinden yapılabilir. Web sürümünde ödeme alınmıyor.", lock_level_msg:function(need,lvl){ return "Bu özelliği kullanmak için en az <b>"+need+". seviye</b> olmalısın. Şu anki seviyen: <b>"+lvl+"</b>.<br><br>🎯 <b>Kişisel</b> sekmesinden çalışarak seviyeni yükseltebilirsin."; }, your_badges:function(badges){ return "Rozetlerin: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Sana rozet verildi: "+name+" · +"+xp+" özellikler açıldı"; }, purchase_success_toast:function(b,n,x){return b+' '+n+' rozeti kazandın · +'+x+' XP';}, purchase_total_label:"Toplam",},
@@ -1788,7 +1784,7 @@ en:{
   pm_currently_known:"✅ Currently in your known words", pm_waiting_retry:"⏳ Waiting for retry", toast_level_test_done:function(lvl){ return "Level test: "+lvl+" completed"; },
 
   fallback_user:"User", lb_not_connected:"Table not connected yet.", lb_empty:"No one yet.<br>Be the first! 🎉", lb_login_to_see_rank:"🏅 Sign in to see your rank",
-  fav_title:"⭐ My Favorites", fav_sub:"Your saved words are stored on this device.", fav_empty:"No favorites yet.<br>Tap the ☆ on the top-right of a card to add one.", fav_share_row:"Share / download favorites", download_failed:"Download failed", share_app_text:"Word cards, quizzes and pronunciation in 6 languages — works offline too 🌙", copied_clipboard:"📋 Copied to clipboard", copy_failed:"Couldn't copy", backup_title:"My progress backup", backup_restored:"✅ Backup restored, refreshing…", file_unreadable:"Couldn't read the file", err_report_title:"🐞 Error report", err_no_records:"No errors logged - everything's fine.", err_none_logged:"🎉 No errors logged.", err_share_row:"Share / download report", err_share_desc:"Device info + recent errors", err_report_title2:"Error report", err_clear_row:"Clear records", cleared:"Cleared", rate_title:"⭐ Enjoying it?", rate_sub:"Rating the app really helps us out.", rate_now:"Rate on Play Store", rate_time:"Takes 30 seconds", rate_later:"Remind me later", rate_later_desc:"We'll ask again in a week", rate_never:"Don't ask again", word_count:function(n){ return n+" words"; }, fav_export_title:function(d){ return "Lumira · Language Cards — My Favorites ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" downloaded"; }, err_records_found:function(n){ return n+" records found."; },
+  fav_title:"⭐ My Favorites", fav_sub:"Your favorites are saved in My Notes and linked to your account.", fav_empty:"No favorites yet.<br>Tap the ☆ on the top-right of a card to add one.", fav_share_row:"Share / download favorites", download_failed:"Download failed", share_app_text:"Word cards, quizzes and pronunciation in 6 languages — works offline too 🌙", copied_clipboard:"📋 Copied to clipboard", copy_failed:"Couldn't copy", backup_title:"My progress backup", backup_restored:"✅ Backup restored, refreshing…", file_unreadable:"Couldn't read the file", err_report_title:"🐞 Error report", err_no_records:"No errors logged - everything's fine.", err_none_logged:"🎉 No errors logged.", err_share_row:"Share / download report", err_share_desc:"Device info + recent errors", err_report_title2:"Error report", err_clear_row:"Clear records", cleared:"Cleared", rate_title:"⭐ Enjoying it?", rate_sub:"Rating the app really helps us out.", rate_now:"Rate on Play Store", rate_time:"Takes 30 seconds", rate_later:"Remind me later", rate_later_desc:"We'll ask again in a week", rate_never:"Don't ask again", word_count:function(n){ return n+" words"; }, fav_export_title:function(d){ return "Lumira · Language Cards — My Favorites ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" downloaded"; }, err_records_found:function(n){ return n+" records found."; },
   back_to_exit:"Press back again to exit", installing:"Installing…", install_add_title:"Add to home screen", install_add_desc:"Full screen, offline and faster", install_go:"Install", install_added:"🎉 Added to your home screen!", ios_install_title:"📲 Add to Home Screen", ios_install_desc:"To use the app full screen and offline:", ios_step1_title:"Tap the share icon in Safari", ios_step1_desc:"The ⬆️ icon in the bottom bar", ios_step2_title:"Choose \"Add to Home Screen\"", ios_step2_desc:"You may need to scroll down the list", ios_step3_title:"Tap \"Add\"", ios_step3_desc:"The app appears on your home screen", ios_install_note:"Note: on iOS this only works through Safari. After adding, notifications (iOS 16.4+) can also be enabled.", resume_action:"Continue", resume_not_found:"This card isn't in the list anymore", sw_not_ready:"Service Worker isn't ready yet", need_internet_download:"Internet connection needed to download", downloading_dicts:"📦 Downloading dictionaries…", offline_pack_ready:"✅ Offline pack ready — works without internet", daily_word_title:"🌙 Word of the day", daily_word_not_loaded:"Cards haven't loaded yet. Try again in a few seconds.", listen_row:"Listen", listen_desc:"Hear the pronunciation", add_to_favs:"Add to favorites", added_toast:"⭐ Added", share_row:"Share", share_desc:"Send to a friend", removed_from_favs:"Removed from favorites", copy_to_clipboard:"Copy to clipboard", shared_content_title:"📥 Shared text", shared_content_desc:"Content shared from another app:", resume_prompt:function(word,pos){ return '📖 "'+word+'"'+pos+' — pick up where you left off?'; }, resume_returned:function(word){ return "✅ Back to "+word; },
   save_to_word_list:"Save to your own word list", added_to_favs_toast:"⭐ Added to favorites",
   lock_pdf_feature_name:"Word list PDF", lock_pdf_msg:"You need one of the <b>💛</b>, <b>⭐️</b> or <b>👑</b> badges to use this feature.<br><br>You can get a badge from ❤️ <b>Support Lumira</b>.", lock_any_badge_msg:"You need any support badge to use this feature — even the smallest one (👍🏻 Thanks) is enough.<br><br>You can get a badge from ❤️ <b>Support Lumira</b>.", purchase_start_failed:"Couldn't start the purchase.", purchase_complete_failed:"Couldn't complete the purchase.", support_title:"❤️ Support Lumira", support_desc:"We want to keep offering Lumira for free to everyone. If you find the app useful, you can support new feature development with a completely optional contribution. Every contribution means a lot to us. ❤️ 🇹🇷", pdf_export_title:"📄 Download words as PDF", pdf_export_desc:"Choose a language and level to generate a book-style word list.", pdf_words_not_found:"No words found for this selection", pdf_generate_btn:"Generate list", pdf_generating:"Preparing…", pdf_dict_load_failed:"Couldn't load the dictionary", pdf_popup_blocked:"Pop-up blocked — allow it in your browser settings", pdf_web_payment_note:"This purchase can only be made through the Play Store. Payments aren't accepted in the web version.", lock_level_msg:function(need,lvl){ return "You need to be at least <b>level "+need+"</b> to use this. Your current level: <b>"+lvl+"</b>.<br><br>🎯 Study in the <b>Personal</b> tab to level up."; }, your_badges:function(badges){ return "Your badges: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 You earned a badge: "+name+" · +"+xp+" features unlocked"; }, purchase_success_toast:function(b,n,x){return b+' You earned the '+n+' badge · +'+x+' XP';}, purchase_total_label:"Total",},
@@ -1946,7 +1942,7 @@ de:{
   pm_currently_known:"✅ Aktuell in deinen bekannten Wörtern", pm_waiting_retry:"⏳ Wartet auf Wiederholung", toast_level_test_done:function(lvl){ return "Einstufungstest: "+lvl+" abgeschlossen"; },
 
   fallback_user:"Benutzer", lb_not_connected:"Tabelle noch nicht verbunden.", lb_empty:"Noch niemand hier.<br>Sei der Erste! 🎉", lb_login_to_see_rank:"🏅 Melde dich an, um deinen Rang zu sehen",
-  fav_title:"⭐ Meine Favoriten", fav_sub:"Deine gespeicherten Wörter werden auf diesem Gerät gespeichert.", fav_empty:"Noch keine Favoriten.<br>Tippe auf das ☆ oben rechts auf einer Karte, um eins hinzuzufügen.", fav_share_row:"Favoriten teilen / herunterladen", download_failed:"Download fehlgeschlagen", share_app_text:"Wortkarten, Quiz und Aussprache in 6 Sprachen — funktioniert auch offline 🌙", copied_clipboard:"📋 In die Zwischenablage kopiert", copy_failed:"Konnte nicht kopiert werden", backup_title:"Mein Fortschritts-Backup", backup_restored:"✅ Backup wiederhergestellt, wird aktualisiert…", file_unreadable:"Datei konnte nicht gelesen werden", err_report_title:"🐞 Fehlerbericht", err_no_records:"Keine Fehler protokolliert - alles in Ordnung.", err_none_logged:"🎉 Keine Fehler protokolliert.", err_share_row:"Bericht teilen / herunterladen", err_share_desc:"Geräteinfo + letzte Fehler", err_report_title2:"Fehlerbericht", err_clear_row:"Einträge löschen", cleared:"Gelöscht", rate_title:"⭐ Gefällt sie dir?", rate_sub:"Eine Bewertung hilft uns sehr.", rate_now:"Im Play Store bewerten", rate_time:"Dauert 30 Sekunden", rate_later:"Später erinnern", rate_later_desc:"Wir fragen in einer Woche erneut", rate_never:"Nicht mehr fragen", word_count:function(n){ return n+" Wörter"; }, fav_export_title:function(d){ return "Lumira · Sprachkarten — Meine Favoriten ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" heruntergeladen"; }, err_records_found:function(n){ return n+" Einträge gefunden."; },
+  fav_title:"⭐ Meine Favoriten", fav_sub:"Deine Favoriten werden unter Meine Notizen in deinem Konto gespeichert.", fav_empty:"Noch keine Favoriten.<br>Tippe auf das ☆ oben rechts auf einer Karte, um eins hinzuzufügen.", fav_share_row:"Favoriten teilen / herunterladen", download_failed:"Download fehlgeschlagen", share_app_text:"Wortkarten, Quiz und Aussprache in 6 Sprachen — funktioniert auch offline 🌙", copied_clipboard:"📋 In die Zwischenablage kopiert", copy_failed:"Konnte nicht kopiert werden", backup_title:"Mein Fortschritts-Backup", backup_restored:"✅ Backup wiederhergestellt, wird aktualisiert…", file_unreadable:"Datei konnte nicht gelesen werden", err_report_title:"🐞 Fehlerbericht", err_no_records:"Keine Fehler protokolliert - alles in Ordnung.", err_none_logged:"🎉 Keine Fehler protokolliert.", err_share_row:"Bericht teilen / herunterladen", err_share_desc:"Geräteinfo + letzte Fehler", err_report_title2:"Fehlerbericht", err_clear_row:"Einträge löschen", cleared:"Gelöscht", rate_title:"⭐ Gefällt sie dir?", rate_sub:"Eine Bewertung hilft uns sehr.", rate_now:"Im Play Store bewerten", rate_time:"Dauert 30 Sekunden", rate_later:"Später erinnern", rate_later_desc:"Wir fragen in einer Woche erneut", rate_never:"Nicht mehr fragen", word_count:function(n){ return n+" Wörter"; }, fav_export_title:function(d){ return "Lumira · Sprachkarten — Meine Favoriten ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" heruntergeladen"; }, err_records_found:function(n){ return n+" Einträge gefunden."; },
   back_to_exit:"Zurück erneut drücken zum Beenden", installing:"Wird installiert…", install_add_title:"Zum Startbildschirm hinzufügen", install_add_desc:"Vollbild, offline und schneller", install_go:"Installieren", install_added:"🎉 Zum Startbildschirm hinzugefügt!", ios_install_title:"📲 Zum Startbildschirm hinzufügen", ios_install_desc:"Um die App im Vollbild und offline zu nutzen:", ios_step1_title:"Tippe auf das Teilen-Symbol in Safari", ios_step1_desc:"Das ⬆️-Symbol in der unteren Leiste", ios_step2_title:"Wähle „Zum Home-Bildschirm“", ios_step2_desc:"Du musst evtl. in der Liste nach unten scrollen", ios_step3_title:"Tippe auf „Hinzufügen“", ios_step3_desc:"Die App erscheint auf deinem Startbildschirm", ios_install_note:"Hinweis: Unter iOS funktioniert dies nur über Safari. Nach dem Hinzufügen können auch Benachrichtigungen (iOS 16.4+) aktiviert werden.", resume_action:"Weiter", resume_not_found:"Diese Karte ist nicht mehr in der Liste", sw_not_ready:"Service Worker ist noch nicht bereit", need_internet_download:"Internetverbindung zum Herunterladen erforderlich", downloading_dicts:"📦 Wörterbücher werden heruntergeladen…", offline_pack_ready:"✅ Offline-Paket bereit — funktioniert ohne Internet", daily_word_title:"🌙 Wort des Tages", daily_word_not_loaded:"Karten wurden noch nicht geladen. Versuche es in ein paar Sekunden erneut.", listen_row:"Anhören", listen_desc:"Aussprache anhören", add_to_favs:"Zu Favoriten hinzufügen", added_toast:"⭐ Hinzugefügt", share_row:"Teilen", share_desc:"An einen Freund senden", removed_from_favs:"Aus Favoriten entfernt", copy_to_clipboard:"In die Zwischenablage kopieren", shared_content_title:"📥 Geteilter Text", shared_content_desc:"Inhalt aus einer anderen App:", resume_prompt:function(word,pos){ return '📖 "'+word+'"'+pos+' — dort weitermachen, wo du aufgehört hast?'; }, resume_returned:function(word){ return "✅ Zurück zu "+word; },
   save_to_word_list:"In deiner eigenen Wortliste speichern", added_to_favs_toast:"⭐ Zu Favoriten hinzugefügt",
   lock_pdf_feature_name:"Wortliste PDF", lock_pdf_msg:"Du brauchst eines der Abzeichen <b>💛</b>, <b>⭐️</b> oder <b>👑</b>, um diese Funktion zu nutzen.<br><br>Ein Abzeichen erhältst du über ❤️ <b>Lumira unterstützen</b>.", lock_any_badge_msg:"Du brauchst irgendein Unterstützer-Abzeichen für diese Funktion — selbst das kleinste (👍🏻 Danke) reicht.<br><br>Ein Abzeichen erhältst du über ❤️ <b>Lumira unterstützen</b>.", purchase_start_failed:"Kauf konnte nicht gestartet werden.", purchase_complete_failed:"Kauf konnte nicht abgeschlossen werden.", support_title:"❤️ Lumira unterstützen", support_desc:"Wir möchten Lumira weiterhin kostenlos für alle anbieten. Wenn du die App nützlich findest, kannst du mit einem völlig freiwilligen Beitrag zur Entwicklung neuer Funktionen beitragen. Jeder Beitrag bedeutet uns viel. ❤️ 🇹🇷", pdf_export_title:"📄 Wörter als PDF herunterladen", pdf_export_desc:"Wähle Sprache und Stufe für eine Wortliste im Buchformat.", pdf_words_not_found:"Keine Wörter für diese Auswahl gefunden", pdf_generate_btn:"Liste erstellen", pdf_generating:"Wird vorbereitet…", pdf_dict_load_failed:"Wörterbuch konnte nicht geladen werden", pdf_popup_blocked:"Pop-up blockiert — in den Browsereinstellungen erlauben", pdf_web_payment_note:"Dieser Kauf ist nur über den Play Store möglich. In der Webversion werden keine Zahlungen akzeptiert.", lock_level_msg:function(need,lvl){ return "Du musst mindestens <b>Stufe "+need+"</b> sein, um dies zu nutzen. Deine aktuelle Stufe: <b>"+lvl+"</b>.<br><br>🎯 Übe im Tab <b>Persönlich</b>, um aufzusteigen."; }, your_badges:function(badges){ return "Deine Abzeichen: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Du hast ein Abzeichen erhalten: "+name+" · +"+xp+" Funktionen freigeschaltet"; }, purchase_success_toast:function(b,n,x){return b+' Du hast das Abzeichen '+n+' erhalten · +'+x+' XP';}, purchase_total_label:"Gesamt",},
@@ -2104,7 +2100,7 @@ ar:{
   pm_currently_known:"✅ ضمن كلماتك المعروفة حالياً", pm_waiting_retry:"⏳ بانتظار إعادة المحاولة", toast_level_test_done:function(lvl){ return "اختبار تحديد المستوى: اكتمل "+lvl; },
 
   fallback_user:"مستخدم", lb_not_connected:"الجدول غير متصل بعد.", lb_empty:"لا يوجد أحد بعد.<br>كن الأول! 🎉", lb_login_to_see_rank:"🏅 سجّل الدخول لرؤية ترتيبك",
-  fav_title:"⭐ مفضلتي", fav_sub:"الكلمات المحفوظة تُخزَّن على هذا الجهاز.", fav_empty:"لا توجد مفضلات بعد.<br>اضغط ☆ أعلى يمين البطاقة لإضافة واحدة.", fav_share_row:"مشاركة / تنزيل المفضلة", download_failed:"فشل التنزيل", share_app_text:"بطاقات كلمات واختبارات ونطق بست لغات — تعمل دون اتصال أيضاً 🌙", copied_clipboard:"📋 تم النسخ إلى الحافظة", copy_failed:"تعذّر النسخ", backup_title:"نسخة احتياطية لتقدّمي", backup_restored:"✅ تمت استعادة النسخة الاحتياطية، جارٍ التحديث…", file_unreadable:"تعذّرت قراءة الملف", err_report_title:"🐞 تقرير الأخطاء", err_no_records:"لا توجد أخطاء مسجّلة - كل شيء على ما يرام.", err_none_logged:"🎉 لا توجد أخطاء مسجّلة.", err_share_row:"مشاركة / تنزيل التقرير", err_share_desc:"معلومات الجهاز + الأخطاء الأخيرة", err_report_title2:"تقرير الأخطاء", err_clear_row:"مسح السجلات", cleared:"تم المسح", rate_title:"⭐ هل أعجبك؟", rate_sub:"تقييمك للتطبيق يساعدنا كثيراً.", rate_now:"قيّم على Play Store", rate_time:"يستغرق 30 ثانية", rate_later:"ذكّرني لاحقاً", rate_later_desc:"سنسأل مجدداً بعد أسبوع", rate_never:"لا تسأل مرة أخرى", word_count:function(n){ return n+" كلمة"; }, fav_export_title:function(d){ return "Lumira · بطاقات اللغة — مفضلتي ("+d+")"; }, downloaded:function(f){ return "⬇️ تم تنزيل "+f; }, err_records_found:function(n){ return "تم العثور على "+n+" سجلاً."; },
+  fav_title:"⭐ مفضلتي", fav_sub:"تُحفظ المفضلة في قسم ملاحظاتي وترتبط بحسابك.", fav_empty:"لا توجد مفضلات بعد.<br>اضغط ☆ أعلى يمين البطاقة لإضافة واحدة.", fav_share_row:"مشاركة / تنزيل المفضلة", download_failed:"فشل التنزيل", share_app_text:"بطاقات كلمات واختبارات ونطق بست لغات — تعمل دون اتصال أيضاً 🌙", copied_clipboard:"📋 تم النسخ إلى الحافظة", copy_failed:"تعذّر النسخ", backup_title:"نسخة احتياطية لتقدّمي", backup_restored:"✅ تمت استعادة النسخة الاحتياطية، جارٍ التحديث…", file_unreadable:"تعذّرت قراءة الملف", err_report_title:"🐞 تقرير الأخطاء", err_no_records:"لا توجد أخطاء مسجّلة - كل شيء على ما يرام.", err_none_logged:"🎉 لا توجد أخطاء مسجّلة.", err_share_row:"مشاركة / تنزيل التقرير", err_share_desc:"معلومات الجهاز + الأخطاء الأخيرة", err_report_title2:"تقرير الأخطاء", err_clear_row:"مسح السجلات", cleared:"تم المسح", rate_title:"⭐ هل أعجبك؟", rate_sub:"تقييمك للتطبيق يساعدنا كثيراً.", rate_now:"قيّم على Play Store", rate_time:"يستغرق 30 ثانية", rate_later:"ذكّرني لاحقاً", rate_later_desc:"سنسأل مجدداً بعد أسبوع", rate_never:"لا تسأل مرة أخرى", word_count:function(n){ return n+" كلمة"; }, fav_export_title:function(d){ return "Lumira · بطاقات اللغة — مفضلتي ("+d+")"; }, downloaded:function(f){ return "⬇️ تم تنزيل "+f; }, err_records_found:function(n){ return "تم العثور على "+n+" سجلاً."; },
   back_to_exit:"اضغط رجوع مرة أخرى للخروج", installing:"جارٍ التثبيت…", install_add_title:"إضافة إلى الشاشة الرئيسية", install_add_desc:"شاشة كاملة، دون اتصال وأسرع", install_go:"تثبيت", install_added:"🎉 تمت الإضافة إلى شاشتك الرئيسية!", ios_install_title:"📲 إضافة إلى الشاشة الرئيسية", ios_install_desc:"لاستخدام التطبيق بملء الشاشة ودون اتصال:", ios_step1_title:"اضغط أيقونة المشاركة في Safari", ios_step1_desc:"أيقونة ⬆️ في الشريط السفلي", ios_step2_title:"اختر \"إضافة إلى الشاشة الرئيسية\"", ios_step2_desc:"قد تحتاج للتمرير لأسفل القائمة", ios_step3_title:"اضغط \"إضافة\"", ios_step3_desc:"يظهر التطبيق على شاشتك الرئيسية", ios_install_note:"ملاحظة: على iOS تعمل هذه الخطوة فقط عبر Safari. بعد الإضافة يمكن أيضاً تفعيل الإشعارات (iOS 16.4+).", resume_action:"متابعة", resume_not_found:"هذه البطاقة لم تعد في القائمة", sw_not_ready:"Service Worker غير جاهز بعد", need_internet_download:"يلزم اتصال إنترنت للتنزيل", downloading_dicts:"📦 جارٍ تنزيل القواميس…", offline_pack_ready:"✅ الحزمة دون اتصال جاهزة — تعمل بدون إنترنت", daily_word_title:"🌙 كلمة اليوم", daily_word_not_loaded:"لم تُحمَّل البطاقات بعد. حاول مرة أخرى بعد ثوانٍ قليلة.", listen_row:"استمع", listen_desc:"اسمع النطق", add_to_favs:"أضف إلى المفضلة", added_toast:"⭐ تمت الإضافة", share_row:"مشاركة", share_desc:"أرسل لصديق", removed_from_favs:"أُزيل من المفضلة", copy_to_clipboard:"نسخ إلى الحافظة", shared_content_title:"📥 نص مشارك", shared_content_desc:"محتوى تمت مشاركته من تطبيق آخر:", resume_prompt:function(word,pos){ return '📖 "'+word+'"'+pos+' — تريد المتابعة من حيث توقفت؟'; }, resume_returned:function(word){ return "✅ عدت إلى "+word; },
   save_to_word_list:"احفظه في قائمة كلماتك الخاصة", added_to_favs_toast:"⭐ أُضيف إلى المفضلة",
   lock_pdf_feature_name:"قائمة الكلمات PDF", lock_pdf_msg:"تحتاج إلى إحدى الشارات <b>💛</b> أو <b>⭐️</b> أو <b>👑</b> لاستخدام هذه الميزة.<br><br>يمكنك الحصول على شارة من ❤️ <b>ادعم Lumira</b>.", lock_any_badge_msg:"تحتاج إلى أي شارة دعم لاستخدام هذه الميزة — حتى أصغرها (👍🏻 شكراً) كافية.<br><br>يمكنك الحصول على شارة من ❤️ <b>ادعم Lumira</b>.", purchase_start_failed:"تعذّر بدء الشراء.", purchase_complete_failed:"تعذّر إتمام الشراء.", support_title:"❤️ ادعم Lumira", support_desc:"نريد الاستمرار في تقديم Lumira مجاناً للجميع. إذا وجدت التطبيق مفيداً، يمكنك المساهمة في تطوير ميزات جديدة بمساهمة اختيارية بالكامل. كل مساهمة تعني لنا الكثير. ❤️ 🇹🇷", pdf_export_title:"📄 تنزيل الكلمات كملف PDF", pdf_export_desc:"اختر اللغة والمستوى لإنشاء قائمة كلمات بتنسيق كتاب.", pdf_words_not_found:"لم يتم العثور على كلمات لهذا الاختيار", pdf_generate_btn:"إنشاء القائمة", pdf_generating:"جارٍ التحضير…", pdf_dict_load_failed:"تعذّر تحميل القاموس", pdf_popup_blocked:"تم حظر النافذة المنبثقة — اسمح بها من إعدادات المتصفح", pdf_web_payment_note:"لا يمكن إجراء هذا الشراء إلا عبر Play Store. لا تُقبل المدفوعات في النسخة الإلكترونية.", lock_level_msg:function(need,lvl){ return "يجب أن تكون في <b>المستوى "+need+"</b> على الأقل لاستخدام هذا. مستواك الحالي: <b>"+lvl+"</b>.<br><br>🎯 ادرس في تبويب <b>شخصي</b> لرفع مستواك."; }, your_badges:function(badges){ return "شاراتك: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 حصلت على شارة: "+name+" · تم فتح +"+xp+" ميزة"; }, purchase_success_toast:function(b,n,x){return b+' حصلت على شارة '+n+' · +'+x+' XP';}, purchase_total_label:"الإجمالي",},
@@ -2293,7 +2289,7 @@ fr:{
   pm_currently_known:"✅ Actuellement dans tes mots connus", pm_waiting_retry:"⏳ En attente de nouvel essai", toast_level_test_done:function(lvl){ return "Test de niveau : "+lvl+" terminé"; },
 
   fallback_user:"Utilisateur", lb_not_connected:"Tableau pas encore connecté.", lb_empty:"Personne pour l\u2019instant.<br>Sois le premier ! 🎉", lb_login_to_see_rank:"🏅 Connecte-toi pour voir ton classement",
-  fav_title:"⭐ Mes favoris", fav_sub:"Tes mots enregistrés sont stockés sur cet appareil.", fav_empty:"Aucun favori pour l’instant.<br>Touche le ☆ en haut à droite d’une carte pour en ajouter un.", fav_share_row:"Partager / télécharger les favoris", download_failed:"Échec du téléchargement", share_app_text:"Cartes de mots, quiz et prononciation en 6 langues — fonctionne aussi hors ligne 🌙", copied_clipboard:"📋 Copié dans le presse-papiers", copy_failed:"Impossible de copier", backup_title:"Ma sauvegarde de progression", backup_restored:"✅ Sauvegarde restaurée, actualisation…", file_unreadable:"Impossible de lire le fichier", err_report_title:"🐞 Rapport d’erreurs", err_no_records:"Aucune erreur enregistrée - tout va bien.", err_none_logged:"🎉 Aucune erreur enregistrée.", err_share_row:"Partager / télécharger le rapport", err_share_desc:"Infos appareil + erreurs récentes", err_report_title2:"Rapport d’erreurs", err_clear_row:"Effacer les entrées", cleared:"Effacé", rate_title:"⭐ Ça te plaît ?", rate_sub:"Noter l’appli nous aide beaucoup.", rate_now:"Noter sur le Play Store", rate_time:"Prend 30 secondes", rate_later:"Me le rappeler plus tard", rate_later_desc:"On te redemandera dans une semaine", rate_never:"Ne plus demander", word_count:function(n){ return n+" mots"; }, fav_export_title:function(d){ return "Lumira · Cartes de langue — Mes favoris ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" téléchargé"; }, err_records_found:function(n){ return n+" entrées trouvées."; },
+  fav_title:"⭐ Mes favoris", fav_sub:"Tes favoris sont enregistrés dans Mes notes et liés à ton compte.", fav_empty:"Aucun favori pour l’instant.<br>Touche le ☆ en haut à droite d’une carte pour en ajouter un.", fav_share_row:"Partager / télécharger les favoris", download_failed:"Échec du téléchargement", share_app_text:"Cartes de mots, quiz et prononciation en 6 langues — fonctionne aussi hors ligne 🌙", copied_clipboard:"📋 Copié dans le presse-papiers", copy_failed:"Impossible de copier", backup_title:"Ma sauvegarde de progression", backup_restored:"✅ Sauvegarde restaurée, actualisation…", file_unreadable:"Impossible de lire le fichier", err_report_title:"🐞 Rapport d’erreurs", err_no_records:"Aucune erreur enregistrée - tout va bien.", err_none_logged:"🎉 Aucune erreur enregistrée.", err_share_row:"Partager / télécharger le rapport", err_share_desc:"Infos appareil + erreurs récentes", err_report_title2:"Rapport d’erreurs", err_clear_row:"Effacer les entrées", cleared:"Effacé", rate_title:"⭐ Ça te plaît ?", rate_sub:"Noter l’appli nous aide beaucoup.", rate_now:"Noter sur le Play Store", rate_time:"Prend 30 secondes", rate_later:"Me le rappeler plus tard", rate_later_desc:"On te redemandera dans une semaine", rate_never:"Ne plus demander", word_count:function(n){ return n+" mots"; }, fav_export_title:function(d){ return "Lumira · Cartes de langue — Mes favoris ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" téléchargé"; }, err_records_found:function(n){ return n+" entrées trouvées."; },
   back_to_exit:"Appuie de nouveau sur retour pour quitter", installing:"Installation…", install_add_title:"Ajouter à l’écran d’accueil", install_add_desc:"Plein écran, hors ligne et plus rapide", install_go:"Installer", install_added:"🎉 Ajouté à ton écran d’accueil !", ios_install_title:"📲 Ajouter à l’écran d’accueil", ios_install_desc:"Pour utiliser l’appli en plein écran et hors ligne :", ios_step1_title:"Touche l’icône de partage dans Safari", ios_step1_desc:"L’icône ⬆️ dans la barre du bas", ios_step2_title:"Choisis « Sur l’écran d’accueil »", ios_step2_desc:"Il faut peut-être faire défiler la liste", ios_step3_title:"Touche « Ajouter »", ios_step3_desc:"L’appli apparaît sur ton écran d’accueil", ios_install_note:"Remarque : sur iOS, cette étape ne fonctionne que via Safari. Après l’ajout, les notifications (iOS 16.4+) peuvent aussi être activées.", resume_action:"Continuer", resume_not_found:"Cette carte n’est plus dans la liste", sw_not_ready:"Le Service Worker n'est pas encore prêt", need_internet_download:"Connexion internet nécessaire pour télécharger", downloading_dicts:"📦 Téléchargement des dictionnaires…", offline_pack_ready:"✅ Pack hors ligne prêt — fonctionne sans internet", daily_word_title:"🌙 Mot du jour", daily_word_not_loaded:"Les cartes ne sont pas encore chargées. Réessaie dans quelques secondes.", listen_row:"Écouter", listen_desc:"Entendre la prononciation", add_to_favs:"Ajouter aux favoris", added_toast:"⭐ Ajouté", share_row:"Partager", share_desc:"Envoyer à un ami", removed_from_favs:"Retiré des favoris", copy_to_clipboard:"Copier dans le presse-papiers", shared_content_title:"📥 Texte partagé", shared_content_desc:"Contenu partagé depuis une autre appli :", resume_prompt:function(word,pos){ return '📖 "'+word+'"'+pos+' — reprendre où tu en étais ?'; }, resume_returned:function(word){ return "✅ Retour à "+word; },
   save_to_word_list:"Enregistrer dans ta liste de mots", added_to_favs_toast:"⭐ Ajouté aux favoris",
   lock_pdf_feature_name:"Liste de mots PDF", lock_pdf_msg:"Tu as besoin d'un des badges <b>💛</b>, <b>⭐️</b> ou <b>👑</b> pour utiliser cette fonctionnalité.<br><br>Obtiens un badge via ❤️ <b>Soutenir Lumira</b>.", lock_any_badge_msg:"Tu as besoin de n'importe quel badge de soutien pour cette fonctionnalité — même le plus petit (👍🏻 Merci) suffit.<br><br>Obtiens un badge via ❤️ <b>Soutenir Lumira</b>.", purchase_start_failed:"Impossible de démarrer l'achat.", purchase_complete_failed:"Impossible de finaliser l'achat.", support_title:"❤️ Soutenir Lumira", support_desc:"Nous voulons continuer à proposer Lumira gratuitement à tous. Si tu trouves l'appli utile, tu peux contribuer au développement de nouvelles fonctionnalités avec une contribution totalement facultative. Chaque contribution compte énormément pour nous. ❤️ 🇹🇷", pdf_export_title:"📄 Télécharger les mots en PDF", pdf_export_desc:"Choisis une langue et un niveau pour générer une liste de mots façon livre.", pdf_words_not_found:"Aucun mot trouvé pour cette sélection", pdf_generate_btn:"Générer la liste", pdf_generating:"Préparation…", pdf_dict_load_failed:"Impossible de charger le dictionnaire", pdf_popup_blocked:"Pop-up bloquée — autorise-la dans les paramètres du navigateur", pdf_web_payment_note:"Cet achat n'est possible que via le Play Store. Les paiements ne sont pas acceptés dans la version web.", lock_level_msg:function(need,lvl){ return "Tu dois être au moins <b>niveau "+need+"</b> pour utiliser ceci. Ton niveau actuel : <b>"+lvl+"</b>.<br><br>🎯 Étudie dans l\u2019onglet <b>Personnel</b> pour monter de niveau."; }, your_badges:function(badges){ return "Tes badges : "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Tu as gagné un badge : "+name+" · +"+xp+" fonctionnalités débloquées"; }, purchase_success_toast:function(b,n,x){return b+' Tu as gagné le badge '+n+' · +'+x+' XP';}, purchase_total_label:"Total",},
@@ -2453,7 +2449,7 @@ es:{
   toast_level_test_done:function(lvl){ return "Prueba de nivel: "+lvl+" completada"; },
 
   fallback_user:"Usuario", lb_not_connected:"Tabla aún no conectada.", lb_empty:"Nadie todavía.<br>¡Sé el primero! 🎉", lb_login_to_see_rank:"🏅 Inicia sesión para ver tu posición",
-  fav_title:"⭐ Mis favoritos", fav_sub:"Tus palabras guardadas se almacenan en este dispositivo.", fav_empty:"Aún no hay favoritos.<br>Toca el ☆ arriba a la derecha de una tarjeta para añadir uno.", fav_share_row:"Compartir / descargar favoritos", download_failed:"Error al descargar", share_app_text:"Tarjetas de palabras, quiz y pronunciación en 6 idiomas — funciona sin conexión también 🌙", copied_clipboard:"📋 Copiado al portapapeles", copy_failed:"No se pudo copiar", backup_title:"Mi copia de seguridad", backup_restored:"✅ Copia restaurada, actualizando…", file_unreadable:"No se pudo leer el archivo", err_report_title:"🐞 Informe de errores", err_no_records:"No hay errores registrados - todo bien.", err_none_logged:"🎉 No hay errores registrados.", err_share_row:"Compartir / descargar informe", err_share_desc:"Info del dispositivo + errores recientes", err_report_title2:"Informe de errores", err_clear_row:"Borrar registros", cleared:"Borrado", rate_title:"⭐ ¿Te gusta?", rate_sub:"Calificar la app nos ayuda mucho.", rate_now:"Calificar en Play Store", rate_time:"Toma 30 segundos", rate_later:"Recordarme después", rate_later_desc:"Te preguntaremos de nuevo en una semana", rate_never:"No preguntar más", word_count:function(n){ return n+" palabras"; }, fav_export_title:function(d){ return "Lumira · Tarjetas de idiomas — Mis favoritos ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" descargado"; }, err_records_found:function(n){ return n+" registros encontrados."; },
+  fav_title:"⭐ Mis favoritos", fav_sub:"Tus favoritos se guardan en Mis notas y se vinculan a tu cuenta.", fav_empty:"Aún no hay favoritos.<br>Toca el ☆ arriba a la derecha de una tarjeta para añadir uno.", fav_share_row:"Compartir / descargar favoritos", download_failed:"Error al descargar", share_app_text:"Tarjetas de palabras, quiz y pronunciación en 6 idiomas — funciona sin conexión también 🌙", copied_clipboard:"📋 Copiado al portapapeles", copy_failed:"No se pudo copiar", backup_title:"Mi copia de seguridad", backup_restored:"✅ Copia restaurada, actualizando…", file_unreadable:"No se pudo leer el archivo", err_report_title:"🐞 Informe de errores", err_no_records:"No hay errores registrados - todo bien.", err_none_logged:"🎉 No hay errores registrados.", err_share_row:"Compartir / descargar informe", err_share_desc:"Info del dispositivo + errores recientes", err_report_title2:"Informe de errores", err_clear_row:"Borrar registros", cleared:"Borrado", rate_title:"⭐ ¿Te gusta?", rate_sub:"Calificar la app nos ayuda mucho.", rate_now:"Calificar en Play Store", rate_time:"Toma 30 segundos", rate_later:"Recordarme después", rate_later_desc:"Te preguntaremos de nuevo en una semana", rate_never:"No preguntar más", word_count:function(n){ return n+" palabras"; }, fav_export_title:function(d){ return "Lumira · Tarjetas de idiomas — Mis favoritos ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" descargado"; }, err_records_found:function(n){ return n+" registros encontrados."; },
   back_to_exit:"Pulsa atrás de nuevo para salir", installing:"Instalando…", install_add_title:"Añadir a inicio", install_add_desc:"Pantalla completa, sin conexión y más rápido", install_go:"Instalar", install_added:"🎉 ¡Añadido a tu pantalla de inicio!", ios_install_title:"📲 Añadir a inicio", ios_install_desc:"Para usar la app en pantalla completa y sin conexión:", ios_step1_title:"Toca el icono de compartir en Safari", ios_step1_desc:"El icono ⬆️ en la barra inferior", ios_step2_title:"Elige \"Añadir a inicio\"", ios_step2_desc:"Puede que tengas que desplazarte por la lista", ios_step3_title:"Toca \"Añadir\"", ios_step3_desc:"La app aparece en tu pantalla de inicio", ios_install_note:"Nota: en iOS esto solo funciona con Safari. Tras añadirla, también se pueden activar las notificaciones (iOS 16.4+).", resume_action:"Continuar", resume_not_found:"Esta tarjeta ya no está en la lista", sw_not_ready:"El Service Worker aún no está listo", need_internet_download:"Se necesita conexión a internet para descargar", downloading_dicts:"📦 Descargando diccionarios…", offline_pack_ready:"✅ Paquete sin conexión listo — funciona sin internet", daily_word_title:"🌙 Palabra del día", daily_word_not_loaded:"Las tarjetas aún no se han cargado. Inténtalo de nuevo en unos segundos.", listen_row:"Escuchar", listen_desc:"Oír la pronunciación", add_to_favs:"Añadir a favoritos", added_toast:"⭐ Añadido", share_row:"Compartir", share_desc:"Enviar a un amigo", removed_from_favs:"Eliminado de favoritos", copy_to_clipboard:"Copiar al portapapeles", shared_content_title:"📥 Texto compartido", shared_content_desc:"Contenido compartido desde otra app:", resume_prompt:function(word,pos){ return '📖 "'+word+'"'+pos+' — ¿continuar donde lo dejaste?'; }, resume_returned:function(word){ return "✅ De vuelta a "+word; },
   save_to_word_list:"Guardar en tu lista de palabras", added_to_favs_toast:"⭐ Añadido a favoritos",
   lock_pdf_feature_name:"Lista de palabras PDF", lock_pdf_msg:"Necesitas una de las insignias <b>💛</b>, <b>⭐️</b> o <b>👑</b> para usar esta función.<br><br>Consigue una insignia en ❤️ <b>Apoyar a Lumira</b>.", lock_any_badge_msg:"Necesitas cualquier insignia de apoyo para esta función — incluso la más pequeña (👍🏻 Gracias) es suficiente.<br><br>Consigue una insignia en ❤️ <b>Apoyar a Lumira</b>.", purchase_start_failed:"No se pudo iniciar la compra.", purchase_complete_failed:"No se pudo completar la compra.", support_title:"❤️ Apoyar a Lumira", support_desc:"Queremos seguir ofreciendo Lumira gratis para todos. Si te resulta útil la app, puedes contribuir al desarrollo de nuevas funciones con una contribución totalmente opcional. Cada contribución significa mucho para nosotros. ❤️ 🇹🇷", pdf_export_title:"📄 Descargar palabras en PDF", pdf_export_desc:"Elige idioma y nivel para generar una lista de palabras estilo libro.", pdf_words_not_found:"No se encontraron palabras para esta selección", pdf_generate_btn:"Generar lista", pdf_generating:"Preparando…", pdf_dict_load_failed:"No se pudo cargar el diccionario", pdf_popup_blocked:"Ventana emergente bloqueada — permítela en la configuración del navegador", pdf_web_payment_note:"Esta compra solo se puede hacer a través de Play Store. No se aceptan pagos en la versión web.", lock_level_msg:function(need,lvl){ return "Debes tener al menos <b>nivel "+need+"</b> para usar esto. Tu nivel actual: <b>"+lvl+"</b>.<br><br>🎯 Estudia en la pestaña <b>Personal</b> para subir de nivel."; }, your_badges:function(badges){ return "Tus insignias: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Ganaste una insignia: "+name+" · +"+xp+" funciones desbloqueadas"; }, purchase_success_toast:function(b,n,x){return b+' Ganaste la insignia '+n+' · +'+x+' XP';}, purchase_total_label:"Total",},
@@ -2611,7 +2607,7 @@ ru:{
   pm_currently_known:"✅ Сейчас среди известных слов", pm_waiting_retry:"⏳ Ожидает повторной попытки", toast_level_test_done:function(lvl){ return "Тест на уровень: "+lvl+" завершён"; },
 
   fallback_user:"Пользователь", lb_not_connected:"Таблица ещё не подключена.", lb_empty:"Пока никого нет.<br>Будь первым! 🎉", lb_login_to_see_rank:"🏅 Войди, чтобы увидеть свой рейтинг",
-  fav_title:"⭐ Мои избранные", fav_sub:"Твои сохранённые слова хранятся на этом устройстве.", fav_empty:"Пока нет избранных.<br>Нажми ☆ в правом верхнем углу карточки, чтобы добавить.", fav_share_row:"Поделиться / скачать избранное", download_failed:"Не удалось скачать", share_app_text:"Карточки слов, тесты и произношение на 6 языках — работает и офлайн 🌙", copied_clipboard:"📋 Скопировано в буфер обмена", copy_failed:"Не удалось скопировать", backup_title:"Резервная копия прогресса", backup_restored:"✅ Резервная копия восстановлена, обновление…", file_unreadable:"Не удалось прочитать файл", err_report_title:"🐞 Отчёт об ошибках", err_no_records:"Ошибок не зафиксировано - всё в порядке.", err_none_logged:"🎉 Ошибок не зафиксировано.", err_share_row:"Поделиться / скачать отчёт", err_share_desc:"Инфо об устройстве + последние ошибки", err_report_title2:"Отчёт об ошибках", err_clear_row:"Очистить записи", cleared:"Очищено", rate_title:"⭐ Нравится?", rate_sub:"Оценка приложения очень нам помогает.", rate_now:"Оценить в Play Store", rate_time:"Займёт 30 секунд", rate_later:"Напомнить позже", rate_later_desc:"Мы спросим снова через неделю", rate_never:"Больше не спрашивать", word_count:function(n){ return n+" слов"; }, fav_export_title:function(d){ return "Lumira · Языковые карточки — Мои избранные ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" скачан"; }, err_records_found:function(n){ return "Найдено записей: "+n+"."; },
+  fav_title:"⭐ Мои избранные", fav_sub:"Избранные слова сохраняются в разделе «Мои заметки» в твоём аккаунте.", fav_empty:"Пока нет избранных.<br>Нажми ☆ в правом верхнем углу карточки, чтобы добавить.", fav_share_row:"Поделиться / скачать избранное", download_failed:"Не удалось скачать", share_app_text:"Карточки слов, тесты и произношение на 6 языках — работает и офлайн 🌙", copied_clipboard:"📋 Скопировано в буфер обмена", copy_failed:"Не удалось скопировать", backup_title:"Резервная копия прогресса", backup_restored:"✅ Резервная копия восстановлена, обновление…", file_unreadable:"Не удалось прочитать файл", err_report_title:"🐞 Отчёт об ошибках", err_no_records:"Ошибок не зафиксировано - всё в порядке.", err_none_logged:"🎉 Ошибок не зафиксировано.", err_share_row:"Поделиться / скачать отчёт", err_share_desc:"Инфо об устройстве + последние ошибки", err_report_title2:"Отчёт об ошибках", err_clear_row:"Очистить записи", cleared:"Очищено", rate_title:"⭐ Нравится?", rate_sub:"Оценка приложения очень нам помогает.", rate_now:"Оценить в Play Store", rate_time:"Займёт 30 секунд", rate_later:"Напомнить позже", rate_later_desc:"Мы спросим снова через неделю", rate_never:"Больше не спрашивать", word_count:function(n){ return n+" слов"; }, fav_export_title:function(d){ return "Lumira · Языковые карточки — Мои избранные ("+d+")"; }, downloaded:function(f){ return "⬇️ "+f+" скачан"; }, err_records_found:function(n){ return "Найдено записей: "+n+"."; },
   back_to_exit:"Нажми назад ещё раз, чтобы выйти", installing:"Установка…", install_add_title:"Добавить на главный экран", install_add_desc:"Полный экран, офлайн и быстрее", install_go:"Установить", install_added:"🎉 Добавлено на главный экран!", ios_install_title:"📲 Добавить на главный экран", ios_install_desc:"Чтобы использовать приложение в полноэкранном и офлайн-режиме:", ios_step1_title:"Нажми значок «Поделиться» в Safari", ios_step1_desc:"Значок ⬆️ на нижней панели", ios_step2_title:"Выбери «На экран «Домой»»", ios_step2_desc:"Возможно, нужно прокрутить список вниз", ios_step3_title:"Нажми «Добавить»", ios_step3_desc:"Приложение появится на главном экране", ios_install_note:"Примечание: на iOS это работает только через Safari. После добавления можно также включить уведомления (iOS 16.4+).", resume_action:"Продолжить", resume_not_found:"Этой карточки больше нет в списке", sw_not_ready:"Service Worker ещё не готов", need_internet_download:"Для загрузки нужно подключение к интернету", downloading_dicts:"📦 Загрузка словарей…", offline_pack_ready:"✅ Офлайн-пакет готов — работает без интернета", daily_word_title:"🌙 Слово дня", daily_word_not_loaded:"Карточки ещё не загружены. Повтори через несколько секунд.", listen_row:"Слушать", listen_desc:"Услышать произношение", add_to_favs:"В избранное", added_toast:"⭐ Добавлено", share_row:"Поделиться", share_desc:"Отправить другу", removed_from_favs:"Удалено из избранного", copy_to_clipboard:"Скопировать в буфер обмена", shared_content_title:"📥 Общий текст", shared_content_desc:"Контент, отправленный из другого приложения:", resume_prompt:function(word,pos){ return '📖 "'+word+'"'+pos+' — продолжить с того места?'; }, resume_returned:function(word){ return "✅ Вернулись к "+word; },
   save_to_word_list:"Сохранить в свой список слов", added_to_favs_toast:"⭐ Добавлено в избранное",
   lock_pdf_feature_name:"Список слов PDF", lock_pdf_msg:"Для этой функции нужен один из значков <b>💛</b>, <b>⭐️</b> или <b>👑</b>.<br><br>Получить значок можно в ❤️ <b>Поддержать Lumira</b>.", lock_any_badge_msg:"Для этой функции нужен любой значок поддержки — подойдёт даже самый маленький (👍🏻 Спасибо).<br><br>Получить значок можно в ❤️ <b>Поддержать Lumira</b>.", purchase_start_failed:"Не удалось начать покупку.", purchase_complete_failed:"Не удалось завершить покупку.", support_title:"❤️ Поддержать Lumira", support_desc:"Мы хотим продолжать предлагать Lumira бесплатно для всех. Если приложение тебе полезно, ты можешь поддержать разработку новых функций полностью добровольным взносом. Каждый вклад очень важен для нас. ❤️ 🇹🇷", pdf_export_title:"📄 Скачать слова в PDF", pdf_export_desc:"Выбери язык и уровень для создания списка слов в книжном формате.", pdf_words_not_found:"Слова для этого выбора не найдены", pdf_generate_btn:"Создать список", pdf_generating:"Подготовка…", pdf_dict_load_failed:"Не удалось загрузить словарь", pdf_popup_blocked:"Всплывающее окно заблокировано — разреши его в настройках браузера", pdf_web_payment_note:"Эта покупка возможна только через Play Store. В веб-версии платежи не принимаются.", lock_level_msg:function(need,lvl){ return "Тебе нужен как минимум <b>"+need+" уровень</b>, чтобы использовать это. Твой текущий уровень: <b>"+lvl+"</b>.<br><br>🎯 Занимайся во вкладке <b>Личный</b>, чтобы повысить уровень."; }, your_badges:function(badges){ return "Твои значки: "+badges; }, earned_badge_toast:function(name,xp){ return "🎁 Ты получил значок: "+name+" · открыто +"+xp+" функций"; }, purchase_success_toast:function(b,n,x){return b+' Ты получил значок '+n+' · +'+x+' XP';}, purchase_total_label:"Итого",}
@@ -3923,6 +3919,9 @@ window.CAT_I18N = CAT_I18N; window.catName = catName;
 let nbWords = {};        /* {pushId: {w,tr,ex,lang,cat,ts}} — manuel eklenenler */
 let nbFavorites = {};    /* ARTIK KULLANILMIYOR (geriye dönük uyumluluk için bırakıldı) — favoriler artık nbWords içinde isFavorite bayrağıyla tutuluyor. */
 let nbSyncedUid = null;
+let nbSyncRef = null, nbSyncListener = null, nbSyncReady = null;
+let nbMigrationTask = null;
+const nbFavoriteWrites = new Set();
 let nbEditingId = null;      /* düzenlenen manuel kelimenin pushId'si */
 let nbSelectedAddLang = null; /* ekleme formunda seçilen dil (zorunlu) */
 let nbPrefill = null;         /* Kelime Ara'dan seçilince formu önceden dolduran veri {w,tr,ex,cat} */
@@ -3937,23 +3936,46 @@ function nbSanitizeKey(s){
   return 'u_'+encodeURIComponent(String(s||'').normalize('NFC').trim()).replace(/\./g,'%2E');
 }
 function nbFavKey(lang, w){ return 'fav_' + (lang||'de') + '_' + nbSanitizeKey(w); }
-function nbExistingFavId(v){
-  const exact=Object.keys(nbWords||{}).find(id=>{const it=nbWords[id];return it && (it.lang||'de')===v.lang && it.w===v.w && (it.tr||'')===(v.tr||'');});
-  return exact || nbFavKey(v.lang,v.w);
+function nbExistingFavId(v, words=nbWords){
+  const exact=Object.keys(words||{}).find(id=>{const it=words[id];return it && (it.lang||'de')===v.lang && (it.meaningLang||'tr')===(v.meaningLang||'tr') && it.w===v.w && (it.tr||'')===(v.tr||'');});
+  if(exact) return exact;
+  const base=nbFavKey(v.lang,v.w); let key=base, suffix=2;
+  while(words[key]) key=base+'_'+suffix++;
+  return key;
 }
 
 function nbInitSync(){
   const db = window.LB_getDb ? window.LB_getDb() : null;
   const uid = window.LB_getUid ? window.LB_getUid() : null;
-  if(!db || !uid || nbSyncedUid === uid) return;
+  if(nbSyncedUid === uid && nbSyncRef) return;
+  if(nbSyncRef && nbSyncListener) nbSyncRef.off('value',nbSyncListener);
+  nbSyncRef=null; nbSyncListener=null; nbSyncReady=null;
   nbSyncedUid = uid;
-  db.ref('progress/'+uid+'/notebook').on('value', snap => {
+  nbWords={}; nbMigrationTask=null; nbOldFavMigrationAttempted=false; nbMigrationAttempted=false; nbDedupeAttempted=false; nbPwaFavMigrationAttempted=false;
+  nbFavoriteWrites.clear(); nbEditingId=null;
+  if(!db || !uid){nbUpdateFavStar();nbRenderIfOpen();return;}
+  let resolveReady,rejectReady;
+  nbSyncReady=new Promise((resolve,reject)=>{resolveReady=resolve;rejectReady=reject;});
+  nbSyncReady.catch(()=>{});
+  nbSyncRef=db.ref('progress/'+uid+'/notebook');
+  nbSyncListener=snap=>{
+    if(nbSyncedUid!==uid || nbSyncListener!==listener) return;
     nbWords = snap.val() || {};
-    nbMigrateLocalOnce();
-    nbMigrateOldFavoritesOnce();
-    nbDedupeIfNeeded();
+    if(!nbMigrationTask){
+      nbMigrationTask=Promise.resolve().then(()=>nbSyncedUid===uid?nbMigrateLocalOnce():undefined)
+        .then(()=>nbSyncedUid===uid?nbMigrateOldFavoritesOnce():undefined)
+        .then(()=>nbSyncedUid===uid?nbMigratePwaFavoritesOnce():undefined)
+        .then(()=>nbSyncedUid===uid?nbDedupeIfNeeded():undefined).catch(()=>{});
+    }
     nbUpdateFavStar();
     nbRenderIfOpen();
+    window.dispatchEvent(new Event('lumira:notebookchange'));
+    resolveReady();
+  };
+  const listener=nbSyncListener;
+  nbSyncRef.on('value',nbSyncListener,error=>{
+    if(nbSyncedUid!==uid || nbSyncListener!==listener) return;
+    rejectReady(error); nbSyncRef?.off('value',nbSyncListener); nbSyncRef=null;
   });
 }
 /* ESKİ VERİ TAŞIMA: Favoriler önceden ayrı bir 'progress/{uid}/favorites'
@@ -3969,23 +3991,26 @@ function nbMigrateOldFavoritesOnce(){
   try{
     if(!nbSyncedUid) return;
     const db = window.LB_getDb(); if(!db) return;
-    db.ref('progress/'+nbSyncedUid+'/favorites').once('value').then(snap => {
+    const uid=nbSyncedUid;
+    return db.ref('progress/'+uid+'/favorites').once('value').then(async snap => {
+      if(nbSyncedUid!==uid) return;
       const old = snap.val();
       if(!old) return;
-      const updates = {};
+      const updates = {}, imported={...nbWords};
       Object.keys(old).forEach(key => {
         const it = old[key] || {};
         if(!it.w) return;
-        const favId = nbFavKey(it.lang||'de', it.w);
-        if(nbWords[favId]) return; /* zaten taşınmış */
-        updates['progress/'+nbSyncedUid+'/notebook/'+favId] = {
+        const favId = nbExistingFavId({...it,lang:it.lang||'de'},imported);
+        const existing=imported[favId];
+        if(existing && Object.prototype.hasOwnProperty.call(existing,'isFavorite')) return;
+        imported[favId]=updates['progress/'+uid+'/notebook/'+favId] = {...{
           w: it.w, tr: it.tr||'', ex: it.ex||'', exTr: it.exTr||'', cat: it.cat||'',
           level: it.level||'', difficulty: it.difficulty||'orta', lang: it.lang||'de',
           isFavorite: true, ts: it.ts || Date.now()
-        };
+        },...existing,isFavorite:true};
       });
-      if(Object.keys(updates).length){ db.ref().update(updates); }
-      db.ref('progress/'+nbSyncedUid+'/favorites').remove();
+      if(Object.keys(updates).length) await db.ref().update(updates);
+      if(nbSyncedUid===uid) await db.ref('progress/'+uid+'/favorites').remove();
     }).catch(()=>{});
   }catch(e){}
 }
@@ -4010,38 +4035,56 @@ function nbMigrateOldFavoritesOnce(){
    (nbMigrationAttempted) sayfa boyunca KESİN olarak bir kez çalışıyor. */
 let nbMigrationAttempted = false;
 let nbDedupeAttempted = false;
+let nbPwaFavMigrationAttempted = false;
+
+/* Eski PWA yıldızı yalnızca bu cihazdaki ayrı bir listeye yazıyordu.
+   Başarılı sunucu kaydından sonra işaretlenir; asıl liste yedek olarak kalır. */
+function nbMigratePwaFavoritesOnce(){
+  if(nbPwaFavMigrationAttempted || !nbSyncedUid) return;
+  nbPwaFavMigrationAttempted=true;
+  const uid=nbSyncedUid,flag='lumira_pwa_favs_migrated_'+uid;
+  try{
+    const owner=localStorage.getItem('lumira_pwa_favs_owner');
+    if((owner && owner!==uid) || localStorage.getItem(flag)) return;
+    let old=JSON.parse(localStorage.getItem('lumira_favs_v1')||'[]');
+    if(!Array.isArray(old)) return;
+    const updates={},imported={...nbWords};
+    old.slice(0,500).forEach(it=>{
+      if(!it || typeof it.w!=='string' || !it.w.trim() || !LANGS[it.lang]) return;
+      const id=nbExistingFavId(it,imported);
+      const existing=imported[id];
+      if(existing && Object.prototype.hasOwnProperty.call(existing,'isFavorite')) return;
+      imported[id]=updates[id]={w:it.w,tr:it.tr||'',ex:it.ex||'',exTr:it.exTr||'',pos:it.pos||'',lang:it.lang,meaningLang:it.meaningLang||'tr',cat:it.cat||'',level:it.level||'',difficulty:'orta',ts:it.ts||it.at||Date.now(),...existing,isFavorite:true};
+    });
+    if(old.length) localStorage.setItem('lumira_pwa_favs_owner',uid);
+    const write=Object.keys(updates).length?window.LB_getDb().ref('progress/'+uid+'/notebook').update(updates):Promise.resolve();
+    return write.then(()=>{localStorage.setItem(flag,'1');}).catch(()=>{nbPwaFavMigrationAttempted=false;});
+  }catch(e){nbPwaFavMigrationAttempted=false;}
+}
 
 function nbMigrateLocalOnce(){
-  if(nbMigrationAttempted) return;
-  nbMigrationAttempted = true;
+  if(nbMigrationAttempted || !nbSyncedUid) return;
+  nbMigrationAttempted=true;
+  const uid=nbSyncedUid,flagKey='lumira_notebook_migrated_'+uid;
   try{
-    if(!nbSyncedUid) return;
-    const flagKey = 'lumira_notebook_migrated_' + nbSyncedUid;
     if(localStorage.getItem(flagKey)) return;
-    const raw = localStorage.getItem('lumira_notebook_v1');
-    let local = raw ? JSON.parse(raw) : [];
-    if(!Array.isArray(local)) local = [];
-    local = local.slice(0, 200);
-    const db = window.LB_getDb();
-    if(local.length && db){
-      const existing = {};
-      Object.keys(nbWords||{}).forEach(id => {
-        const it = nbWords[id]||{};
-        existing[(it.lang||'de')+'::'+nbSanitizeKey(it.w)] = true;
-      });
-      local.forEach(item => {
-        if(!item || !item.w) return;
-        const k = (item.lang||'de')+'::'+nbSanitizeKey(item.w);
-        if(existing[k]) return;
-        existing[k] = true;
-        db.ref('progress/'+nbSyncedUid+'/notebook').push({
-          w:item.w, tr:item.tr||'', ex:item.ex||'', lang:item.lang||'de', cat:'', ts: Date.now()
-        });
-      });
-    }
-    try{ localStorage.setItem(flagKey, '1'); }catch(e){}
-    try{ localStorage.removeItem('lumira_notebook_v1'); }catch(e){}
-  }catch(e){}
+    const raw=localStorage.getItem('lumira_notebook_v1');
+    let local=raw?JSON.parse(raw):[];
+    if(!Array.isArray(local)) local=[];
+    const db=window.LB_getDb();if(!db)return;
+    const updates={},imported={...nbWords};
+    local.slice(0,200).forEach(item=>{
+      if(!item || typeof item.w!=='string' || !item.w.trim())return;
+      const value={w:item.w,tr:item.tr||'',ex:item.ex||'',exTr:item.exTr||'',lang:item.lang||'de',meaningLang:item.meaningLang||'tr',cat:item.cat||'',ts:item.ts||Date.now()};
+      const id=nbExistingFavId(value,imported);if(imported[id])return;
+      imported[id]=updates[id]=value;
+    });
+    const write=Object.keys(updates).length?db.ref('progress/'+uid+'/notebook').update(updates):Promise.resolve();
+    return write.then(()=>{
+      localStorage.setItem(flagKey,'1');
+      if(localStorage.getItem('lumira_notebook_v1')===raw)localStorage.removeItem('lumira_notebook_v1');
+    }).catch(()=>{nbMigrationAttempted=false;});
+  }catch(e){nbMigrationAttempted=false;}
 }
 
 /* Kendi kendini onaran temizlik: aynı (dil + kelime) için birden fazla
@@ -4054,16 +4097,19 @@ function nbDedupeIfNeeded(){
     if(!nbSyncedUid) return;
     const db = window.LB_getDb(); if(!db) return;
     const seen = {};
-    const toDelete = [];
+    const updates = {};
     Object.keys(nbWords||{}).sort().forEach(id => {
       const it = nbWords[id] || {};
-      const key = (it.lang||'de')+'::'+nbSanitizeKey(it.w)+'::'+nbSanitizeKey(it.tr||'');
-      if(seen[key]){ toDelete.push(id); }
+      const key = (it.lang||'de')+'::'+(it.meaningLang||'tr')+'::'+nbSanitizeKey(it.w)+'::'+nbSanitizeKey(it.tr||'');
+      if(seen[key]){
+        const keep=seen[key],merged={...(updates[keep]||nbWords[keep])};
+        for(const [field,value]of Object.entries(it))if(merged[field]==null || merged[field]==='')merged[field]=value;
+        merged.isFavorite=!!(merged.isFavorite || it.isFavorite);
+        updates[keep]=merged;updates[id]=null;
+      }
       else{ seen[key] = id; }
     });
-    if(toDelete.length){
-      const updates = {};
-      toDelete.forEach(id => { updates[id] = null; });
+    if(Object.keys(updates).length){
       db.ref('progress/'+nbSyncedUid+'/notebook').update(updates).catch(()=>{});
     }
   }catch(e){}
@@ -4829,7 +4875,7 @@ function nbUpdateFavStar(){
     if(!el) return;
     if(!v || inNotebookStudy){ el.style.display = 'none'; return; }
     el.style.display = '';
-    const key = nbExistingFavId(v);
+    const key = nbExistingFavId(nbCurrentFavorite() || v);
     const on = !!(nbWords && nbWords[key] && nbWords[key].isFavorite);
     el.textContent = on ? '★' : '☆';
     el.classList.toggle('on', on);
@@ -4847,98 +4893,71 @@ function nbToast(msg, kind){
 /* Favoriler artık Kelime Defterinin (notebook) kalıcı bir parçası —
    favoriden çıkarmak sadece 'isFavorite' bayrağını kaldırır, kelimeyi
    Kelime Defterinden SİLMEZ. Silmek için Kelime Defterim'deki 🗑️ kullanılır. */
-function nbToggleFavorite(silent){
-  const v = deck[idx]; if(!v) return;
-  const db = window.LB_getDb ? window.LB_getDb() : null;
-  const uid = window.LB_getUid ? window.LB_getUid() : null;
-  if(!db || !uid){
-    /* Giriş süreci tam bitmemiş olabilir (uygulama yeni açıldıysa) — hemen
-       pes etmek yerine birkaç saniye kısa aralıklarla tekrar dener, ancak
-       gerçekten giriş yoksa kullanıcıyı bilgilendirir. */
-    let tries = 0;
-    const iv = setInterval(() => {
-      tries++;
-      const db2 = window.LB_getDb ? window.LB_getDb() : null;
-      const uid2 = window.LB_getUid ? window.LB_getUid() : null;
-      if(db2 && uid2){ clearInterval(iv); nbToggleFavorite(silent); }
-      else if(tries > 10){ clearInterval(iv); if(!silent) nbToast(t('nb_fav_login_required'), 'bad'); }
-    }, 300);
-    return;
-  }
-  const favId = nbExistingFavId(v);
-  const candidate = nbWords[favId];
-  const existing = candidate && candidate.w === v.w ? candidate : null;
-  const isFav = !!(existing && existing.isFavorite);
-  const ref = db.ref('progress/'+uid+'/notebook/'+favId);
-  if(isFav){
-    const backup = nbWords[favId];
-    nbWords[favId] = Object.assign({}, existing, { isFavorite: false });
-    nbUpdateFavStar();
-    nbRenderIfOpen();
-    ref.update({ isFavorite: false }).then(() => {
-      if(!silent) nbToast(t('nb_fav_removed'));
-    }).catch(err => {
-      console.error('Favori kaldırılamadı:', err);
-      nbWords[favId] = backup;
-      nbUpdateFavStar();
-      nbRenderIfOpen();
-      if(!silent) nbToast(t('nb_fav_remove_failed'), 'bad');
-    });
-  }else{
-    const payload = existing ? Object.assign({}, existing, { isFavorite: true }) : {
-      w: v.w, tr: v.tr||'', ex: v.ex||'', exTr: (isCross() ? cardBackExample(v) : v.exTr)||'', pos: v.pos||'',
-      lang: v.lang, meaningLang: v.meaningLang || (isCross() ? NATIVE_LANG : 'tr'), cat: v.cat||'', level: v.level||'', difficulty: 'orta',
-      isFavorite: true, ts: Date.now()
-    };
-    /* İyimser güncelleme: Firebase yanıtını beklemeden yıldızı doldur ve
-       açıksa Notlarım listesine hemen yansıt. */
-    const backup = nbWords[favId];
-    nbWords[favId] = payload;
-    nbUpdateFavStar();
-    nbRenderIfOpen();
-    ref.set(payload).then(() => {
-      if(!silent) nbToast(t('nb_fav_added'));
-    }).catch(err => {
-      console.error('Favori eklenemedi:', err);
-      if(backup) nbWords[favId] = backup; else delete nbWords[favId];
-      nbUpdateFavStar();
-      nbRenderIfOpen();
-      if(!silent) nbToast(t('nb_fav_add_failed'), 'bad');
-    });
-  }
+function nbCurrentFavorite(){
+  const v=deck[idx];
+  if(!v || activeCat==='Notlarım') return null;
+  return {w:cardFrontWord(v),tr:cardBackWord(v),ex:cardFrontExample(v)||'',exTr:cardBackExample(v)||'',pos:v.pos||'',lang:isReversed()?'tr':v.lang,meaningLang:isReversed()?v.lang:(v.meaningLang || (isCross()?NATIVE_LANG:'tr')),cat:v.cat||'',level:v.level||''};
 }
-['favStarFront','favStarBack'].forEach(id => {
-  const el = document.getElementById(id);
-  if(el) el.onclick = (e) => { e.stopPropagation(); nbToggleFavorite(); };
-});
-/* pwa.js'teki önceden var olan #favBtn (Ayarlar > Favorilerim) tıklandığında
-   da ÇAĞRILIR — böylece tek bir yıldız/tek bir tıklama hem eski
-   localStorage sistemine hem de yeni Notlarım (Firebase) sistemine birden
-   yazar. "Notlarım" çalışma modundayken (kendi kelimeni favorileme
-   mantıksız olduğu için) hiçbir şey yapmaz. */
-window.NB_toggleFavoriteFromCard = function(){
-  if(activeCat === 'Notlarım') return;
-  nbToggleFavorite(true);
-};
-/* Ayarlar > Favorilerim listesinden bir kelime çıkarılınca (kartın kendisi
-   o an ekranda olmayabilir, bu yüzden deck[idx] değil doğrudan kelime
-   üzerinden çalışır) — sadece 'isFavorite' bayrağını kaldırır, Kelime
-   Defterinden SİLMEZ. */
-window.NB_unfavoriteByWord = function(lang, w){
+async function nbSetFavorite(word, desired){
+  const db=window.LB_getDb?.(),uid=window.LB_getUid?.();
+  if(!db || !uid) throw new Error('nb_fav_login_required');
+  if(!word || typeof word.w!=='string' || !word.w.trim() || !LANGS[word.lang]) return false;
+  const v={...word,tr:word.tr||''};
+  nbInitSync();
+  let timer;
+  try{await Promise.race([nbSyncReady,new Promise((resolve,reject)=>{timer=setTimeout(()=>reject(new Error('nb_fav_add_failed')),8000);})]);}
+  finally{clearTimeout(timer);}
+  if(window.LB_getUid?.()!==uid || nbSyncedUid!==uid) throw new Error('nb_fav_login_required');
+  const favId=nbExistingFavId(v),existing=nbWords[favId];
+  const on=desired===undefined?!existing?.isFavorite:!!desired;
+  if(existing && !!existing.isFavorite===on) return true;
+  if(!existing && !on) return true;
+  const writeKey=uid+'/'+favId;
+  if(nbFavoriteWrites.has(writeKey)) return false;
+  nbFavoriteWrites.add(writeKey);
+  const payload=existing?{...existing,isFavorite:on}:{w:v.w,tr:v.tr,ex:v.ex||'',exTr:v.exTr||'',pos:v.pos||'',lang:v.lang,meaningLang:v.meaningLang||'tr',cat:v.cat||'',level:v.level||'',difficulty:'orta',isFavorite:on,ts:Date.now()};
+  nbWords[favId]=payload;
+  nbUpdateFavStar();nbRenderIfOpen();window.dispatchEvent(new Event('lumira:notebookchange'));
   try{
-    const db = window.LB_getDb ? window.LB_getDb() : null;
-    const uid = window.LB_getUid ? window.LB_getUid() : null;
-    if(!db || !uid || !lang || !w) return;
-    const favId = nbFavKey(lang, w);
-    if(!nbWords[favId] || !nbWords[favId].isFavorite) return;
-    nbWords[favId].isFavorite = false;
-    nbUpdateFavStar();
-    nbRenderIfOpen();
-    db.ref('progress/'+uid+'/notebook/'+favId).update({ isFavorite: false }).catch(err => {
-      console.error('Favori kaldırılamadı:', err);
-    });
-  }catch(e){}
+    if(existing) await db.ref('progress/'+uid+'/notebook/'+favId).update({isFavorite:on});
+    else await db.ref('progress/'+uid+'/notebook/'+favId).set(payload);
+    return true;
+  }catch(error){
+    if(nbSyncedUid===uid){
+      if(existing) nbWords[favId]=existing;else delete nbWords[favId];
+      nbUpdateFavStar();nbRenderIfOpen();window.dispatchEvent(new Event('lumira:notebookchange'));
+    }
+    throw new Error(on?'nb_fav_add_failed':'nb_fav_remove_failed');
+  }finally{nbFavoriteWrites.delete(writeKey);}
+}
+async function nbToggleFavorite(silent){
+  const v=nbCurrentFavorite();if(!v) return false;
+  const wasFavorite=!!nbWords[nbExistingFavId(v)]?.isFavorite;
+  try{
+    const saved=await nbSetFavorite(v);
+    if(saved && !silent) nbToast(t(wasFavorite?'nb_fav_removed':'nb_fav_added'));
+    return saved;
+  }catch(error){if(!silent)nbToast(t(error.message==='nb_fav_login_required'?error.message:(wasFavorite?'nb_fav_remove_failed':'nb_fav_add_failed')),'bad');return false;}
+}
+['favStarFront','favStarBack'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.onclick=e=>{e.stopPropagation();nbToggleFavorite();};
+});
+/* Kart, arama sonucu ve Ayarlar > Favorilerim aynı hesap kaydını kullanır.
+   Favoriden çıkarmak kelimeyi Notlarım'dan silmez. */
+window.NB_currentFavorite=nbCurrentFavorite;
+window.NB_saveFavorite=word=>nbSetFavorite(word,true);
+window.NB_removeFavorite=word=>nbSetFavorite(word,false);
+window.NB_getFavorites=function(){
+  if(!nbSyncedUid || window.LB_getUid?.()!==nbSyncedUid) return [];
+  return nbCombinedList().filter(it=>it.source==='favorite');
 };
+window.NB_toggleFavoriteFromCard=()=>nbToggleFavorite(true);
+window.NB_unfavoriteByWord=function(lang,w){
+  const item=Object.values(nbWords).find(it=>it.lang===lang && it.w===w);
+  return item?nbSetFavorite(item,false):Promise.resolve(true);
+};
+window.addEventListener('lumira:featureauthchange',()=>setTimeout(nbInitSync,0));
 
 /* ======================= INIT =======================
    TARGET_LANG 'de' değilse (ör. onboarding'de İngilizce/Fransızca vb.
@@ -5144,14 +5163,14 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
   }, { once:true });
 })();
 </script>
-<script src="live-local-loader.js?v=1.9.6"></script>
-<script src="access-i18n.js?v=1.9.6"></script>
-<script src="feature-usage.js?v=1.9.6"></script>
-<script src="example-translations.js?v=1.9.6"></script>
-<script src="access-screen.js?v=1.9.6"></script>
-<script src="live-cloud.js?v=1.9.6"></script>
-<script src="progress.js?v=1.9.6"></script>
-<script src="live-translate.js?v=1.9.6"></script>
+<script src="live-local-loader.js?v=1.9.8"></script>
+<script src="access-i18n.js?v=1.9.8"></script>
+<script src="feature-usage.js?v=1.9.8"></script>
+<script src="example-translations.js?v=1.9.8"></script>
+<script src="access-screen.js?v=1.9.8"></script>
+<script src="live-cloud.js?v=1.9.8"></script>
+<script src="progress.js?v=1.9.8"></script>
+<script src="live-translate.js?v=1.9.8"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -5162,22 +5181,23 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.9.6"></script>
-<script defer src="theme.js?v=1.9.6"></script>
+<script defer src="voice.js?v=1.9.8"></script>
+<script defer src="theme.js?v=1.9.8"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.9.6"></script>
+<script defer src="pwa.js?v=1.9.8"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.9.6"></script>
+<script defer src="support-badges.js?v=1.9.8"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.9.6"></script>
-<script defer src="analytics.js?v=1.9.6"></script>
+<script defer src="splash.js?v=1.9.8"></script>
+<script defer src="analytics.js?v=1.9.8"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin.js?v=1.9.6"></script>
+<script defer src="admin-badges.js?v=1.9.8"></script>
+<script defer src="admin.js?v=1.9.8"></script>
 </body>
 </html>

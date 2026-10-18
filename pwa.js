@@ -20,6 +20,8 @@
    ========================================================================== */
 (function () {
 'use strict';
+var APP_VERSION='1.9.8';
+
 
 /* ========================================================== AYARLAR ====== */
 var CONFIG = {
@@ -171,6 +173,7 @@ function row(icon, title, desc, right) {
 var swReg = null, waitingWorker = null;
 
 function registerSW() {
+  startUpdatePolling();
   if (!('serviceWorker' in navigator)) return;
   navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' })
     .then(function (reg) {
@@ -178,31 +181,9 @@ function registerSW() {
 
       if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg.waiting);
 
-      reg.addEventListener('updatefound', function () {
-        var nw = reg.installing;
-        if (!nw) return;
-        nw.addEventListener('statechange', function () {
-          if (nw.state === 'installed' && navigator.serviceWorker.controller) offerUpdate(nw);
-        });
-      });
+      reg.addEventListener('updatefound', function () {watchInstallingWorker(reg.installing);});
 
-      /* Otomatik güncelleme kontrolü: açılışta, saatte bir ve öne gelince.
-         NOT: reg.update() bir söz (promise) döndürür; try/catch onun
-         REDDİNİ yakalamaz. Yakalanmadığında "sw.js load failed" hatası
-         raporlara düşüyordu — özellikle iOS'ta Chrome gibi Service Worker
-         desteği sınırlı tarayıcılarda ve anlık ağ kesintilerinde. */
-      var quietUpdate = function () {
-        try {
-          var pr = reg.update();
-          if (pr && pr.catch) pr.catch(function () {});   /* sessizce geç */
-        } catch (e) {}
-      };
-      setTimeout(quietUpdate, 8000);
-      setInterval(quietUpdate, 60 * 60 * 1000);
-      document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) quietUpdate();
-      });
-
+      watchInstallingWorker(reg.installing);
       registerPeriodicSync(reg);
     })
     .catch(function (err) {
@@ -212,19 +193,15 @@ function registerSW() {
       console.warn('[PWA] Service Worker kullanılamıyor:', err && err.message);
     });
 
-  /* Service Worker el değiştirdiğinde sayfa yenilenir — ama OTURUMDA EN
-     FAZLA BİR KEZ. Bu kilit olmadan, worker her devraldığında sayfa
-     yenileniyor, yenilenen sayfa worker'ı yeniden kuruyor ve döngü
-     sürüyordu; site birkaç saniyede bir kendini baştan yüklüyordu. */
-  var refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', function () {
-    if (refreshing) return;
-    try {
-      if (sessionStorage.getItem('lumira_sw_reloaded')) return;
-      sessionStorage.setItem('lumira_sw_reloaded', '1');
-    } catch (e) {}
-    refreshing = true;
-    location.reload();
+  var refreshing=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(refreshing)return;
+    swVersion(function(version){
+      if(version && cleanVersion(version)===APP_VERSION)return;
+      var key='lumira_sw_applied_'+new URL('./',location.href).pathname;
+      try{if(version && sessionStorage.getItem(key)===version)return;if(version)sessionStorage.setItem(key,version);}catch(e){}
+      refreshing=true;reloadLatest(version);
+    });
   });
 
   navigator.serviceWorker.addEventListener('message', function (ev) {
@@ -237,15 +214,23 @@ function registerSW() {
   });
 }
 
-function offerUpdate(worker) {
-  waitingWorker = worker;
-  toast('✨ Yeni sürüm hazır', {
-    action: 'Güncelle',
-    duration: 14000,
-    onAction: function () {
-      try { worker.postMessage({ type: 'SKIP_WAITING' }); } catch (e) { location.reload(); }
-    }
-  });
+var watchedWorkers=new WeakSet();
+function watchInstallingWorker(worker){
+ if(!worker || watchedWorkers.has(worker))return;watchedWorkers.add(worker);
+ function changed(){if(worker.state==='installed' && navigator.serviceWorker.controller)offerUpdate(worker);}
+ worker.addEventListener('statechange',changed);changed();
+}
+function offerUpdate(worker){
+ if(worker)waitingWorker=worker;
+ toast(window.t?window.t('set_update_new_toast'):'✨ Yeni sürüm hazır',{
+  action:window.t?window.t('set_update_install_now'):'Şimdi yükle',duration:14000,onAction:function(){hardRefresh(false);}
+ });
+}
+var updatePollStarted=false,lastUpdateCheck=0;
+function startUpdatePolling(){
+ if(updatePollStarted)return;updatePollStarted=true;
+ function poll(){if(document.hidden || !navigator.onLine || Date.now()-lastUpdateCheck<60000)return;lastUpdateCheck=Date.now();checkForUpdate(function(state){if(state==='new')offerUpdate(swReg&&swReg.waiting);});}
+ setTimeout(poll,8000);setInterval(poll,15*60*1000);document.addEventListener('visibilitychange',poll);
 }
 
 /* ================================ 2 · TAM EKRAN / DURUM ÇUBUĞU =========== */
@@ -476,10 +461,8 @@ function handleSharedText(txt) {
                     escapeHtml(txt.slice(0, 140)) + '</span></div>';
     b.appendChild(box);
     var save = row('⭐', T('add_to_favs'), T('save_to_word_list'));
-    save.onclick = function () {
-      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge('Favorilere ekleme')) return;
-      addFavorite({ w: word, tr: txt.slice(0, 120), lang: activeLangCode(), pos: 'not' });
-      toast(T('added_to_favs_toast'), { kind: 'good' });
+    save.onclick = async function () {
+      if(await addFavorite({ w: word, tr: txt.slice(0, 120), lang: activeLangCode(), meaningLang:window.NATIVE_LANG||'tr', pos: 'not' }))toast(T('added_to_favs_toast'), { kind: 'good' });
     };
     b.appendChild(save);
     var copy = row('📋', T('copy_to_clipboard'), '');
@@ -705,25 +688,30 @@ function mb(n) { return (n / 1048576).toFixed(1) + ' MB'; }
 
 /* ======================================== 8 · FAVORİLER ================= */
 var FAV_KEY = 'lumira_favs_v1';
-function favs() { return store(FAV_KEY) || []; }
-function favKey(o) { return (o.lang || '') + '|' + (o.w || ''); }
+function favs() { return window.NB_getFavorites ? window.NB_getFavorites() : (store(FAV_KEY) || []); }
+function favKey(o) { return JSON.stringify([o.lang || '',o.meaningLang || 'tr',o.w || '',o.tr || '']); }
 function isFav(o) { return favs().some(function (f) { return favKey(f) === favKey(o); }); }
-function addFavorite(o) {
-  var list = favs();
-  if (list.some(function (f) { return favKey(f) === favKey(o); })) return false;
-  o.at = Date.now();
-  list.unshift(o);
-  store(FAV_KEY, list.slice(0, 500));
-  return true;
+async function addFavorite(o) {
+  try{
+    if(window.NB_saveFavorite)return await window.NB_saveFavorite(o);
+    var list=favs();
+    if(list.some(function(f){return favKey(f)===favKey(o);}))return true;
+    list.unshift(Object.assign({at:Date.now()},o));store(FAV_KEY,list.slice(0,500));return true;
+  }catch(error){toast(window.t?window.t(error.message==='nb_fav_login_required'?error.message:'nb_fav_add_failed'):'Could not save the word.',{kind:'bad'});return false;}
 }
-function removeFavorite(o) {
-  store(FAV_KEY, favs().filter(function (f) { return favKey(f) !== favKey(o); }));
+async function removeFavorite(o) {
+  try{
+    if(window.NB_removeFavorite && !await window.NB_removeFavorite(o))return false;
+    var legacy=store(FAV_KEY)||[];
+    store(FAV_KEY,legacy.filter(function(f){return favKey(f)!==favKey(o);}));return true;
+  }catch(error){toast(window.t?window.t('nb_fav_remove_failed'):'Could not remove the favorite.',{kind:'bad'});return false;}
 }
 function activeLangCode() {
   var el = qs('.lang-opt.active');
   return el ? el.getAttribute('data-lang') : 'de';
 }
 function currentCard() {
+  if(window.NB_currentFavorite)return window.NB_currentFavorite();
   var w = $('frontWord'), tr = $('trWord'), pos = $('frontPos');
   if (!w || !w.textContent.trim()) return null;
   return {
@@ -743,20 +731,21 @@ function setupFavButton() {
   var stage = card.parentElement;
   if (stage) { stage.style.position = stage.style.position || 'relative'; stage.appendChild(btn); }
 
-  btn.onclick = function (e) {
+  btn.onclick = async function (e) {
     e.stopPropagation();
     var c = currentCard();
     if (!c) return;
-    if (isFav(c)) { removeFavorite(c); toast(window.t ? window.t('removed_from_favs') : 'Favorilerden çıkarıldı'); }
+    if (isFav(c)) { if(await removeFavorite(c))toast(window.t ? window.t('removed_from_favs') : 'Favorilerden çıkarıldı'); }
     else {
-      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.anyBadge('Favorilere ekleme')) return;
-      addFavorite(c); vibrate(24); toast('⭐ ' + c.w + ' favorilere eklendi', { kind: 'good' });
+      if(await addFavorite(c)){vibrate(24);toast(window.t?window.t('nb_fav_added'):'⭐ '+c.w,{kind:'good'});}
     }
     syncFavButton();
   };
 
   var mo = new MutationObserver(syncFavButton);
   try { mo.observe($('frontWord'), { childList: true, characterData: true, subtree: true }); } catch (e) {}
+  try { mo.observe($('trWord'), { childList: true, characterData: true, subtree: true }); } catch (e) {}
+  window.addEventListener('lumira:notebookchange',syncFavButton);
   syncFavButton();
 }
 function syncFavButton() {
@@ -780,7 +769,7 @@ function openFavorites() {
       it.innerHTML = '<div class="fl">' + (flags[f.lang] || '🏳️') + '</div>' +
         '<div class="w"><b>' + escapeHtml(f.w) + '</b><span>' + escapeHtml(f.tr || '') + '</span></div>' +
         '<button class="rm" aria-label="Sil">✕</button>';
-      qs('.rm', it).onclick = function () { removeFavorite(f); it.remove(); syncFavButton(); };
+      qs('.rm', it).onclick = async function () { if(await removeFavorite(f)){it.remove();syncFavButton();} };
       b.appendChild(it);
     });
     var exp = row('📤', window.t?window.t('fav_share_row'):'Favorileri paylaş / indir', (window.t?window.t('word_count')(list.length):(list.length + ' kelime')));
@@ -983,7 +972,15 @@ function setupTransitions() {
       var app = qs('.app');
       if (!app) return;
       if (document.startViewTransition) {
-        try { document.startViewTransition(function () {}); return; } catch (e) {}
+        try {
+          var transition=document.startViewTransition(function () {});
+          // Rotation or another tab click can skip an animation normally.
+          // Its rejected ready promise must not become an application error.
+          transition.ready?.catch(function () {});
+          transition.finished?.catch(function () {});
+          transition.updateCallbackDone?.catch(function () {});
+          return;
+        } catch (e) {}
       }
       var view = $('cardsView');
       var target = id === 'tabQuiz' ? $('quizView') : (id === 'tabLiveTranslate' ? $('liveTranslateView') : (id === 'tabPersonal' ? $('personalView') : view));
@@ -1120,7 +1117,7 @@ function showDailyWord() {
     b.appendChild(listen);
 
     var fav = row('⭐', T('add_to_favs'), '');
-    fav.onclick = function () { addFavorite({ w: fw, tr: bw || '', lang: w.lang || activeLangCode() }); toast(T('added_toast'), { kind: 'good' }); };
+    fav.onclick = async function () { var reversed=window.isReversed?.();if(await addFavorite({w:fw,tr:bw||'',lang:reversed?'tr':(w.lang||activeLangCode()),meaningLang:reversed?w.lang:(window.NATIVE_LANG||'tr'),ex:(window.FRONT_EX?window.FRONT_EX(w):w.ex)||'',exTr:(window.BACK_EX?window.BACK_EX(w):w.exTr)||'',cat:w.cat||'',level:w.level||''}))toast(T('added_toast'),{kind:'good'}); };
     b.appendChild(fav);
 
     var sh = row('📤', T('share_row'), T('share_desc'));
@@ -1779,56 +1776,50 @@ function swVersion(cb) {
   } catch (e) { cb(null); }
 }
 
-/* Gerçekten yeni bir sürüm var mı diye bakar. reg.update() tek başına
-   yeterli değil: yeni bir worker kurulup kurulmadığını izlemek gerekiyor. */
-function checkForUpdate(cb) {
-  if (!swReg) { cb('error'); return; }
-  var settled = false;
-  var finish = function (r) { if (!settled) { settled = true; cb(r); } };
-
-  if (swReg.waiting) { finish('new'); return; }
-
-  swReg.update().then(function () {
-    if (swReg.waiting || swReg.installing) {
-      var w = swReg.waiting || swReg.installing;
-      if (w.state === 'installed' || w.state === 'activated') { finish('new'); return; }
-      w.addEventListener('statechange', function () {
-        if (w.state === 'installed' || w.state === 'activated') finish('new');
-      });
-      setTimeout(function () { finish(swReg.waiting ? 'new' : 'current'); }, 6000);
-    } else {
-      setTimeout(function () { finish(swReg.waiting ? 'new' : 'current'); }, 1500);
-    }
-  }).catch(function () { finish('error'); });
+function cleanVersion(version){return String(version||'').replace(/^v/,'');}
+function newerVersion(a,b){var x=cleanVersion(a).split('.').map(Number),y=cleanVersion(b).split('.').map(Number);if(x.length!==3||y.length!==3||[...x,...y].some(function(n){return !Number.isInteger(n)||n<0;}))return false;for(var i=0;i<3;i++){if(x[i]!==y[i])return x[i]>y[i];}return false;}
+var releaseVersion=null,updateFlight=null;
+function updateDownloading(){return ({tr:'Güncelleme indiriliyor…',en:'Downloading the update…',de:'Das Update wird heruntergeladen…',ar:'جارٍ تنزيل التحديث…',fr:'Téléchargement de la mise à jour…',es:'Descargando la actualización…',ru:'Обновление загружается…'})[window.NATIVE_LANG||'tr']||'Downloading the update…';}
+async function fetchReleaseVersion(){
+ var controller=new AbortController(),timer=setTimeout(function(){controller.abort();},5000);
+ try{var url=new URL('./app-version.json',location.href);url.searchParams.set('__ping',String(Date.now()));var response=await fetch(url.href,{cache:'no-store',credentials:'omit',signal:controller.signal});if(!response.ok)return null;var data=await response.json();if(!/^\d+\.\d+\.\d+$/.test(data.version||''))return null;releaseVersion=data.version;return data.version;}catch(e){return null;}finally{clearTimeout(timer);}
 }
-
-/* Önbellekleri boşaltıp Service Worker'ı yeniden kurar ve sayfayı tazeler.
-   localStorage'a DOKUNMAZ: ilerleme, favoriler ve ayarlar yerinde kalır. */
-function hardRefresh(full) {
-  var jobs = [];
-  try {
-    if (window.caches && caches.keys) {
-      jobs.push(caches.keys().then(function (names) {
-        return Promise.all(names.map(function (n) { return caches.delete(n); }));
-      }));
-    }
-  } catch (e) {}
-  if (full) {
-    try {
-      if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
-        jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
-          return Promise.all(rs.map(function (r) { return r.unregister(); }));
-        }));
-      }
-    } catch (e) {}
-  } else if (waitingWorker) {
-    try { waitingWorker.postMessage({ type: 'SKIP_WAITING' }); } catch (e) {}
-  }
-
-  Promise.all(jobs).catch(function () {}).then(function () {
-    var base = location.origin + location.pathname;
-    location.replace(base + '?fresh=' + Date.now());
+async function findUpdate(){
+ var remote=await fetchReleaseVersion();
+ if(!swReg)return remote?(newerVersion(remote,APP_VERSION)?'new':'current'):'error';
+ if(swReg.waiting){waitingWorker=swReg.waiting;return'new';}
+ try{await swReg.update();}catch(e){return remote&&newerVersion(remote,APP_VERSION)?'new':'error';}
+ if(swReg.waiting){waitingWorker=swReg.waiting;return'new';}
+ var worker=swReg.installing;
+ if(worker){
+  watchInstallingWorker(worker);
+  return await new Promise(function(resolve){
+   var done=false,timer;
+   function finish(state){if(done)return;done=true;clearTimeout(timer);worker.removeEventListener('statechange',changed);if(state==='new')waitingWorker=swReg.waiting||worker;resolve(state);}
+   function changed(){if(worker.state==='installed'||worker.state==='activated')finish('new');else if(worker.state==='redundant')finish('error');}
+   worker.addEventListener('statechange',changed);timer=setTimeout(function(){finish(swReg.waiting?'new':'downloading');},20000);changed();
   });
+ }
+ return remote&&newerVersion(remote,APP_VERSION)?'new':'current';
+}
+function checkForUpdate(cb){
+ if(!updateFlight)updateFlight=findUpdate().catch(function(){return'error';}).finally(function(){updateFlight=null;});
+ updateFlight.then(function(state){cb(state);});
+}
+function reloadLatest(version){
+ var url=new URL(location.href);url.searchParams.set('lumira_update',cleanVersion(version||releaseVersion||APP_VERSION));url.searchParams.set('__ping','lumira-update-'+Date.now());location.replace(url.href);
+}
+function hardRefresh(full){
+ var worker=(swReg&&swReg.waiting)||waitingWorker;
+ if(!full && worker && worker.state!=='redundant'){
+  try{worker.postMessage({type:'SKIP_WAITING'});setTimeout(function(){reloadLatest(releaseVersion);},5000);return Promise.resolve();}catch(e){}
+ }
+ var jobs=[];
+ if(full){
+  if(window.caches)jobs.push(caches.keys().then(function(names){return Promise.all(names.filter(function(name){return name.indexOf('lumira-shell-')===0;}).map(function(name){return caches.delete(name);}));}));
+  if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration)jobs.push(navigator.serviceWorker.getRegistration(new URL('./',location.href).href).then(function(reg){return reg?reg.unregister():undefined;}));
+ }
+ return Promise.all(jobs).catch(function(){}).then(function(){reloadLatest(releaseVersion);});
 }
 
 /* ================================ AYARLAR PANELİ ======================== */
@@ -1980,6 +1971,8 @@ function openSettings() {
             action: (window.t?window.t('set_update_install_now'):'Şimdi yükle'), duration: 14000,
             onAction: function () { hardRefresh(); }
           });
+        } else if (state === 'downloading') {
+          updDesc.textContent=updateDownloading();toast(updateDownloading());
         } else if (state === 'error') {
           updDesc.textContent = (window.t?window.t('set_update_error_desc'):'Denetlenemedi');
           toast(window.t?window.t('set_update_error_toast'):'Denetlenemedi', { kind: 'bad' });
@@ -2164,6 +2157,7 @@ if (typeof window.spawnShootingStar !== 'function') {
 }
 
 function boot() {
+  try{var cleanUrl=new URL(location.href);if((cleanUrl.searchParams.get('__ping')||'').indexOf('lumira-update-')===0){cleanUrl.searchParams.delete('__ping');history.replaceState(history.state,'',cleanUrl.href);}}catch(e){}
   try {
     /* açılış sayacı */
     var opens = (store('pwa_opens') || 0) + 1;
@@ -2250,7 +2244,7 @@ window.PWA = {
     });
     return { onLine: navigator.onLine, badgeVisible: !!(document.getElementById('pwa-offline') || {}).classList && document.getElementById('pwa-offline').classList.contains('in') };
   },
-  version: '1.9.6',
+  version: APP_VERSION,
   isStandalone: function () { return isStandalone; }
 };
 

@@ -130,6 +130,31 @@
     return merged;
   }
 
+  function mergeRemoteBadges(target,remote){
+    target=target||{};
+    if(remote && remote.awards)target.awards=Object.assign({},target.awards||{},remote.awards);
+    if(remote && remote.supportGrants)target.supportGrants=remote.supportGrants;else delete target.supportGrants;
+    return target;
+  }
+  let badgeRef=null,badgeListener=null;
+  function watchRemoteAwards(){
+    if(badgeRef && badgeListener)badgeRef.off('value',badgeListener);
+    const key=currentKey;badgeRef=dbRef('progress/'+key+'/meta/awards');
+    if(!badgeRef)return;
+    let lastSignature=JSON.stringify(meta?.awards||{});
+    const listener=function(snap){
+      if(currentKey!==key || badgeListener!==listener)return;
+      const value=snap.val()||{},signature=JSON.stringify(value);if(signature===lastSignature)return;lastSignature=signature;
+      meta=mergeRemoteBadges(meta,{awards:value,supportGrants:meta?.supportGrants});persistLocalMirror();refreshBadges();
+    };
+    badgeListener=listener;
+    badgeRef.on('value',badgeListener,function(){});
+  }
+  function refreshBadges(){
+    const tab=document.getElementById('tabPersonal');
+    if(dataLoaded && tab?.classList.contains('active') && root?.querySelector('.pm-sup-grid'))renderHome();
+  }
+  window.PR_refreshBadges=refreshBadges;
   function loadUserData(name, cb){
     currentName = name;
     currentKey = getKey(name);
@@ -151,7 +176,7 @@
           if(val.meta){
             const localXp = (localMeta && localMeta.xp) || 0;
             const remoteXp = val.meta.xp || 0;
-            meta = (remoteXp >= localXp) ? val.meta : localMeta;
+            meta = mergeRemoteBadges((remoteXp >= localXp) ? val.meta : localMeta,val.meta);
           }
         }
         finalizeLoad(cb);
@@ -169,6 +194,7 @@
     ensureDailyRollover();
     persistLocalMirror();
     dataLoaded = true;
+    watchRemoteAwards();
     // Bu oturumda hiç XP kazanılmasa bile (ör. kullanıcı sadece göz atıyor),
     // seviye liderlik tablosunun güncel kalması için mevcut XP'yi bildir.
     if(window.LB_updateXp) window.LB_updateXp(meta.xp||0);
@@ -188,12 +214,8 @@
       ref.transaction(function(cur){
         var remoteXp = (cur && typeof cur.xp === 'number') ? cur.xp : 0;
         if(remoteXp > (meta.xp||0)) meta.xp = remoteXp;
-        /* Sunucudaki özel rozetleri (admin verdiği ya da başka cihazda kazanılan)
-           KORU — yoksa bu cihazın kaydı onları silebilir. */
-        if(cur && cur.awards){ meta.awards = Object.assign({}, cur.awards, meta.awards||{}); }
-        // Studying must not erase badges granted on another device or by an admin.
-        if(cur && cur.supportGrants) meta.supportGrants = cur.supportGrants;
-        else delete meta.supportGrants;
+        // Remote tombstones keep an old device from restoring removed badges.
+        meta=mergeRemoteBadges(meta,cur);
         /* İlk kayıt zamanı bir kez yazılır, bir daha değişmez — ileride
            "ilk N kişi" gibi kayıt-sırası bazlı işler için gerekli. */
         meta.joinedAt = (cur && cur.joinedAt) ? cur.joinedAt : Date.now();
@@ -769,7 +791,7 @@
 
     var awHtml = '';
     const awards = meta.awards || {};
-    const awardKeys = Object.keys(awards);
+    const awardKeys = Object.keys(awards).filter(key=>awards[key] && awards[key].removed!==true);
     if(awardKeys.length){
       awardKeys.sort((x,y)=>(awards[x].ts||0)-(awards[y].ts||0));
       let awRow = '';
