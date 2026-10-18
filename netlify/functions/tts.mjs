@@ -1,5 +1,6 @@
-/* Serve the application's existing TTS source as same-origin MP3.
+/* Serve the application's existing TTS source for the known app origins.
    This public upstream has no availability guarantee. Never retry a denial. */
+import { withCors } from './_shared/cors.mjs';
 const LANGUAGES = new Set(['de', 'en', 'ar', 'fr', 'es', 'ru', 'tr']);
 const HEADERS = {
   'Cache-Control': 'private, no-store',
@@ -11,15 +12,12 @@ function error(status, code) {
     status, headers: { ...HEADERS, 'Content-Type': 'application/json' }
   });
 }
-export default async function tts(request) {
+async function tts(request,fetcher) {
   if (!['GET', 'HEAD'].includes(request.method)) return error(405, 'method_not_allowed');
   const url = new URL(request.url);
   const text = (url.searchParams.get('text') || '').trim();
   const lang = url.searchParams.get('lang');
   if (!text || text.length > 180 || !LANGUAGES.has(lang)) return error(400, 'invalid_input');
-  const origin = request.headers.get('origin');
-  if (origin && origin !== url.origin) return error(403, 'cross_origin_request');
-  if (request.headers.get('sec-fetch-site') === 'cross-site') return error(403, 'cross_origin_request');
   const upstream = new URL('https://translate.google.com/translate_tts');
   upstream.search = new URLSearchParams({
     ie: 'UTF-8', client: 'tw-ob', tl: lang,
@@ -28,7 +26,7 @@ export default async function tts(request) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 12000);
   try {
-    const response = await fetch(upstream, { signal: controller.signal });
+    const response = await fetcher(upstream, { signal: controller.signal });
     if (!response.ok) return error(response.status === 429 ? 429 : 502, 'tts_upstream_unavailable');
     if (!/^audio\//i.test(response.headers.get('content-type') || '')) return error(502, 'tts_invalid_audio');
     const bytes = new Uint8Array(await response.arrayBuffer());
@@ -53,4 +51,6 @@ export default async function tts(request) {
     return error(e.name === 'AbortError' ? 504 : 502, 'tts_upstream_unavailable');
   } finally { clearTimeout(timer); }
 }
+export const createTtsHandler=(fetcher=fetch)=>withCors(request=>tts(request,fetcher),{methods:['GET','HEAD'],headers:['Range'],media:true});
+export default createTtsHandler();
 export const config = { rateLimit: { windowLimit: 90, windowSize: 60, aggregateBy: ['ip', 'domain'] } };

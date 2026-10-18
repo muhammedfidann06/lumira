@@ -3,9 +3,10 @@ import sources from './_shared/example-sources.json' with {type:'json'};
 import {identity} from './_shared/feature-services.mjs';
 import {fault} from './_shared/feature-core.mjs';
 import {EXAMPLE_LANGUAGES,translateExamples,validExample,changeExampleBudget} from './_shared/example-translation.mjs';
+import {withCors} from './_shared/cors.mjs';
 
 const allowed=new Map(Object.entries(sources).map(([lang,texts])=>[lang,new Set(texts)]));
-const HEADERS={'Content-Type':'application/json; charset=utf-8','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','X-Lumira-Examples-Version':'1.9.6'};
+const HEADERS={'Content-Type':'application/json; charset=utf-8','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','X-Lumira-Examples-Version':'1.9.8'};
 const response=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:HEADERS});
 const hash=text=>createHash('sha256').update(text).digest('hex');
 async function transaction(ref,update){
@@ -14,9 +15,8 @@ async function transaction(ref,update){
   finally{ref.off('value',listener);}
 }
 export function createExamplesHandler(services={identity,translateExamples},clock=Date.now){
-  return async request=>{
+  return withCors(async request=>{
     if(request.method!=='POST')return response({error:'method_not_allowed'},405);
-    const origin=request.headers.get('origin');if((origin && origin!==new URL(request.url).origin)||request.headers.get('sec-fetch-site')==='cross-site')return response({error:'cross_origin_request'},403);
     let locks=[],ctx,owner=randomUUID(),resolved=[],sourceLanguage,targetLanguage;
     try{
       if(Number(request.headers.get('content-length'))>30000)throw fault('invalid_input',413);
@@ -64,6 +64,6 @@ export function createExamplesHandler(services={identity,translateExamples},cloc
       return response({error:['login_required','invalid_input','unknown_example','examples_busy','cross_origin_request'].includes(e.code)?e.code:'examples_unavailable'},e.status||503);
     }
     finally{for(const ref of locks)try{await transaction(ref,value=>value?.owner===owner?null:value);}catch{ /* Lock also expires after 30 seconds. */ }}
-  };
+  });
 }
 export default createExamplesHandler();

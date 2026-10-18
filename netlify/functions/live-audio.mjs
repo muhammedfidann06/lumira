@@ -1,11 +1,11 @@
 import { identity } from './_shared/feature-services.mjs';
 import { changeUsage, fault } from './_shared/feature-core.mjs';
 import { decodeWave, translateAudio } from './_shared/live-providers.mjs';
+import { withCors } from './_shared/cors.mjs';
 const headers = { 'Content-Type':'application/json; charset=utf-8', 'Cache-Control':'private, no-store', 'X-Content-Type-Options':'nosniff' };
 export function createAudioHandler(services = { identity, translateAudio }, clock = Date.now) {
-  return async request => {
+  return withCors(async request => {
     if (request.method !== 'POST') return new Response('{}',{status:405,headers});
-    if ((request.headers.get('origin') && request.headers.get('origin') !== new URL(request.url).origin) || request.headers.get('sec-fetch-site') === 'cross-site') return new Response('{}',{status:403,headers});
     let ref, lockId;
     try {
       if (Number(request.headers.get('content-length')) > 950000) throw fault('invalid_input',413);
@@ -42,6 +42,6 @@ export function createAudioHandler(services = { identity, translateAudio }, cloc
         try { await ref.transaction(value => { if (value?.live?.audioLock?.id === lockId) { delete value.live.audioLock; return value; } return; },undefined,false); } catch {}
       }
     }
-  };
+  });
 }
 export default createAudioHandler();

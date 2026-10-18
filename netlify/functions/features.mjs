@@ -1,16 +1,15 @@
 import { changeUsage, summary, fault } from './_shared/feature-core.mjs';
 import { identity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from './_shared/feature-services.mjs';
 import { configuredProviders, connectProvider } from './_shared/live-providers.mjs';
+import { withCors } from './_shared/cors.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.9.6' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.9.8' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
 export function createHandler(services = { identity, speechToken, checkWriting, verifyPlayPurchase, sha256, configuredProviders, connectProvider }, clock = Date.now) {
-  return async request => {
+  return withCors(async request => {
     if (request.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405);
-    const origin = request.headers.get('origin');
-    if ((origin && origin !== new URL(request.url).origin) || request.headers.get('sec-fetch-site') === 'cross-site') return reply({ error: 'cross_origin_request' }, 403);
     let ctx, ref, zone = process.env.LUMIRA_TIME_ZONE || 'Europe/Vienna';
     try {
       if (Number(request.headers.get('content-length')) > 40000) throw fault('invalid_input', 413);
@@ -95,6 +94,6 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       }
       return reply({ error: code, ...(quota ? { quota } : {}) }, status);
     }
-  };
+  });
 }
 export default createHandler();
