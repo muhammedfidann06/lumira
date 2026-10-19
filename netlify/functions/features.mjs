@@ -2,8 +2,9 @@ import { changeUsage, summary, fault } from './_shared/feature-core.mjs';
 import { identity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from './_shared/feature-services.mjs';
 import { configuredProviders, connectProvider } from './_shared/live-providers.mjs';
 import { withCors } from './_shared/cors.mjs';
+import {welcomeGift} from './_shared/welcome-gift.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.9.8' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.10.0' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
@@ -18,8 +19,9 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       let body;
       try { body = JSON.parse(raw); } catch { throw fault('invalid_input'); }
       if (!body || typeof body !== 'object') throw fault('invalid_input');
-      if (!['status', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase'].includes(body.action)) throw fault('invalid_action');
+      if (!['status', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
       ctx = await services.identity(request);
+      if(['welcome','welcomeAck'].includes(body.action))return reply({welcome:await (services.welcomeGift||welcomeGift)(ctx,{ack:body.action==='welcomeAck'})});
       ref = ctx.db.ref(`serverFeatureUsage/${ctx.uid}`);
       const quota = value => summary(value, ctx.tier, clock(), zone);
       const mutate = async (action, params) => {

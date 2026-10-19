@@ -4,7 +4,7 @@ import {withCors} from './_shared/cors.mjs';
 const AMOUNTS=TIERS.filter(t=>t.amount>0).map(t=>t.amount);
 const AWARDS=['sampiyon','elmas','efsane','nisanci','ates','oncu','bilge','kitapkurdu','birinci','madalya','onur','kelebek'];
 const safeKey=value=>typeof value==='string'&&value.length>0&&value.length<=128&&!/[.#$/\[\]\u0000-\u001f\u007f]/u.test(value);
-const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','X-Lumira-Features-Version':'1.9.8'}});
+const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','X-Lumira-Features-Version':'1.10.0'}});
 export function createAdminBadgesHandler(services={identity},clock=Date.now){
  return withCors(async request=>{
   if(request.method!=='POST')return reply({error:'method_not_allowed'},405);
@@ -16,8 +16,8 @@ export function createAdminBadgesHandler(services={identity},clock=Date.now){
    if((await ctx.db.ref('admins/'+ctx.uid).get()).val()!==true)throw fault('admin_required',403);
    if(body.action==='list'){
     if(body.pageToken!==undefined&&(typeof body.pageToken!=='string'||body.pageToken.length>10000))throw fault('invalid_input');
-    const page=await ctx.auth.listUsers(1000,body.pageToken||undefined);
-    return reply({users:page.users.map(u=>({uid:u.uid,name:u.displayName||u.uid})),nextPageToken:page.pageToken||null});
+    const [page,profiles]=await Promise.all([ctx.auth.listUsers(1000,body.pageToken||undefined),ctx.db.ref('leaderboard').get()]);
+    const names=profiles.val()||{};return reply({users:page.users.map(u=>({uid:u.uid,name:String(names[u.uid]?.name||u.displayName||u.uid).slice(0,128)})),nextPageToken:page.pageToken||null});
    }
    if(!['revoke','allow'].includes(body.action))throw fault('invalid_action');
    if(!Array.isArray(body.uids)||!body.uids.length||body.uids.length>100||body.uids.some(u=>!safeKey(u)))throw fault('invalid_input');
@@ -26,7 +26,7 @@ export function createAdminBadgesHandler(services={identity},clock=Date.now){
    if(body.action==='allow'){
     if(!AMOUNTS.includes(body.amount))throw fault('invalid_input');
     const policies=await Promise.all(uids.map(uid=>ctx.db.ref('serverFeatureEntitlements/'+uid+'/'+body.amount).get()));
-    uids.forEach((uid,i)=>{if(policies[i].val()===false)updates['serverFeatureEntitlements/'+uid+'/'+body.amount]=null;});
+    uids.forEach((uid,i)=>{if(policies[i].val()===false)updates['serverFeatureEntitlements/'+uid+'/'+body.amount]=null;updates['serverBadgeOptOut/'+uid+'/'+body.amount]=null;});
    }else{
     if(!['support','award','all'].includes(body.kind))throw fault('invalid_input');
     if(body.kind!=='award'&&body.amount!=='all'&&!AMOUNTS.includes(body.amount))throw fault('invalid_input');
