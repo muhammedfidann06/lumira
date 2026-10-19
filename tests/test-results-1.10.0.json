@@ -1,0 +1,539 @@
+{
+  "version": "1.10.0",
+  "testedAt": "2026-10-19T07:16:53.449813+00:00",
+  "baseCommit": "c6d078bb794f83a01fd5519ffa0e13efc55f3c8e",
+  "unitTests": {
+    "tests": 939,
+    "pass": 938,
+    "fail": 0,
+    "skipped": 1,
+    "skippedReason": "The Firebase emulator case is intentionally skipped by the default test command and was run separately below."
+  },
+  "firebaseEmulator": {
+    "pass": true,
+    "tests": 1,
+    "coldClientLiveRenewals": 720,
+    "simulatedLiveSessionMinutes": 60,
+    "coverage": [
+      "real Realtime Database rules with seven-language account data",
+      "atomic quotas and failed-write refunds",
+      "simultaneous admin gifts preserve XP and are retry-safe",
+      "administrative revocation and cold purchase restores",
+      "first-300 campaign and private acknowledgement records",
+      "concurrent Paddle event ownership/order",
+      "private idempotent stories independent of writing quotas"
+    ]
+  },
+  "browser": {
+    "pass": true,
+    "scenarios": 114,
+    "results": [
+      {
+        "name": "tr: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "tr: 320 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 390 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 768 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 1366 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "tr: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "tr: back navigation returns to Personal",
+        "pass": true
+      },
+      {
+        "name": "tr: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "en: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "en: 320 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 390 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 768 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 1366 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "en: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "en: back navigation returns to Personal",
+        "pass": true
+      },
+      {
+        "name": "en: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "de: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "de: 320 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 390 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 768 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 1366 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "de: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "de: back navigation returns to Personal",
+        "pass": true
+      },
+      {
+        "name": "de: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "ar: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "ar: 320 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 390 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 768 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 1366 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "ar: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "ar: back navigation returns to Personal",
+        "pass": true
+      },
+      {
+        "name": "ar: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "fr: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "fr: 320 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 390 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 768 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 1366 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "fr: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "fr: back navigation returns to Personal",
+        "pass": true
+      },
+      {
+        "name": "fr: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "es: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "es: 320 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 390 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 768 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 1366 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "es: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "es: back navigation returns to Personal",
+        "pass": true
+      },
+      {
+        "name": "es: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "ru: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "ru: 320 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 390 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 768 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 1366 layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "ru: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "ru: back navigation returns to Personal",
+        "pass": true
+      },
+      {
+        "name": "ru: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "profile shows actual subscription dates and monthly term",
+        "pass": true
+      },
+      {
+        "name": "stopping renewal keeps the already-paid period active",
+        "pass": true
+      },
+      {
+        "name": "remove badge confirms cancellation then closes benefits",
+        "pass": true
+      },
+      {
+        "name": "restoring an owned badge does not restart its renewal",
+        "pass": true
+      },
+      {
+        "name": "cached subscription cannot keep badge / offline PDF privileges after expiry",
+        "pass": true
+      },
+      {
+        "name": "server independently denies expired paid entitlements",
+        "pass": true
+      },
+      {
+        "name": "tr: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "en: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "de: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "ar: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "fr: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "es: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "ru: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "actual Chrome GitHub → Netlify CORS preflights completed",
+        "pass": true
+      },
+      {
+        "name": "admin roster finds app display name instead of stale Auth name",
+        "pass": true
+      },
+      {
+        "name": "Notebook story shortcut is present",
+        "pass": true
+      },
+      {
+        "name": "production scripts: zero uncaught browser errors",
+        "pass": true
+      },
+      {
+        "name": "Netlify same-origin authenticated allowance",
+        "pass": true
+      },
+      {
+        "name": "pricing: tr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: en localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: de localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: ar localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: fr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: es localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: ru localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: tr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: en localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: de localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: ar localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: fr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: es localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: ru localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: tr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: en localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: de localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: ar localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: fr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: es localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: ru localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: tr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: en localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: de localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: ar localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: fr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: es localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: ru localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "public billing/legal pages: zero uncaught browser errors",
+        "pass": true
+      },
+      {
+        "name": "Android web auto-opens existing Play listing",
+        "pass": true
+      },
+      {
+        "name": "return from Play does not start a redirect loop",
+        "pass": true
+      },
+      {
+        "name": "installed TWA never redirects to Play",
+        "pass": true
+      },
+      {
+        "name": "iPhone browser never redirects to Play",
+        "pass": true
+      }
+    ]
+  },
+  "serviceWorker": {
+    "pass": true,
+    "scenarios": 8,
+    "results": [
+      "/ upgrade preserves downloaded vocabulary/models, removes only old shell, reports 1.10.0",
+      "/ all new screen scripts installed in shell",
+      "/ visiting pricing does not replace the offline app document",
+      "/ versioned new scripts work offline; payment POST never falls back to cache",
+      "/lumira/ upgrade preserves downloaded vocabulary/models, removes only old shell, reports 1.10.0",
+      "/lumira/ all new screen scripts installed in shell",
+      "/lumira/ visiting pricing does not replace the offline app document",
+      "/lumira/ versioned new scripts work offline; payment POST never falls back to cache"
+    ]
+  },
+  "netlifyBundles": {
+    "pass": true,
+    "scenarios": 8,
+    "results": [
+      "features: isolated Node 22 import and anonymous request remains unauthorized",
+      "live-audio: isolated Node 22 import and anonymous request remains unauthorized",
+      "examples: isolated Node 22 import and anonymous request remains unauthorized",
+      "admin-badges: isolated Node 22 import and anonymous request remains unauthorized",
+      "stories: isolated Node 22 import and anonymous request remains unauthorized",
+      "billing: isolated Node 22 import and anonymous request remains unauthorized",
+      "paddle-webhook: isolated Node 22 import and unsupported method rejected",
+      "tts: isolated Node 22 import and unsupported method rejected"
+    ]
+  },
+  "locales": [
+    "tr",
+    "en",
+    "de",
+    "ar",
+    "fr",
+    "es",
+    "ru"
+  ],
+  "viewportWidths": [
+    320,
+    390,
+    768,
+    1366
+  ],
+  "providerResponses": "Test fixtures. No live speech / AI provider credentials were used.",
+  "notVerified": [
+    "Live Paddle checkout, live account permissions/catalog and domain approval (Paddle browser inspection was rejected by automatic approval review, citing the earlier instruction to defer Paddle).",
+    "Physical iPhone/Android device behavior. Browser platform contexts were tested.",
+    "Live-provider transcription/translation speed and the semantic accuracy of every vocabulary example."
+  ],
+  "deploymentRequired": "One Netlify deployment of the updated full repository commit is required; GitHub Pages uses that backend."
+}

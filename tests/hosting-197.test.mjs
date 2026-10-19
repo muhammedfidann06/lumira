@@ -41,7 +41,7 @@ for(const site of [GH+'/lumira/',NL+'/'])test('audio and unload cleanup share co
  assert.equal(f.calls[0].url,(site.startsWith(GH)?NL:'')+'/.netlify/functions/live-audio');assert.equal(f.calls[1].url,(site.startsWith(GH)?NL:'')+'/.netlify/functions/features');assert.equal(f.calls[1].body.action,'liveStop');assert.equal(f.calls[1].options.keepalive,true);assert.equal(f.calls[1].options.credentials,'omit');
 });
 test('token retrieval is included in the API deadline',async()=>{
- const f=setup(GH+'/lumira/',{token:()=>new Promise(()=>{}),deadline:15});await assert.rejects(f.root.LUMIRA_FEATURES.api('status'),e=>e.featureCode==='usage_unavailable');assert.equal(f.calls.length,0);
+ const f=setup(GH+'/lumira/',{token:()=>new Promise(()=>{}),deadline:15});await assert.rejects(f.root.LUMIRA_FEATURES.api('status'),e=>e.featureCode==='request_timeout');assert.equal(f.calls.length,0);
 });
 test('account switch while obtaining a token sends no previous-account request',async()=>{
  let release;const f=setup(GH+'/lumira/',{token:()=>new Promise(r=>release=r)}),pending=f.root.LUMIRA_FEATURES.api('status');await Promise.resolve();f.root.account={uid:'second',getIdToken:async()=>'second-token'};f.authChange();release('old-token');await assert.rejects(pending,e=>e.featureCode==='login_required');f.root.LUMIRA_FEATURES.releaseOnExit('old-session');assert.equal(f.calls.length,0);
@@ -123,4 +123,26 @@ test('anonymous PDF request asks for login instead of offering a badge before id
 });
 for(const body of ['null','[]','1','"wrong"'])test('malformed backend JSON '+body+' is rejected as unavailable',async()=>{
  const f=setup(GH+'/lumira/',{fetcher:async()=>new Response(body)});await assert.rejects(f.root.LUMIRA_FEATURES.api('status'),e=>e.featureCode==='backend_unavailable');
+});
+
+test('an expired token refreshes once and retains the same writing operation ID',async()=>{
+ const tokens=[];let attempts=0;
+ const f=setup(GH+'/lumira/',{token:async force=>{tokens.push(force);return force?'fresh-token':'expired-token';},fetcher:async()=>++attempts===1?Response.json({error:'login_required'},{status:401}):Response.json({matches:[],quota:{tier:0}})});
+ await f.root.LUMIRA_FEATURES.api('check',{id:'same-operation-1234567890',text:'Hallo.',language:'de'});
+ assert.deepEqual(tokens,[false,true]);assert.equal(f.calls.length,2);
+ assert.equal(f.calls[1].options.headers.Authorization,'Bearer fresh-token');
+ assert.equal(f.calls[0].options.body,f.calls[1].options.body);
+});
+test('a second unauthorized response does not create a refresh loop',async()=>{
+ const f=setup(GH+'/lumira/',{fetcher:async()=>Response.json({error:'login_required'},{status:401})});
+ await assert.rejects(f.root.LUMIRA_FEATURES.api('status'),e=>e.featureCode==='login_required');assert.equal(f.calls.length,2);
+});
+test('a lost response never blindly replays a writing mutation',async()=>{
+ const f=setup(GH+'/lumira/',{fetcher:async()=>{throw new TypeError('network failure');}});
+ await assert.rejects(f.root.LUMIRA_FEATURES.api('check',{id:'single-operation-12345678',text:'Hallo.',language:'de'}),e=>e.featureCode==='backend_unavailable');assert.equal(f.calls.length,1);
+});
+for(const name of ['stories','billing'])for(const site of [GH+'/lumira/',NL+'/'])test('authenticated '+name+' service uses the correct backend from '+site,async()=>{
+ const f=setup(site);await f.root.LUMIRA_FEATURES.service(name,'status');
+ assert.equal(f.calls[0].url,(site.startsWith(GH)?NL:'')+'/.netlify/functions/'+name);
+ assert.equal(f.calls[0].options.headers.Authorization,'Bearer fixture-id-token');assert.equal(f.calls[0].body.action,'status');
 });

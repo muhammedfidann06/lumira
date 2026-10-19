@@ -11,6 +11,10 @@ import { createHandler } from '../netlify/functions/features.mjs';
 import { createAdminBadgesHandler } from '../netlify/functions/admin-badges.mjs';
 import { TIERS } from '../netlify/functions/_shared/feature-core.mjs';
 import { grantVerifiedEntitlement, sha256 } from '../netlify/functions/_shared/feature-services.mjs';
+import {createWelcomeGift} from '../netlify/functions/_shared/welcome-gift.mjs';
+import {applyPaddleEvent} from '../netlify/functions/_shared/paddle-events.mjs';
+import {accountMemberships} from '../netlify/functions/_shared/memberships.mjs';
+import {createStoriesHandler} from '../netlify/functions/stories.mjs';
 
 // Optional real-SDK integration test. Only a local emulator is used. Supply the
 // official database-emulator JAR through LUMIRA_EMULATOR_JAR to run it.
@@ -162,6 +166,39 @@ test('real Firebase: writing commits, cold renewals last an hour, quotas stay at
       assert.equal(restored.status,200);await grantVerifiedEntitlement({uid:'revoke-member',db},100);
       assert.equal((await db.ref('serverFeatureEntitlements/revoke-member/100').get()).val(),true);
       console.log('PASS: admin revocation, 5 cold purchase restores denied, user gift forgery denied, deliberate admin regrant works; XP and words preserved.');
+
+      const source=await readFile(new URL('../admin.js',import.meta.url),'utf8'),begin=source.indexOf('      function grantToUids('),end=source.indexOf('\n      send.onclick',begin);
+      const {runInNewContext}=await import('node:vm');let optionalCalls=0;
+      const grant=runInNewContext(source.slice(begin,end)+';grantToUids',{d:adminDb,window:{LUMIRA_ADMIN_BADGES:{allow:async()=>{optionalCalls++;throw Error('optional API down');}}}});
+      await adminDb.ref().update({'progress/gift-member/meta/xp':30,'leaderboard/gift-member/xp':80});
+      await Promise.all([grant(['gift-member'],[5,'☕','Coffee',50]),grant(['gift-member'],[1,'👍','Thanks',10])]);
+      await grant(['gift-member'],[5,'☕','Coffee',50]);
+      assert.equal(optionalCalls,0);assert.equal((await db.ref('progress/gift-member/meta/xp').get()).val(),140);assert.equal((await db.ref('leaderboard/gift-member/xp').get()).val(),140);
+      console.log('PASS: concurrent real-rule admin gifts preserve all XP, retry safely and need no optional API.');
+
+      const roster=Array.from({length:305},(_,i)=>({uid:'welcome-'+i,email:i+'@fixture.invalid',metadata:{creationTime:new Date(1700000000000+i*1000).toISOString()}})),auth={listUsers:async()=>({users:[...roster].reverse()})},gift=createWelcomeGift();
+      await db.ref('serverWelcomeCampaign').remove();
+      const coldGift=async uid=>{const app=initializeApp(options,'gift-cold-'+(++sequence));try{return await gift({uid,auth,db:getDatabase(app)});}finally{await deleteApp(app);}};
+      const welcome=await Promise.all(['welcome-0','welcome-100','welcome-299','welcome-300','welcome-304'].map(coldGift));assert.deepEqual(welcome.map(r=>r.granted),[true,true,true,false,false]);assert.equal(Object.keys((await db.ref('serverWelcomeCampaign/roster').get()).val()).length,300);
+      await db.ref('serverFeatureEntitlements/welcome-0/1').set(false);assert.equal((await coldGift('welcome-0')).granted,false);
+      await gift({uid:'welcome-100',auth,db},{ack:true});assert.equal((await coldGift('welcome-100')).show,false);
+      await assert.rejects(userDb.ref('serverWelcomeCampaign/roster/member').set(1),/permission[ _]denied/i);
+      console.log('PASS: cold SDK welcome enrollment caps at 300, preserves revocations and stores one-time acknowledgements.');
+
+      const subId='sub_'+('1'.repeat(26)),txnId='txn_'+('1'.repeat(26)),priceId='pri_'+('1'.repeat(26)),customerId='ctm_'+('1'.repeat(26)),catalog=[{amount:5,priceId,lifetime:false}];
+      await db.ref('serverPaddleTransactions/'+txnId).set({uid:'paid-member',amount:5,priceId});
+      const subscription={id:subId,customer_id:customerId,status:'active',created_at:new Date(now-1000).toISOString(),current_billing_period:{ends_at:new Date(now+10000).toISOString()},items:[{price:{id:priceId}}]};
+      const events=[{event_type:'subscription.created',event_id:'evt-created',occurred_at:new Date(now-100).toISOString(),data:subscription},{event_type:'subscription.canceled',event_id:'evt-canceled',occurred_at:new Date(now+100).toISOString(),data:{...subscription,status:'canceled'}},{event_type:'transaction.completed',event_id:'evt-paid',occurred_at:new Date(now).toISOString(),data:{id:txnId,status:'completed',subscription_id:subId,customer_id:customerId,billing_period:{ends_at:new Date(now+10000).toISOString()},items:subscription.items,custom_data:{lumira_user_id:'attacker'}}}];
+      await Promise.all(events.map(async(event,i)=>{const app=initializeApp(options,'billing-cold-'+i);try{await applyPaddleEvent(getDatabase(app),event,catalog);}finally{await deleteApp(app);}}));
+      const paid=(await db.ref('serverPaddleAccounts/paid-member').get()).val();assert.equal(paid.subscriptions[subId].status,'canceled');assert.equal(accountMemberships({}, {},paid,{},now).tier.amount,0);assert.equal((await db.ref('serverPaddleAccounts/attacker').get()).val(),null);
+      await assert.rejects(userDb.ref('serverPaddleAccounts/paid-member').get(),/permission[ _]denied/i);await assert.rejects(userDb.ref('serverBadgeOptOut/member/5').set(false),/permission[ _]denied/i);
+      console.log('PASS: concurrent cold-SDK Paddle events stay ordered, bind to the server checkout owner and remain private.');
+
+      const words='I am happy and you are here in a small house today'.split(' ').map(w=>({w,meaning:''}));let generations=0;
+      const story=createStoriesHandler({identity:async()=>({uid:'story-member',db}),wordPool:()=>words,generateStory:async()=>{generations++;return{title:'small house',sentences:Array.from({length:6},()=>({text:'I am happy and you are here in a small house today.',translation:'Ben mutluyum ve sen bugün küçük bir evdesin.'}))};}},()=>now);
+      const storyBody={action:'generate',id:'real-sdk-story-1100-test',language:'en',native:'tr',genre:'daily',style:'anime',voice:'calm',level:1},storyRequest=()=>new Request('https://lumira.test/.netlify/functions/stories',{method:'POST',body:JSON.stringify(storyBody)});
+      assert.equal((await story(storyRequest())).status,200);assert.equal((await story(storyRequest())).status,200);assert.equal(generations,1);assert.equal((await db.ref('serverFeatureUsage/story-member').get()).val(),null);await assert.rejects(userDb.ref('serverStories/story-member').get(),/permission[ _]denied/i);
+      console.log('PASS: real SDK stories are private, saved once and independent of writing quotas.');
 
     }finally{await Promise.all([owner,member,manager].map(deleteApp));}
 
