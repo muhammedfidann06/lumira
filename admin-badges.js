@@ -25,9 +25,13 @@ const AWARDS = {
   };
 const symbols={sampiyon:'🏆',elmas:'💎',efsane:'🌟',nisanci:'🎯',ates:'🔥',oncu:'🚀',bilge:'🧠',kitapkurdu:'📚',birinci:'🥇',madalya:'🏅',onur:'🎖️',kelebek:'🦋'};
 const lang=()=>COPY[window.NATIVE_LANG]?window.NATIVE_LANG:'en';
+const NETWORK={tr:'Kullanıcı listesi hazır; yönetim sunucusuna bağlanılamadı. Son sürümü Netlify’da dağıttıktan sonra yeniden dene.',en:'User list is ready, but the admin server is unavailable. Retry after deploying the latest version on Netlify.',de:'Die Nutzerliste ist bereit. Der Verwaltungsserver ist nicht erreichbar. Nach dem aktuellen Netlify-Deployment erneut versuchen.',ar:'قائمة المستخدمين جاهزة، لكن خادم الإدارة غير متاح. أعد المحاولة بعد نشر أحدث إصدار على Netlify.',fr:'La liste est prête, mais le serveur est indisponible. Réessaie après le dernier déploiement Netlify.',es:'La lista está lista, pero el servidor no está disponible. Reintenta después del último despliegue en Netlify.',ru:'Список готов, но сервер управления недоступен. Повтори после публикации последней версии на Netlify.'};
+const RETRY={tr:'Yeniden dene',en:'Retry',de:'Erneut versuchen',ar:'إعادة المحاولة',fr:'Réessayer',es:'Reintentar',ru:'Повторить'};
+function errorText(error){return error?.featureCode==='admin_required'||error?.code==='PERMISSION_DENIED'?text('denied'):NETWORK[lang()];}
 function text(key,values){let s=COPY[lang()][key]||COPY.en[key]||key;for(const[k,v]of Object.entries(values||{}))s=s.replaceAll('{'+k+'}',String(v));return s;}
 const node=(tag,cls,value)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=value;return n;};
 const option=(value,label)=>{const n=node('option','',label);n.value=value;return n;};
+const searchKey=value=>String(value||'').normalize('NFKD').replace(/\p{M}/gu,'').toLocaleLowerCase().replace(/ı/g,'i').replace(/[^\p{L}\p{N}]/gu,'');
 let active=null,controller=null;
 async function allow(uids,amount){const F=window.LUMIRA_FEATURES;for(let offset=0;offset<uids.length;offset+=100)await F.adminBadges('allow',{id:F.id(),uids:uids.slice(offset,offset+100),amount});}
 function open(){
@@ -47,9 +51,13 @@ function open(){
   const note=node('p','pwa-note',text('note')),remove=node('button','pwa-btn',text('remove')),cancel=node('button','pwa-btn ghost',text('cancel'));remove.type=cancel.type='button';remove.disabled=true;remove.style.background='#a83d57';remove.style.color='#fff';remove.dataset.adminBadgeRemove='';
   body.append(form,note,status,remove,cancel);cancel.onclick=()=>{controller?.abort();active?.close();active=null;};
   function badges(){badge.replaceChildren(option('all',kind.value==='all'?text('all'):text('allKind')));if(kind.value==='support'){for(const tier of window.LUMIRA_BADGES.tiers){const names=window.t?.('tier_names')||{};badge.append(option(String(tier.amount),tier.badge+' '+(names[tier.sku]||tier.name)));}}else if(kind.value==='award'){for(const[key,icon]of Object.entries(symbols))badge.append(option(key,icon+' '+(AWARDS[key]?.[lang()]||key)));}badge.disabled=kind.value==='all';}
-  function people(){const selected=person.value,q=search.value.trim().toLocaleLowerCase();person.replaceChildren(option('',text('choose')));for(const u of users.filter(u=>!q||(u.name+' '+u.uid).toLocaleLowerCase().includes(q)).slice(0,100))person.append(option(u.uid,u.name));if([...person.options].some(o=>o.value===selected))person.value=selected;}
+  function people(){const selected=person.value,q=searchKey(search.value);person.replaceChildren(option('',text('choose')));for(const u of users.filter(u=>!q||searchKey(u.name+' '+u.uid).includes(q)).slice(0,100))person.append(option(u.uid,u.name));if([...person.options].some(o=>o.value===selected))person.value=selected;}
   kind.onchange=badges;search.oninput=people;scope.onchange=()=>{search.parentElement.hidden=person.parentElement.hidden=scope.value==='all';};badges();
-  (async()=>{try{let token,seen=new Set();do{const page=await F.adminBadges('list',token?{pageToken:token}:{},{signal});if(!body.isConnected||signal.aborted)return;users.push(...page.users);token=page.nextPageToken;if(token&&seen.has(token))throw Error('invalid_page');seen.add(token);}while(token);users=[...new Map(users.map(u=>[u.uid,u])).values()];people();status.textContent=users.length?text('count',{n:users.length}):text('empty');remove.disabled=!users.length;}catch(error){if(body.isConnected&&!signal.aborted)status.textContent=error.featureCode==='admin_required'?text('denied'):text('failed',{n:0});}})();
+  const retry=node('button','pwa-btn ghost',RETRY[lang()]);retry.type='button';retry.hidden=true;body.insertBefore(retry,remove);
+  async function load(){remove.disabled=true;retry.hidden=true;status.textContent=text('loading');const profiles={};
+   try{const d=window.LB_getDb?.();if(d){Object.assign(profiles,(await d.ref('leaderboard').once('value')).val()||{});if(signal.aborted||!body.isConnected)return;users=Object.entries(profiles).map(([uid,p])=>({uid,name:p.name||uid}));people();}}catch{}
+   try{let token,seen=new Set(),verified=[];do{const page=await F.adminBadges('list',token?{pageToken:token}:{},{signal});if(!body.isConnected||signal.aborted)return;if(!Array.isArray(page.users))throw Error('invalid_page');verified.push(...page.users);token=page.nextPageToken;if(token&&seen.has(token))throw Error('invalid_page');seen.add(token);}while(token);users=[...new Map(verified.map(u=>[u.uid,{uid:u.uid,name:profiles[u.uid]?.name||u.name||u.uid}])).values()];people();status.textContent=users.length?text('count',{n:users.length}):text('empty');remove.disabled=!users.length;}catch(error){if(body.isConnected&&!signal.aborted){status.textContent=errorText(error);retry.hidden=false;}}
+  }retry.onclick=load;load();
   remove.onclick=async()=>{
    if(busy)return;const targets=scope.value==='all'?users.map(u=>u.uid):[person.value].filter(Boolean);if(!targets.length){PWA.toast(text('missing'),{kind:'bad'});return;}
    const chosen=badge.selectedOptions[0]?.textContent||text('all');if(!window.confirm(text('confirm',{badge:chosen,n:targets.length})))return;
@@ -61,6 +69,6 @@ function open(){
   };
  });
 }
-window.LUMIRA_ADMIN_BADGES={open,allow,text};
+window.LUMIRA_ADMIN_BADGES={open,allow,text,errorText};
 window.addEventListener('lumira:featureauthchange',()=>{controller?.abort();active?.close();active=null;});
 })();

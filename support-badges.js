@@ -98,8 +98,7 @@
        gerçek satın alma kararını etkilememesi için doğrudan API varlığına
        bakıyoruz, daha güvenilir. */
     if (!window.PaymentRequest || typeof window.getDigitalGoodsService !== 'function') {
-      toast(window.LUMIRA_ACCESS_COPY.text('purchaseWeb'), { duration: 8000 });
-      return;
+      return window.LUMIRA_BILLING?.purchase(t.amount);
     }
     if(revoked(t.amount)){toast(({tr:'Bu rozet hesabında yönetici tarafından kaldırıldı.',en:'An administrator has removed this badge from your account.',de:'Dieses Abzeichen wurde von einem Administrator aus deinem Konto entfernt.',ar:'أزال المسؤول هذه الشارة من حسابك.',fr:'Un administrateur a retiré ce badge de ton compte.',es:'Un administrador ha retirado esta insignia de tu cuenta.',ru:'Администратор удалил этот значок из твоего аккаунта.'})[window.NATIVE_LANG||'tr']||'An administrator has removed this badge from your account.',{kind:'bad'});return;}
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: { sku: t.sku } }];
@@ -142,8 +141,8 @@
         el.type = 'button';
         el.className = 'sup-item' + (owned ? ' owned' : '');
         el.innerHTML =
-          '<span class="sup-amount">' + t.try_ + ' ₺</span>' +
-          '<span class="sup-eur">~' + t.amount + ' €</span>' +
+          '<span class="sup-amount">' + (typeof window.getDigitalGoodsService==='function'?t.try_+' ₺':tierName(t)) + '</span>' +
+          '<span class="sup-eur">' + (typeof window.getDigitalGoodsService==='function'?'~'+t.amount+' €':window.LUMIRA_BILLING.text(28)) + '</span>' +
           '<span class="sup-badge">' + t.badge + '</span>' +
           '<span class="sup-xp">+' + t.xp + ' XP</span>';
         el.disabled=revoked(t.amount);

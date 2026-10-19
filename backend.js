@@ -1,7 +1,7 @@
 /* Public routing only. Credentials and account limits stay on the server. */
 (function(root){
   'use strict';
-  const functions=new Set(['features','live-audio','examples','tts','admin-badges']);
+  const functions=new Set(['features','live-audio','examples','tts','admin-badges','stories','billing']);
   const github=root.location.origin==='https://muhammedfidann06.github.io' &&
     (root.location.pathname==='/lumira' || root.location.pathname.startsWith('/lumira/'));
   const base=(github?'https://lumira-tr.com':'')+'/.netlify/functions/';

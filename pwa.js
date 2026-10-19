@@ -20,7 +20,7 @@
    ========================================================================== */
 (function () {
 'use strict';
-var APP_VERSION='1.9.8';
+var APP_VERSION='1.10.0';
 
 
 /* ========================================================== AYARLAR ====== */
@@ -354,6 +354,7 @@ function setupBackButton() {
       pushGuard();
       return;
     }
+    if(window.LUMIRA_STORIES?.back?.()){pushGuard();return;}
     /* 2) Kategori paneli açıksa kapat */
     var cat = $('catOverlay');
     if (cat && getComputedStyle(cat).display !== 'none' && cat.classList.contains('show')) {
@@ -1442,6 +1443,7 @@ function openProfile() {
       return;
     }
 
+    window.LUMIRA_BILLING?.mountProfile(b);
     var loginName = (u.email || '').split('@')[0];
     var info = row('🪪', T('profile_login_name_row'), T('profile_login_name_desc')(loginName));
     info.style.cursor = 'default';
@@ -2052,9 +2054,9 @@ function openSettings() {
     langRow.onclick = function () { openLanguageSettings(); };
     b.appendChild(langRow);
 
+    if(!isTwa&&typeof window.getDigitalGoodsService!=='function'){var pricing=row('💳',window.LUMIRA_BILLING?.text(0)||'Plans','');pricing.onclick=function(){location.href=new URL('./pricing/?lang='+(window.NATIVE_LANG||'tr'),location.href).href;};b.appendChild(pricing);}
     var prof = row('👤', t('profile_row'), t('profile_desc'));
     prof.onclick = function () {
-      if (window.LUMIRA_LOCK && !window.LUMIRA_LOCK.level(3, 'Profilim')) return;
       openProfile();
     };
     b.appendChild(prof);

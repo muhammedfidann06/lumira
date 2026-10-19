@@ -43,6 +43,7 @@
         ['📊', 'Kullanım istatistikleri', 'Günlük kullanıcı, olaylar, quiz hunisi', openStats],
         ['⭐', 'XP gönder',               'Bir kullanıcıya XP ekle',                openXp],
         ['🏅', 'Başarım rozeti ver',      'Özel başarım rozeti (Başarımlar)',       openGiveBadge],
+        ['💳', 'Paddle bağlantısı', 'Mevcut ürünleri, fiyatları ve abonelik bağlantısını hazırla', ()=>window.LUMIRA_BILLING.setup()],
         ['💛', 'Destek rozeti ver',       'Satın alma gibi açar (PDF vb. + XP)',    openGiveSupport],
         ['🗑️', window.LUMIRA_ADMIN_BADGES.text('title'), window.LUMIRA_ADMIN_BADGES.text('sub'), window.LUMIRA_ADMIN_BADGES.open],
         ['🎓', 'Seviye aktar',            'Bir seviyenin tüm kelimelerini bilinene ekle', openTransferLevel],
@@ -590,23 +591,27 @@
       var send = mkBtn('Rozeti ver');
       syncMode();
 
-      /* Bir UID grubuna XP+rozet yaz: önce mevcut xp'leri OKU, sonra TEK
-         toplu update ile yaz (N kişi için 1 okuma turu + 1 yazma). */
+      /* Rozet ve XP değişikliklerini tekrar denemeye ve eşzamanlı çalışmaya dayanıklı kaydet. */
       function grantToUids(uids, chosen){
-        var amount = chosen[0], xp = chosen[3];
-        return window.LUMIRA_ADMIN_BADGES.allow(uids,amount).then(function(){return Promise.all(uids.map(function(uid){
-          return d.ref('progress/' + uid + '/meta/xp').once('value').then(function(sn){
-            return { uid: uid, cur: (typeof sn.val()==='number') ? sn.val() : 0 };
-          });
-        }));}).then(function(results){
-          var updates = {};
-          results.forEach(function(r){
-            var next = r.cur + xp;
-            updates['progress/' + r.uid + '/meta/supportGrants/' + amount] = true;
-            updates['progress/' + r.uid + '/meta/xp'] = next;
-            updates['leaderboard/' + r.uid + '/xp'] = next;
-          });
-          return d.ref().update(updates).then(function(){ return results.length; });
+        var amount=chosen[0],xp=chosen[3];uids=Array.from(new Set(uids));
+        if(uids.some(uid=>typeof uid!=='string'||!uid||uid.length>128||/[.#$\/\[\]\u0000-\u001f\u007f]/.test(uid)))return Promise.reject(new Error('Geçersiz kullanıcı kimliği'));
+        return Promise.all(uids.map(uid=>Promise.all([d.ref('progress/'+uid+'/meta/xp').once('value'),d.ref('leaderboard/'+uid+'/xp').once('value'),d.ref('progress/'+uid+'/meta/supportGrants/'+amount).once('value')]).then(sn=>({uid:uid,cur:Math.max(Number(sn[0].val())||0,Number(sn[1].val())||0),granted:sn[2].val()})))).then(function(results){
+          var revoked=results.filter(r=>r.granted===false).map(r=>r.uid);
+          return (revoked.length?window.LUMIRA_ADMIN_BADGES.allow(revoked,amount):Promise.resolve()).then(()=>results);
+        }).then(async function(results){
+          // Compare-and-retry protects concurrent gifts and study XP. Retrying
+          // a partly completed batch repairs the leaderboard without more XP.
+          for(var offset=0;offset<results.length;offset+=20)await Promise.all(results.slice(offset,offset+20).map(async function(r){
+            var ref=d.ref('progress/'+r.uid+'/meta'),keep=function(){};ref.on('value',keep);
+            try{
+              await ref.once('value');
+              var result=await ref.transaction(function(current){var value=current||{},owned=value.supportGrants?.[amount]===true;return {...value,supportGrants:{...value.supportGrants,[amount]:true},xp:Math.max(Number(value.xp)||0,r.cur)+(owned?0:xp)};},undefined,false);
+              if(!result.committed)throw new Error('Rozet kaydedilemedi');
+              var next=result.snapshot.val().xp;
+              await d.ref('leaderboard/'+r.uid+'/xp').transaction(function(value){return Math.max(Number(value)||0,next);},undefined,false);
+            }finally{ref.off('value',keep);}
+          }));
+          return results.length;
         });
       }
 
@@ -629,7 +634,7 @@
             }
           }).catch(function (e) {
             send.disabled = false; syncMode();
-            toast('Verilemedi: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
+            toast('Verilemedi: ' + (window.LUMIRA_ADMIN_BADGES.errorText(e)), { kind: 'bad', duration: 8000 });
           });
           return;
         }
@@ -646,7 +651,7 @@
             toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' rozeti ' + n + ' kişiye gönderildi', { kind: 'good', duration: 7000 });
           }).catch(function (e) {
             send.disabled = false; syncMode();
-            toast('Gönderilemedi: ' + ((e && e.message) || 'hata'), { kind: 'bad', duration: 8000 });
+            toast('Gönderilemedi: ' + (e.featureCode?window.LUMIRA_ADMIN_BADGES.errorText(e):e.message||'Bağlantı kurulamadı'), { kind: 'bad', duration: 8000 });
           });
           return;
         }
@@ -661,7 +666,7 @@
           toast('✅ ' + chosen[1] + ' ' + chosen[2] + ' rozeti ' + n + ' kişiye gönderildi', { kind: 'good', duration: 7000 });
         }).catch(function (e) {
           send.disabled = false; syncMode();
-          toast('Gönderilemedi: ' + ((e && e.message) || 'hata'), { kind: 'bad', duration: 8000 });
+          toast('Gönderilemedi: ' + (e.featureCode?window.LUMIRA_ADMIN_BADGES.errorText(e):e.message||'Bağlantı kurulamadı'), { kind: 'bad', duration: 8000 });
         });
       };
       b.appendChild(send);

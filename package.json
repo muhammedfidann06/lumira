@@ -1,7 +1,7 @@
 {
   "name": "lumira-features",
   "private": true,
-  "version": "1.9.8",
+  "version": "1.10.0",
   "description": "Server-side authentication and account usage for Lumira",
   "engines": {
     "node": ">=22"
@@ -16,6 +16,7 @@
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "build:examples": "node scripts/build-example-sources.mjs"
+    "build:examples": "node scripts/build-example-sources.mjs",
+    "build:stories": "node scripts/build-story-sources.mjs"
   }
 }

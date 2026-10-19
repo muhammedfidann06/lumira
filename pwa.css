@@ -1298,3 +1298,7 @@ html.lumira-android .splash-lb{touch-action:pan-y;}
 .card > .face > .speak-controls,
 .card > .face > .speak-caption{flex-shrink:0;max-width:100%;overflow-wrap:anywhere;}
 @media (prefers-reduced-motion:reduce){.card > .face{transition:none;}}
+
+/* Comfortable dialog widths and solid contrast on larger screens. */
+.pwa-sheet{isolation:isolate;background:linear-gradient(180deg,#131a34,#080b19)}
+@media(min-width:720px){.pwa-sheet{box-sizing:border-box;width:680px;left:calc(50% - 340px);right:auto;max-height:86dvh;border-radius:22px 22px 0 0}}

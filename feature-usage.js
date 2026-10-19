@@ -145,7 +145,7 @@
   const PROVIDER_PRIVACY={"tr": "Çevrimiçi modda sesin çalışan çeviri sağlayıcısında işlenir (Azure, Gemini, Groq veya Cloudflare). Cihaz modunda ses ve metin cihazında işlenir. Uygulama ses kaydı saklamaz. Modeller ilk kullanımda indirilir; kullanım hakkını doğrulamak için internet gerekir.", "en": "Online audio is processed by the active translation provider (Azure, Gemini, Groq or Cloudflare). In device mode, speech and text are processed on your device. The app does not store recordings. Models download on first use; allowance checks require internet.", "de": "Online verarbeitet der aktive Übersetzungsdienst deine Audiodaten (Azure, Gemini, Groq oder Cloudflare). Im lokalen Modus bleiben Sprach- und Textverarbeitung auf deinem Gerät. Die App speichert keine Aufnahmen. Modelle werden beim ersten Mal geladen; das Kontingent wird online geprüft.", "ar": "في الوضع المتصل، يعالج مزود الترجمة النشط الصوت (Azure أو Gemini أو Groq أو Cloudflare). في الوضع المحلي، تتم معالجة الصوت والنص على جهازك. لا يحفظ التطبيق التسجيلات. تُنزّل النماذج عند أول استخدام؛ يلزم الإنترنت للتحقق من حصة الاستخدام.", "fr": "En ligne, le service de traduction actif traite l’audio (Azure, Gemini, Groq ou Cloudflare). En mode local, la parole et le texte sont traités sur ton appareil. L’application ne conserve pas les enregistrements. Les modèles se téléchargent au premier usage ; la vérification du quota nécessite Internet.", "es": "En línea, el proveedor de traducción activo procesa el audio (Azure, Gemini, Groq o Cloudflare). En modo local, la voz y el texto se procesan en tu dispositivo. La aplicación no guarda grabaciones. Los modelos se descargan la primera vez; verificar el cupo requiere Internet.", "ru": "В онлайн-режиме звук обрабатывает активный сервис перевода (Azure, Gemini, Groq или Cloudflare). В локальном режиме речь и текст обрабатываются на устройстве. Приложение не хранит записи. Модели загружаются при первом использовании; для проверки лимита нужен интернет."};
   Object.keys(PROVIDER_PRIVACY).forEach(lang=>{COPY[lang].privacy=PROVIDER_PRIVACY[lang];});
   const CONNECTION_COPY={tr:'Hizmete şu anda bağlanılamıyor. Lütfen biraz sonra tekrar dene.',en:'The service cannot be reached right now. Please try again shortly.',de:'Der Dienst ist gerade nicht erreichbar. Bitte versuche es gleich noch einmal.',ar:'يتعذر الاتصال بالخدمة حالياً. يُرجى المحاولة مرة أخرى بعد قليل.',fr:'Le service est momentanément inaccessible. Réessaie dans quelques instants.',es:'No se puede conectar con el servicio en este momento. Inténtalo de nuevo en unos instantes.',ru:'Сейчас не удаётся подключиться к сервису. Попробуй ещё раз немного позже.'};
-  Object.keys(CONNECTION_COPY).forEach(lang=>{COPY[lang].server_not_configured=CONNECTION_COPY[lang];COPY[lang].backend_unavailable=CONNECTION_COPY[lang];});
+  Object.keys(CONNECTION_COPY).forEach(lang=>{COPY[lang].server_not_configured=CONNECTION_COPY[lang];COPY[lang].backend_unavailable=CONNECTION_COPY[lang];COPY[lang].request_timeout=CONNECTION_COPY[lang];});
   for(const [lang,copy] of Object.entries(window.LUMIRA_ACCESS_COPY.rows)){
     Object.assign(COPY[lang],{writing:copy.writingUsage,live:copy.liveUsage,unlimited:copy.noLimit,writing_limit:copy.limitTitle,live_limit:copy.limitTitle,pdf_limit:copy.pdfNote,pdf_badge_required:copy.needBadge});
   }
@@ -153,6 +153,16 @@
   let cached = null, cachedUid = '', cachedToken = '', cachedTokenUid = '', authBound = false;
   const endpoint=name=>window.LUMIRA_BACKEND?.url(name) || '/.netlify/functions/'+name;
   const user = () => { try { return window.firebase.auth().currentUser; } catch (e) { return null; } };
+  let expiryTimer;
+  function entitlement(){
+    const uid=user()?.uid;if(!uid)return null;let policy=cachedUid===uid?cached:null;
+    if(!policy)try{policy=JSON.parse(localStorage.getItem('lumira_entitlement_'+uid)||'null');}catch{}
+    if(!policy||!Array.isArray(policy.memberships))return policy;
+    const now=Number(policy.serverNow||Date.now())+Math.max(0,Date.now()-(policy.savedAt||Date.now()));
+    const rows=policy.memberships.filter(row=>!row.revoked&&!row.removed&&row.sources.some(s=>['active','trialing','past_due'].includes(s.status)&&(s.lifetime||s.endsAt>now)&&(!s.cancelAt||s.cancelAt>now)));
+    const amount=Math.max(0,...rows.map(row=>row.amount)),limit=amount===0?0:amount===1?5:null,used=policy.pdf?.used||0;
+    return{...policy,tier:amount,badge:rows.find(row=>row.amount===amount)?.badge||'',supportAmounts:rows.map(row=>row.amount),offline:amount>0,pdf:{...policy.pdf,limit,remaining:limit===null?null:Math.max(0,limit-used)}};
+  }
   const text = (key, values) => {
     const copy = COPY[window.NATIVE_LANG || 'tr'] || COPY.en;
     let s = copy[key] || COPY.en[key] || copy.usage_unavailable;
@@ -162,8 +172,11 @@
   function fail(code) { return Object.assign(new Error(code), { featureCode: code }); }
   function publish(quota, uid) {
     if (!quota || user()?.uid !== uid) return;
-    cached = quota; cachedUid = uid;
-    try { localStorage.setItem('lumira_entitlement_'+uid,JSON.stringify({tier:quota.tier,badge:quota.badge,pdf:quota.pdf,offline:quota.offline,supportAmounts:quota.supportAmounts,revokedSupport:quota.revokedSupport})); } catch(e) {}
+    cached = {...quota,savedAt:Date.now()}; cachedUid = uid;
+    clearTimeout(expiryTimer);
+    const ends=(quota.memberships||[]).filter(row=>row.active).flatMap(row=>row.sources.filter(s=>s.active&&!s.lifetime).map(s=>s.cancelAt?Math.min(s.endsAt,s.cancelAt):s.endsAt)).filter(at=>at>quota.serverNow);
+    if(ends.length){expiryTimer=setTimeout(()=>{if(user()?.uid!==uid)return;window.PR_refreshBadges?.();if(navigator.onLine)api('status').catch(()=>{});},Math.min(2147483000,Math.max(100,Math.min(...ends)-quota.serverNow+100)));expiryTimer?.unref?.();}
+    try { localStorage.setItem('lumira_entitlement_'+uid,JSON.stringify({tier:quota.tier,badge:quota.badge,pdf:quota.pdf,offline:quota.offline,supportAmounts:quota.supportAmounts,revokedSupport:quota.revokedSupport,memberships:quota.memberships,serverNow:quota.serverNow,savedAt:Date.now()})); } catch(e) {}
     listeners.forEach(fn => fn(quota));
     document.querySelectorAll('[data-writing-quota]').forEach(el => { el.textContent = writingLabel(quota); el.classList.remove('feature-error'); });
   }
@@ -172,23 +185,26 @@
     if (!u) throw fail('login_required');
     const uid = u.uid;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), Math.min(25000,options?.timeoutMs || 25000));
+    const timer = setTimeout(() => controller.abort(), Math.min(options?.service==='stories'?45000:25000,options?.timeoutMs || (options?.service==='stories'?45000:25000)));
     const abort=()=>controller.abort();
     if(options?.signal){if(options.signal.aborted)abort();else options.signal.addEventListener('abort',abort,{once:true});}
     let tokenAbort;
     try {
-      const token = await Promise.race([Promise.resolve().then(()=>u.getIdToken()),new Promise((resolve,reject)=>{
+      const getToken = refresh => Promise.race([Promise.resolve().then(()=>u.getIdToken(refresh)),new Promise((resolve,reject)=>{
         tokenAbort=()=>reject(Object.assign(new Error('Request cancelled'),{name:'AbortError'}));
         if(controller.signal.aborted)tokenAbort();else controller.signal.addEventListener('abort',tokenAbort,{once:true});
       })]);
-      controller.signal.removeEventListener('abort',tokenAbort);
+      const send=async refresh=>{
+      const token=await getToken(refresh);controller.signal.removeEventListener('abort',tokenAbort);
       if(user()?.uid!==uid)throw fail('login_required');
       cachedToken=token;cachedTokenUid=uid;
-      const response = await fetch(endpoint(options?.admin?'admin-badges':options?.audio?'live-audio':'features'), {
+      return fetch(endpoint(options?.service|| (options?.admin?'admin-badges':options?.audio?'live-audio':'features')), {
         method: 'POST', credentials:'omit', cache: 'no-store', signal: controller.signal,
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
         body: JSON.stringify(Object.assign({ action }, params)), keepalive: !!(options && options.keepalive)
       });
+      };
+      let response=await send(false);if(response.status===401){await response.body?.cancel();response=await send(true);}
       let data;
       try { data = await response.json(); } catch (e) { throw fail('backend_unavailable'); }
       if(!data || typeof data!=='object' || Array.isArray(data))throw fail('backend_unavailable');
@@ -199,7 +215,7 @@
         throw fail(data.error || 'usage_unavailable');
       }
       return data;
-    } catch (e) { throw e.featureCode ? e : fail(options?.audio || action==='liveConnect'?'speech_unavailable':'usage_unavailable'); }
+    } catch (e) { throw e.featureCode ? e : fail(options?.audio || action==='liveConnect'?'speech_unavailable':e?.code?.startsWith('auth/')?'login_required':e?.name==='AbortError'?'request_timeout':'backend_unavailable'); }
     finally { clearTimeout(timer);if(tokenAbort)controller.signal.removeEventListener('abort',tokenAbort);options?.signal?.removeEventListener('abort',abort); }
   }
   function writingLabel(quota) {
@@ -237,7 +253,7 @@
     if (!id || !cachedToken || cachedTokenUid!==user()?.uid) return;
     fetch(endpoint('features'), { method: 'POST', credentials:'omit', keepalive: true, headers: { 'Content-Type':'application/json', Authorization:'Bearer ' + cachedToken }, body: JSON.stringify({ action:'liveStop', id }) }).catch(() => {});
   }
-  window.LUMIRA_FEATURES = { api, adminBadges:(action,params,options)=>api(action,params,{...options,admin:true}), audio:(params,options)=>api('audio',params,{...options,audio:true}), entitlement:()=>{const uid=user()?.uid;if(!uid)return null;if(cachedUid===uid && cached)return cached;try{return JSON.parse(localStorage.getItem('lumira_entitlement_'+uid)||'null');}catch{return null;}}, text, errorText: e => text(e?.featureCode || 'usage_unavailable'), mountWriting, verifyPurchase, restorePurchases, releaseOnExit,
+  window.LUMIRA_FEATURES = { api, service:(service,action,params,options)=>api(action,params,{...options,service}), adminBadges:(action,params,options)=>api(action,params,{...options,admin:true}), audio:(params,options)=>api('audio',params,{...options,audio:true}), entitlement, text, errorText: e => text(e?.featureCode || 'usage_unavailable'), mountWriting, verifyPurchase, restorePurchases, releaseOnExit,
     id: () => crypto.randomUUID ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(20)), n => n.toString(16).padStart(2,'0')).join(''),
     getQuota: () => cachedUid === user()?.uid ? cached : null,
     subscribe: fn => { listeners.add(fn); return () => listeners.delete(fn); }
@@ -246,7 +262,7 @@
     if (authBound) return;
     try {
       window.firebase.auth().onAuthStateChanged(() => {
-        cached = null; cachedUid = ''; cachedToken = ''; cachedTokenUid = '';
+        clearTimeout(expiryTimer); cached = null; cachedUid = ''; cachedToken = ''; cachedTokenUid = '';
         window.dispatchEvent(new Event('lumira:featureauthchange'));
       });
       authBound = true;

@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.9.8';
+const CACHE_VERSION = 'v1.10.0';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -46,6 +46,12 @@ const SHELL = [
   './progress.js',
   './backend.js',
   './feature-usage.js',
+  './android-store.js',
+  './billing.js',
+  './welcome-gift.js',
+  './story-i18n.js',
+  './stories.js',
+  './stories.css',
   './example-translations.js',
   './access-i18n.js',
   './access-screen.js',
@@ -108,7 +114,7 @@ self.addEventListener('install', (event) => {
     const vocab = await caches.open(VOCAB_CACHE);
     const previous = await caches.open('lumira-vocab-v1');
     await Promise.all(VOCAB_FILES.map(async url => {
-      if(url.endsWith('vocab-de.js') || await previous.match(url,{ignoreSearch:true})){
+      if(!(await vocab.match(url,{ignoreSearch:true})) && (url.endsWith('vocab-de.js') || await previous.match(url,{ignoreSearch:true}))){
         await vocab.add(new Request(url,{cache:'reload'}));
       }
     }));
@@ -223,18 +229,22 @@ async function networkFirst(req, cacheName) {
 
 async function handleNavigate(event) {
   const cache = await caches.open(SHELL_CACHE);
+  const requested = new URL(event.request.url);
+  const scope = new URL(self.registration.scope);
+  const appDocument = requested.origin === scope.origin &&
+    (requested.pathname === scope.pathname || requested.pathname === scope.pathname + 'index.html');
+  const key = appDocument ? new URL('index.html', scope).href : requested.origin + requested.pathname;
+  const remember = (response) => {
+    if (response.ok) cache.put(key, response.clone()).catch(() => {});
+    return response;
+  };
   try {
     const preload = await event.preloadResponse;
-    if (preload) {
-      cache.put('./index.html', preload.clone()).catch(() => {});
-      return preload;
-    }
-    const fresh = await fetch(event.request);
-    cache.put('./index.html', fresh.clone()).catch(() => {});
-    return fresh;
+    if (preload) return remember(preload);
+    return remember(await fetch(event.request));
   } catch (e) {
-    return (await cache.match('./index.html')) ||
-           (await cache.match('./')) ||
+    return (await cache.match(key)) ||
+           (appDocument && await cache.match('./')) ||
            (await cache.match(OFFLINE_URL)) ||
            new Response('<h1>Çevrimdışı</h1>', { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   }

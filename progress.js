@@ -45,6 +45,7 @@
      kimlik doğrulama/isim olayı (LB_onNameReady) onu sessizce Ana Sayfa'ya
      ATMASIN ve bu sırada üst dil kutusunu tekrar göstermesin diye. */
   let pmInWritingFlow = false;
+  let pmInStoryFlow = false;
 
   let batch = [];
   let batchResult = {};
@@ -636,6 +637,7 @@
   window.PM_injectStyles = injectStyles;
 
   function renderHome(){
+    if(pmInStoryFlow)window.LUMIRA_STORIES?.unmount();pmInStoryFlow=false;
     pmInWritingFlow = false;
     injectStyles();
     if(!dataLoaded){
@@ -814,6 +816,8 @@
     html += '<button class="pm-btn small" id="pmLevelTestBtn">'+window.t('pm_level_test_btn')+'</button>';
     html += '<button class="pm-btn small" id="pmKnownBtn">✅ '+window.t('pm_known')+' ('+totalKnownLang+')</button>';
     html += '<button class="pm-btn small" id="pmWeakBtn">📉 '+window.t('pm_weak')+'</button>';
+    html += '<button class="pm-btn small" id="pmWritingBtn">'+window.t('nb_writing_practice')+'</button>';
+    html += '<button class="pm-btn small" id="pmStoryBtn">📖 '+window.LUMIRA_STORY_COPY.text('title')+'</button>';
     html += awHtml;    /* Başarımlar (mistakes butonunun altında) */
     html += supHtml;   /* Rozetler */
     html += '</div>';
@@ -850,6 +854,8 @@
     document.getElementById('pmLevelTestBtn').onclick = openLevelTestPicker;
     document.getElementById('pmKnownBtn').onclick = renderKnownWords;
     document.getElementById('pmWeakBtn').onclick = renderWeakWords;
+    document.getElementById('pmWritingBtn').onclick=renderWritingLangSelect;
+    document.getElementById('pmStoryBtn').onclick=renderStories;
     const dueBtn = document.getElementById('pmDueBtn');
     if(dueBtn) dueBtn.onclick = startDailyReview;
 
@@ -1966,7 +1972,7 @@
     // görünmesine yol açıyordu, çünkü renderHome kendi dil kutusu gizleme
     // mantığını çalıştırırken kullanıcı farklı bir ekrandaydı).
     const isVisible = root && root.style.display !== 'none';
-    loadUserData(name, (isVisible && !pmInWritingFlow) ? renderHome : null);
+    loadUserData(name, (isVisible && !pmInWritingFlow && !pmInStoryFlow) ? renderHome : null);
   };
 
   window.PM_open = function(){ openPersonalMode(); };
@@ -1987,6 +1993,7 @@
 
       const personalTab = document.getElementById('tabPersonal');
       if(!personalTab || !personalTab.classList.contains('active') || !root || root.style.display === 'none') return;
+      if(pmInStoryFlow&&window.LUMIRA_STORIES?.isMounted()){window.LUMIRA_STORIES.refreshLocale();return;}
 
       if(pmInWritingFlow){
         ['langBox','langPair','levelBox','chips'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
@@ -2026,6 +2033,9 @@
      Kişisel sekmesine geçer (isim/veri kontrolü dahil) ve Ana Sayfa
      yerine doğrudan dil seçim ekranını gösterir. */
   window.PM_openWritingPractice = function(){ openPersonalMode(renderWritingLangSelect); };
+  function renderStories(){pmInWritingFlow=false;pmInStoryFlow=true;['langBox','langPair','levelBox','chips'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});window.LUMIRA_STORIES.mount(root,renderHome);}
+  window.PM_openStories=function(){openPersonalMode(renderStories);};
+  window.PR_storyWords=function(language){const uid=window.firebase?.auth?.().currentUser?.uid;if(!dataLoaded||!uid||currentKey!==uid||language!==TARGET_LANG)return[];return poolForActiveLang().filter(v=>getRecord(v)?.known).map(v=>({w:FRONT_W(v),meaning:BACK_W(v)}));};
   window.PM_openLiveTranslation = function(){
     const tab = document.getElementById('tabLiveTranslate');
     if(tab) tab.click();
