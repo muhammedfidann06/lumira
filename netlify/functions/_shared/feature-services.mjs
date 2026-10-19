@@ -1,6 +1,8 @@
 import { createHash, createSign } from 'node:crypto';
 import { fault, tierFor, TIERS } from './feature-core.mjs';
 import { checkWritingAI } from './writing-ai.mjs';
+import {accountMemberships} from './memberships.mjs';
+import {reconcileAccount} from './paddle-reconcile.mjs';
 
 export const PROJECT = 'mhamzac-ca73d';
 export const DATABASE = 'https://mhamzac-ca73d-default-rtdb.firebaseio.com';
@@ -26,14 +28,14 @@ export async function identity(request) {
   let claims;
   try { claims = await services.auth.verifyIdToken(bearer, true); }
   catch { throw fault('login_required', 401); }
-  const [grants, verified] = await Promise.all([
+  const [grants, verified, billing, optOut] = await Promise.all([
     services.db.ref(`progress/${claims.uid}/meta/supportGrants`).get(),
-    services.db.ref(`serverFeatureEntitlements/${claims.uid}`).get()
+    services.db.ref(`serverFeatureEntitlements/${claims.uid}`).get(),
+    services.db.ref(`serverPaddleAccounts/${claims.uid}`).get(),
+    services.db.ref(`serverBadgeOptOut/${claims.uid}`).get()
   ]);
-  const g=grants.val()||{},v=verified.val()||{};
-  const supportAmounts=TIERS.filter(t=>t.amount>0 && v[t.amount]!==false && (g[t.amount]===true || v[t.amount]===true)).map(t=>t.amount);
-  const revokedSupport=TIERS.filter(t=>t.amount>0 && v[t.amount]===false).map(t=>t.amount);
-  return { ...services, uid: claims.uid, tier:{...tierFor(g,v),supportAmounts,revokedSupport} };
+  const currentBilling=await reconcileAccount(services.db,claims.uid,billing.val()||{});
+  return {...services,uid:claims.uid,tier:accountMemberships(grants.val()||{},verified.val()||{},currentBilling,optOut.val()||{}).tier};
 }
 export async function speechToken() {
   const key = process.env.AZURE_SPEECH_KEY, region = process.env.AZURE_SPEECH_REGION;

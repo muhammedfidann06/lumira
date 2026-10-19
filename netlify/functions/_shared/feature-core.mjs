@@ -73,6 +73,7 @@ export function summary(value, tier, now, zone = 'Europe/Vienna') {
   const starts = Object.values(s.live.intervals).filter(i => i.end > i.start).map(i => Math.max(i.start, now - WINDOW_MS));
   return {
     serverNow: now, tier: tier.amount, badge: tier.badge,
+    ...(tier.memberships?{memberships:tier.memberships}:{}),
     ...(tier.supportAmounts?{supportAmounts:tier.supportAmounts,revokedSupport:tier.revokedSupport||[]}:{}),
     writing: { limit: tier.count, used: events.length, remaining: tier.count === null ? null : Math.max(0, tier.count - events.length - pending), resetsAt: events.length ? Math.min(...events.map(e => e.at)) + WINDOW_MS : null },
     live: { limitSeconds: tier.minutes === null ? null : tier.minutes * 60, usedSeconds, remainingSeconds: tier.minutes === null ? null : Math.max(0, tier.minutes * 60 - usedSeconds), resetsAt: starts.length ? Math.min(...starts) + WINDOW_MS : null, timeZone: zone },
