@@ -59,7 +59,7 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       if (!operationId(body.id)) throw fault('invalid_operation');
       if (body.action === 'liveConnect') {
         await mutate('liveConnect', { id: body.id });
-        return reply(await (services.connectProvider || connectProvider)(body.provider, body.target));
+        return reply(await (services.connectProvider || connectProvider)(body.provider, body.target,{source:body.source||'auto'}));
       }
       if (body.action.startsWith('pdf')) {
         const value = await mutate(body.action, { id: body.id });

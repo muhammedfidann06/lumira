@@ -13,6 +13,7 @@ export function createAudioHandler(services = { identity, translateAudio }, cloc
       if (raw.length > 950000) throw fault('invalid_input',413);
       let body; try { body = JSON.parse(raw); } catch { throw fault('invalid_input'); }
       if (!/^[a-zA-Z0-9_-]{16,80}$/.test(body.id || '') || !['groq','cloudflare'].includes(body.provider) || !['tr','de','en','ar','fr','es','ru'].includes(body.target)) throw fault('invalid_input',422);
+      if(body.source!==undefined&&!['auto','tr','de','en','ar','fr','es','ru'].includes(body.source))throw fault('invalid_input',422);
       const audio = decodeWave(body.audio);
       const ctx = await services.identity(request);
       ref = ctx.db.ref('serverFeatureUsage/' + ctx.uid);
@@ -30,7 +31,7 @@ export function createAudioHandler(services = { identity, translateAudio }, cloc
         },undefined,false);
         if (!result.committed) throw reason || fault('usage_unavailable',503);
       } finally { ref.off('value',listener); }
-      const data = await services.translateAudio(body.provider,body.target,audio);
+      const data = await services.translateAudio(body.provider,body.target,audio,{source:body.source||'auto'});
       // A stop/account switch while inference was pending cannot revive a session.
       const current = (await ref.get()).val()?.live?.session;
       if (!current || current.id !== body.id || current.until <= clock()) throw fault('session_expired',409);

@@ -3,9 +3,10 @@ import {fault} from './_shared/feature-core.mjs';
 import {withCors} from './_shared/cors.mjs';
 import {createPaddleApi,setupPaddle,paddleEnvironment} from './_shared/paddle-api.mjs';
 import {atomic,applyPaddleEvent} from './_shared/paddle-events.mjs';
+import {playBilling} from './_shared/play-billing.mjs';
 const reply=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.10.0'}});
 const operation=id=>typeof id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(id);
-export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=createPaddleApi,env=process.env,clock=Date.now}={}){
+export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=createPaddleApi,env=process.env,clock=Date.now,play=playBilling}={}){
  return withCors(async request=>{
   try{
    const mode=paddleEnvironment(env);
@@ -20,6 +21,8 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
    const raw=await request.text();if(raw.length>5000)throw fault('invalid_input',413);
    let body;try{body=JSON.parse(raw);}catch{throw fault('invalid_input');}
    const ctx=await identify(request),db=ctx.db;
+   if(body.action==='playCancel'){await play.cancel(ctx,body.subscriptionId);return reply({done:true});}
+   if(body.action==='playPortal')return reply({url:await play.portal(ctx,body.subscriptionId)});
    if(body.action==='status')return reply({memberships:ctx.tier.memberships||[],serverNow:clock()});
    if(body.action==='restore'){
     if(![1,5,10,25,50,100].includes(body.amount))throw fault('invalid_input');
@@ -82,6 +85,7 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
      const result=['canceled'].includes(current.status)||current.scheduled_change?.action==='cancel'?current:(await api.call('/subscriptions/'+owned.id+'/cancel',{method:'POST',body:{effective_from:current.status==='paused'?'immediately':'next_billing_period'}})).data;
      await applyPaddleEvent(db,{event_id:'local-cancel-'+owned.id,event_type:'subscription.updated',occurred_at:result.updated_at||new Date(clock()).toISOString(),data:result},config.catalog||[]);
     }
+    if(body.action==='remove')await play.cancelTier(ctx,body.amount);
     if(body.action==='remove')await db.ref('serverBadgeOptOut/'+ctx.uid+'/'+body.amount).set(true);
     const fresh=await identify(request);return reply({memberships:fresh.tier.memberships||[],done:true});
    }
