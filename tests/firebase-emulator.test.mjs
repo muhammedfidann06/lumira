@@ -15,6 +15,7 @@ import {createWelcomeGift} from '../netlify/functions/_shared/welcome-gift.mjs';
 import {applyPaddleEvent} from '../netlify/functions/_shared/paddle-events.mjs';
 import {accountMemberships} from '../netlify/functions/_shared/memberships.mjs';
 import {createStoriesHandler} from '../netlify/functions/stories.mjs';
+import {createPlayBilling} from '../netlify/functions/_shared/play-billing.mjs';
 
 // Optional real-SDK integration test. Only a local emulator is used. Supply the
 // official database-emulator JAR through LUMIRA_EMULATOR_JAR to run it.
@@ -193,6 +194,15 @@ test('real Firebase: writing commits, cold renewals last an hour, quotas stay at
       const paid=(await db.ref('serverPaddleAccounts/paid-member').get()).val();assert.equal(paid.subscriptions[subId].status,'canceled');assert.equal(accountMemberships({}, {},paid,{},now).tier.amount,0);assert.equal((await db.ref('serverPaddleAccounts/attacker').get()).val(),null);
       await assert.rejects(userDb.ref('serverPaddleAccounts/paid-member').get(),/permission[ _]denied/i);await assert.rejects(userDb.ref('serverBadgeOptOut/member/5').set(false),/permission[ _]denied/i);
       console.log('PASS: concurrent cold-SDK Paddle events stay ordered, bind to the server checkout owner and remain private.');
+
+      let googleRenew=true;const googleSku='lumira_support_5_monthly',googleToken='emulator-only-google-purchase-1101';
+      const googleApi={packageName:'com.lumira.dilkartlari',call:async(path,{method}={})=>{if(path.endsWith(':cancel')){googleRenew=false;return{};}if(path.startsWith('/subscriptions/'))return{basePlans:[{basePlanId:'monthly',autoRenewingBasePlanType:{billingPeriodDuration:'P1M'}}]};return{subscriptionState:googleRenew?'SUBSCRIPTION_STATE_ACTIVE':'SUBSCRIPTION_STATE_CANCELED',acknowledgementState:'ACKNOWLEDGEMENT_STATE_ACKNOWLEDGED',startTime:new Date(now-1000).toISOString(),lineItems:[{productId:googleSku,expiryTime:new Date(now+60000).toISOString(),offerDetails:{basePlanId:'monthly'},autoRenewingPlan:{autoRenewEnabled:googleRenew}}]};}};
+      const google=createPlayBilling({api:googleApi,clock:()=>now}),googleCtx={uid:'play-member',db};await google.verify(googleCtx,googleSku,googleToken);
+      const playAccount=(await db.ref('serverPlayAccounts/play-member').get()).val(),googleId=Object.keys(playAccount.subscriptions)[0];assert.equal((await db.ref('serverFeatureEntitlements/play-member/5').get()).val(),null);assert.equal(accountMemberships({}, {},{}, {},now,playAccount).tier.amount,5);
+      await assert.rejects(google.verify({uid:'play-other',db},googleSku,googleToken),e=>e.code==='purchase_already_linked');
+      await assert.rejects(userDb.ref('serverPlayAccounts/play-member').get(),/permission[ _]denied/i);await assert.rejects(userDb.ref('serverPlayAccounts/member/subscriptions/forged').set({amount:100,lifetime:true}),/permission[ _]denied/i);
+      await google.cancel(googleCtx,googleId);const stopped=(await db.ref('serverPlayAccounts/play-member').get()).val();assert.equal(accountMemberships({}, {},{}, {},now,stopped).tier.amount,5);assert.equal(accountMemberships({}, {},{}, {},now+60000,stopped).tier.amount,0);
+      console.log('PASS: real SDK Play subscriptions stay private, bind one account, cancel renewal and expire without permanent grants.');
 
       const words='I am happy and you are here in a small house today'.split(' ').map(w=>({w,meaning:''}));let generations=0;
       const story=createStoriesHandler({identity:async()=>({uid:'story-member',db}),wordPool:()=>words,generateStory:async()=>{generations++;return{title:'small house',sentences:Array.from({length:6},()=>({text:'I am happy and you are here in a small house today.',translation:'Ben mutluyum ve sen bugün küçük bir evdesin.'}))};}},()=>now);

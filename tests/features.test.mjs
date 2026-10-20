@@ -175,7 +175,7 @@ test('Play receipts are verified, acknowledged and bound to one account; cancele
   const records=new Map();let state=0,acknowledged=0;
   const db={ref(path){return {
     on(){},off(){},async get(){return{val:()=>records.get(path)??null};},
-    async transaction(fn){const value=fn(records.get(path)??null);if(value===undefined)return {committed:false};records.set(path,value);return {committed:true};},
+    async transaction(fn){const value=fn(records.get(path)??null);if(value===undefined)return {committed:false};records.set(path,value);return {committed:true,snapshot:{val:()=>value}};},
     async set(value){records.set(path,value);}
   };}};
   try {

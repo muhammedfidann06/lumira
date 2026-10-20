@@ -1,0 +1,811 @@
+{
+  "release": "1.10.1",
+  "testedAt": "2026-10-20T14:28:04.184379+00:00",
+  "baseline": {
+    "repository": "https://github.com/muhammedfidann06/lumira",
+    "commit": "bf7f78c1b8a1f09b320b43b1fcd6709bb7eb9692",
+    "version": "1.10.0"
+  },
+  "result": "passed",
+  "runtime": "Node.js 22.23.3 / Chromium 153",
+  "unitTests": {
+    "total": 1002,
+    "passed": 1001,
+    "failed": 0,
+    "skipped": 1,
+    "skippedReason": "The Firebase emulator test is skipped without FIREBASE_DATABASE_EMULATOR_HOST; the same test was run separately with the real local emulator and passed."
+  },
+  "firebaseEmulator": {
+    "passed": 1,
+    "failed": 0,
+    "sdk": "firebase-admin 14.5.0",
+    "emulator": "Realtime Database emulator 4.11.2",
+    "coverage": [
+      "actual database security rules",
+      "720 concurrent-client renewal operations over a simulated hour",
+      "quota boundaries",
+      "admin gifts and revocation",
+      "first-300 registration gift",
+      "Paddle webhook ordering and replay",
+      "private story records",
+      "Play monthly purchase, ownership binding, server-only receipts, cancellation and expiry"
+    ]
+  },
+  "browser": {
+    "passed": 172,
+    "failed": 0,
+    "locales": [
+      "tr",
+      "en",
+      "de",
+      "ar",
+      "fr",
+      "es",
+      "ru"
+    ],
+    "viewportWidths": [
+      320,
+      360,
+      390,
+      480,
+      768,
+      1024,
+      1366,
+      1920
+    ],
+    "coverage": [
+      "whole-word DOM range checks, readable type and 44px touch targets",
+      "narrow desktop panel and desktop preview alignment",
+      "RTL Arabic",
+      "story generation, sentence translations, word lookup and navigation",
+      "profile at level one",
+      "paid cancellation, badge removal, restoring and exact expiry",
+      "open profile automatically updates at expiry",
+      "real Chromium CORS preflight between the approved GitHub and Netlify origins",
+      "actual app purchase UI with simulated Digital Goods and Play API",
+      "new monthly SKU, finite entitlement and stopping renewal",
+      "fixed source selector in all seven UI languages",
+      "actual listening controller with simulated microphone and Azure SDK",
+      "German recognition configuration, conflicting-language rejection, changing source during listening, stable final-language indicator and complete stream/lease cleanup",
+      "public billing/legal pages in seven languages at 320px",
+      "Android web redirect and installed-app/iPhone exceptions"
+    ],
+    "results": [
+      {
+        "name": "tr: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "tr: 320 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 360 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 390 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 480 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 768 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 1024 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 1366 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: 1920 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "tr: narrow 480px panel on a desktop remains a readable single column",
+        "pass": true
+      },
+      {
+        "name": "tr: desktop preview starts beside the form without a blank column",
+        "pass": true
+      },
+      {
+        "name": "tr: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "tr: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "tr: back navigation restores the original Personal width",
+        "pass": true
+      },
+      {
+        "name": "tr: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "en: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "en: 320 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 360 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 390 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 480 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 768 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 1024 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 1366 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: 1920 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "en: narrow 480px panel on a desktop remains a readable single column",
+        "pass": true
+      },
+      {
+        "name": "en: desktop preview starts beside the form without a blank column",
+        "pass": true
+      },
+      {
+        "name": "en: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "en: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "en: back navigation restores the original Personal width",
+        "pass": true
+      },
+      {
+        "name": "en: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "de: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "de: 320 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 360 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 390 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 480 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 768 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 1024 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 1366 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: 1920 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "de: narrow 480px panel on a desktop remains a readable single column",
+        "pass": true
+      },
+      {
+        "name": "de: desktop preview starts beside the form without a blank column",
+        "pass": true
+      },
+      {
+        "name": "de: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "de: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "de: back navigation restores the original Personal width",
+        "pass": true
+      },
+      {
+        "name": "de: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "ar: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "ar: 320 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 360 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 390 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 480 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 768 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 1024 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 1366 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: 1920 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ar: narrow 480px panel on a desktop remains a readable single column",
+        "pass": true
+      },
+      {
+        "name": "ar: desktop preview starts beside the form without a blank column",
+        "pass": true
+      },
+      {
+        "name": "ar: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "ar: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "ar: back navigation restores the original Personal width",
+        "pass": true
+      },
+      {
+        "name": "ar: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "fr: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "fr: 320 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 360 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 390 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 480 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 768 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 1024 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 1366 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: 1920 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "fr: narrow 480px panel on a desktop remains a readable single column",
+        "pass": true
+      },
+      {
+        "name": "fr: desktop preview starts beside the form without a blank column",
+        "pass": true
+      },
+      {
+        "name": "fr: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "fr: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "fr: back navigation restores the original Personal width",
+        "pass": true
+      },
+      {
+        "name": "fr: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "es: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "es: 320 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 360 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 390 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 480 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 768 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 1024 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 1366 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: 1920 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "es: narrow 480px panel on a desktop remains a readable single column",
+        "pass": true
+      },
+      {
+        "name": "es: desktop preview starts beside the form without a blank column",
+        "pass": true
+      },
+      {
+        "name": "es: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "es: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "es: back navigation restores the original Personal width",
+        "pass": true
+      },
+      {
+        "name": "es: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "ru: Personal story directly below writing",
+        "pass": true
+      },
+      {
+        "name": "ru: 320 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 360 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 390 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 480 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 768 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 1024 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 1366 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: 1920 whole words, readable type, layout, RTL and touch targets",
+        "pass": true
+      },
+      {
+        "name": "ru: narrow 480px panel on a desktop remains a readable single column",
+        "pass": true
+      },
+      {
+        "name": "ru: desktop preview starts beside the form without a blank column",
+        "pass": true
+      },
+      {
+        "name": "ru: generated story, saved reader and exact sentence translation",
+        "pass": true
+      },
+      {
+        "name": "ru: word lookup and Escape return",
+        "pass": true
+      },
+      {
+        "name": "ru: back navigation restores the original Personal width",
+        "pass": true
+      },
+      {
+        "name": "ru: level-one profile opens with subscription section",
+        "pass": true
+      },
+      {
+        "name": "profile shows actual subscription dates and monthly term",
+        "pass": true
+      },
+      {
+        "name": "stopping renewal keeps the already-paid period active",
+        "pass": true
+      },
+      {
+        "name": "remove badge confirms cancellation then closes benefits",
+        "pass": true
+      },
+      {
+        "name": "restoring an owned badge does not restart its renewal",
+        "pass": true
+      },
+      {
+        "name": "cached subscription cannot keep badge / offline PDF privileges after expiry",
+        "pass": true
+      },
+      {
+        "name": "server independently denies expired paid entitlements",
+        "pass": true
+      },
+      {
+        "name": "tr: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "en: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "de: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "ar: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "fr: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "es: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "ru: localized first-300 welcome and dismiss",
+        "pass": true
+      },
+      {
+        "name": "actual Chrome GitHub → Netlify CORS preflights completed",
+        "pass": true
+      },
+      {
+        "name": "admin roster finds app display name instead of stale Auth name",
+        "pass": true
+      },
+      {
+        "name": "Notebook story shortcut is present",
+        "pass": true
+      },
+      {
+        "name": "tr: live source selector, fixed German and automatic mode",
+        "pass": true
+      },
+      {
+        "name": "en: live source selector, fixed German and automatic mode",
+        "pass": true
+      },
+      {
+        "name": "de: live source selector, fixed German and automatic mode",
+        "pass": true
+      },
+      {
+        "name": "ar: live source selector, fixed German and automatic mode",
+        "pass": true
+      },
+      {
+        "name": "fr: live source selector, fixed German and automatic mode",
+        "pass": true
+      },
+      {
+        "name": "es: live source selector, fixed German and automatic mode",
+        "pass": true
+      },
+      {
+        "name": "ru: live source selector, fixed German and automatic mode",
+        "pass": true
+      },
+      {
+        "name": "fixed German reaches the active recognizer and conflicting explicit languages are discarded",
+        "pass": true
+      },
+      {
+        "name": "changing source while listening closes the previous session, preserves text and starts continuous automatic detection",
+        "pass": true
+      },
+      {
+        "name": "automatic source indicator changes on completed speech, not unstable partial guesses",
+        "pass": true
+      },
+      {
+        "name": "stop closes every recognition/microphone stream and releases the account lease",
+        "pass": true
+      },
+      {
+        "name": "production scripts: zero uncaught browser errors",
+        "pass": true
+      },
+      {
+        "name": "Play store shows real catalog prices and monthly/lifetime terms",
+        "pass": true
+      },
+      {
+        "name": "Play monthly purchase uses the new SKU and never creates lifetime entitlement",
+        "pass": true
+      },
+      {
+        "name": "Play subscription appears in the normal profile with period dates",
+        "pass": true
+      },
+      {
+        "name": "Play profile cancellation stops renewals and preserves the paid period",
+        "pass": true
+      },
+      {
+        "name": "an open profile updates itself when the Play subscription period ends",
+        "pass": true
+      },
+      {
+        "name": "Netlify same-origin authenticated allowance",
+        "pass": true
+      },
+      {
+        "name": "pricing: tr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: en localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: de localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: ar localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: fr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: es localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "pricing: ru localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: tr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: en localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: de localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: ar localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: fr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: es localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "terms: ru localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: tr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: en localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: de localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: ar localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: fr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: es localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "refund: ru localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: tr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: en localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: de localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: ar localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: fr localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: es localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "checkout: ru localized public page, 320px and RTL",
+        "pass": true
+      },
+      {
+        "name": "public billing/legal pages: zero uncaught browser errors",
+        "pass": true
+      },
+      {
+        "name": "Android web auto-opens existing Play listing",
+        "pass": true
+      },
+      {
+        "name": "return from Play does not start a redirect loop",
+        "pass": true
+      },
+      {
+        "name": "installed TWA never redirects to Play",
+        "pass": true
+      },
+      {
+        "name": "iPhone browser never redirects to Play",
+        "pass": true
+      }
+    ]
+  },
+  "serviceWorker": {
+    "passed": 8,
+    "failed": 0,
+    "coverage": [
+      "/ upgrade preserves downloaded vocabulary/models, removes only old shell, reports 1.10.1",
+      "/ all new screen scripts installed in shell",
+      "/ visiting pricing does not replace the offline app document",
+      "/ versioned new scripts work offline; payment POST never falls back to cache",
+      "/lumira/ upgrade preserves downloaded vocabulary/models, removes only old shell, reports 1.10.1",
+      "/lumira/ all new screen scripts installed in shell",
+      "/lumira/ visiting pricing does not replace the offline app document",
+      "/lumira/ versioned new scripts work offline; payment POST never falls back to cache"
+    ]
+  },
+  "netlifyBundles": {
+    "passed": 8,
+    "functions": [
+      "admin-badges",
+      "billing",
+      "examples",
+      "features",
+      "live-audio",
+      "paddle-webhook",
+      "stories",
+      "tts"
+    ],
+    "isolatedNode22ImportChecks": 8
+  },
+  "syntax": {
+    "changedJavaScriptFilesChecked": 27,
+    "metadata": "app-version, package, lockfile, shell and updater agree on 1.10.1"
+  },
+  "externalServices": "Provider, Google Play and Paddle replies were simulated. No live purchase or production Firebase write was performed.",
+  "limits": [
+    "Actual microphone transcription accuracy and latency were not measured against a live speech service.",
+    "Physical iOS and Android devices and the native APK were not tested; the Android project is not present in this repository.",
+    "A new GitHub upload must also be deployed to Netlify for the updated backend to run.",
+    "Existing credentials, merchant approvals, Play product activation and server-account permissions must be configured in their consoles.",
+    "Passing automated checks is not a guarantee that no defect can exist."
+  ],
+  "changedBehaviors": [
+    "Responsive story layout follows the available app width.",
+    "The first five new Play products are monthly subscriptions; Crown and historical one-time ownership remain lifetime.",
+    "Play subscriptions are verified and canceled server-side; expired periods cannot supply quota benefits.",
+    "A fixed source language configures the actual speech recognizer and supported fallback engines. Automatic mode detects supported languages.",
+    "Existing vocabulary and local-model caches are preserved."
+  ]
+}
