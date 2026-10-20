@@ -1,13 +1,14 @@
-import { createHash, createSign } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { fault, tierFor, TIERS } from './feature-core.mjs';
 import { checkWritingAI } from './writing-ai.mjs';
 import {accountMemberships} from './memberships.mjs';
 import {reconcileAccount} from './paddle-reconcile.mjs';
+import {playBilling} from './play-billing.mjs';
 
 export const PROJECT = 'mhamzac-ca73d';
 export const DATABASE = 'https://mhamzac-ca73d-default-rtdb.firebaseio.com';
 export const sha256 = text => createHash('sha256').update(text).digest('hex');
-let adminPromise, speechCache, googleCache;
+let adminPromise, speechCache;
 export async function admin() {
   if (!process.env.FIREBASE_SERVICE_ACCOUNT_JSON) throw fault('server_not_configured', 503);
   if (!adminPromise) adminPromise = (async () => {
@@ -28,14 +29,15 @@ export async function identity(request) {
   let claims;
   try { claims = await services.auth.verifyIdToken(bearer, true); }
   catch { throw fault('login_required', 401); }
-  const [grants, verified, billing, optOut] = await Promise.all([
+  const [grants, verified, billing, optOut, play] = await Promise.all([
     services.db.ref(`progress/${claims.uid}/meta/supportGrants`).get(),
     services.db.ref(`serverFeatureEntitlements/${claims.uid}`).get(),
     services.db.ref(`serverPaddleAccounts/${claims.uid}`).get(),
-    services.db.ref(`serverBadgeOptOut/${claims.uid}`).get()
+    services.db.ref(`serverBadgeOptOut/${claims.uid}`).get(),
+    services.db.ref(`serverPlayAccounts/${claims.uid}`).get()
   ]);
-  const currentBilling=await reconcileAccount(services.db,claims.uid,billing.val()||{});
-  return {...services,uid:claims.uid,tier:accountMemberships(grants.val()||{},verified.val()||{},currentBilling,optOut.val()||{}).tier};
+  const [currentBilling,currentPlay]=await Promise.all([reconcileAccount(services.db,claims.uid,billing.val()||{}),playBilling.reconcile({...services,uid:claims.uid},play.val()||{})]);
+  return {...services,uid:claims.uid,tier:accountMemberships(grants.val()||{},verified.val()||{},currentBilling,optOut.val()||{},Date.now(),currentPlay).tier};
 }
 export async function speechToken() {
   const key = process.env.AZURE_SPEECH_KEY, region = process.env.AZURE_SPEECH_REGION;
@@ -74,47 +76,7 @@ export async function checkWriting(text, language, uiLanguage = 'tr') {
   if (!Array.isArray(result?.matches)) throw fault('writing_invalid_result', 502);
   return result.matches;
 }
-async function googleToken() {
-  if (googleCache?.expiresAt > Date.now() + 60000) return googleCache.token;
-  const raw = process.env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON || process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-  if (!raw) throw fault('purchase_verification_unavailable', 503);
-  const account = JSON.parse(raw), now = Math.floor(Date.now() / 1000);
-  const b64 = o => Buffer.from(JSON.stringify(o)).toString('base64url');
-  const unsigned = b64({ alg: 'RS256', typ: 'JWT' }) + '.' + b64({ iss: account.client_email, scope: 'https://www.googleapis.com/auth/androidpublisher', aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600 });
-  const signature = createSign('RSA-SHA256').update(unsigned).end().sign(account.private_key, 'base64url');
-  const response = await fetch('https://oauth2.googleapis.com/token', { method: 'POST', body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: unsigned + '.' + signature }), signal: AbortSignal.timeout(8000) });
-  const data = await response.json();
-  if (!response.ok || !data.access_token) throw fault('purchase_verification_unavailable', 503);
-  googleCache = { token: data.access_token, expiresAt: Date.now() + 3500000 };
-  return googleCache.token;
-}
-export async function verifyPlayPurchase(ctx, sku, token) {
-  const amounts = { lumira_support_1: 1, lumira_support_5: 5, lumira_support_10: 10, lumira_support_25: 25, lumira_support_50: 50, lumira_support_100: 100 };
-  if (!amounts[sku] || typeof token !== 'string' || token.length < 10 || token.length > 4096) throw fault('invalid_purchase');
-  const authorization = await googleToken();
-  const packageName = process.env.GOOGLE_PLAY_PACKAGE_NAME || 'com.lumira.dilkartlari';
-  const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${encodeURIComponent(packageName)}/purchases/products/${encodeURIComponent(sku)}/tokens/${encodeURIComponent(token)}`;
-  const response = await fetch(url, { headers: { Authorization: `Bearer ${authorization}` }, signal: AbortSignal.timeout(8000) });
-  if (response.status === 401 || response.status === 403) throw fault('purchase_verification_unavailable', 503);
-  if (!response.ok) throw fault('invalid_purchase', 422);
-  const data = await response.json();
-  if (data.purchaseState !== 0) throw fault('purchase_not_completed', 422);
-  if (data.acknowledgementState === 0) {
-    const acknowledgement = await fetch(url + ':acknowledge', {
-      method: 'POST', headers: { Authorization: `Bearer ${authorization}`, 'Content-Type': 'application/json' },
-      body: '{}', signal: AbortSignal.timeout(8000)
-    });
-    if (!acknowledgement.ok) throw fault('purchase_verification_unavailable', 503);
-  }
-  // Bind a verified Play purchase to exactly one Firebase account.
-  const claim = await ctx.db.ref(`serverFeaturePurchases/${sha256(token)}`).transaction(value => {
-    if (value && value.uid !== ctx.uid) return;
-    return value || { uid: ctx.uid, sku, at: Date.now() };
-  }, undefined, false);
-  if (!claim.committed) throw fault('purchase_already_linked', 409);
-  await grantVerifiedEntitlement(ctx,amounts[sku]);
-  return amounts[sku];
-}
+export async function verifyPlayPurchase(ctx,sku,token){return playBilling.verify(ctx,sku,token);}
 
 // A purchase restore cannot undo a deliberate administrative revocation.
 export async function grantVerifiedEntitlement(ctx,amount){

@@ -22,12 +22,13 @@ async function call(provider, url, init, fetcher = fetch, timeout = 5000) {
   if (result?.success === false || result?.error) throw fault('speech_unavailable', 502);
   return result;
 }
-export async function connectProvider(provider, target, { env = process.env, fetcher = fetch, azureToken = speechToken } = {}) {
-  if (!ORDER.includes(provider) || !LANGUAGES.includes(target)) throw fault('invalid_input', 422);
+export async function connectProvider(provider, target, { env = process.env, fetcher = fetch, azureToken = speechToken, source='auto' } = {}) {
+  if (!ORDER.includes(provider) || !LANGUAGES.includes(target) || (source!=='auto'&&!LANGUAGES.includes(source))) throw fault('invalid_input', 422);
   if (!available(provider, env)) throw fault('speech_not_configured', 503);
   blocked(provider);
   if (provider === 'azure') return { provider, speech: await azureToken() };
   if (provider === 'gemini') {
+    if(source!=='auto')throw fault('speech_config_error',422);
     const model = 'gemini-3.5-live-translate-preview';
     const config = { responseModalities: ['AUDIO'], inputAudioTranscription: {}, outputAudioTranscription: {}, translationConfig: { targetLanguageCode: target, echoTargetLanguage: true } };
     const expiresAt = Date.now() + 30 * 60000;
@@ -49,8 +50,8 @@ export function decodeWave(base64) {
 }
 const sourceCodes = { turkish:'tr', german:'de', english:'en', arabic:'ar', french:'fr', spanish:'es', russian:'ru' };
 function languageCode(value) { const v = String(value || '').toLowerCase(); return LANGUAGES.includes(v) ? v : sourceCodes[v] || ''; }
-export async function translateAudio(provider, target, bytes, { env = process.env, fetcher = fetch } = {}) {
-  if (!['groq', 'cloudflare'].includes(provider) || !LANGUAGES.includes(target)) throw fault('invalid_input', 422);
+export async function translateAudio(provider, target, bytes, { env = process.env, fetcher = fetch,source='auto' } = {}) {
+  if (!['groq', 'cloudflare'].includes(provider) || !LANGUAGES.includes(target) || (source!=='auto'&&!LANGUAGES.includes(source))) throw fault('invalid_input', 422);
   if (!available(provider, env)) throw fault('speech_not_configured', 503);
   blocked(provider);
   let original, language, translated;
@@ -58,9 +59,11 @@ export async function translateAudio(provider, target, bytes, { env = process.en
   if (provider === 'groq') {
     const form = new FormData();
     form.set('file', new Blob([bytes], { type: 'audio/wav' }), 'speech.wav');
+    if(source!=='auto')form.set('language',source);
     form.set('model', 'whisper-large-v3-turbo'); form.set('response_format', 'verbose_json'); form.set('temperature', '0');
     const stt = await call(provider, 'https://api.groq.com/openai/v1/audio/transcriptions', { method:'POST', headers:{Authorization:'Bearer ' + env.GROQ_API_KEY}, body:form }, fetcher);
-    original = stt.text; language = languageCode(stt.language);
+    original = stt.text; language = languageCode(stt.language)||(source!=='auto'?source:'');
+    if(source!=='auto'&&language&&language!==source)return{empty:true};
     if (!original?.trim()) return { empty:true };
     if (language === target) translated = original;
     else {
@@ -70,15 +73,16 @@ export async function translateAudio(provider, target, bytes, { env = process.en
   } else {
     const url = 'https://api.cloudflare.com/client/v4/accounts/' + env.CLOUDFLARE_ACCOUNT_ID + '/ai/run/';
     const headers = { Authorization:'Bearer ' + env.CLOUDFLARE_API_TOKEN, 'Content-Type':'application/json' };
-    const stt = await call(provider,url+'@cf/openai/whisper-large-v3-turbo',{method:'POST',headers,body:JSON.stringify({audio:bytes.toString('base64'),task:'transcribe'})},fetcher);
-    original = stt.result?.text; language = languageCode(stt.result?.language || stt.result?.transcription_info?.language);
+    const stt = await call(provider,url+'@cf/openai/whisper-large-v3-turbo',{method:'POST',headers,body:JSON.stringify({audio:bytes.toString('base64'),task:'transcribe',...(source!=='auto'?{language:source}:{}),vad_filter:true})},fetcher);
+    original = stt.result?.text; language = languageCode(stt.result?.language || stt.result?.transcription_info?.language)||(source!=='auto'?source:'');
+    if(source!=='auto'&&language&&language!==source)return{empty:true};
     if (!original?.trim()) return { empty:true };
     if (language === target) translated = original;
     else {
       const structured = instruction + ' Detect the source language too. Return a JSON object with exactly two keys: language (source ISO code) and translation (translated text).';
       const data = await call(provider,url+'@cf/meta/llama-3.3-70b-instruct-fp8-fast',{method:'POST',headers,body:JSON.stringify({messages:[{role:'system',content:structured},{role:'user',content:original}],response_format:{type:'json_object'},temperature:0,max_tokens:2048})},fetcher);
       let output; try { output = JSON.parse(data.result?.response); } catch { throw fault('speech_unavailable',502); }
-      translated = output.translation; language = languageCode(output.language) || language;
+      translated = output.translation; language = language || languageCode(output.language);
     }
   }
   if (typeof original !== 'string' || original.length > 12000 || typeof translated !== 'string' || !translated.trim() || translated.length > 16000) throw fault('speech_unavailable',502);
