@@ -8,9 +8,10 @@ export class LocalEngine {
     this.pipeline = pipeline; this.Tensor = Tensor; this.backend = backend;
     this.translateText = translateText; this.onProgress = onProgress; this.previous = '';
   }
-  async prepare({ target }) {
+  async prepare({ target,sourceLanguage='auto' }) {
     if (!LANGUAGES.includes(target)) throw failure('unsupported_language');
-    this.target = target;
+    if(sourceLanguage!=='auto'&&!LANGUAGES.includes(sourceLanguage))throw failure('unsupported_language');
+    this.target = target;this.sourceLanguage=sourceLanguage;
     this.asr = await this.pipeline('automatic-speech-recognition', SPEECH.id, {
       revision: SPEECH.revision, dtype: 'q8', device: this.backend,
       session_options: this.backend === 'cpu' ? { intraOpNumThreads: 2 } : {},
@@ -30,8 +31,9 @@ export class LocalEngine {
       decoder = new this.Tensor('int64', BigInt64Array.of(BigInt(this.asr.model.config.decoder_start_token_id)), [1, 1]);
       detection = await this.asr.model({ ...features, decoder_input_ids: decoder });
       const generation = this.asr.model.generation_config;
-      const { language, noSpeech } = languageScores(detection.logits.data, generation.lang_to_id, generation.no_timestamps_token_id - 1);
+      const { language:detected, noSpeech } = languageScores(detection.logits.data, generation.lang_to_id, generation.no_timestamps_token_id - 1);
       if (noSpeech > 0.65) return { empty: true };
+      const language=this.sourceLanguage&&this.sourceLanguage!=='auto'?this.sourceLanguage:detected;
       if (!LANGUAGES.includes(language)) return { unsupported: true, language };
       tokens = await this.asr.model.generate({
         ...features, encoder_outputs: detection.encoder_outputs, language, task: 'transcribe',

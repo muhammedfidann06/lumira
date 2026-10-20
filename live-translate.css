@@ -36,3 +36,9 @@ body.lt-focus #sessionTimer,body.lt-focus #profileTimer,body.lt-focus #myRankBox
 body.lt-focus{padding-bottom:max(30px,env(safe-area-inset-bottom))!important;}
 body.lt-focus #scene-bg{filter:brightness(.48) saturate(.75);}
 .lt-screen{--panel:rgba(10,17,34,.82);--muted:#b8c4db;--text:#eef4ff;}
+
+.lt-source{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-bottom:20px;padding:16px;border:1px solid #476477;border-radius:17px;background:#132335}
+.lt-source label{color:#d0e8ee;font-size:14px;font-weight:650;line-height:1.6}
+.lt-source select{box-sizing:border-box;width:100%;min-width:0;min-height:50px;padding:12px 14px;border:1px solid #658c99;border-radius:12px;background:#1a303c;color:#e5fff8;font:inherit;font-size:15px;line-height:1.5}
+.lt-source p{margin:0;font-size:12px;line-height:1.8;color:#b9cbd9}
+.lt-screen .lt-top{flex-wrap:wrap}.lt-screen button{min-height:44px}.lt-screen .lt-panel-head{line-height:1.7}.lt-screen .lt-target select{box-sizing:border-box;min-width:0;max-width:100%}

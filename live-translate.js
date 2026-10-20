@@ -7,7 +7,7 @@
   const LOCAL_TEST = new URLSearchParams(window.location.search).get('liveEngine') === 'local';
   const LOCALES = ['tr-TR','de-DE','en-US','ar-SA','fr-FR','es-ES','ru-RU'];
   const FLAGS = { tr:'🇹🇷', de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
-  const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null, provider:'', local:null, localProgress:null, localError:false, localArm:null, switching:null, pendingAudio:null, azureStartedAt:0, azureFailures:0, providers:[], failed:new Set(), cloud:null, cloudEpoch:0, lastResult:0, awaitingSince:0, sdkTask:null };
+  const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', source:'auto', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null, provider:'', local:null, localProgress:null, localError:false, localArm:null, switching:null, pendingAudio:null, azureStartedAt:0, azureFailures:0, providers:[], failed:new Set(), cloud:null, cloudEpoch:0, lastResult:0, awaitingSince:0, sdkTask:null };
   const node = id => s.root?.querySelector('#' + id);
   const active = () => ['starting','listening','reconnecting','preparing'].includes(s.phase);
   const providerError = e => ['speech_unavailable','speech_not_configured','speech_auth_error','speech_busy','speech_config_error','sdk_unavailable'].includes(e?.featureCode);
@@ -62,7 +62,7 @@
     };
     paint(original,'original','emptySource'); paint(translated,'translated','emptyTarget');
     const detected = node('ltDetected');
-    if (detected) detected.textContent = s.detected ? (FLAGS[s.detected] || '🌐') + ' ' + label(s.detected) : F.text('auto');
+    if (detected){const language=s.source==='auto'?s.detected:s.source;detected.textContent=language?(FLAGS[language]||'🌐')+' '+label(language):F.text('auto');}
     drawControls();
   }
   function sdk() {
@@ -82,7 +82,7 @@
     if(generation!==s.generation || !active())return;
     if(!Local || !(window.AudioContext || window.webkitAudioContext))return;
     try{
-      const local=new Local({target:s.target,audioContext:s.pendingAudio,
+      const local=new Local({target:s.target,sourceLanguage:s.source,audioContext:s.pendingAudio,
         onAudio:(audio,position)=>{
           if(generation!==s.generation || !active())return;
           s.cloud?.receive(audio,position);
@@ -96,7 +96,7 @@
         onResult:entry=>{
           if(generation!==s.generation || !active() || s.provider!=='local')return;
           s.entries.push({original:entry.original || '',translated:entry.translated || ''});
-          s.detected=entry.language;s.draft=null;status('local_listening');drawText();
+          s.detected=s.source==='auto'?entry.language:s.source;s.draft=null;status('local_listening');drawText();
         },
         onError:e=>{if(generation===s.generation && s.provider==='local')stop(e.featureCode || 'local_model_error',true);},
         onNotice:key=>{if(generation===s.generation && s.provider==='local')status(key);}
@@ -128,7 +128,7 @@
         s.provider=provider;s.phase='reconnecting';s.draft=null;s.awaitingSince=0;status('reconnecting');
         const epoch=++s.cloudEpoch;
         try {
-          const data=await F.api('liveConnect',{id:s.sessionId,provider,target:s.target},{timeoutMs:6500});
+          const data=await F.api('liveConnect',{id:s.sessionId,provider,target:s.target,source:s.source},{timeoutMs:6500});
           if(!current() || epoch!==s.cloudEpoch)return;
           if(provider==='azure'){
             s.SDK=await (s.sdkTask || sdk());
@@ -143,7 +143,7 @@
             const previous=s.entries.slice(-3), baseOriginal=previous.map(e=>e.original).join(' '), baseTranslation=previous.map(e=>e.translated).join(' ');
             let lastOriginal=baseOriginal,lastTranslation=baseTranslation,firstResult=true;
             const trim=(before,value,max)=>window.LUMIRA_LOCAL?.removeOverlap?.(before,value,max) ?? value;
-            const cloud=new window.LUMIRA_CLOUD.CloudSession({provider,credential:data.credential,target:s.target,id:s.sessionId,entryId:s.sessionId+'-'+epoch,
+            const cloud=new window.LUMIRA_CLOUD.CloudSession({provider,credential:data.credential,target:s.target,source:s.source,id:s.sessionId,entryId:s.sessionId+'-'+epoch,
               onResult:entry=>{
                 if(!current() || s.cloud!==cloud || s.provider!==provider)return;
                 if(entry.id){
@@ -155,7 +155,7 @@
                   if(original || translated)s.entries.push({original,translated});
                   lastOriginal=entry.original || lastOriginal;lastTranslation=entry.translated || lastTranslation;firstResult=false;
                 }
-                if(FLAGS[entry.language])s.detected=entry.language;
+                if(s.source!=='auto')s.detected=s.source;else if(!entry.partial&&FLAGS[entry.language])s.detected=entry.language;
                 s.draft=null;s.lastResult=performance.now();s.awaitingSince=0;drawText();
               },
               onCommit:position=>{if(current() && s.cloud===cloud)s.local?.markCommitted(position);},
@@ -241,7 +241,7 @@
       if(s.provider==='azure' && s.tokenDeadline-performance.now()<60000){
         const epoch=s.cloudEpoch;
         try {
-          const token=await F.api('liveConnect',{id,provider:'azure',target:s.target},{timeoutMs:6500});
+          const token=await F.api('liveConnect',{id,provider:'azure',target:s.target,source:s.source},{timeoutMs:6500});
           if(generation===s.generation && epoch===s.cloudEpoch && s.provider==='azure'){
             s.speech=token.speech;s.tokenDeadline=performance.now()+token.speech.expiresAt-Date.now();
             if(s.recognizer)s.recognizer.authorizationToken=token.speech.token;
@@ -296,17 +296,10 @@
   async function connectRecognizer(generation) {
     const SDK=s.SDK,media=s.stream,speech=s.speech;
     if(!SDK || !media || !speech || generation!==s.generation || !active() || s.provider!=='azure')throw error('recognizer_replaced');
-    const config=SDK.SpeechTranslationConfig.fromEndpoint(new URL('wss://'+speech.region+'.stt.speech.microsoft.com/speech/universal/v2'));
-    config.authorizationToken=speech.token;
-    config.speechRecognitionLanguage='en-US';
-    config.setProperty(SDK.PropertyId.SpeechServiceConnection_LanguageIdMode,'Continuous');
-    config.addTargetLanguage(s.target);
-    const detect=SDK.AutoDetectSourceLanguageConfig.fromLanguages(LOCALES);
-    // Closing an SDK audio source can stop its tracks. Give it clones so a
-    // provider reconnection cannot destroy the user's original microphone.
+    // Give the recognizer a clone: replacing it must not close the capture stream.
     s.inputStream=media.clone();
     s.audio=SDK.AudioConfig.fromStreamInput(s.inputStream);
-    const recognizer=SDK.TranslationRecognizer.FromConfig(config,detect,s.audio);
+    const recognizer=window.LUMIRA_SOURCE.recognizer(SDK,speech,s.target,s.source,s.audio);
     s.recognizer=recognizer;
     const captureStart=s.local?.position || 0;
     const current=()=>generation===s.generation && active() && s.provider==='azure' && s.recognizer===recognizer;
@@ -325,8 +318,10 @@
           locale=json.PrimaryLanguage?.Language || json.SpeechPhrase?.PrimaryLanguage?.Language || json.Language || '';
         }catch(e){locale='';}
       }
-      const code=locale.split('-')[0].toLowerCase();
-      if(FLAGS[code])s.detected=code;
+      const observed=locale.split('-')[0].toLowerCase();
+      if(s.source!=='auto'&&FLAGS[observed]&&observed!==s.source)return;
+      const code=s.source==='auto'?observed:s.source;
+      if(s.source!=='auto'||final){if(FLAGS[code])s.detected=code;}
       let translated='';try{translated=r.translations.get(s.target)||'';}catch(e){}
       if(!translated && code===s.target)translated=r.text;
       const entry={original:r.text,translated};
@@ -397,7 +392,7 @@
       media.getTracks().forEach(track=>track.addEventListener('ended',()=>{if(generation===s.generation)stop('microphone_unavailable',true);},{once:true}));
       const configured=await F.api('status');
       if(generation!==s.generation)return;
-      s.providers=LOCAL_TEST?[]:(configured.providers || (configured.speechConfigured?['azure']:[]));
+      s.providers=LOCAL_TEST?[]:(configured.providers || (configured.speechConfigured?['azure']:[])).filter(provider=>s.source==='auto'||provider!=='gemini');
       const data=await F.api('liveStart',{id,provider:'local'});
       if(generation!==s.generation){F.api('liveStop',{id}).catch(()=>{});return;}
       applyLease(data,generation);heartbeat(generation,id);
@@ -410,11 +405,14 @@
   }
   function shell() {
     const root=s.root;if(!root)return;
-    root.innerHTML='<section class="lt-screen" id="liveTranslateScreen"><div class="lt-top"><button type="button" class="lt-back" id="ltBack"></button><h2 id="ltTitle"></h2></div><div class="lt-target"><label for="ltTarget" id="ltTargetLabel"></label><select id="ltTarget"></select></div><section class="lt-panel" aria-labelledby="ltOriginalLabel"><div class="lt-panel-head"><span id="ltOriginalLabel"></span><span class="lt-detected" id="ltDetected"></span></div><div class="lt-transcript" id="ltOriginal" dir="auto"></div></section><section class="lt-panel lt-panel-target" aria-labelledby="ltTranslationLabel"><div class="lt-panel-head"><span id="ltTranslationLabel"></span><span id="ltTargetName"></span></div><div class="lt-transcript" id="ltTranslation" dir="auto"></div></section><div class="lt-controls"><button type="button" class="lt-mic" id="ltMic" aria-pressed="false"></button><button type="button" class="lt-clear" id="ltClear"></button></div><div class="lt-status" id="ltStatus" role="status" aria-live="polite"></div><div class="feature-quota" id="ltQuota"></div><button type="button" class="lt-restore" id="ltRestore" hidden></button></section>';
+    root.innerHTML='<section class="lt-screen" id="liveTranslateScreen"><div class="lt-top"><button type="button" class="lt-back" id="ltBack"></button><h2 id="ltTitle"></h2></div><div class="lt-source"><label for="ltSource" id="ltSourceLabel"></label><select id="ltSource" aria-describedby="ltSourceHint"></select><p id="ltSourceHint"></p></div><div class="lt-target"><label for="ltTarget" id="ltTargetLabel"></label><select id="ltTarget"></select></div><section class="lt-panel" aria-labelledby="ltOriginalLabel"><div class="lt-panel-head"><span id="ltOriginalLabel"></span><span class="lt-detected" id="ltDetected"></span></div><div class="lt-transcript" id="ltOriginal" dir="auto"></div></section><section class="lt-panel lt-panel-target" aria-labelledby="ltTranslationLabel"><div class="lt-panel-head"><span id="ltTranslationLabel"></span><span id="ltTargetName"></span></div><div class="lt-transcript" id="ltTranslation" dir="auto"></div></section><div class="lt-controls"><button type="button" class="lt-mic" id="ltMic" aria-pressed="false"></button><button type="button" class="lt-clear" id="ltClear"></button></div><div class="lt-status" id="ltStatus" role="status" aria-live="polite"></div><div class="feature-quota" id="ltQuota"></div><button type="button" class="lt-restore" id="ltRestore" hidden></button></section>';
     const backup=document.createElement('aside');backup.id='ltBackupBox';backup.className='lt-backup';backup.hidden=true;
     backup.innerHTML='<p id="ltBackup"></p><button type="button" class="lt-restore" id="ltBackupRetry" hidden></button>';
     node('liveTranslateScreen').append(backup);
     node('ltBackupRetry').onclick=()=>{s.localError=false;drawControls();warmLocal(s.generation);};
+    const source=node('ltSource'),automatic=document.createElement('option');automatic.value='auto';automatic.textContent=window.LUMIRA_SOURCE.text(1);source.append(automatic);
+    Object.keys(FLAGS).forEach(code=>{const option=document.createElement('option');option.value=code;option.textContent=FLAGS[code]+' '+label(code);source.append(option);});source.value=s.source;
+    source.onchange=()=>{const resume=active();if(resume)stop();s.source=window.LUMIRA_SOURCE.normalize(source.value);s.detected=s.source==='auto'?'':s.source;try{localStorage.setItem('lumira_live_source_v1',s.source);}catch{}drawText();if(resume)start();};
     const select=node('ltTarget');
     Object.keys(FLAGS).forEach(code=>{const option=document.createElement('option');option.value=code;option.textContent=FLAGS[code]+' '+label(code);select.appendChild(option);});
     select.value=s.target;
@@ -429,6 +427,7 @@
   }
   function refreshLocale(){
     if(!s.root)return;
+    node('ltSourceLabel').textContent=window.LUMIRA_SOURCE.text(0);node('ltSourceHint').textContent=window.LUMIRA_SOURCE.text(2);node('ltSource').querySelectorAll('option').forEach(option=>{option.textContent=option.value==='auto'?window.LUMIRA_SOURCE.text(1):FLAGS[option.value]+' '+label(option.value);});
     const copy={ltBack:'back',ltTitle:'title',ltTargetLabel:'target',ltOriginalLabel:'original',ltTranslationLabel:'translation',ltClear:'clear',ltRestore:'restore'};
     Object.keys(copy).forEach(id=>{if(node(id))node(id).textContent=F.text(copy[id]);});
     node('ltTarget')?.querySelectorAll('option').forEach(option=>{option.textContent=FLAGS[option.value]+' '+label(option.value);});
@@ -444,7 +443,7 @@
   }
   function mount(root){
     if(s.root)unmount();
-    s.root=root;s.target=FLAGS[window.NATIVE_LANG]?window.NATIVE_LANG:'tr';s.entries=[];s.draft=null;s.detected='';s.message='ready';s.error=false;s.providerConfigured=null;
+    s.root=root;try{s.source=window.LUMIRA_SOURCE.normalize(localStorage.getItem('lumira_live_source_v1'));}catch{s.source='auto';}s.target=FLAGS[window.NATIVE_LANG]?window.NATIVE_LANG:'tr';s.entries=[];s.draft=null;s.detected='';s.message='ready';s.error=false;s.providerConfigured=null;
     s.quota=F.getQuota();document.body.classList.add('lt-focus');shell();
     s.observer=new MutationObserver(()=>{if(s.root && (!s.root.querySelector('#liveTranslateScreen') || s.root.style.display==='none'))unmount();});
     s.observer.observe(root,{childList:true,attributes:true,attributeFilter:['style']});

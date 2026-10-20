@@ -20,8 +20,8 @@
     return base64(out);
   }
   class CloudSession {
-    constructor({provider,credential,target,id,entryId,onResult,onError,onCommit,onReady}) {
-      Object.assign(this,{provider,credential,target,id,entryId,onResult,onError,onCommit,onReady});
+    constructor({provider,credential,target,source='auto',id,entryId,onResult,onError,onCommit,onReady}) {
+      Object.assign(this,{provider,credential,target,source,id,entryId,onResult,onError,onCommit,onReady});
       this.closed=false;this.original='';this.translated='';this.parts=[];this.length=0;this.position=0;this.quiet=0;this.lastReply=performance.now();this.speechSince=0;
       this.abort=new AbortController();
     }
@@ -54,7 +54,7 @@
               if(input?.text)this.original+=input.text;
               if(output?.text){this.translated+=output.text;this.lastReply=performance.now();this.speechSince=0;}
               this.language=code(input?.languageCode || input?.language_code || this.language);
-              if(input?.text || output?.text)this.onResult?.({id:this.entryId || this.id+'-gemini',original:this.original,translated:this.translated,language:this.language,partial:true});
+              if(input?.text || output?.text || content.turnComplete || content.turn_complete)this.onResult?.({id:this.entryId || this.id+'-gemini',original:this.original,translated:this.translated,language:this.language,partial:!(input?.finished || output?.finished || content.turnComplete || content.turn_complete)});
               if(output?.finished || content.turnComplete || content.turn_complete)this.onCommit?.(Math.max(0,this.position-2));
             }
             // A planned provider session boundary rotates a fresh credential;
@@ -97,7 +97,7 @@
       let sum=0;for(const n of audio)sum+=n*n;
       try {
         if(Math.sqrt(sum/audio.length)<0.006){this.onCommit?.(end);return;}
-        const result=await window.LUMIRA_FEATURES.audio({id:this.id,provider:this.provider,target:this.target,audio:wave(audio)},{signal:this.abort.signal,timeoutMs:11500});
+        const result=await window.LUMIRA_FEATURES.audio({id:this.id,provider:this.provider,target:this.target,source:this.source,audio:wave(audio)},{signal:this.abort.signal,timeoutMs:11500});
         if(this.closed)return;
         this.lastReply=performance.now();
         if(!result.empty)this.onResult?.(result);

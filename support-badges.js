@@ -16,11 +16,11 @@
 
   /* --------------------------------------------------------- rozet tablosu */
   var TIERS = [
-    { amount: 1,   badge: '👍🏻', name: 'Teşekkür',  xp: 10,   try_: '59,95',   sku: 'lumira_support_1'   },
-    { amount: 5,   badge: '☕️', name: 'Kahve',     xp: 50,   try_: '299,95',  sku: 'lumira_support_5'   },
-    { amount: 10,  badge: '❤️', name: 'Destekçi',  xp: 100,  try_: '599,95',  sku: 'lumira_support_10'  },
-    { amount: 25,  badge: '💛', name: 'Dost',      xp: 250,  try_: '1499,95', sku: 'lumira_support_25'  },
-    { amount: 50,  badge: '⭐️', name: 'Yıldız',    xp: 500,  try_: '2999,95', sku: 'lumira_support_50'  },
+    { amount: 1,   badge: '👍🏻', name: 'Teşekkür',  xp: 10,   try_: '59,95',   sku: 'lumira_support_1_monthly', legacySku:'lumira_support_1'   },
+    { amount: 5,   badge: '☕️', name: 'Kahve',     xp: 50,   try_: '299,95',  sku: 'lumira_support_5_monthly', legacySku:'lumira_support_5'   },
+    { amount: 10,  badge: '❤️', name: 'Destekçi',  xp: 100,  try_: '599,95',  sku: 'lumira_support_10_monthly', legacySku:'lumira_support_10'  },
+    { amount: 25,  badge: '💛', name: 'Dost',      xp: 250,  try_: '1499,95', sku: 'lumira_support_25_monthly', legacySku:'lumira_support_25'  },
+    { amount: 50,  badge: '⭐️', name: 'Yıldız',    xp: 500,  try_: '2999,95', sku: 'lumira_support_50_monthly', legacySku:'lumira_support_50'  },
     { amount: 100, badge: '👑', name: 'Kral',    xp: 1000, try_: '5999,95', sku: 'lumira_support_100' }
   ];
   /* PDF için gereken rozetler */
@@ -32,7 +32,7 @@
     try{
       var lang = (typeof NATIVE_LANG !== 'undefined' && NATIVE_LANG) || 'tr';
       var names = window.I18N && window.I18N[lang] && window.I18N[lang].tier_names;
-      if(names && names[t.sku]) return names[t.sku];
+      if(names && names[t.legacySku||t.sku]) return names[t.legacySku||t.sku];
     }catch(e){}
     return t.name;
   }
@@ -79,11 +79,8 @@
   };
   window.LUMIRA_BADGES = { list: myBadges, has: hasBadge, tiers: TIERS };
 
-  /* ============================================== SATIN ALMA (Play Billing)
-     Yalnızca Play Store üzerinden (TWA) çalışır — web sürümünde ödeme
-     alınmaz, bilgi mesajı gösterilir. Google Play Console'da her tier için
-     TIERS[].sku ile BİREBİR AYNI ürün kimliğiyle "Yönetilmeyen ürün"
-     (managed in-app product, tek seferlik) oluşturulmuş olmalı. */
+  /* Play: five monthly subscriptions plus one lifetime Crown. Old one-time
+     identifiers remain accepted by the server for purchase restoration. */
   function purchaseTier(t) {
     var purchaseUid = null;
     try { purchaseUid = window.firebase.auth().currentUser.uid; } catch (e) {}
@@ -101,6 +98,8 @@
       return window.LUMIRA_BILLING?.purchase(t.amount);
     }
     if(revoked(t.amount)){toast(({tr:'Bu rozet hesabında yönetici tarafından kaldırıldı.',en:'An administrator has removed this badge from your account.',de:'Dieses Abzeichen wurde von einem Administrator aus deinem Konto entfernt.',ar:'أزال المسؤول هذه الشارة من حسابك.',fr:'Un administrateur a retiré ce badge de ton compte.',es:'Un administrador ha retirado esta insignia de tu cuenta.',ru:'Администратор удалил этот значок из твоего аккаунта.'})[window.NATIVE_LANG||'tr']||'An administrator has removed this badge from your account.',{kind:'bad'});return;}
+    const policy=window.LUMIRA_FEATURES?.entitlement();
+    if(policy?.supportAmounts?.includes(t.amount)||policy?.memberships?.some(row=>row.sources.some(source=>source.renewsAt&&!source.cancelAt&&source.active))){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: { sku: t.sku } }];
     var details = { total: { label: (window.t ? window.t('purchase_total_label') : 'Toplam'), amount: { currency: 'TRY', value: '0' } } };
     var request;
@@ -135,21 +134,25 @@
       var grid = document.createElement('div');
       grid.className = 'sup-grid';
 
+      const native=typeof window.getDigitalGoodsService==='function';
+      const storeCards=[];
       TIERS.forEach(function (t) {
         var owned = hasBadge(t.badge);
         var el = document.createElement('button');
         el.type = 'button';
         el.className = 'sup-item' + (owned ? ' owned' : '');
         el.innerHTML =
-          '<span class="sup-amount">' + (typeof window.getDigitalGoodsService==='function'?t.try_+' ₺':tierName(t)) + '</span>' +
-          '<span class="sup-eur">' + (typeof window.getDigitalGoodsService==='function'?'~'+t.amount+' €':window.LUMIRA_BILLING.text(28)) + '</span>' +
+          '<span class="sup-amount">' + tierName(t) + '</span>' +
+          '<span class="sup-eur">' + window.LUMIRA_BILLING.text(native?(t.amount===100?3:4):28) + '</span>' +
           '<span class="sup-badge">' + t.badge + '</span>' +
           '<span class="sup-xp">+' + t.xp + ' XP</span>';
-        el.disabled=revoked(t.amount);
+        el.disabled=revoked(t.amount)||native;
+        if(native){const price=document.createElement('span');price.className='sup-store-price';price.style.cssText='display:block;font-size:14px;line-height:1.6;margin:6px 0;color:#b9f4df';price.textContent=window.LUMIRA_BILLING.text(24);el.append(price);storeCards.push({t,el,price});}
         el.onclick = function () { purchaseTier(t); };
         grid.appendChild(el);
       });
       b.appendChild(grid);
+      if(native)window.LUMIRA_PLAY.catalog().then(items=>{if(!grid.isConnected)return;for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_BILLING.text(21);row.el.disabled=!detail||revoked(row.t.amount);}}).catch(()=>{for(const row of storeCards)row.price.textContent=window.LUMIRA_BILLING.text(21);});
       if (window.LUMIRA_FEATURES && typeof window.getDigitalGoodsService === 'function') {
         var restore = document.createElement('button');
         restore.type = 'button';

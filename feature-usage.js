@@ -241,7 +241,7 @@
     const purchases = await service.listPurchases();
     let count = 0;
     for (const p of purchases) {
-      if (!/^lumira_support_(1|5|10|25|50|100)$/.test(p.itemId)) continue;
+      if (!/^lumira_support_(?:(?:1|5|10|25|50)(?:_monthly)?|100)$/.test(p.itemId)) continue;
       await verifyPurchase(p.itemId, p.purchaseToken, uid);
       count++;
     }

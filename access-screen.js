@@ -40,9 +40,10 @@ function open(reason,quota){
  panel.append(grid);
  if(benefits)panel.append(create('p','la-note',T('pdfNote')),create('p','la-note la-note-small',T('pdfOther')));else panel.append(create('p','la-note',T('note')));
  const buy=create('button','la-buy',T('buy'));buy.type='button';
+ const native=typeof window.getDigitalGoodsService==='function';let storeItems=null;
  buy.onclick=()=>{const tier=window.LUMIRA_BADGES?.tiers.find(t=>t.amount===selected);if(tier && window.purchaseSupportTier)window.purchaseSupportTier(tier);};
  const dismiss=create('button','la-dismiss',T('dismiss'));dismiss.type='button';dismiss.onclick=close;panel.append(buy,dismiss);
- function update(){cards.forEach(card=>{const chosen=Number(card.dataset.tier)===selected;card.classList.toggle('is-selected',chosen);card.setAttribute('aria-pressed',String(chosen));});buy.disabled=selected===null;}
+ function update(){cards.forEach(card=>{const chosen=Number(card.dataset.tier)===selected;card.classList.toggle('is-selected',chosen);card.setAttribute('aria-pressed',String(chosen));});const product=window.LUMIRA_PLAY?.products.find(row=>row.amount===selected);buy.disabled=selected===null||(native&&!storeItems?.has(product?.sku));}
  update();root.append(panel);
  const state={root,reason,focus:document.activeElement,overflow:document.body.style.overflow,hidden:[]};
  state.keys=e=>{
@@ -53,6 +54,7 @@ function open(reason,quota){
  };
  for(const node of Array.from(document.body.children)){if(['SCRIPT','STYLE','LINK'].includes(node.tagName))continue;state.hidden.push([node,node.inert,node.getAttribute('aria-hidden')]);node.inert=true;node.setAttribute('aria-hidden','true');}
  active=state;document.body.append(root);document.body.style.overflow='hidden';document.addEventListener('keydown',state.keys);x.focus({preventScroll:true});
+ if(native)window.LUMIRA_PLAY.catalog().then(items=>{if(active!==state)return;storeItems=items;for(const card of cards){const amount=Number(card.dataset.tier),product=window.LUMIRA_PLAY.products.find(row=>row.amount===amount),item=items.get(product.sku),line=create('span','la-benefit',item?item.price+' · '+window.LUMIRA_BILLING.text(product.lifetime?3:4):window.LUMIRA_BILLING.text(21));card.append(line);if(!item)card.disabled=true;}update();}).catch(()=>{if(active===state)buy.disabled=true;});
 }
 async function requireFeature(feature){
  const F=window.LUMIRA_FEATURES;

@@ -4,8 +4,8 @@ import { AudioBufferQueue, Resampler, failure, removeOverlap, speechEnergy } fro
 export class LocalSession {
   static removeOverlap(previous, next, maxWords = 12) { return removeOverlap(previous, next, maxWords); }
   static supported() { return !!(window.Worker && window.WebAssembly && window.DecompressionStream && window.crypto?.subtle && (window.AudioContext || window.webkitAudioContext)); }
-  constructor({ target, onProgress, onResult, onError, onNotice, audioContext, onAudio }) {
-    this.target = target; this.onProgress = onProgress; this.onResult = onResult;
+  constructor({ target, sourceLanguage='auto', onProgress, onResult, onError, onNotice, audioContext, onAudio }) {
+    this.target = target; this.sourceLanguage=sourceLanguage; this.onProgress = onProgress; this.onResult = onResult;
     this.onError = onError; this.onNotice = onNotice; this.closed = false;
     this.onAudio = onAudio;
     this.pending = new Map(); this.nextId = 1; this.files = new Map();
@@ -60,7 +60,7 @@ export class LocalSession {
         for (const item of this.pending.values()) { clearTimeout(item.timer); item.reject(failure('local_download_error')); }
         this.pending.clear();
       };
-      await this.rpc('prepare', { target: this.target }, [], 600000);
+      await this.rpc('prepare', { target: this.target,sourceLanguage:this.sourceLanguage }, [], 600000);
       this.ready = true; this.onProgress?.({ ready: true, percent: 100, total: DOWNLOAD_BYTES[this.target] });
     })().catch(error => {
       this.worker?.terminate(); this.worker = null; this.preparing = null;
