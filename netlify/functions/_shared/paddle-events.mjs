@@ -28,7 +28,7 @@ export async function applyPaddleEvent(db,event,catalog){
   const next=subscriptionValue(data,catalog);if(!next)return;
   const saved=await atomic(db.ref('serverPaddleResources/'+data.id),old=>{
    if(old&&(old.eventAt>at||old.eventAt===at&&rank(old.status)>rank(next.status)))return old;
-   return {...next,eventAt:at,eventId:event.event_id,...(old?.uid?{uid:old.uid}:{})};
+   return {...next,eventAt:at,eventId:event.event_id,...(old?.uid?{uid:old.uid}:{}),...(old?.badgePolicy?{badgePolicy:old.badgePolicy}:{})};
   });
   await mirror(db,saved);return;
  }
@@ -47,11 +47,11 @@ export async function applyPaddleEvent(db,event,catalog){
    const saved=await atomic(db.ref('serverPaddleResources/'+data.subscription_id),old=>{
     if(old?.uid&&old.uid!==linked.uid)throw fault('billing_owner_mismatch',409);
     const base=old||{id:data.subscription_id,provider:'paddle',amount:item.amount,status:'active',lifetime:false,priceId:item.priceId,productId:item.productId||null,billingCycle:item.billingCycle||null,startsAt:epoch(data.created_at)||at,endsAt:epoch(data.billing_period?.ends_at),customerId:data.customer_id,eventAt:at,eventId:event.event_id};
-    return {...base,uid:linked.uid};
+    return {...base,uid:linked.uid,...(!base.badgePolicy&&linked.badgePolicy?{badgePolicy:linked.badgePolicy}:{})};
    });await mirror(db,saved);
   }else{
    if(!item.lifetime||item.amount!==100)throw fault('billing_event_mismatch',409);
-   const saved=await atomic(db.ref('serverPaddleResources/'+data.id),old=>old?.eventAt>=at?old:{id:data.id,uid:linked.uid,provider:'paddle',amount:item.amount,status:'active',lifetime:true,startsAt:at,endsAt:null,customerId:data.customer_id,eventAt:at,eventId:event.event_id});await mirror(db,saved);
+   const saved=await atomic(db.ref('serverPaddleResources/'+data.id),old=>old?.eventAt>=at?old:{id:data.id,uid:linked.uid,provider:'paddle',amount:item.amount,status:'active',lifetime:true,startsAt:at,endsAt:null,customerId:data.customer_id,eventAt:at,eventId:event.event_id,...(linked.badgePolicy?{badgePolicy:linked.badgePolicy}:{})});await mirror(db,saved);
   }
   await db.ref('serverPaddleCustomers/'+linked.uid).set(data.customer_id);
   return;

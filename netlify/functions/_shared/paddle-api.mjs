@@ -9,20 +9,26 @@ export function paddleEnvironment(env=process.env){
  return mode;
 }
 export function createPaddleApi({env=process.env,fetcher=fetch}={}){
- const mode=paddleEnvironment(env),base=mode==='production'?'https://api.paddle.com':'https://sandbox-api.paddle.com';
+ const mode=paddleEnvironment(env),base=mode==='production'?'https://api.paddle.com':'https://sandbox-api.paddle.com',apiKey=typeof env.PADDLE_API_KEY==='string'?env.PADDLE_API_KEY.trim():'';
  async function call(path,{method='GET',body}={}){
-  if(!env.PADDLE_API_KEY)throw fault('billing_not_configured',503);
+  if(!apiKey)throw fault('billing_not_configured',503);
+  if(/^(?:apikey_|live_|test_)/.test(apiKey)||/[\s*]/.test(apiKey))throw fault('billing_authentication',503);
   if(!path.startsWith('/')||path.includes('://')||path.includes('..'))throw fault('invalid_input');
-  let response;try{response=await fetcher(base+path,{method,headers:{Authorization:'Bearer '+env.PADDLE_API_KEY,'Content-Type':'application/json','Paddle-Version':'1'},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(8000)});}catch{throw fault('billing_unavailable',503);}
+  let response;try{response=await fetcher(base+path,{method,headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json','Paddle-Version':'1'},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(8000)});}catch{throw fault('billing_unavailable',503);}
   let result;try{result=await response.json();}catch{throw fault('billing_unavailable',503);}
-  if(!response.ok)throw fault(response.status===401||response.status===403?'billing_permissions':response.status===409?'billing_busy':'billing_unavailable',response.status===409?409:503);
+  if(!response.ok){
+   const providerCode=/^[a-z_]{1,80}$/.test(result?.error?.code||'')?result.error.code:undefined;
+   const authentication=response.status===401||['invalid_token','authentication_missing','authentication_malformed','invalid_client_token'].includes(providerCode);
+   const error=fault(authentication?'billing_authentication':response.status===403?'billing_permissions':response.status===409?'billing_busy':'billing_unavailable',response.status===409?409:503);
+   throw Object.assign(error,{httpStatus:response.status,...(providerCode?{providerCode}:{}),...(/^[a-zA-Z0-9_-]{1,100}$/.test(result?.meta?.request_id||'')?{requestId:result.meta.request_id}:{})});
+  }
   return result;
  }
  async function list(path){let next=path,items=[],seen=new Set();do{if(seen.has(next)||seen.size>=50)throw fault('billing_unavailable',503);seen.add(next);const page=await call(next);if(!Array.isArray(page.data))throw fault('billing_unavailable',503);items.push(...page.data);if(page.meta?.pagination?.has_more){const url=new URL(page.meta.pagination.next);if(url.origin!==base)throw fault('billing_unavailable',503);next=url.pathname+url.search;}else next=null;}while(next);return items;}
  async function portal(customerId,subscriptions=[]){
-  if(!env.PADDLE_API_KEY)throw fault('billing_not_configured',503);
+  if(!apiKey)throw fault('billing_not_configured',503);
   const {Paddle}=await import('@paddle/paddle-node-sdk');
-  try{const session=await new Paddle(env.PADDLE_API_KEY,{environment:mode}).customerPortalSessions.create(customerId,subscriptions);return session.urls.general.overview;}catch{throw fault('billing_unavailable',503);}
+  try{const session=await new Paddle(apiKey,{environment:mode}).customerPortalSessions.create(customerId,subscriptions);return session.urls.general.overview;}catch{throw fault('billing_unavailable',503);}
  }
  return {call,list,portal,environment:mode};
 }
@@ -81,7 +87,7 @@ export function visitorCountry(request,context){const code=String(context?.geo?.
 export async function auditPaddle(api){
  const result={environment:api.environment};
  await Promise.all([['paymentMethods','/settings/checkout-payment-methods'],['tax','/settings/tax'],['balanceCurrency','/settings/balance-currency'],['checkoutUrl','/settings/checkout-url'],['domains','/checkout-domains?per_page=200',true],['verification','/verifications?verification_type=onboarding&per_page=200',true]].map(async ([key,path,list])=>{
-  try{result[key]={ok:true,data:list?await api.list(path):(await api.call(path)).data};}catch(error){result[key]={ok:false,error:error.code||'billing_unavailable'};}
+  try{result[key]={ok:true,data:list?await api.list(path):(await api.call(path)).data};}catch(error){result[key]={ok:false,error:error.code||'billing_unavailable',...(error.providerCode?{providerCode:error.providerCode}:{}),...(error.httpStatus?{httpStatus:error.httpStatus}:{}),...(error.requestId?{requestId:error.requestId}:{})};}
  }));
  return result;
 }
@@ -103,5 +109,5 @@ export async function setupPaddle(db,api,{env=process.env}={}){
  await db.ref(path).update({catalog,clientToken,webhookSecretHash:webhookFingerprint(setting.endpoint_secret_key),destinationId:setting.id,environment:api.environment,ready:true});
  let defaultPaymentLink;
  try{defaultPaymentLink=(await api.call('/settings/checkout-url',{method:'PATCH',body:{default_url:'https://lumira-tr.com/checkout/'}})).data;}catch(error){defaultPaymentLink={error:error.code||'billing_unavailable',dashboard:'Checkout > Checkout configuration'};}
- return {ready:true,environment:api.environment,catalog,clientToken,needsWebhookSecret:!env.PADDLE_NOTIFICATION_WEBHOOK_SECRET&&!env.PADDLE_WEBHOOK_SECRET,defaultPaymentLink};
+ return {ready:true,environment:api.environment,catalog,clientToken,needsClientToken:!env.PADDLE_CLIENT_TOKEN&&!env.PADDLE_CLIENT_SIDE_TOKEN,needsWebhookSecret:!env.PADDLE_NOTIFICATION_WEBHOOK_SECRET&&!env.PADDLE_WEBHOOK_SECRET,defaultPaymentLink};
 }

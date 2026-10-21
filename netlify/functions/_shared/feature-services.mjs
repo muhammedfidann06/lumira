@@ -29,15 +29,16 @@ export async function identity(request) {
   let claims;
   try { claims = await services.auth.verifyIdToken(bearer, true); }
   catch { throw fault('login_required', 401); }
-  const [grants, verified, billing, optOut, play] = await Promise.all([
+  const [grants, verified, billing, optOut, play, policies] = await Promise.all([
     services.db.ref(`progress/${claims.uid}/meta/supportGrants`).get(),
     services.db.ref(`serverFeatureEntitlements/${claims.uid}`).get(),
     services.db.ref(`serverPaddleAccounts/${claims.uid}`).get(),
     services.db.ref(`serverBadgeOptOut/${claims.uid}`).get(),
-    services.db.ref(`serverPlayAccounts/${claims.uid}`).get()
+    services.db.ref(`serverPlayAccounts/${claims.uid}`).get(),
+    services.db.ref(`serverBadgePolicyVersions/${claims.uid}`).get()
   ]);
   const [currentBilling,currentPlay]=await Promise.all([reconcileAccount(services.db,claims.uid,billing.val()||{}),playBilling.reconcile({...services,uid:claims.uid},play.val()||{})]);
-  return {...services,uid:claims.uid,tier:accountMemberships(grants.val()||{},verified.val()||{},currentBilling,optOut.val()||{},Date.now(),currentPlay).tier};
+  return {...services,uid:claims.uid,tier:accountMemberships(grants.val()||{},verified.val()||{},currentBilling,optOut.val()||{},Date.now(),currentPlay,policies.val()||{}).tier};
 }
 export async function speechToken() {
   const key = process.env.AZURE_SPEECH_KEY, region = process.env.AZURE_SPEECH_REGION;
