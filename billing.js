@@ -35,6 +35,13 @@
  function formatPrice(item){if(typeof item?.formattedPrice!=='string'||!item.formattedPrice)throw Error('missing_preview');return item.formattedPrice;}
  const annualText={tr:'Yıllık abonelik',en:'Annual subscription',de:'Jahresabo',ar:'اشتراك سنوي',fr:'Abonnement annuel',es:'Suscripción anual',ru:'Годовая подписка'};
  const term=item=>item.lifetime?T(3):item.billingCycle?.interval==='year'?(annualText[root.NATIVE_LANG]||annualText.en):T(4);
+ function checkoutCustomer(user,country){
+  const email=typeof user?.email==='string'?user.email.trim():'';
+  // Username accounts use an internal Firebase address, not a buyer email.
+  // Paddle requires email or id whenever customer/address is supplied.
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||/@dilkartlari-user\.app$/i.test(email))return null;
+  return {email,...(typeof country==='string'&&/^[A-Z]{2}$/.test(country)?{address:{countryCode:country}}:{})};
+ }
  async function paddle(config){
   if(!['production','sandbox'].includes(config.environment)||!config.clientToken?.startsWith(config.environment==='production'?'live_':'test_'))throw Error('invalid_paddle_environment');
   const signature=config.environment+':'+config.clientToken;if(paddleInstance){if(paddleIdentity!==signature)throw Error('paddle_environment_changed');return paddleInstance;}if(paddlePending)return paddlePending;
@@ -68,9 +75,9 @@
    const url=new URL(result.url);if(url.origin!=='https://lumira-tr.com'||url.pathname!=='/checkout/')throw Error();
    clearPurchaseNotice();
    if(root.location.origin==='https://lumira-tr.com'&&paddleInstance&&/^txn_[a-z\d]{26}$/.test(result.transactionId||'')){
-    const user=root.firebase.auth().currentUser,email=user?.email&&!/@dilkartlari-user\.app$/i.test(user.email)?user.email:null;
+    const customer=checkoutCustomer(root.firebase.auth().currentUser,publicConfig?.country);
     root.LUMIRA_ACCESS?.close();
-    paddleInstance.Checkout.open({transactionId:result.transactionId,...(email?{customer:{email,...(publicConfig.country?{address:{countryCode:publicConfig.country}}:{})}}:publicConfig.country?{customer:{address:{countryCode:publicConfig.country}}}:{}),settings:{displayMode:'overlay',variant:'one-page',theme:'dark',locale:root.NATIVE_LANG||'tr',successUrl:'https://lumira-tr.com/welcome/?transaction='+encodeURIComponent(result.transactionId)+'&lang='+(root.NATIVE_LANG||'tr')}});
+    paddleInstance.Checkout.open({transactionId:result.transactionId,...(customer?{customer}:{}),settings:{displayMode:'overlay',variant:'one-page',theme:'dark',locale:root.NATIVE_LANG||'tr',successUrl:'https://lumira-tr.com/welcome/?transaction='+encodeURIComponent(result.transactionId)+'&lang='+(root.NATIVE_LANG||'tr')}});
    }else location.assign(url.href);
   }catch(error){root.PWA?.logError?.({message:'Checkout: '+(error.featureCode||error.message||'billing_unavailable'),stack:error.stack||''});showPurchaseNotice(msg(error),{kind:'bad'});}finally{purchasing=false;}
  }
@@ -134,7 +141,7 @@
    const mismatch={tr:'Paddle API anahtarı ile PADDLE_ENV farklı ortamlara ait. Canlı anahtar için production, test anahtarı için sandbox kullan.',en:'The Paddle API key and PADDLE_ENV refer to different environments. Use production for a live key, sandbox for a test key.',de:'Paddle-API-Schlüssel und PADDLE_ENV gehören zu verschiedenen Umgebungen. Für Live-Schlüssel production, für Testschlüssel sandbox verwenden.',ar:'مفتاح Paddle وPADDLE_ENV لبيئتين مختلفتين. استخدم production للمفتاح المباشر وsandbox لمفتاح الاختبار.',fr:'La clé Paddle et PADDLE_ENV ne correspondent pas. Utilise production pour une clé réelle, sandbox pour une clé de test.',es:'La clave Paddle y PADDLE_ENV no coinciden. Usa production para una clave real y sandbox para una clave de prueba.',ru:'Ключ Paddle и PADDLE_ENV относятся к разным средам. Используй production для рабочего ключа, sandbox для тестового.'};status.textContent=error.featureCode==='billing_authentication'?(authenticationHelp[root.NATIVE_LANG]||authenticationHelp.en):error.featureCode==='billing_permissions'?(permissionHelp[root.NATIVE_LANG]||permissionHelp.en):error.featureCode==='billing_webhook_mismatch'?C[2]:error.featureCode==='billing_environment_mismatch'?(mismatch[root.NATIVE_LANG]||mismatch.en):msg(error);
   });
  });}
- root.LUMIRA_BILLING={purchase,mountProfile,setup,catalog,formatPrice,term,text:T,paddle};
+ root.LUMIRA_BILLING={purchase,mountProfile,setup,catalog,formatPrice,term,text:T,paddle,checkoutCustomer};
  let verifying=false;
  async function confirmReturn(){const params=new URL(location.href).searchParams,id=params.get('transaction');if(verifying||!uid()||params.get('payment')!=='return'||!/^txn_[a-z\d]{26}$/.test(id||''))return;verifying=true;const account=uid();try{const result=await api('confirm',{transactionId:id});if(account!==uid())return;if(result.confirmed){await refresh();const clean=new URL(location.href);clean.searchParams.delete('transaction');clean.searchParams.delete('payment');history.replaceState(history.state,'',clean.href);root.PWA?.toast(T(19),{kind:'good'});}else root.PWA?.toast(T(24));}catch(error){root.PWA?.toast(msg(error),{kind:'bad'});}finally{verifying=false;}}
  let intentRunning=false;

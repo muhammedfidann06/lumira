@@ -32,9 +32,9 @@
   if(!/^txn_[a-z\d]{26}$/.test(transactionId||'')){status.textContent=c[12];return;}
   try{
    const response=await fetch(LUMIRA_BACKEND.url('billing')+'?config',{cache:'no-store'});if(!response.ok)throw Error();const config=await response.json();if(!config.checkoutReady)throw Error();
-   const instance=await LUMIRA_BILLING.paddle(config),user=await authReady(),email=user?.email&&!/@dilkartlari-user\.app$/i.test(user.email)?user.email:null;
+   const instance=await LUMIRA_BILLING.paddle(config),user=await authReady(),customer=LUMIRA_BILLING.checkoutCustomer(user,config.country);
    const source=new URL(location.href).searchParams.get('return')==='github'?'github':'netlify';
-   instance.Checkout.open({transactionId,...(email?{customer:{email,...(config.country?{address:{countryCode:config.country}}:{})}}:config.country?{customer:{address:{countryCode:config.country}}}:{}),settings:{displayMode:'overlay',variant:'one-page',theme:'dark',locale:NATIVE_LANG,successUrl:'https://lumira-tr.com/welcome/?return='+source+'&lang='+NATIVE_LANG+'&transaction='+encodeURIComponent(transactionId)}});
+   instance.Checkout.open({transactionId,...(customer?{customer}:{}),settings:{displayMode:'overlay',variant:'one-page',theme:'dark',locale:NATIVE_LANG,successUrl:'https://lumira-tr.com/welcome/?return='+source+'&lang='+NATIVE_LANG+'&transaction='+encodeURIComponent(transactionId)}});
   }catch{status.textContent=c[10];}
  }else if(kind==='pricing'){
   main.classList.add('pricing-page');main.append(n('p',c[5]),n('p',LUMIRA_ACCESS_COPY.text('period')));
