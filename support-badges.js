@@ -153,7 +153,7 @@
           '<span class="sup-eur">' + window.LUMIRA_BILLING.text(native?(t.amount===100?3:4):28) + '</span>' +
           '<span class="sup-badge">' + t.badge + '</span>' +
           '<span class="sup-xp">+' + t.xp + ' XP</span>';
-        el.disabled=revoked(t.amount)||native;
+        el.disabled=native;
         if(native){const price=document.createElement('span');price.className='sup-store-price';price.style.cssText='display:block;font-size:14px;line-height:1.6;margin:6px 0;color:#b9f4df';price.textContent=window.LUMIRA_BILLING.text(24);el.append(price);storeCards.push({t,el,price});}
         el.onclick = function () { purchaseTier(t); };
         grid.appendChild(el);

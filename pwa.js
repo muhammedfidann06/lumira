@@ -20,7 +20,7 @@
    ========================================================================== */
 (function () {
 'use strict';
-var APP_VERSION='1.10.2';
+var APP_VERSION='1.10.3';
 
 
 /* ========================================================== AYARLAR ====== */
@@ -891,15 +891,64 @@ function isNoise(msg) {
   return false;
 }
 
+function cleanErrorText(value, limit) {
+  return String(value || '')
+    .replace(/\bpdl_(?:live|sdbx)_apikey_[A-Za-z0-9_]+/g, '[API_KEY]')
+    .replace(/\bBearer\s+[A-Za-z0-9._~+\/=-]+/gi, 'Bearer [REDACTED]')
+    .replace(/(?:https?|chrome-extension|moz-extension|safari-web-extension):\/\/[^\s)'"<>]+/g, function (raw) {
+      try {
+        var ending = raw.match(/:\d+(?::\d+)?$/);
+        var suffix = ending ? ending[0] : '';
+        var parsed = new URL(suffix ? raw.slice(0, -suffix.length) : raw);
+        return parsed.protocol + '//' + parsed.host + parsed.pathname + suffix;
+      } catch (ignore) { return raw.split(/[?#]/)[0]; }
+    }).slice(0, limit);
+}
+function errorSource(stack) {
+  var urls = String(stack || '').match(/(?:https?|chrome-extension|moz-extension|safari-web-extension):\/\/[^\s)'"<>]+/g) || [];
+  if (!urls.length) return 'unknown';
+  if (urls.every(function (url) { return /^(?:chrome-extension|moz-extension|safari-web-extension):/.test(url); })) return 'extension';
+  if (urls.some(function (url) { try { return new URL(url).origin === location.origin; } catch (ignore) { return false; } })) return 'app';
+  return 'external';
+}
+function errorSourceLabel(kind) {
+  var copy = {
+    tr: ['Uygulama', 'Tarayıcı eklentisi', 'Harici betik', 'Kaynak bilinmiyor'],
+    en: ['Application', 'Browser extension', 'External script', 'Unknown source'],
+    de: ['Anwendung', 'Browser-Erweiterung', 'Externes Skript', 'Unbekannte Quelle'],
+    ar: ['التطبيق', 'إضافة المتصفح', 'برنامج نصي خارجي', 'مصدر غير معروف'],
+    fr: ['Application', 'Extension du navigateur', 'Script externe', 'Source inconnue'],
+    es: ['Aplicación', 'Extensión del navegador', 'Script externo', 'Origen desconocido'],
+    ru: ['Приложение', 'Расширение браузера', 'Внешний скрипт', 'Неизвестный источник']
+  };
+  return (copy[window.NATIVE_LANG] || copy.en)[{app: 0, extension: 1, external: 2, unknown: 3}[kind] ?? 3];
+}
+function groupErrors(list) {
+  var groups = [];
+  (Array.isArray(list) ? list : []).forEach(function (entry) {
+    if (!entry || typeof entry.m !== 'string') return;
+    var same = groups.find(function (row) { return row.m === entry.m && row.s === entry.s && row.kind === entry.kind; });
+    var count = Number.isFinite(entry.count) && entry.count > 0 ? entry.count : 1;
+    if (same) same.count += count;
+    else groups.push(Object.assign({}, entry, {count: count}));
+  });
+  return groups;
+}
+
 function logError(err, extra) {
   try {
     if (isNoise(err && (err.message || err.reason || err))) return;
-    var list = store(ERR_KEY) || [];
+    var stored = store(ERR_KEY), list = Array.isArray(stored) ? stored.filter(function (entry) { return entry && typeof entry.m === 'string'; }) : [];
+    var message = cleanErrorText(err && (err.message || err.reason || err), 1000);
+    var stack = cleanErrorText((err && err.stack || '') + (err && err.source ? '\n' + err.source : ''), 1800);
+    var kind = errorSource(stack), now = Date.now();
+    var index = list.findIndex(function (entry) { return entry.m === message && entry.s === stack && entry.kind === kind && now - Date.parse(entry.t) < 60000; });
+    var previous = index >= 0 ? list.splice(index, 1)[0] : null;
     list.unshift({
       t: new Date().toISOString(),
-      m: (err && (err.message || err.reason || err)) + '',
-      s: (err && err.stack ? String(err.stack).slice(0, 900) : ''),
-      u: location.href, ua: navigator.userAgent, extra: extra || null
+      m: message, s: stack, kind: kind,
+      count: previous ? (Number(previous.count) || 1) + 1 : 1,
+      u: cleanErrorText(location.href, 400), ua: navigator.userAgent, extra: extra || null
     });
     store(ERR_KEY, list.slice(0, 40));
     if (CONFIG.errorEndpoint) {
@@ -911,18 +960,27 @@ function logError(err, extra) {
 }
 function setupErrorReporting() {
   addEventListener('error', function (e) {
-    if (e && e.message) logError({ message: e.message, stack: (e.filename || '') + ':' + (e.lineno || '') });
+    if (e && e.message) logError({ message: e.message, stack: e.error && e.error.stack || '', source: (e.filename || '') + ':' + (e.lineno || '') });
   });
-  addEventListener('unhandledrejection', function (e) { logError({ message: 'Promise: ' + (e.reason && e.reason.message || e.reason) }); });
+  addEventListener('unhandledrejection', function (e) { var reason = e && e.reason; logError({ message: 'Promise: ' + (reason && reason.message || reason), stack: reason && reason.stack || '' }); });
 }
 function openErrorReport() {
-  var list = store(ERR_KEY) || [];
+  var list = groupErrors(store(ERR_KEY));
   sheet(window.t?window.t('err_report_title'):'🐞 Hata raporu', list.length ? (window.t?window.t('err_records_found')(list.length):(list.length + ' kayıt bulundu.')) : (window.t?window.t('err_no_records'):'Kayıtlı hata yok — her şey yolunda.'), function (b) {
     if (!list.length) {
       b.innerHTML = '<div class="pwa-empty">'+(window.t?window.t('err_none_logged'):'🎉 Hiç hata kaydedilmemiş.')+'</div>';
     } else {
       list.slice(0, 8).forEach(function (e) {
-        b.appendChild(row('•', escapeHtml((e.m || '').slice(0, 60)), new Date(e.t).toLocaleString('tr-TR')));
+        var item = row('•', escapeHtml((e.m || '').slice(0, 100)), new Date(e.t).toLocaleString(window.NATIVE_LANG || 'en') + ' · ' + errorSourceLabel(e.kind) + (e.count > 1 ? ' · ×' + e.count : ''));
+        item.onclick = function () {
+          sheet(errorSourceLabel(e.kind), cleanErrorText(e.m, 1000), function (details) {
+            var trace = document.createElement('pre');
+            trace.style.cssText = 'white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.7';
+            trace.textContent = cleanErrorText(e.s || errorSourceLabel('unknown'), 1800);
+            details.appendChild(trace);
+          });
+        };
+        b.appendChild(item);
       });
     }
     var snd = row('📤', window.t?window.t('err_share_row'):'Raporu paylaş / indir', window.t?window.t('err_share_desc'):'Cihaz bilgisi + son hatalar');
