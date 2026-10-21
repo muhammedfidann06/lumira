@@ -132,6 +132,8 @@ test('real Firebase: writing commits, cold renewals last an hour, quotas stay at
       await assert.rejects(userDb.ref('serverFeatureUsage/member/hidden').get(),/permission[ _]denied/i);
       await assert.rejects(userDb.ref('serverFeatureUsage/member').set({}),/permission[ _]denied/i);
       await assert.rejects(userDb.ref('serverFeatureEntitlements/member/100').set(true),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('serverBadgePolicyVersions/member/5/admin').set('forged-version'),/permission[ _]denied/i);
+      await assert.rejects(userDb.ref('serverBadgePolicyVersions/member').get(),/permission[ _]denied/i);
       assert.equal((await adminDb.ref('progress/member/meta/xp').get()).val(),9);
       // Anonymous public leaderboard remains available; private progress does not.
       const anonymous=initializeApp({...options,databaseAuthVariableOverride:null},'rules-anonymous');
