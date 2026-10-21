@@ -4,7 +4,7 @@ import {withCors} from './_shared/cors.mjs';
 const AMOUNTS=TIERS.filter(t=>t.amount>0).map(t=>t.amount);
 const AWARDS=['sampiyon','elmas','efsane','nisanci','ates','oncu','bilge','kitapkurdu','birinci','madalya','onur','kelebek'];
 const safeKey=value=>typeof value==='string'&&value.length>0&&value.length<=128&&!/[.#$/\[\]\u0000-\u001f\u007f]/u.test(value);
-const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','X-Lumira-Features-Version':'1.10.0'}});
+const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','X-Lumira-Features-Version':'1.10.3'}});
 export function createAdminBadgesHandler(services={identity},clock=Date.now){
  return withCors(async request=>{
   if(request.method!=='POST')return reply({error:'method_not_allowed'},405);
@@ -26,7 +26,7 @@ export function createAdminBadgesHandler(services={identity},clock=Date.now){
    if(body.action==='allow'){
     if(!AMOUNTS.includes(body.amount))throw fault('invalid_input');
     const policies=await Promise.all(uids.map(uid=>ctx.db.ref('serverFeatureEntitlements/'+uid+'/'+body.amount).get()));
-    uids.forEach((uid,i)=>{if(policies[i].val()===false)updates['serverFeatureEntitlements/'+uid+'/'+body.amount]=null;updates['serverBadgeOptOut/'+uid+'/'+body.amount]=null;});
+    uids.forEach((uid,i)=>{if(policies[i].val()===false)updates['serverFeatureEntitlements/'+uid+'/'+body.amount]=null;updates['serverBadgeOptOut/'+uid+'/'+body.amount]=null;updates['serverBadgePolicyVersions/'+uid+'/'+body.amount+'/admin']='allow:'+ctx.uid+':'+body.id;});
    }else{
     if(!['support','award','all'].includes(body.kind))throw fault('invalid_input');
     if(body.kind!=='award'&&body.amount!=='all'&&!AMOUNTS.includes(body.amount))throw fault('invalid_input');
@@ -36,6 +36,7 @@ export function createAdminBadgesHandler(services={identity},clock=Date.now){
      if(body.kind!=='award')for(const amount of body.amount==='all'?AMOUNTS:[body.amount]){
       updates['serverFeatureEntitlements/'+uid+'/'+amount]=false;
       updates['progress/'+uid+'/meta/supportGrants/'+amount]=false;
+      updates['serverBadgePolicyVersions/'+uid+'/'+amount+'/admin']='revoke:'+ctx.uid+':'+body.id;
      }
      if(body.kind!=='support')for(const badge of body.badge==='all'?[...new Set([...AWARDS,...Object.keys(awards[i].val()||{})])]:[body.badge]){
       if(safeKey(badge))updates['progress/'+uid+'/meta/awards/'+badge]={removed:true,ts:now};

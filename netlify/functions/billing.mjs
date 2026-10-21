@@ -4,7 +4,9 @@ import {withCors} from './_shared/cors.mjs';
 import {createPaddleApi,setupPaddle,paddleEnvironment,catalogPrices,pricingTiers,visitorCountry,auditPaddle,paddleWebhookReady} from './_shared/paddle-api.mjs';
 import {atomic,applyPaddleEvent} from './_shared/paddle-events.mjs';
 import {playBilling} from './_shared/play-billing.mjs';
-const reply=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.10.0'}});
+import {badgePolicySnapshot} from './_shared/memberships.mjs';
+import {randomUUID} from 'node:crypto';
+const reply=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.10.3'}});
 const operation=id=>typeof id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(id);
 export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=createPaddleApi,env=process.env,clock=Date.now,play=playBilling}={}){
  return withCors(async (request,context)=>{
@@ -23,12 +25,13 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
    const raw=await request.text();if(raw.length>5000)throw fault('invalid_input',413);
    let body;try{body=JSON.parse(raw);}catch{throw fault('invalid_input');}
    const ctx=await identify(request),db=ctx.db;
+   const markRemoved=amount=>db.ref().update({['serverBadgeOptOut/'+ctx.uid+'/'+amount]:true,['serverBadgePolicyVersions/'+ctx.uid+'/'+amount+'/user']:'remove:'+randomUUID()});
    if(body.action==='playCancel'){await play.cancel(ctx,body.subscriptionId);return reply({done:true});}
    if(body.action==='playPortal')return reply({url:await play.portal(ctx,body.subscriptionId)});
    if(body.action==='status')return reply({memberships:ctx.tier.memberships||[],serverNow:clock()});
    if(body.action==='restore'){
     if(![1,5,10,25,50,100].includes(body.amount))throw fault('invalid_input');
-    if(ctx.tier.revokedSupport?.includes(body.amount)&&(await db.ref('serverFeatureEntitlements/'+ctx.uid+'/'+body.amount).get()).val()===false)throw fault('billing_not_owned',403);
+    if((await db.ref('serverFeatureEntitlements/'+ctx.uid+'/'+body.amount).get()).val()===false&&ctx.tier.memberships?.find(row=>row.amount===body.amount)?.revoked!==false)throw fault('billing_not_owned',403);
     await db.ref('serverBadgeOptOut/'+ctx.uid+'/'+body.amount).remove();return reply({done:true});
    }
    // Play purchases, gifts and profile access do not depend on Paddle being
@@ -38,7 +41,7 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
     const account=(await db.ref('serverPaddleAccounts/'+ctx.uid).get()).val()||{};
     if(!Object.values(account.subscriptions||{}).some(value=>value.amount===body.amount&&['active','trialing','past_due','paused'].includes(value.status)&&!value.cancelAt)){
      await play.cancelTier(ctx,body.amount);
-     await db.ref('serverBadgeOptOut/'+ctx.uid+'/'+body.amount).set(true);
+     await markRemoved(body.amount);
      const fresh=await identify(request);return reply({memberships:fresh.tier.memberships||[],done:true});
     }
    }
@@ -63,7 +66,6 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
     if(!config.ready||!paddleWebhookReady(config,env))throw fault('billing_not_configured',503);
     const selected=body.priceId?catalogPrices(config.catalog).find(row=>row.amount===body.amount&&row.priceId===body.priceId):config.catalog.find(row=>row.amount===body.amount);if(!selected||!operation(body.id))throw fault('invalid_input');
     if(ctx.tier.supportAmounts?.includes(body.amount))throw fault('billing_already_active',409);
-    if(ctx.tier.revokedSupport?.includes(body.amount))throw fault('billing_badge_revoked',403);
     const existing=(await db.ref('serverPaddleAccounts/'+ctx.uid+'/subscriptions').get()).val()||{};
     if(Object.values(existing).some(s=>['active','trialing','past_due'].includes(s.status)&&!s.cancelAt))throw fault('billing_subscription_exists',409);
     const ref=db.ref('serverPaddleCheckoutRequests/'+ctx.uid+'/'+body.id),owner=body.id+'-'+clock();
@@ -71,12 +73,13 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
     if(previous?.transactionId){const previousPrice=previous.priceId||(await db.ref('serverPaddleTransactions/'+previous.transactionId).get()).val()?.priceId;if(previous.amount!==body.amount||previousPrice!==selected.priceId)throw fault('invalid_operation',409);return reply({url:previous.url,transactionId:previous.transactionId,priceId:previousPrice});}
     await atomic(ref,value=>{if(value?.until>clock()||value?.transactionId)throw fault('billing_busy',409);return{owner,amount:body.amount,until:clock()+30000};});
     try{
+     const badgePolicy=badgePolicySnapshot((await db.ref('serverBadgePolicyVersions/'+ctx.uid+'/'+selected.amount).get()).val());
      const source=request.headers.get('origin')==='https://muhammedfidann06.github.io'?'github':'netlify',language=['tr','en','de','ar','fr','es','ru'].includes(body.language)?body.language:'tr';
      const customerId=(await db.ref('serverPaddleCustomers/'+ctx.uid).get()).val();
      const transaction=(await api.call('/transactions',{method:'POST',body:{items:[{price_id:selected.priceId,quantity:1}],collection_mode:'automatic',...(/^ctm_[a-z\d]{26}$/.test(customerId||'')?{customer_id:customerId}:{}),custom_data:{lumira_user_id:ctx.uid},checkout:{url:'https://lumira-tr.com/checkout/?return='+source+'&lang='+language}}})).data;
      if(!/^txn_[a-z\d]{26}$/.test(transaction?.id||''))throw fault('billing_unavailable',503);
      const url=new URL(transaction.checkout?.url);if(url.origin!=='https://lumira-tr.com'||url.pathname!=='/checkout/')throw fault('billing_unavailable',503);
-     await db.ref('serverPaddleTransactions/'+transaction.id).set({uid:ctx.uid,amount:selected.amount,priceId:selected.priceId,createdAt:clock()});
+     await db.ref('serverPaddleTransactions/'+transaction.id).set({uid:ctx.uid,amount:selected.amount,priceId:selected.priceId,createdAt:clock(),badgePolicy});
      await ref.set({amount:body.amount,priceId:selected.priceId,transactionId:transaction.id,url:url.href});return reply({url:url.href,transactionId:transaction.id,priceId:selected.priceId});
     }catch(error){await atomic(ref,value=>value?.owner===owner?{amount:body.amount,failed:true}:value);throw error;}
    }
@@ -108,7 +111,7 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
      await applyPaddleEvent(db,{event_id:'local-cancel-'+owned.id,event_type:'subscription.updated',occurred_at:result.updated_at||new Date(clock()).toISOString(),data:result},config.catalog||[]);
     }
     if(body.action==='remove')await play.cancelTier(ctx,body.amount);
-    if(body.action==='remove')await db.ref('serverBadgeOptOut/'+ctx.uid+'/'+body.amount).set(true);
+    if(body.action==='remove')await markRemoved(body.amount);
     const fresh=await identify(request);return reply({memberships:fresh.tier.memberships||[],done:true});
    }
    throw fault('invalid_action');
