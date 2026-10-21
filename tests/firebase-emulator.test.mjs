@@ -100,7 +100,7 @@ test('real Firebase: writing commits, cold renewals last an hour, quotas stay at
     assert.equal(stopped.session, null);
     assert.equal(stopped.quota.live.usedSeconds, 3600);
     console.log('Writing/refund/concurrent quotas and 720 cold-client renewals passed. Provider checks:', writingCalls);
-    const rules = await readFile(new URL('../firebase-security-rules.json',import.meta.url),'utf8');
+    const rules = await readFile(process.env.LUMIRA_FIREBASE_RULES_PATH||new URL('../firebase-security-rules.json',import.meta.url),'utf8');
     const applied = await fetch('http://127.0.0.1:9000/.settings/rules.json?ns=demo-lumira-default-rtdb', {method:'PUT',headers:{Authorization:'Bearer owner','Content-Type':'application/json'},body:rules});
     assert.equal(applied.status,200,await applied.text());
     const owner=initializeApp(options,'rules-owner'),member=initializeApp({...options,databaseAuthVariableOverride:{uid:'member'}},'rules-member'),manager=initializeApp({...options,databaseAuthVariableOverride:{uid:'manager'}},'rules-manager');
