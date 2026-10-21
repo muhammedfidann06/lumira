@@ -35,9 +35,20 @@
     const lang = window.NATIVE_LANG || 'tr';
     return (PM_COPY[lang] && PM_COPY[lang][key]) || fallback;
   }
+  const FOCUS_COPY = {
+    tr:['Bugün ne çalışalım?','Çalışma kategorisi','Tüm kategoriler','Seçtiğin kategorideki bilmediğin kelimelerle çalış. Dil ve seviye seçimin de uygulanır.','Çalışılacak kelime: {n}','Bu kategori ve seviyede bilmediğin kelime kalmadı. Başka bir kategori veya seviye seçebilirsin.'],
+    en:['What shall we study today?','Study category','All categories','Study words you do not know in your chosen category. Your language and level filters also apply.','Words to study: {n}','You know all the words in this category and level. Choose another category or level.'],
+    de:['Was lernen wir heute?','Lernkategorie','Alle Kategorien','Lerne unbekannte Wörter aus deiner gewählten Kategorie. Sprache und Niveau werden ebenfalls berücksichtigt.','Wörter zum Lernen: {n}','Du kennst alle Wörter dieser Kategorie und dieses Niveaus. Wähle eine andere Kategorie oder ein anderes Niveau.'],
+    ar:['ماذا نتعلم اليوم؟','فئة الدراسة','جميع الفئات','تدرّب على الكلمات التي لا تعرفها من الفئة المختارة. تُطبّق أيضًا اللغة والمستوى اللذان اخترتهما.','كلمات للدراسة: {n}','تعرف جميع الكلمات في هذه الفئة وهذا المستوى. اختر فئة أو مستوى آخر.'],
+    fr:['Qu’allons-nous apprendre aujourd’hui ?','Catégorie à étudier','Toutes les catégories','Étudie les mots que tu ne connais pas dans la catégorie choisie. Tes filtres de langue et de niveau s’appliquent aussi.','Mots à étudier : {n}','Tu connais tous les mots de cette catégorie et de ce niveau. Choisis une autre catégorie ou un autre niveau.'],
+    es:['¿Qué estudiamos hoy?','Categoría de estudio','Todas las categorías','Estudia las palabras que aún no conoces de la categoría elegida. También se aplican tus filtros de idioma y nivel.','Palabras para estudiar: {n}','Ya conoces todas las palabras de esta categoría y nivel. Elige otra categoría u otro nivel.'],
+    ru:['Что будем учить сегодня?','Категория для изучения','Все категории','Изучай незнакомые слова из выбранной категории. Выбранные язык и уровень также учитываются.','Слов для изучения: {n}','Ты знаешь все слова этой категории и уровня. Выбери другую категорию или уровень.']
+  };
+  const focusText = (index,n)=>(FOCUS_COPY[window.NATIVE_LANG] || FOCUS_COPY.en)[index].replace('{n}',String(n??''));
 
   let currentName = '';
   let currentKey = '';
+  let userLoadRun = 0;
   let dataLoaded = false;
   let wordProgress = {};
   let meta = null;
@@ -157,8 +168,11 @@
   }
   window.PR_refreshBadges=refreshBadges;
   function loadUserData(name, cb){
+    const run=++userLoadRun;
     currentName = name;
     currentKey = getKey(name);
+    const accountKey=currentKey;
+    const stillCurrent=()=>run===userLoadRun&&currentKey===accountKey;
     dataLoaded = false;
     const local = safeLocalGet('pm_data_'+currentKey);
     const localWords = (local && local.words) ? local.words : {};
@@ -169,6 +183,7 @@
     const ref = dbRef('progress/'+currentKey);
     if(ref){
       ref.once('value').then(snap=>{
+        if(!stillCurrent())return;
         const val = snap.val();
         if(val){
           if(val.words) wordProgress = mergeWordProgress(localWords, val.words);
@@ -181,7 +196,7 @@
           }
         }
         finalizeLoad(cb);
-      }).catch(()=> finalizeLoad(cb));
+      }).catch(()=>{if(stillCurrent())finalizeLoad(cb);});
     } else {
       finalizeLoad(cb);
     }
@@ -354,6 +369,17 @@
   function poolForActiveFilter(){
     return (activeLevel === 'TUMU' || activeLevel === 'TÜMÜ') ? poolForActiveLang() : poolForActiveLang().filter(v=>v.level===activeLevel);
   }
+  // Keep this preference local to the account and language pair. It must not
+  // change statistics, saved progress, placement tests or review queues.
+  function studyCategoryKey(){return 'pm_category_'+currentKey+'_'+(window.NATIVE_LANG || 'tr')+'_'+(window.TARGET_LANG || activeLang);}
+  function studyCategory(){
+    const saved=safeLocalGet(studyCategoryKey());
+    return typeof saved==='string' && poolForActiveLang().some(v=>v.cat===saved) ? saved : '';
+  }
+  function studyPool(){
+    const category=studyCategory(),pool=poolForActiveFilter();
+    return category ? pool.filter(v=>v.cat===category) : pool;
+  }
   function knownCountIn(list){
     return list.filter(v=>{ const r=getRecord(v); return r && r.known; }).length;
   }
@@ -481,6 +507,14 @@
         box-shadow:0 6px 22px rgba(0,0,0,0.3);
       }
       .pm-root .pm-card h4{margin:0 0 10px;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--pm-accent);}
+      .pm-root .pm-focus{background:linear-gradient(125deg,rgba(79,232,255,.07),rgba(155,123,255,.08)),var(--pm-panel);text-align:start;}
+      .pm-root .pm-focus h3{margin:0 0 12px;font-size:19px;line-height:1.45;color:#eef4ff;}
+      .pm-root .pm-focus label{display:block;font-size:13px;line-height:1.5;margin-bottom:7px;color:#b8cbea;}
+      .pm-root .pm-focus .lumira-select-field{display:block;min-width:0;width:100%;}
+      .pm-root .pm-focus p{font-size:13px;line-height:1.65;overflow-wrap:break-word;color:#b8cbea;margin:10px 0;}
+      .pm-root .pm-focus-count{display:block;font-size:14px;line-height:1.6;color:var(--pm-accent);margin:12px 0;}
+      .pm-root .pm-focus button.pm-btn{margin-bottom:0;min-height:48px;}
+      .pm-root button.pm-btn:disabled{opacity:.5;cursor:default;transform:none;}
       .pm-root .pm-level-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:#eef4ff;margin-bottom:8px;}
       .pm-root .pm-level-row .pm-bar{flex:1;margin:0 10px;}
       .pm-root .pm-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -728,6 +762,19 @@
     html += '<div class="pm-goal-wrap"><div class="pm-goal-row"><span>'+window.t('pm_today_learned')+'</span><span>'+today+' / '+goal+' '+window.t('pm_words_suffix')+'</span></div><div class="pm-bar"><div class="pm-bar-fill" style="width:'+goalPct+'%"></div></div></div>';
     html += '</div>';
 
+    const focusedCategory=studyCategory(),categories=[...new Set(poolForActiveLang().map(v=>v.cat).filter(Boolean))];
+    const unknownCounts=new Map();
+    filterPool.forEach(v=>{if(!getRecord(v)?.known)unknownCounts.set(v.cat,(unknownCounts.get(v.cat)||0)+1);});
+    const allUnknown=[...unknownCounts.values()].reduce((sum,n)=>sum+n,0),focusedUnknown=focusedCategory?(unknownCounts.get(focusedCategory)||0):allUnknown;
+    html += '<section class="pm-card pm-focus"><h3>🎯 '+escapeHtml(focusText(0))+'</h3><label for="pmStudyCategory">'+escapeHtml(focusText(1))+'</label><select id="pmStudyCategory" data-lumira-select aria-describedby="pmFocusHint pmFocusCount"><option value="">'+escapeHtml(focusText(2))+' · '+allUnknown+'</option>';
+    categories.forEach(category=>{
+      const label=(typeof catName==='function')?catName(category):category;
+      html += '<option value="'+escapeHtml(category)+'"'+(category===focusedCategory?' selected':'')+'>'+escapeHtml(label)+' · '+(unknownCounts.get(category)||0)+'</option>';
+    });
+    html += '</select><p id="pmFocusHint">'+escapeHtml(focusText(3))+'</p><strong class="pm-focus-count" id="pmFocusCount">'+escapeHtml(focusText(4,focusedUnknown))+'</strong>';
+    if(!focusedUnknown)html += '<p class="pm-focus-empty" role="status">'+escapeHtml(focusedCategory?focusText(5):window.t('pm_no_new_words_level'))+'</p>';
+    html += '<button class="pm-btn primary" id="pmStartBtn"'+(focusedUnknown?'':' disabled')+'>'+window.t('pm_start_studying')+'</button></section>';
+
     if(due.length > 0 && !t.t4){
       html += '<div class="pm-due-banner"><div class="pm-due-text">📋 '+(window.t?window.t('due_review_banner')(due.length):('Dün öğrendiğin <b>'+due.length+'</b> kelimenin günlük tekrarı var'))+'</div><button id="pmDueBtn">'+(window.t?window.t('review_btn'):'Tekrar Et')+'</button></div>';
     }
@@ -812,7 +859,6 @@
       awHtml = '<div class="pm-card"><h4>'+window.t('pm_achievements_header')+'</h4><div class="pm-awards">'+awRow+'</div></div>';
     }
 
-    html += '<button class="pm-btn primary" id="pmStartBtn">'+window.t('pm_start_studying')+'</button>';
     html += '<button class="pm-btn small" id="pmLevelTestBtn">'+window.t('pm_level_test_btn')+'</button>';
     html += '<button class="pm-btn small" id="pmKnownBtn">✅ '+window.t('pm_known')+' ('+totalKnownLang+')</button>';
     html += '<button class="pm-btn small" id="pmWeakBtn">📉 '+window.t('pm_weak')+'</button>';
@@ -823,6 +869,13 @@
     html += '</div>';
 
     root.innerHTML = html;
+    const categorySelect=document.getElementById('pmStudyCategory');
+    categorySelect.onchange=()=>{
+      safeLocalSet(studyCategoryKey(),categorySelect.value);
+      renderHome();
+      window.LUMIRA_LANGUAGE?.enhance(document.getElementById('pmStudyCategory')).focus({preventScroll:true});
+    };
+    window.LUMIRA_LANGUAGE?.enhance(categorySelect);
 
     document.querySelectorAll('#pmLangSelect .lang-opt').forEach(el=>{
       el.onclick = () => {
@@ -871,7 +924,8 @@
   }
 
   function pickBatch(){
-    const pool = poolForActiveFilter();
+    const focusedCategory = studyCategory();
+    const pool = studyPool();
     const unknown = pool.filter(v=>{ const r=getRecord(v); return !(r && r.known); });
     const due = unknown.filter(v=>{
       const r = getRecord(v);
@@ -900,7 +954,7 @@
     shuffle(freshInCat);
     let chosen = dueInCat.concat(freshInCat).slice(0, BATCH_SIZE);
 
-    if(chosen.length < BATCH_SIZE){
+    if(!focusedCategory && chosen.length < BATCH_SIZE){
       const rest = unknown.filter(v=>v.cat!==chosenCat);
       const restDue = rest.filter(v=>{
         const r=getRecord(v); return r && r.retryAfterSession!=null && r.retryAfterSession<=meta.studySessionCount;
@@ -1133,7 +1187,7 @@
   function startSession(){
     batch = pickBatch();
     if(batch.length === 0){
-      root.innerHTML = '<div class="pm-root"><div class="pm-empty">'+t('pm_no_new_words_level')+'<br><br>'+t('pm_try_general_review')+'</div><span class="pm-back-link" id="pmBackHome">'+t('pm_back_home')+'</span></div>';
+      root.innerHTML = '<div class="pm-root"><div class="pm-empty">'+(studyCategory()?escapeHtml(focusText(5)):t('pm_no_new_words_level')+'<br><br>'+t('pm_try_general_review'))+'</div><span class="pm-back-link" id="pmBackHome">'+t('pm_back_home')+'</span></div>';
       document.getElementById('pmBackHome').onclick = renderHome;
       return;
     }

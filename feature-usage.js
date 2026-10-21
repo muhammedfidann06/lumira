@@ -159,7 +159,7 @@
     if(!policy)try{policy=JSON.parse(localStorage.getItem('lumira_entitlement_'+uid)||'null');}catch{}
     if(!policy||!Array.isArray(policy.memberships))return policy;
     const now=Number(policy.serverNow||Date.now())+Math.max(0,Date.now()-(policy.savedAt||Date.now()));
-    const rows=policy.memberships.filter(row=>!row.revoked&&!row.removed&&row.sources.some(s=>['active','trialing','past_due'].includes(s.status)&&(s.lifetime||s.endsAt>now)&&(!s.cancelAt||s.cancelAt>now)));
+    const rows=policy.memberships.filter(row=>!row.revoked&&!row.removed&&row.sources.some(s=>['active','trialing','past_due'].includes(s.status)&&(s.provider==='paddle'||(s.lifetime||s.endsAt>now)&&(!s.cancelAt||s.cancelAt>now))));
     const amount=Math.max(0,...rows.map(row=>row.amount)),limit=amount===0?0:amount===1?5:null,used=policy.pdf?.used||0;
     return{...policy,tier:amount,badge:rows.find(row=>row.amount===amount)?.badge||'',supportAmounts:rows.map(row=>row.amount),offline:amount>0,pdf:{...policy.pdf,limit,remaining:limit===null?null:Math.max(0,limit-used)}};
   }

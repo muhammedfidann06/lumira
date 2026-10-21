@@ -16,7 +16,7 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.10.1';
+const CACHE_VERSION = 'v1.10.2';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
 const ASSET_CACHE   = 'lumira-assets-v1';
@@ -48,6 +48,7 @@ const SHELL = [
   './feature-usage.js',
   './android-store.js',
   './billing.js',
+  './vendor/paddle-loader.mjs',
   './play-store.js',
   './welcome-gift.js',
   './story-i18n.js',
@@ -67,6 +68,8 @@ const SHELL = [
   './live-cloud.js',
   './live-translate.js',
   './live-source.js',
+  './language-select.js',
+  './language-select.css',
   './live-local-loader.js',
   './live-local.mjs',
   './live-local-audio.mjs',

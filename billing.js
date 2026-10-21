@@ -10,21 +10,66 @@
  ru:['Мои значки и подписки','Значок, срок действия и продление.','У тебя пока нет значков.','Бессрочно','Месячная подписка','Начало','Конец периода','Следующее продление','Продление отключено','Истёк','Активен','Удалён','Подарок','Подтверждённая покупка','Отменить значок','Отключить продление','Удалить значок сейчас и отключить продление','Отмена','После отключения продления преимущества действуют до конца оплаченного срока. Удаление значка отключит их сейчас. Возврат средств не создаётся.','Изменение сохранено.','Не удалось завершить действие. Попробуй ещё раз.','Оплата сейчас недоступна.','Управлять подпиской','Удалить значок сейчас','Загрузка…','Подготовить подключение Paddle','Подключение готово.','Подготовка оплаты…','Месячный или бессрочный срок указан при оплате.','Лимиты обновляются за последние 24 часа.','Лимит PDF зависит от значка.','Преимущества действуют в течение подписки; подарки и бессрочные покупки не истекают.']
  };
  const T=i=>(translations[root.NATIVE_LANG]||translations.en)[i],n=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
- const api=(action,params)=>root.LUMIRA_FEATURES.service('billing',action,params);
+ const assetBase=new URL('.',document.currentScript?.src||root.location.href);
+ const api=async(action,params={})=>{
+  if(root.LUMIRA_FEATURES?.service)return root.LUMIRA_FEATURES.service('billing',action,params);
+  const user=await root.LUMIRA_PUBLIC_AUTH?.ready();
+  if(!user)throw Object.assign(Error(),{featureCode:'login_required'});
+  const response=await fetch(root.LUMIRA_BACKEND.url('billing'),{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await user.getIdToken()},body:JSON.stringify({action,...params}),signal:AbortSignal.timeout(12000)}),result=await response.json();
+  if(!response.ok)throw Object.assign(Error(),{featureCode:result.error||'billing_unavailable'});return result;
+ };
  const uid=()=>{try{return root.firebase.auth().currentUser?.uid;}catch{return null;}};
  const names=amount=>root.LUMIRA_ACCESS_COPY.text('names')[[1,5,10,25,50,100].indexOf(amount)];
  const date=value=>new Date(value).toLocaleString(root.NATIVE_LANG||'en',{dateStyle:'medium',timeStyle:'short'});
  const extra={tr:['Rozeti geri göster','Rozetin zaten var veya yenilenen bir aboneliğin bulunuyor. Önce Profilim’den yönet.'],en:['Show badge again','You already own this badge or have a renewing subscription. Manage it in My Profile first.'],de:['Abzeichen wieder anzeigen','Du hast das Abzeichen oder ein sich verlängerndes Abo. Verwalte es zuerst in Mein Profil.'],ar:['إظهار الشارة مجددًا','لديك هذه الشارة أو اشتراك يتجدد. أدره أولًا من ملفي الشخصي.'],fr:['Afficher à nouveau le badge','Tu as déjà ce badge ou un abonnement renouvelable. Gère-le d’abord dans Mon profil.'],es:['Mostrar insignia de nuevo','Ya tienes esta insignia o una suscripción renovable. Gestiónala primero en Mi perfil.'],ru:['Снова показать значок','Этот значок уже есть или подписка продлевается. Сначала управляй ею в Мой профиль.']};
  const E=i=>(extra[root.NATIVE_LANG]||extra.en)[i];
  const recurring=source=>((source.provider==='paddle'&&source.id.startsWith('sub_'))||(source.provider==='google_play'&&source.renewsAt))&&source.status!=='canceled'&&!source.cancelAt;
- const msg=error=>['billing_already_active','billing_subscription_exists'].includes(error.featureCode)?E(1):T(error.featureCode==='billing_not_configured'||error.featureCode==='billing_catalog_incomplete'||error.featureCode==='billing_permissions'?21:20);
+ const revokedCopy={tr:'Bu rozet hesabında kaldırılmış. Mevcut haklarını Profilim bölümünden kontrol et.',en:'This badge was removed from your account. Check your current benefits in My Profile.',de:'Dieses Abzeichen wurde aus deinem Konto entfernt. Prüfe deine Vorteile in Mein Profil.',ar:'أُزيلت هذه الشارة من حسابك. تحقق من مزاياك الحالية في ملفي الشخصي.',fr:'Ce badge a été retiré de ton compte. Vérifie tes avantages dans Mon profil.',es:'Esta insignia se retiró de tu cuenta. Consulta tus ventajas en Mi perfil.',ru:'Этот значок удалён из твоего аккаунта. Проверь преимущества в Мой профиль.'};
+ const msg=error=>error.featureCode==='billing_badge_revoked'?(revokedCopy[root.NATIVE_LANG]||revokedCopy.en):['billing_already_active','billing_subscription_exists'].includes(error.featureCode)?E(1):T(error.featureCode==='billing_not_configured'||error.featureCode==='billing_catalog_incomplete'||error.featureCode==='billing_permissions'?21:20);
  const btn=(label,fn)=>{const b=n('button','pwa-btn',label);b.type='button';b.onclick=fn;return b;};
  async function refresh(){await root.LUMIRA_FEATURES.api('status');root.PR_refreshBadges?.();root.dispatchEvent(new Event('lumira:purchaseverified'));}
- async function purchase(amount){
-  if(typeof root.getDigitalGoodsService==='function'||/^android-app:/i.test(document.referrer)||new URL(location.href).searchParams.get('src')==='twa'){root.PWA?.toast(T(21),{kind:'bad'});return;}
-  const current=uid();if(!current){root.PWA?.toast(root.LUMIRA_FEATURES.text('login_required'),{kind:'bad'});return;}
-  root.PWA?.toast(T(27));
-  try{const result=await api('checkout',{amount,id:root.LUMIRA_FEATURES.id(),language:root.NATIVE_LANG||'tr'});if(current!==uid())return;const url=new URL(result.url);if(url.origin!=='https://lumira-tr.com'||url.pathname!=='/checkout/')throw Error();location.assign(url.href);}catch(error){root.PWA?.toast(msg(error),{kind:'bad'});}
+ let catalogCache=null,catalogPending=null,purchasing=false,paddleInstance=null,paddlePending=null,publicConfig=null,paddleIdentity=null;
+ const bounded=promise=>new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('paddle_timeout')),10000);Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});
+ function formatPrice(item){if(typeof item?.formattedPrice!=='string'||!item.formattedPrice)throw Error('missing_preview');return item.formattedPrice;}
+ const annualText={tr:'Yıllık abonelik',en:'Annual subscription',de:'Jahresabo',ar:'اشتراك سنوي',fr:'Abonnement annuel',es:'Suscripción anual',ru:'Годовая подписка'};
+ const term=item=>item.lifetime?T(3):item.billingCycle?.interval==='year'?(annualText[root.NATIVE_LANG]||annualText.en):T(4);
+ async function paddle(config){
+  if(!['production','sandbox'].includes(config.environment)||!config.clientToken?.startsWith(config.environment==='production'?'live_':'test_'))throw Error('invalid_paddle_environment');
+  const signature=config.environment+':'+config.clientToken;if(paddleInstance){if(paddleIdentity!==signature)throw Error('paddle_environment_changed');return paddleInstance;}if(paddlePending)return paddlePending;
+  const task=(async()=>{const sdk=root.LUMIRA_PADDLE_LOADER||await import(new URL('vendor/paddle-loader.mjs',assetBase).href);const instance=await bounded(sdk.initializePaddle({token:config.clientToken,environment:config.environment,eventCallback:event=>{if(['checkout.error','checkout.payment.failed'].includes(event.name))root.PWA?.toast(T(20),{kind:'bad'});if(event.name==='checkout.closed')root.dispatchEvent(new Event('lumira:paddleclosed'));}}));if(!instance||instance.Initialized===false)throw Error('paddle_unavailable');paddleInstance=instance;paddleIdentity=signature;return instance;})();paddlePending=task;
+  try{return await task;}finally{if(paddlePending===task)paddlePending=null;}
+ }
+ async function catalog({refresh=false}={}){
+  if(catalogPending)return catalogPending;
+  if(!refresh&&catalogCache&&Date.now()-catalogCache.at<30000)return catalogCache.items;
+  const task=(async()=>{
+   const response=await fetch(root.LUMIRA_BACKEND.url('billing')+'?config',{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(10000)}),data=await response.json();
+   if(!response.ok||!Array.isArray(data.catalog))throw Object.assign(Error('billing_catalog_unavailable'),{featureCode:data.error||'billing_unavailable'});
+   const rows=data.catalog.flatMap(row=>[row,...(row.annual?[row.annual]:[])]),ids=new Set();
+   for(const row of rows){if(![1,5,10,25,50,100].includes(row.amount)||typeof row.lifetime!=='boolean'||!/^pri_[a-z\d]{26}$/.test(row.priceId)||ids.has(row.priceId))throw Error('invalid_catalog');ids.add(row.priceId);}
+   if(!rows.length)throw Error('empty_catalog');
+   const instance=await paddle(data),params={items:rows.map(row=>({priceId:row.priceId,quantity:1})),...(data.country?{address:{countryCode:data.country}}:{})};
+   const preview=await bounded(instance.PricePreview(params)),prices=new Map();
+   for(const line of preview?.data?.details?.lineItems||[])if(ids.has(line.price?.id)&&typeof line.formattedTotals?.total==='string'&&line.formattedTotals.total)prices.set(line.price.id,line.formattedTotals.total);
+   const items=new Map();
+   for(const row of data.catalog){if(items.has(row.amount))throw Error('duplicate_tier');if(!prices.has(row.priceId))continue;const item={...row,formattedPrice:prices.get(row.priceId)};if(row.annual)item.annual=prices.has(row.annual.priceId)?{...row.annual,formattedPrice:prices.get(row.annual.priceId)}:null;items.set(row.amount,item);}
+   if(!items.size)throw Error('empty_preview');items.tiers=data.tiers||[];items.checkoutReady=data.checkoutReady===true;publicConfig=data;catalogCache={items,at:Date.now()};return items;
+  })();catalogPending=task;
+  try{return await task;}finally{if(catalogPending===task)catalogPending=null;}
+ }
+ async function purchase(amount,{priceId}={}){
+  if(typeof root.getDigitalGoodsService==='function'||/^android-app:/i.test(document.referrer)||new URL(root.location.href).searchParams.get('src')==='twa'){root.PWA?.toast(T(21),{kind:'bad'});return;}
+  const current=uid();if(!current){root.PWA?.toast(root.LUMIRA_FEATURES?.text('login_required')||root.LUMIRA_ACCESS_COPY.text('login'),{kind:'bad'});return;}
+  if(purchasing)return;purchasing=true;root.PWA?.toast(T(27));
+  try{
+   const result=await api('checkout',{amount,...(priceId?{priceId}:{}),id:root.LUMIRA_FEATURES?.id()||crypto.randomUUID(),language:root.NATIVE_LANG||'tr'});if(current!==uid())return;
+   const url=new URL(result.url);if(url.origin!=='https://lumira-tr.com'||url.pathname!=='/checkout/')throw Error();
+   if(root.location.origin==='https://lumira-tr.com'&&paddleInstance&&/^txn_[a-z\d]{26}$/.test(result.transactionId||'')){
+    const user=root.firebase.auth().currentUser,email=user?.email&&!/@dilkartlari-user\.app$/i.test(user.email)?user.email:null;
+    root.LUMIRA_ACCESS?.close();
+    paddleInstance.Checkout.open({transactionId:result.transactionId,...(email?{customer:{email,...(publicConfig.country?{address:{countryCode:publicConfig.country}}:{})}}:publicConfig.country?{customer:{address:{countryCode:publicConfig.country}}}:{}),settings:{displayMode:'overlay',variant:'one-page',theme:'dark',locale:root.NATIVE_LANG||'tr',successUrl:'https://lumira-tr.com/welcome/?transaction='+encodeURIComponent(result.transactionId)+'&lang='+(root.NATIVE_LANG||'tr')}});
+   }else location.assign(url.href);
+  }catch(error){root.PWA?.toast(msg(error),{kind:'bad'});}finally{purchasing=false;}
  }
  function mountProfile(body){
   const account=uid(),box=n('section','billing-profile');box.dir=root.NATIVE_LANG==='ar'?'rtl':'ltr';body.prepend(box);
@@ -38,12 +83,12 @@
      const card=n('div','billing-card'),heading=n('strong','',row.badge+' '+names(row.amount));card.append(heading,n('span','billing-state',T(row.removed||row.revoked?11:row.active?10:9)));
      for(const source of row.sources){
       const details=n('dl'),add=(label,value)=>details.append(n('dt','',label),n('dd','',value));
-      add(source.provider==='paddle'?'Paddle':source.provider==='google_play'?'Google Play':source.provider==='gift'?T(12):T(13),T(source.lifetime?3:4));
+      add(source.provider==='paddle'?'Paddle':source.provider==='google_play'?'Google Play':source.provider==='gift'?T(12):T(13),term(source));
       if(source.startsAt)add(T(5),date(source.startsAt));if(source.endsAt)add(T(6),date(source.endsAt));if(source.renewsAt&&!source.cancelAt)add(T(7),date(source.renewsAt));if(source.cancelAt)add(T(8),date(source.cancelAt));card.append(details);
      }
      if(row.active||row.sources.some(recurring))card.append(btn(T(14),()=>cancelSheet(row,render,account)));
      if(row.removed&&!row.revoked)card.append(btn(E(0),async()=>{try{await api('restore',{amount:row.amount});if(account!==uid())return;await refresh();render();}catch(error){root.PWA.toast(msg(error),{kind:'bad'});}}));
-     const paddle=row.sources.find(s=>s.provider==='paddle'&&s.id.startsWith('sub_')||s.provider==='google_play');if(paddle){const manage=btn(T(22),async()=>{manage.disabled=true;try{const result=await api(paddle.provider==='google_play'?'playPortal':'portal',{subscriptionId:paddle.id});if(account!==uid())return;const url=new URL(result.url);if(url.protocol!=='https:'||(paddle.provider==='google_play'?url.hostname!=='play.google.com'||url.pathname!=='/store/account/subscriptions':!['customer-portal.paddle.com','sandbox-customer-portal.paddle.com'].includes(url.hostname)))throw Error();location.assign(url.href);}catch(error){root.PWA.toast(msg(error),{kind:'bad'});}finally{manage.disabled=false;}});card.append(manage);}
+     const paddle=row.sources.find(s=>s.provider==='paddle'||s.provider==='google_play');if(paddle){const manage=btn(T(22),async()=>{manage.disabled=true;try{const result=await api(paddle.provider==='google_play'?'playPortal':'portal',paddle.id.startsWith('txn_')?{}:{subscriptionId:paddle.id});if(account!==uid())return;const url=new URL(result.url);if(url.protocol!=='https:'||(paddle.provider==='google_play'?url.hostname!=='play.google.com'||url.pathname!=='/store/account/subscriptions':!['customer-portal.paddle.com','sandbox-customer-portal.paddle.com'].includes(url.hostname)))throw Error();location.assign(url.href);}catch(error){root.PWA.toast(msg(error),{kind:'bad'});}finally{manage.disabled=false;}});card.append(manage);}
      box.append(card);
     }
     const deadlines=result.memberships.flatMap(row=>row.sources.flatMap(source=>[source.endsAt,source.cancelAt])).filter(value=>Number.isFinite(value)&&value>result.serverNow);
@@ -62,10 +107,37 @@
    if(subscriptions.length)controls.push(btn(T(15),()=>run(false)));controls.push(btn(T(subscriptions.length?16:23),()=>run(true)),btn(T(17),()=>sheet.close()));controls.forEach(b=>body.append(b));
   });
  }
- function setup(){root.PWA.sheet(T(25),'Paddle',body=>{const status=n('p','pwa-note',T(24));body.append(status);api('setup').then(result=>{status.textContent=T(26)+' · '+result.environment;for(const row of result.catalog)body.append(n('p','pwa-note',names(row.amount)+' · '+T(row.lifetime?3:4)));}).catch(error=>{status.textContent=msg(error);});});}
- root.LUMIRA_BILLING={purchase,mountProfile,setup,text:T};
+ const setupCopy={
+ tr:['Hesap ayarlarını denetle','Bu açık tarayıcı tokenını Netlify Functions kapsamına PADDLE_CLIENT_TOKEN adıyla ekle.','Paddle → Events → Notifications bölümündeki Lumira hedefinin Secret key değerini Netlify Functions kapsamına PADDLE_NOTIFICATION_WEBHOOK_SECRET adıyla ekle. Bu, API anahtarından farklıdır.','Varsayılan ödeme bağlantısını Paddle → Checkout → Checkout configuration bölümünde https://lumira-tr.com/checkout/ olarak ayarla. Domain onaylı olmalı; otomatik ayarlama için checkout_settings.write izni gerekir.','Ayarlar okunamadı. Paddle hesabında gerekli okuma izinlerini aç veya panelden kontrol et.'],
+ en:['Inspect account settings','Add this public browser token to Netlify Functions as PADDLE_CLIENT_TOKEN.','Copy the Lumira destination Secret key from Paddle → Events → Notifications into Netlify Functions as PADDLE_NOTIFICATION_WEBHOOK_SECRET. This is different from the API key.','Set the default payment link to https://lumira-tr.com/checkout/ in Paddle → Checkout → Checkout configuration. The domain must be approved; automatic setup needs checkout_settings.write.','Some settings could not be read. Enable the required read permissions or check them in Paddle.'],
+ de:['Kontoeinstellungen prüfen','Diesen öffentlichen Browser-Token in Netlify Functions als PADDLE_CLIENT_TOKEN eintragen.','Den Secret key des Lumira-Ziels aus Paddle → Events → Notifications in Netlify Functions als PADDLE_NOTIFICATION_WEBHOOK_SECRET eintragen. Er ist nicht der API-Schlüssel.','Den Standard-Zahlungslink unter Paddle → Checkout → Checkout configuration auf https://lumira-tr.com/checkout/ setzen. Domainfreigabe und für die Automatik checkout_settings.write nötig.','Einige Einstellungen konnten nicht gelesen werden. Leserechte freigeben oder in Paddle prüfen.'],
+ ar:['فحص إعدادات الحساب','أضف رمز المتصفح العام هذا إلى Netlify Functions باسم PADDLE_CLIENT_TOKEN.','انسخ Secret key لوجهة Lumira من Paddle → Events → Notifications إلى Netlify Functions باسم PADDLE_NOTIFICATION_WEBHOOK_SECRET. وهو مختلف عن مفتاح API.','اضبط رابط الدفع الافتراضي على https://lumira-tr.com/checkout/ في Paddle → Checkout → Checkout configuration. يلزم اعتماد النطاق وإذن checkout_settings.write للإعداد التلقائي.','تعذر قراءة بعض الإعدادات. فعّل أذونات القراءة أو تحقق منها في Paddle.'],
+ fr:['Vérifier les réglages du compte','Ajoute ce jeton public du navigateur à Netlify Functions sous PADDLE_CLIENT_TOKEN.','Copie le Secret key de la destination Lumira depuis Paddle → Events → Notifications vers Netlify Functions sous PADDLE_NOTIFICATION_WEBHOOK_SECRET. Il diffère de la clé API.','Définis https://lumira-tr.com/checkout/ comme lien par défaut dans Paddle → Checkout → Checkout configuration. Domaine approuvé et permission checkout_settings.write nécessaires pour l’automatisation.','Certains réglages sont illisibles. Active les droits de lecture ou vérifie dans Paddle.'],
+ es:['Revisar ajustes de la cuenta','Añade este token público del navegador a Netlify Functions como PADDLE_CLIENT_TOKEN.','Copia el Secret key del destino Lumira de Paddle → Events → Notifications a Netlify Functions como PADDLE_NOTIFICATION_WEBHOOK_SECRET. Es distinto de la clave API.','Configura https://lumira-tr.com/checkout/ como enlace predeterminado en Paddle → Checkout → Checkout configuration. Se necesita dominio aprobado y checkout_settings.write para hacerlo automáticamente.','No se pudieron leer algunos ajustes. Activa permisos de lectura o compruébalos en Paddle.'],
+ ru:['Проверить настройки аккаунта','Добавь этот публичный токен браузера в Netlify Functions как PADDLE_CLIENT_TOKEN.','Скопируй Secret key назначения Lumira из Paddle → Events → Notifications в Netlify Functions как PADDLE_NOTIFICATION_WEBHOOK_SECRET. Это не ключ API.','Укажи https://lumira-tr.com/checkout/ как ссылку по умолчанию в Paddle → Checkout → Checkout configuration. Нужны одобренный домен и право checkout_settings.write для автоматической настройки.','Не удалось прочитать часть настроек. Включи права чтения или проверь их в Paddle.']
+ };
+ const permissionHelp={tr:'Paddle erişim izni eksik. Mevcut API anahtarında ürün/fiyat okuma, bildirim ve istemci tokenı yönetme izinlerini denetle. Varsayılan ödeme bağlantısı checkout_settings.write izni ister veya panelden ayarlanabilir.',en:'Paddle permissions are missing. Check product/price read, notification and client-token management permissions on the existing API key. The default payment link needs checkout_settings.write or dashboard setup.',de:'Paddle-Berechtigungen fehlen. Prüfe Produkt-/Preisleserechte sowie Benachrichtigungs- und Client-Token-Verwaltung des vorhandenen API-Schlüssels. Der Zahlungslink benötigt checkout_settings.write oder die Einrichtung im Dashboard.',ar:'أذونات Paddle ناقصة. تحقق من أذونات قراءة المنتجات والأسعار وإدارة الإشعارات ورموز العميل للمفتاح الحالي. رابط الدفع يحتاج checkout_settings.write أو إعداده من اللوحة.',fr:'Des permissions Paddle manquent. Vérifie la lecture des produits/prix et la gestion des notifications et jetons du client sur la clé existante. Le lien de paiement nécessite checkout_settings.write ou un réglage dans Paddle.',es:'Faltan permisos de Paddle. Revisa la lectura de productos/precios y la gestión de notificaciones y tokens del cliente de la clave actual. El enlace requiere checkout_settings.write o configurarlo en Paddle.',ru:'Не хватает прав Paddle. Проверь чтение товаров/цен и управление уведомлениями и клиентскими токенами у существующего API-ключа. Для ссылки оплаты нужно checkout_settings.write или настройка в панели.'};
+ function setup(){root.PWA.sheet(T(25),'Paddle',body=>{
+  const C=setupCopy[root.NATIVE_LANG]||setupCopy.en,status=n('p','pwa-note',T(24));body.append(status);
+  const audit=btn(C[0],async()=>{audit.disabled=true;try{const result=await api('audit');for(const [key,value]of Object.entries(result)){const label=n('strong','',key),text=n('pre','',typeof value==='object'?JSON.stringify(value,null,2):value);text.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.6';body.append(label,text);}if(Object.values(result).some(value=>value?.ok===false))body.append(n('p','pwa-note',C[4]));}catch(error){body.append(n('p','pwa-note',msg(error)));}finally{audit.disabled=false;}});body.append(audit);
+  api('setup').then(result=>{
+   status.textContent=T(26)+' · '+result.environment;for(const row of result.catalog)body.append(n('p','pwa-note',names(row.amount)+' · '+term(row)));
+   if(result.clientToken){body.append(n('p','pwa-note',C[1]));const token=n('input');token.readOnly=true;token.value=result.clientToken;token.setAttribute('aria-label','PADDLE_CLIENT_TOKEN');token.style.cssText='box-sizing:border-box;width:100%;padding:12px;border:1px solid #526b7b;border-radius:12px;background:#101b2b;color:#eaf4ff;font-size:14px';token.onclick=()=>token.select();body.append(token);}
+   if(result.needsWebhookSecret)body.append(n('p','pwa-note',C[2]));if(result.defaultPaymentLink?.error)body.append(n('p','pwa-note',C[3]));
+  }).catch(error=>{
+   const mismatch={tr:'Paddle API anahtarı ile PADDLE_ENV farklı ortamlara ait. Canlı anahtar için production, test anahtarı için sandbox kullan.',en:'The Paddle API key and PADDLE_ENV refer to different environments. Use production for a live key, sandbox for a test key.',de:'Paddle-API-Schlüssel und PADDLE_ENV gehören zu verschiedenen Umgebungen. Für Live-Schlüssel production, für Testschlüssel sandbox verwenden.',ar:'مفتاح Paddle وPADDLE_ENV لبيئتين مختلفتين. استخدم production للمفتاح المباشر وsandbox لمفتاح الاختبار.',fr:'La clé Paddle et PADDLE_ENV ne correspondent pas. Utilise production pour une clé réelle, sandbox pour une clé de test.',es:'La clave Paddle y PADDLE_ENV no coinciden. Usa production para una clave real y sandbox para una clave de prueba.',ru:'Ключ Paddle и PADDLE_ENV относятся к разным средам. Используй production для рабочего ключа, sandbox для тестового.'};status.textContent=error.featureCode==='billing_permissions'?(permissionHelp[root.NATIVE_LANG]||permissionHelp.en):error.featureCode==='billing_webhook_mismatch'?C[2]:error.featureCode==='billing_environment_mismatch'?(mismatch[root.NATIVE_LANG]||mismatch.en):msg(error);
+  });
+ });}
+ root.LUMIRA_BILLING={purchase,mountProfile,setup,catalog,formatPrice,term,text:T,paddle};
  let verifying=false;
  async function confirmReturn(){const params=new URL(location.href).searchParams,id=params.get('transaction');if(verifying||!uid()||params.get('payment')!=='return'||!/^txn_[a-z\d]{26}$/.test(id||''))return;verifying=true;const account=uid();try{const result=await api('confirm',{transactionId:id});if(account!==uid())return;if(result.confirmed){await refresh();const clean=new URL(location.href);clean.searchParams.delete('transaction');clean.searchParams.delete('payment');history.replaceState(history.state,'',clean.href);root.PWA?.toast(T(19),{kind:'good'});}else root.PWA?.toast(T(24));}catch(error){root.PWA?.toast(msg(error),{kind:'bad'});}finally{verifying=false;}}
+ let intentRunning=false;
+ async function confirmIntent(){
+  const url=new URL(root.location.href);if(intentRunning||!uid()||url.searchParams.get('subscribe')!=='1')return;
+  let intent;try{intent=JSON.parse(sessionStorage.getItem('lumira_checkout_intent_v1'));}catch{}if(!intent||intent.expiresAt<Date.now())return;
+  intentRunning=true;try{sessionStorage.removeItem('lumira_checkout_intent_v1');url.searchParams.delete('subscribe');history.replaceState(history.state,'',url.href);const items=await catalog(),base=items.get(intent.amount),item=[base,base?.annual].find(row=>row?.priceId===intent.priceId);if(!item||!items.checkoutReady)throw Error();await purchase(intent.amount,{priceId:intent.priceId});}catch(error){root.PWA?.toast(T(21),{kind:'bad'});}finally{intentRunning=false;}
+ }
+ root.addEventListener('lumira:featureauthchange',confirmIntent);document.addEventListener('DOMContentLoaded',confirmIntent,{once:true});
  root.addEventListener('lumira:featureauthchange',confirmReturn);root.addEventListener('focus',confirmReturn);document.addEventListener('DOMContentLoaded',confirmReturn,{once:true});
  root.addEventListener('lumira:featureauthchange',()=>{document.querySelectorAll('.billing-profile').forEach(e=>e.remove());});
  // Existing Play purchases and gifts remain lifetime. New web catalog

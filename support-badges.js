@@ -81,6 +81,7 @@
 
   /* Play: five monthly subscriptions plus one lifetime Crown. Old one-time
      identifiers remain accepted by the server for purchase restoration. */
+  let purchaseInFlight=false;
   function purchaseTier(t) {
     var purchaseUid = null;
     try { purchaseUid = window.firebase.auth().currentUser.uid; } catch (e) {}
@@ -94,9 +95,12 @@
        sürümlerinde yanlışlıkla false çıkabiliyordu (bilinen sorun) — bu,
        gerçek satın alma kararını etkilememesi için doğrudan API varlığına
        bakıyoruz, daha güvenilir. */
-    if (!window.PaymentRequest || typeof window.getDigitalGoodsService !== 'function') {
+    if (!window.LUMIRA_PLAY.isNative()) {
       return window.LUMIRA_BILLING?.purchase(t.amount);
     }
+    if(!window.PaymentRequest||typeof window.getDigitalGoodsService!=='function'){toast(window.LUMIRA_PLAY.text(5),{kind:'bad'});return;}
+    if(!window.LUMIRA_PLAY.canPurchase(t.sku)){toast(window.LUMIRA_PLAY.text(3),{kind:'bad'});window.LUMIRA_PLAY.catalog({refresh:true}).catch(()=>{});return;}
+    if(purchaseInFlight)return;
     if(revoked(t.amount)){toast(({tr:'Bu rozet hesabında yönetici tarafından kaldırıldı.',en:'An administrator has removed this badge from your account.',de:'Dieses Abzeichen wurde von einem Administrator aus deinem Konto entfernt.',ar:'أزال المسؤول هذه الشارة من حسابك.',fr:'Un administrateur a retiré ce badge de ton compte.',es:'Un administrador ha retirado esta insignia de tu cuenta.',ru:'Администратор удалил этот значок из твоего аккаунта.'})[window.NATIVE_LANG||'tr']||'An administrator has removed this badge from your account.',{kind:'bad'});return;}
     const policy=window.LUMIRA_FEATURES?.entitlement();
     if(policy?.supportAmounts?.includes(t.amount)||policy?.memberships?.some(row=>row.sources.some(source=>source.renewsAt&&!source.cancelAt&&source.active))){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
@@ -106,12 +110,14 @@
     try { request = new PaymentRequest(methodData, details); }
     catch (e) { toast(window.t?window.t('purchase_start_failed'):'Satın alma başlatılamadı.', { kind: 'bad' }); return; }
 
-    request.show().then(async function (response) {
+    purchaseInFlight=true;
+    let shown;try{shown=request.show();}catch(e){purchaseInFlight=false;toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
+    shown.then(async function (response) {
       const token=response.details?.token || response.details?.purchaseToken;
       try {
         if(!token || !window.LUMIRA_FEATURES)throw new Error('purchase_verification_unavailable');
         await window.LUMIRA_FEATURES.verifyPurchase(t.sku,token,purchaseUid);
-        await response.complete('success');
+        try{await response.complete('success');}catch(ignore){}
         if(window.firebase.auth().currentUser?.uid!==purchaseUid)return;
         window.grantSupportTier(t.amount);
         window.dispatchEvent(new Event('lumira:purchaseverified'));
@@ -123,18 +129,19 @@
     }).catch(function(e){
       if(e?.name==='AbortError' || /cancel/i.test(String(e?.message || e)))return;
       toast(window.t?window.t('purchase_complete_failed'):'Satın alma tamamlanamadı.',{kind:'bad',duration:6000});
-    });
+    }).finally(()=>{purchaseInFlight=false;});
   }
   window.purchaseSupportTier = purchaseTier;
 
   /* ============================================================ DESTEK OL */
   function openSupport() {
+    if(!window.LUMIRA_PLAY.isNative() && window.LUMIRA_ACCESS)return window.LUMIRA_ACCESS.open('shop');
     if (!(window.PWA && window.PWA.sheet)) return;
     window.PWA.sheet(window.t?window.t('support_title'):'❤️ Lumira\'yı Destekle', '', function (b) {
       var grid = document.createElement('div');
       grid.className = 'sup-grid';
 
-      const native=typeof window.getDigitalGoodsService==='function';
+      const native=window.LUMIRA_PLAY.isNative();
       const storeCards=[];
       TIERS.forEach(function (t) {
         var owned = hasBadge(t.badge);
@@ -152,7 +159,10 @@
         grid.appendChild(el);
       });
       b.appendChild(grid);
-      if(native)window.LUMIRA_PLAY.catalog().then(items=>{if(!grid.isConnected)return;for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_BILLING.text(21);row.el.disabled=!detail||revoked(row.t.amount);}}).catch(()=>{for(const row of storeCards)row.price.textContent=window.LUMIRA_BILLING.text(21);});
+      if(native){
+        const status=document.createElement('p'),retry=document.createElement('button');status.className='pwa-note';status.dataset.storeStatus='';status.setAttribute('role','status');retry.type='button';retry.dataset.storeRetry='';retry.className='pwa-btn';retry.textContent=window.LUMIRA_PLAY.text(4);retry.hidden=true;b.append(status,retry);
+        const load=async refresh=>{retry.disabled=true;status.textContent=window.LUMIRA_PLAY.text(0);try{const items=await window.LUMIRA_PLAY.catalog({refresh});if(!grid.isConnected)return;for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=!detail||revoked(row.t.amount);}const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;}catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;for(const row of storeCards){row.price.textContent=window.LUMIRA_PLAY.errorText(error);row.el.disabled=true;}}finally{retry.disabled=false;}};retry.onclick=()=>load(true);load(false);
+      }
       if (window.LUMIRA_FEATURES && typeof window.getDigitalGoodsService === 'function') {
         var restore = document.createElement('button');
         restore.type = 'button';

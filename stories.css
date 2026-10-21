@@ -154,3 +154,17 @@
 @container lumira-options (min-width:290px){.story-choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @container lumira-options (min-width:480px){.story-choices:not(.story-four){grid-template-columns:repeat(3,minmax(0,1fr))}}
 #splash.hidden .splash-content{box-sizing:border-box;min-width:0;max-width:100%;overflow:hidden}
+
+/* Match the app's cyan/violet cards while preserving the responsive layout. */
+.story-page{--mint:var(--cyan-soft,#91eaff)}
+.story-hero{border-color:#4fe8ff42;background:radial-gradient(ellipse at 100% 0,#7557b52e,transparent 65%),linear-gradient(135deg,#101a31ed,#10152bea)}
+.story-panel{border-color:#4fe8ff30;background:linear-gradient(140deg,#11192feb,#0c1326eb);box-shadow:0 14px 34px #0002}
+.story-page .story-choice{border-color:#7b91b54a;background:#141e35de;color:#cbd8ed}
+.story-choice[aria-pressed=true]{border-color:#72ddef;background:linear-gradient(135deg,#21465a,#302c50);color:#e5fbff;box-shadow:inset 0 0 0 1px #4fe8ff21,0 0 14px #4fe8ff0b}
+.story-primary{background:linear-gradient(100deg,#67dff3,#ae9af6);color:#07182b;box-shadow:0 6px 22px #4fe8ff16}
+.story-pool{border-color:#4fe8ff3d;background:#143346a8;color:#b9effb}
+.story-history-grid button{border-color:#4fe8ff34;background:#111a30e8}
+.story-reader{border-color:#4fe8ff42;background:#10192fed}
+.story-sentence.is-speaking{background:#24425b91;border-color:#69d3e782}
+.story-word-popup .story-word-card{border-color:#4fe8ff55;background:linear-gradient(145deg,#15243a,#151b32)}
+body.story-focus #fg-desk{display:none!important}

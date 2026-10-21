@@ -1,3 +1,4 @@
+
 /* ================================================================
    LEADERBOARD.JS — Firebase Authentication ile kullanıcı adı + şifre
    girişi, kalıcı ve tüm cihazlarda tutarlı liderlik tablosu
@@ -30,9 +31,9 @@
 ================================================================ */
 
 const FIREBASE_CONFIG = {
-  /* Firebase web API anahtarı gizli değildir (tarayıcıda zaten görünür).
-     Netlify "secrets scanning" yanlış alarm vermesin diye parçalara bölündü. */
-  apiKey: ["AIza", "SyBHgCtHuIunwlleLCxFCexErrjyZkuNYE0"].join(""),
+  // Public Firebase browser identifier. netlify.toml safelists this exact
+  // value while keeping secret scanning enabled for the rest of the site.
+  apiKey: "AIzaSyBHgCtHuIunwlleLCxFCexErrjyZkuNYE0",
   authDomain: "mhamzac-ca73d.firebaseapp.com",
   databaseURL: "https://mhamzac-ca73d-default-rtdb.firebaseio.com",
   projectId: "mhamzac-ca73d",

@@ -13,7 +13,10 @@ function close(){
 }
 function open(reason,quota){
  if(active){if(active.reason===reason)return;close();}
+ window.LUMIRA_LANGUAGE?.close();
+ const shop=reason==='shop';
  const benefits=['pdf_badge_required','pdf_limit','offline'].includes(reason);
+ const native=window.LUMIRA_PLAY?.isNative()===true;
  quota=quota || window.LUMIRA_FEATURES?.getQuota() || window.LUMIRA_FEATURES?.entitlement() || {tier:0};
  const current=Number(quota.tier)||0;
  const root=create('div','la-backdrop');root.dataset.reason=reason;
@@ -22,7 +25,7 @@ function open(reason,quota){
  brand.innerHTML='<svg viewBox="0 0 64 48" aria-hidden="true"><path fill="#4fe8ff" d="M30 22C25 2 2-2 6 13c3 9 13 13 24 12C12 22 9 39 20 40c9 1 11-10 12-14Z"/><path fill="#aa87ff" d="M34 22C39 2 62-2 58 13c-3 9-13 13-24 12 18-3 21 14 10 15-9 1-11-10-12-14Z"/></svg><span>LUMIRA</span>';
  const x=create('button','la-x','×');x.type='button';x.setAttribute('aria-label',T('close'));x.onclick=close;
  top.append(brand,x);panel.append(top);
- const title=create('h2','la-title',T(benefits?'accessTitle':'limitTitle'));title.id='la-title';panel.append(title,create('p','la-sub',T(benefits && !current?'accessSub':'limitSub')),create('p','la-lifetime',T('lifetime')),create('p','la-period',T(benefits?'offlineIntro':'period')));
+ const title=create('h2','la-title',T(shop?'shopTitle':benefits?'accessTitle':'limitTitle'));title.id='la-title';panel.append(title,create('p','la-sub',T(shop?'shopSub':benefits && !current?'accessSub':'limitSub')),create('p','la-lifetime',native?T('lifetime'):T('webCheckout')),create('p','la-period',T(benefits?'offlineIntro':'period')));
  const plan=create('div','la-current');plan.append(create('strong','',T('current')+': '+name(current)));
  const item=tiers.find(t=>t.amount===current) || {minutes:20,count:10};
  plan.append(create('span','',benefits?(current?(T(current===1?'pdf':'pdfUnlimited')+' · '+T('offline')):T('needBadge')):(T(item.minutes===null?'liveUnlimited':'live',{n:item.minutes})+' · '+T(item.count===null?'writingUnlimited':'writing',{n:item.count}))));panel.append(plan);
@@ -32,18 +35,45 @@ function open(reason,quota){
   const card=create('button','la-card');card.type='button';card.dataset.tier=tier.amount;card.disabled=tier.amount<=current;
   const heading=create('span','la-card-head');const badge=create('img','la-badge');badge.src='./vendor/badges/'+badgeFiles[index]+'.svg';badge.alt='';badge.width=28;badge.height=28;heading.append(badge,create('strong','',T('names')[index]));
   const check=create('span','la-check','✓');check.setAttribute('aria-hidden','true');heading.append(check);card.append(heading);
-  const lines=benefits?[T(tier.amount===1?'pdf':'pdfUnlimited'),T('offline')]:[T(tier.minutes===null?'liveUnlimited':'live',{n:tier.minutes}),T(tier.count===null?'writingUnlimited':'writing',{n:tier.count})];
-  lines.forEach((line,i)=>{const row=create('span','la-benefit');row.append(create('span','la-benefit-icon',i===0?'▧':'◇'),create('span','',line));card.append(row);});
+  const liveLines=[T(tier.minutes===null?'liveUnlimited':'live',{n:tier.minutes}),T(tier.count===null?'writingUnlimited':'writing',{n:tier.count})],otherLines=[T(tier.amount===1?'pdfTotal':'pdfUnlimited'),T('offline')];
+  const lines=shop?liveLines.concat(otherLines):benefits?otherLines:liveLines;
+  lines.forEach(line=>{const row=create('span','la-benefit');const icon=create('span','la-benefit-icon','✓');icon.setAttribute('aria-hidden','true');row.append(icon,create('span','',line));card.append(row);});
+  const price=create('span','la-price',native?window.LUMIRA_PLAY.text(0):T('loadingPrices'));price.dataset.storePrice='';card.append(price);
   if(card.disabled)card.append(create('span','la-owned',T('owned')));
   card.onclick=()=>{selected=tier.amount;update();};cards.push(card);grid.append(card);
  });
  panel.append(grid);
- if(benefits)panel.append(create('p','la-note',T('pdfNote')),create('p','la-note la-note-small',T('pdfOther')));else panel.append(create('p','la-note',T('note')));
+ if(benefits||shop)panel.append(create('p','la-note',T('pdfNote')),create('p','la-note la-note-small',T('pdfOther')));else panel.append(create('p','la-note',T('note')));
+ const choice=create('div','la-choice');choice.setAttribute('aria-live','polite');choice.hidden=true;panel.append(choice);
+ const terms=create('p','la-note la-checkout-note');terms.hidden=true;panel.append(terms);
+ const status=create('p','la-note la-store-status'),retry=create('button','la-dismiss',native?window.LUMIRA_PLAY.text(4):T('retry'));status.setAttribute('role','status');status.dataset.storeStatus='';retry.type='button';retry.dataset.storeRetry='';retry.hidden=true;panel.append(status);
  const buy=create('button','la-buy',T('buy'));buy.type='button';
- const native=typeof window.getDigitalGoodsService==='function';let storeItems=null;
- buy.onclick=()=>{const tier=window.LUMIRA_BADGES?.tiers.find(t=>t.amount===selected);if(tier && window.purchaseSupportTier)window.purchaseSupportTier(tier);};
+ let storeItems=null,purchasing=false;
+ const productFor=amount=>window.LUMIRA_PLAY?.products.find(row=>row.amount===amount);
+ const detailFor=amount=>storeItems?.get(native?productFor(amount)?.sku:amount);
+ const priceFor=item=>native?item.price:window.LUMIRA_BILLING.formatPrice(item);
+ const lifetimeFor=amount=>native?productFor(amount)?.lifetime:detailFor(amount)?.lifetime;
+ buy.onclick=async()=>{
+  if(purchasing||buy.disabled)return;
+  const tier=window.LUMIRA_BADGES?.tiers.find(t=>t.amount===selected);
+  if(!tier||!window.purchaseSupportTier)return;
+  purchasing=true;update();
+  try{await window.purchaseSupportTier(tier);}finally{purchasing=false;if(active===state)update();}
+ };
  const dismiss=create('button','la-dismiss',T('dismiss'));dismiss.type='button';dismiss.onclick=close;panel.append(buy,dismiss);
- function update(){cards.forEach(card=>{const chosen=Number(card.dataset.tier)===selected;card.classList.toggle('is-selected',chosen);card.setAttribute('aria-pressed',String(chosen));});const product=window.LUMIRA_PLAY?.products.find(row=>row.amount===selected);buy.disabled=selected===null||(native&&!storeItems?.has(product?.sku));}
+ panel.insertBefore(retry,dismiss);
+ if(!native){
+  panel.append(create('p','la-note la-note-small',T('checkoutTax')));
+  const links=create('nav','la-legal');
+  for(const [key,path]of [['terms','terms'],['refund','refund']]){const a=create('a','',T(key));a.href='https://lumira-tr.com/'+path+'/?lang='+(window.NATIVE_LANG||'tr');a.target='_blank';a.rel='noopener';links.append(a);}panel.append(links);
+ }
+ if(current&&window.PWA?.openProfile){const manage=create('button','la-dismiss',window.LUMIRA_BILLING.text(22));manage.type='button';manage.onclick=()=>{close();window.PWA.openProfile();};panel.append(manage);}
+ function update(){
+  cards.forEach(card=>{const amount=Number(card.dataset.tier),chosen=amount===selected;card.classList.toggle('is-selected',chosen);card.setAttribute('aria-pressed',String(chosen));card.disabled=amount<=current||!detailFor(amount)||purchasing;});
+  const item=detailFor(selected);buy.disabled=selected===null||!item||purchasing||(!native&&storeItems?.checkoutReady===false);
+  buy.textContent=purchasing?window.LUMIRA_BILLING.text(27):T('buy');choice.hidden=!item;terms.hidden=!item;
+  if(item){choice.replaceChildren(create('span','',T('selection')),create('strong','',name(selected)),create('span','',priceFor(item)+' · '+window.LUMIRA_BILLING.text(lifetimeFor(selected)?3:4)));terms.textContent=T(lifetimeFor(selected)?'lifetimeTerms':'monthlyTerms');}
+ }
  update();root.append(panel);
  const state={root,reason,focus:document.activeElement,overflow:document.body.style.overflow,hidden:[]};
  state.keys=e=>{
@@ -54,7 +84,18 @@ function open(reason,quota){
  };
  for(const node of Array.from(document.body.children)){if(['SCRIPT','STYLE','LINK'].includes(node.tagName))continue;state.hidden.push([node,node.inert,node.getAttribute('aria-hidden')]);node.inert=true;node.setAttribute('aria-hidden','true');}
  active=state;document.body.append(root);document.body.style.overflow='hidden';document.addEventListener('keydown',state.keys);x.focus({preventScroll:true});
- if(native)window.LUMIRA_PLAY.catalog().then(items=>{if(active!==state)return;storeItems=items;for(const card of cards){const amount=Number(card.dataset.tier),product=window.LUMIRA_PLAY.products.find(row=>row.amount===amount),item=items.get(product.sku),line=create('span','la-benefit',item?item.price+' · '+window.LUMIRA_BILLING.text(product.lifetime?3:4):window.LUMIRA_BILLING.text(21));card.append(line);if(!item)card.disabled=true;}update();}).catch(()=>{if(active===state)buy.disabled=true;});
+ const load=async refresh=>{
+  retry.disabled=true;storeItems=null;update();status.textContent=native?window.LUMIRA_PLAY.text(0):T('loadingPrices');
+  try{
+   const items=await (native?window.LUMIRA_PLAY:window.LUMIRA_BILLING).catalog({refresh});if(active!==state)return;storeItems=items;
+   for(const card of cards){const amount=Number(card.dataset.tier),item=detailFor(amount);card.querySelector('[data-store-price]').textContent=item?priceFor(item)+' · '+window.LUMIRA_BILLING.text(lifetimeFor(amount)?3:4):native?window.LUMIRA_PLAY.errorText(items.errors?.get(productFor(amount)?.sku)):T('storePartial');}
+   if(!detailFor(selected)||selected<=current)selected=tiers.find(tier=>tier.amount>current&&detailFor(tier.amount))?.amount||null;
+   const partial=items.size<tiers.length,unready=!native&&items.checkoutReady===false;status.textContent=unready?T('storeUnavailable'):partial?(native?window.LUMIRA_PLAY.text(1):T('storePartial')):'';retry.hidden=!partial&&!unready;update();
+  }catch(error){
+   if(active!==state)return;status.textContent=native?window.LUMIRA_PLAY.errorText(error):T('storeUnavailable');retry.hidden=false;
+   for(const card of cards)card.querySelector('[data-store-price]').textContent='—';update();
+  }finally{retry.disabled=false;}
+ };retry.onclick=()=>load(true);load(false);
 }
 async function requireFeature(feature){
  const F=window.LUMIRA_FEATURES;

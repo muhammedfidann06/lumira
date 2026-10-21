@@ -1,12 +1,14 @@
 {
   "name": "lumira-features",
   "private": true,
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "Server-side authentication and account usage for Lumira",
   "engines": {
     "node": ">=22"
   },
   "dependencies": {
+    "@paddle/paddle-js": "1.6.5",
+    "@paddle/paddle-node-sdk": "3.10.0",
     "firebase-admin": "14.5.0"
   },
   "overrides": {
