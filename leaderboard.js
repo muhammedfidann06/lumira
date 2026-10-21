@@ -31,7 +31,7 @@
 ================================================================ */
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBHgCtHuIunwlleLCxFCexErrjyZkuNYE0",
+
   authDomain: "mhamzac-ca73d.firebaseapp.com",
   databaseURL: "https://mhamzac-ca73d-default-rtdb.firebaseio.com",
   projectId: "mhamzac-ca73d",
@@ -44,7 +44,7 @@ const FAKE_EMAIL_DOMAIN = '@dilkartlari-user.app';
 
 function initLeaderboard(){
   try{
-    const isConfigured = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf('BURAYA_YAPISTIR') === -1;
+    const isConfigured = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf('AIzaSyBHgCtHuIunwlleLCxFCexErrjyZkuNYE0') === -1;
     let db = null;
     let authSvc = null;
 
