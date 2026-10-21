@@ -5,7 +5,7 @@ const DEFAULT_EXPOSE=['X-Lumira-Features-Version','X-Lumira-Examples-Version'];
 const jsonError=(code,status=403)=>new Response(JSON.stringify({error:code}),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Vary':'Origin'}});
 export function withCors(handler,{methods=['POST'],headers=['Authorization','Content-Type'],media=false}={}){
   const allowedMethods=new Set(methods),allowedHeaders=new Set(headers.map(h=>h.toLowerCase()));
-  return async request=>{
+  return async (request,...context)=>{
     const origin=request.headers.get('origin'),same=origin===new URL(request.url).origin;
     if((origin && !same && !APP_ORIGINS.has(origin)) || (!origin && request.headers.get('sec-fetch-site')==='cross-site'))return jsonError('cross_origin_request');
     const crossHeaders=new Headers({'Vary':'Origin'});
@@ -23,7 +23,7 @@ export function withCors(handler,{methods=['POST'],headers=['Authorization','Con
       crossHeaders.set('Cache-Control','private, no-store');
       return new Response(null,{status:204,headers:crossHeaders});
     }
-    const response=await handler(request),merged=new Headers(response.headers);
+    const response=await handler(request,...context),merged=new Headers(response.headers);
     const vary=new Set((merged.get('Vary')||'').split(',').map(v=>v.trim()).filter(Boolean));vary.add('Origin');
     for(const [name,value]of crossHeaders)if(name!=='vary')merged.set(name,value);
     merged.set('Vary',[...vary].join(', '));

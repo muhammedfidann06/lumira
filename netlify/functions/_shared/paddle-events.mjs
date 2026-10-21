@@ -1,11 +1,12 @@
 import {fault} from './feature-core.mjs';
+import {catalogPrices} from './paddle-api.mjs';
 export async function atomic(ref,change){const listener=()=>{};ref.on('value',listener);try{await ref.get();let failure;const result=await ref.transaction(value=>{failure=null;try{return change(value);}catch(error){failure=error;return;}},undefined,false);if(!result.committed)throw failure||fault('billing_busy',409);return result.snapshot.val();}finally{ref.off('value',listener);}}
 const epoch=value=>{const n=Date.parse(value);return Number.isFinite(n)?n:null;};
 const priceIds=data=>(data.items||[]).map(item=>item.price?.id||item.price_id).filter(Boolean);
 function subscriptionValue(data,catalog){
  const selected=catalog.filter(row=>priceIds(data).includes(row.priceId)).sort((a,b)=>b.amount-a.amount)[0];
  if(!selected)return null;
- return {id:data.id,provider:'paddle',amount:selected.amount,status:data.status,lifetime:false,startsAt:epoch(data.started_at||data.created_at),endsAt:epoch(data.current_billing_period?.ends_at),renewsAt:epoch(data.next_billed_at),cancelAt:data.scheduled_change?.action==='cancel'?epoch(data.scheduled_change.effective_at):null,customerId:data.customer_id};
+ return {id:data.id,provider:'paddle',amount:selected.amount,status:data.status,lifetime:false,priceId:selected.priceId,productId:selected.productId||null,billingCycle:selected.billingCycle||data.billing_cycle||null,startsAt:epoch(data.started_at||data.created_at),endsAt:epoch(data.current_billing_period?.ends_at),renewsAt:epoch(data.next_billed_at),cancelAt:data.scheduled_change?.action==='cancel'?epoch(data.scheduled_change.effective_at):null,scheduledChange:data.scheduled_change||null,customerId:data.customer_id};
 }
 const rank=status=>status==='canceled'?3:status==='paused'?2:1;
 async function mirror(db,value){
@@ -16,7 +17,12 @@ async function mirror(db,value){
  });
 }
 export async function applyPaddleEvent(db,event,catalog){
+ catalog=catalogPrices(catalog);
  const data=event.data,at=epoch(event.occurred_at);if(!data||!Number.isFinite(at)||typeof event.event_id!=='string')throw fault('invalid_webhook',400);
+ if(['customer.created','customer.updated'].includes(event.event_type)){
+  if(!/^ctm_[a-z\d]{26}$/.test(data.id||'')||typeof data.email!=='string'||data.email.length>320)throw fault('invalid_webhook',400);
+  await atomic(db.ref('serverPaddleCustomerRecords/'+data.id),old=>old?.eventAt>=at?old:{id:data.id,email:data.email,status:data.status||'active',createdAt:epoch(data.created_at)||at,updatedAt:epoch(data.updated_at)||at,eventAt:at,eventId:event.event_id});return;
+ }
  if(event.event_type.startsWith('subscription.')){
   if(!/^sub_[a-z\d]{26}$/.test(data.id||''))throw fault('invalid_webhook',400);
   const next=subscriptionValue(data,catalog);if(!next)return;
@@ -40,7 +46,7 @@ export async function applyPaddleEvent(db,event,catalog){
    if(item.lifetime||!/^sub_[a-z\d]{26}$/.test(data.subscription_id))throw fault('billing_event_mismatch',409);
    const saved=await atomic(db.ref('serverPaddleResources/'+data.subscription_id),old=>{
     if(old?.uid&&old.uid!==linked.uid)throw fault('billing_owner_mismatch',409);
-    const base=old||{id:data.subscription_id,provider:'paddle',amount:item.amount,status:'active',lifetime:false,startsAt:epoch(data.created_at)||at,endsAt:epoch(data.billing_period?.ends_at),customerId:data.customer_id,eventAt:at,eventId:event.event_id};
+    const base=old||{id:data.subscription_id,provider:'paddle',amount:item.amount,status:'active',lifetime:false,priceId:item.priceId,productId:item.productId||null,billingCycle:item.billingCycle||null,startsAt:epoch(data.created_at)||at,endsAt:epoch(data.billing_period?.ends_at),customerId:data.customer_id,eventAt:at,eventId:event.event_id};
     return {...base,uid:linked.uid};
    });await mirror(db,saved);
   }else{
