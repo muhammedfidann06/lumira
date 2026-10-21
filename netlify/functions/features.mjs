@@ -3,6 +3,7 @@ import { identity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from 
 import { configuredProviders, connectProvider } from './_shared/live-providers.mjs';
 import { withCors } from './_shared/cors.mjs';
 import {welcomeGift} from './_shared/welcome-gift.mjs';
+import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 
 const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.10.0' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
@@ -50,7 +51,7 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       if (body.action === 'status') {
         const value = (await ref.get()).val();
         const providers = (services.configuredProviders || configuredProviders)();
-        return reply({ quota: quota(value), providers, speechConfigured: providers.includes('azure'), localFallback: true });
+        return reply({ quota: quota(value), providers, speechConfigured: providers.includes('azure'), localFallback: true, playProducts: Object.keys(PLAY_PRODUCTS) });
       }
       if (body.action === 'verifyPurchase') {
         await services.verifyPlayPurchase(ctx, body.sku, body.purchaseToken);

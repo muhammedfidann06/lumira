@@ -1,21 +1,23 @@
 import {identity,admin} from './_shared/feature-services.mjs';
 import {fault} from './_shared/feature-core.mjs';
 import {withCors} from './_shared/cors.mjs';
-import {createPaddleApi,setupPaddle,paddleEnvironment} from './_shared/paddle-api.mjs';
+import {createPaddleApi,setupPaddle,paddleEnvironment,catalogPrices,pricingTiers,visitorCountry,auditPaddle,paddleWebhookReady} from './_shared/paddle-api.mjs';
 import {atomic,applyPaddleEvent} from './_shared/paddle-events.mjs';
 import {playBilling} from './_shared/play-billing.mjs';
 const reply=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.10.0'}});
 const operation=id=>typeof id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(id);
 export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=createPaddleApi,env=process.env,clock=Date.now,play=playBilling}={}){
- return withCors(async request=>{
+ return withCors(async (request,context)=>{
   try{
-   const mode=paddleEnvironment(env);
    if(request.method==='GET'){
+    const mode=paddleEnvironment(env);
     if(!['?config','?catalog'].includes(new URL(request.url).search))return reply({error:'invalid_action'},400);
     const {db}=await getAdmin(),config=(await db.ref('serverPaddleConfig/'+mode).get()).val();
     if(!config?.ready)throw fault('billing_not_configured',503);
     if(new URL(request.url).search==='?catalog')return reply({catalog:config.catalog,environment:mode});
-    return reply({environment:mode,clientToken:config.clientToken});
+    const clientToken=env.PADDLE_CLIENT_TOKEN||env.PADDLE_CLIENT_SIDE_TOKEN||config.clientToken;
+    if(!clientToken?.startsWith(mode==='production'?'live_':'test_'))throw fault('billing_environment_mismatch',503);
+    return reply({environment:mode,clientToken,catalog:config.catalog,tiers:pricingTiers(config.catalog),...(visitorCountry(request,context)?{country:visitorCountry(request,context)}:{}),checkoutReady:paddleWebhookReady(config,env)});
    }
    if(request.method!=='POST')return reply({error:'method_not_allowed'},405);
    const raw=await request.text();if(raw.length>5000)throw fault('invalid_input',413);
@@ -29,10 +31,22 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
     if(ctx.tier.revokedSupport?.includes(body.amount)&&(await db.ref('serverFeatureEntitlements/'+ctx.uid+'/'+body.amount).get()).val()===false)throw fault('billing_not_owned',403);
     await db.ref('serverBadgeOptOut/'+ctx.uid+'/'+body.amount).remove();return reply({done:true});
    }
+   // Play purchases, gifts and profile access do not depend on Paddle being
+   // configured. In particular a mismatched Paddle key must not block them.
+   if(body.action==='remove'){
+    if(![1,5,10,25,50,100].includes(body.amount))throw fault('invalid_input');
+    const account=(await db.ref('serverPaddleAccounts/'+ctx.uid).get()).val()||{};
+    if(!Object.values(account.subscriptions||{}).some(value=>value.amount===body.amount&&['active','trialing','past_due','paused'].includes(value.status)&&!value.cancelAt)){
+     await play.cancelTier(ctx,body.amount);
+     await db.ref('serverBadgeOptOut/'+ctx.uid+'/'+body.amount).set(true);
+     const fresh=await identify(request);return reply({memberships:fresh.tier.memberships||[],done:true});
+    }
+   }
+   const mode=paddleEnvironment(env);
    const api=makeApi({env});
-   if(body.action==='setup'){
+   if(['setup','audit'].includes(body.action)){
     if((await db.ref('admins/'+ctx.uid).get()).val()!==true)throw fault('admin_required',403);
-    return reply(await setupPaddle(db,api,{env}));
+    return reply(body.action==='audit'?await auditPaddle(api):await setupPaddle(db,api,{env}));
    }
    const config=(await db.ref('serverPaddleConfig/'+mode).get()).val()||{};
    if(body.action==='confirm'){
@@ -46,23 +60,31 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
    }
    if(body.action==='catalog'){if(!config.ready)throw fault('billing_not_configured',503);return reply({catalog:config.catalog,environment:mode});}
    if(body.action==='checkout'){
-    if(!config.ready)throw fault('billing_not_configured',503);
-    const selected=config.catalog.find(row=>row.amount===body.amount);if(!selected||!operation(body.id))throw fault('invalid_input');
+    if(!config.ready||!paddleWebhookReady(config,env))throw fault('billing_not_configured',503);
+    const selected=body.priceId?catalogPrices(config.catalog).find(row=>row.amount===body.amount&&row.priceId===body.priceId):config.catalog.find(row=>row.amount===body.amount);if(!selected||!operation(body.id))throw fault('invalid_input');
     if(ctx.tier.supportAmounts?.includes(body.amount))throw fault('billing_already_active',409);
+    if(ctx.tier.revokedSupport?.includes(body.amount))throw fault('billing_badge_revoked',403);
     const existing=(await db.ref('serverPaddleAccounts/'+ctx.uid+'/subscriptions').get()).val()||{};
     if(Object.values(existing).some(s=>['active','trialing','past_due'].includes(s.status)&&!s.cancelAt))throw fault('billing_subscription_exists',409);
     const ref=db.ref('serverPaddleCheckoutRequests/'+ctx.uid+'/'+body.id),owner=body.id+'-'+clock();
     const previous=(await ref.get()).val();
-    if(previous?.transactionId){if(previous.amount!==body.amount)throw fault('invalid_operation',409);return reply({url:previous.url,transactionId:previous.transactionId});}
+    if(previous?.transactionId){const previousPrice=previous.priceId||(await db.ref('serverPaddleTransactions/'+previous.transactionId).get()).val()?.priceId;if(previous.amount!==body.amount||previousPrice!==selected.priceId)throw fault('invalid_operation',409);return reply({url:previous.url,transactionId:previous.transactionId,priceId:previousPrice});}
     await atomic(ref,value=>{if(value?.until>clock()||value?.transactionId)throw fault('billing_busy',409);return{owner,amount:body.amount,until:clock()+30000};});
     try{
      const source=request.headers.get('origin')==='https://muhammedfidann06.github.io'?'github':'netlify',language=['tr','en','de','ar','fr','es','ru'].includes(body.language)?body.language:'tr';
-     const transaction=(await api.call('/transactions',{method:'POST',body:{items:[{price_id:selected.priceId,quantity:1}],collection_mode:'automatic',custom_data:{lumira_user_id:ctx.uid},checkout:{url:'https://lumira-tr.com/checkout/?return='+source+'&lang='+language}}})).data;
+     const customerId=(await db.ref('serverPaddleCustomers/'+ctx.uid).get()).val();
+     const transaction=(await api.call('/transactions',{method:'POST',body:{items:[{price_id:selected.priceId,quantity:1}],collection_mode:'automatic',...(/^ctm_[a-z\d]{26}$/.test(customerId||'')?{customer_id:customerId}:{}),custom_data:{lumira_user_id:ctx.uid},checkout:{url:'https://lumira-tr.com/checkout/?return='+source+'&lang='+language}}})).data;
      if(!/^txn_[a-z\d]{26}$/.test(transaction?.id||''))throw fault('billing_unavailable',503);
      const url=new URL(transaction.checkout?.url);if(url.origin!=='https://lumira-tr.com'||url.pathname!=='/checkout/')throw fault('billing_unavailable',503);
      await db.ref('serverPaddleTransactions/'+transaction.id).set({uid:ctx.uid,amount:selected.amount,priceId:selected.priceId,createdAt:clock()});
-     await ref.set({amount:body.amount,transactionId:transaction.id,url:url.href});return reply({url:url.href,transactionId:transaction.id});
+     await ref.set({amount:body.amount,priceId:selected.priceId,transactionId:transaction.id,url:url.href});return reply({url:url.href,transactionId:transaction.id,priceId:selected.priceId});
     }catch(error){await atomic(ref,value=>value?.owner===owner?{amount:body.amount,failed:true}:value);throw error;}
+   }
+   if(body.action==='portal'&&!body.subscriptionId){
+    const customerId=(await db.ref('serverPaddleCustomers/'+ctx.uid).get()).val();
+    if(!/^ctm_[a-z\d]{26}$/.test(customerId||''))throw fault('billing_not_owned',403);
+    const url=api.portal?await api.portal(customerId,[]):(await api.call('/customers/'+customerId+'/portal-sessions',{method:'POST',body:{subscription_ids:[]}})).data?.urls?.general?.overview;
+    if(!/^https:\/\/(sandbox-)?customer-portal\.paddle\.com\//.test(url||''))throw fault('billing_unavailable',503);return reply({url});
    }
    if(['cancel','remove','portal'].includes(body.action)){
     const account=(await db.ref('serverPaddleAccounts/'+ctx.uid).get()).val()||{};
@@ -76,8 +98,8 @@ export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=c
      const own=entries.find(s=>s.id===body.subscriptionId);if(!own)throw fault('billing_not_owned',403);subscriptions=[own];
     }
     if(body.action==='portal'){
-     const own=subscriptions[0];const session=(await api.call('/customers/'+own.customerId+'/portal-sessions',{method:'POST',body:{subscription_ids:[own.id]}})).data;
-     const url=session?.urls?.general?.overview;if(!/^https:\/\/(sandbox-)?customer-portal\.paddle\.com\//.test(url||''))throw fault('billing_unavailable',503);return reply({url});
+     const own=subscriptions[0];const url=api.portal?await api.portal(own.customerId,[own.id]):(await api.call('/customers/'+own.customerId+'/portal-sessions',{method:'POST',body:{subscription_ids:[own.id]}})).data?.urls?.general?.overview;
+     if(!/^https:\/\/(sandbox-)?customer-portal\.paddle\.com\//.test(url||''))throw fault('billing_unavailable',503);return reply({url});
     }
     for(const owned of subscriptions){
      const current=(await api.call('/subscriptions/'+owned.id)).data;
