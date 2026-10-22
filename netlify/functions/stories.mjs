@@ -1,11 +1,13 @@
 import {createHash,randomUUID} from 'node:crypto';import catalog from './_shared/story-sources.json' with {type:'json'};
+import{assertAvailable}from'./_shared/maintenance.mjs';
 import {identity} from './_shared/feature-services.mjs';import {fault} from './_shared/feature-core.mjs';import {withCors} from './_shared/cors.mjs';import {atomic} from './_shared/paddle-events.mjs';import {createWordPool,LANGUAGES,validateOptions,validateStory,tokens} from './_shared/story-core.mjs';import {generateStory} from './_shared/story-providers.mjs';
 const poolFor=createWordPool(catalog),idOK=id=>typeof id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(id);
-const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.10.0'}});
+const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.11.0'}});
 export function createStoriesHandler(services={identity,generateStory,wordPool:poolFor},clock=Date.now){return withCors(async request=>{
  if(request.method!=='POST')return reply({error:'method_not_allowed'},405);let lock,owner=randomUUID();
  try{const raw=await request.text();if(raw.length>5000)throw fault('invalid_input',413);let body;try{body=JSON.parse(raw);}catch{throw fault('invalid_input');}if(!body||!['pool','generate','list','get','delete'].includes(body.action))throw fault('invalid_action');
   const ctx=await services.identity(request),base='serverStories/'+ctx.uid+'/';
+  if(body.action!=='delete')await(services.assertAvailable||assertAvailable)(ctx,'stories');
   if(body.action==='list'){const all=(await ctx.db.ref('serverStoryIndex/'+ctx.uid).get()).val()||{};return reply({stories:Object.entries(all).map(([id,s])=>({id,...s})).sort((a,b)=>b.createdAt-a.createdAt).slice(0,20)});}
   if(['get','delete'].includes(body.action)){if(!idOK(body.id))throw fault('invalid_input');const ref=ctx.db.ref(base+body.id),story=(await ref.get()).val();if(!story)throw fault('story_not_found',404);if(body.action==='delete'){await ctx.db.ref().update({[base+body.id]:null,['serverStoryIndex/'+ctx.uid+'/'+body.id]:null});return reply({deleted:true});}return reply({story});}
   if(!LANGUAGES.includes(body.language)||!LANGUAGES.includes(body.native)||body.language===body.native)throw fault('invalid_input',422);

@@ -40,6 +40,7 @@
     if (!sheet()) return;
     window.PWA.sheet('🛡️ Yönetici Paneli', 'Yalnızca yönetici hesabında görünür.', function (b, panel) {
       var rows = [
+        ['🛠️', 'Bakım yönetimi', 'Bölümleri ve kelime kategorilerini aç veya bakıma al',()=>window.LUMIRA_MAINTENANCE.open()],
         ['📊', 'Kullanım istatistikleri', 'Günlük kullanıcı, olaylar, quiz hunisi', openStats],
         ['⭐', 'XP gönder',               'Bir kullanıcıya XP ekle',                openXp],
         ['🏅', 'Başarım rozeti ver',      'Özel başarım rozeti (Başarımlar)',       openGiveBadge],

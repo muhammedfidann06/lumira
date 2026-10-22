@@ -20,7 +20,7 @@
    ========================================================================== */
 (function () {
 'use strict';
-var APP_VERSION='1.10.4';
+var APP_VERSION='1.11.0';
 
 
 /* ========================================================== AYARLAR ====== */
@@ -355,6 +355,8 @@ function setupBackButton() {
       return;
     }
     if(window.LUMIRA_STORIES?.back?.()){pushGuard();return;}
+    if(window.LUMIRA_LEARNING?.back?.()){pushGuard();return;}
+    if($('tabWriting')?.classList.contains('active')&&$('wpBackHomeBtn')){$('wpBackHomeBtn').click();pushGuard();return;}
     /* 2) Kategori paneli açıksa kapat */
     var cat = $('catOverlay');
     if (cat && getComputedStyle(cat).display !== 'none' && cat.classList.contains('show')) {
@@ -395,7 +397,7 @@ function setupBackButton() {
   });
 
   /* Sekme/panel değişimlerinde geçmişe kayıt ekle */
-  ['tabQuiz', 'tabLiveTranslate', 'tabPersonal', 'catTrigger'].forEach(function (id) {
+  ['tabQuiz', 'tabLiveTranslate', 'tabPersonal', 'tabNotebook', 'tabWriting', 'tabPlacement', 'tabStories', 'catTrigger'].forEach(function (id) {
     var el = $(id);
     if (el) el.addEventListener('click', function () { pushGuard(); }, true);
   });
@@ -436,6 +438,7 @@ function route(params, force) {
     else if (tab === 'live' && $('tabLiveTranslate')) $('tabLiveTranslate').click();
     else if ((tab === 'personal' || tab === 'profile') && $('tabPersonal')) $('tabPersonal').click();
     else if (tab === 'cards' && $('tabCards')) $('tabCards').click();
+    else if ({writing:'tabWriting',placement:'tabPlacement',stories:'tabStories',notebook:'tabNotebook'}[tab]) $({writing:'tabWriting',placement:'tabPlacement',stories:'tabStories',notebook:'tabNotebook'}[tab])?.click();
 
     if (act === 'daily') setTimeout(showDailyWord, 450);
     if (act === 'favorites') setTimeout(openFavorites, 450);
@@ -1024,7 +1027,7 @@ function maybeAskRating() {
 
 /* ================================ 12 · GEÇİŞLER · DEVAM ================= */
 function setupTransitions() {
-  ['tabCards', 'tabQuiz', 'tabLiveTranslate', 'tabPersonal'].forEach(function (id) {
+  ['tabCards', 'tabQuiz', 'tabLiveTranslate', 'tabWriting', 'tabPersonal', 'tabNotebook', 'tabPlacement', 'tabStories'].forEach(function (id) {
     var el = $(id);
     if (!el) return;
     el.addEventListener('click', function () {
@@ -1042,7 +1045,7 @@ function setupTransitions() {
         } catch (e) {}
       }
       var view = $('cardsView');
-      var target = id === 'tabQuiz' ? $('quizView') : (id === 'tabLiveTranslate' ? $('liveTranslateView') : (id === 'tabPersonal' ? $('personalView') : view));
+      var target = id === 'tabQuiz' ? $('quizView') : (id === 'tabLiveTranslate' ? $('liveTranslateView') : (['tabPersonal','tabWriting','tabPlacement','tabStories'].includes(id) ? $('personalView') : (id === 'tabNotebook' ? $('notebookView') : view)));
       if (target) {
         target.classList.remove('pwa-fade-in');
         void target.offsetWidth;
@@ -1054,8 +1057,7 @@ function setupTransitions() {
 
 var RESUME_KEY = 'lumira_resume_v1';
 function saveResume() {
-  var tab = $('tabQuiz') && $('tabQuiz').classList.contains('active') ? 'quiz'
-          : ($('tabPersonal') && $('tabPersonal').classList.contains('active') ? 'personal' : 'cards');
+  var tab = Object.entries({cards:'tabCards',quiz:'tabQuiz',live:'tabLiveTranslate',writing:'tabWriting',personal:'tabPersonal',notebook:'tabNotebook',placement:'tabPlacement',stories:'tabStories'}).find(function(pair){return $(pair[1])?.classList.contains('active');})?.[0]||'cards';
   var lvEl = qs('.level-opt.active');
   var card = currentCard();
   var deck = G('deck');
@@ -1124,6 +1126,8 @@ function offerResume() {
       }
       if (r.tab === 'quiz' && $('tabQuiz')) { $('tabQuiz').click(); return; }
       if (r.tab === 'personal' && $('tabPersonal')) { $('tabPersonal').click(); return; }
+      var resumeTab={live:'tabLiveTranslate',writing:'tabWriting',notebook:'tabNotebook',placement:'tabPlacement',stories:'tabStories'}[r.tab];
+      if(resumeTab&&$(resumeTab)){$(resumeTab).click();return;}
 
       /* Dil/seviye değiştiyse deste yeniden kurulur — kısa bir nefes al */
       setTimeout(function () {
@@ -1457,7 +1461,7 @@ function openLanguageSettings() {
       var hasWpContent = !!(wpInputEl && wpInputEl.value.trim());
       var wpResultEl = document.getElementById('wpResult');
       var hasWpResult = !!(wpResultEl && wpResultEl.innerHTML.trim());
-      var preserveFlow = hasWpContent || hasWpResult;
+      var preserveFlow = hasWpContent || hasWpResult || window.LUMIRA_LEARNING?.isMounted() || window.LUMIRA_STORIES?.isMounted();
       var p = window.setLangPair ? window.setLangPair(native, target) : Promise.resolve();
       p.then(function () {
         try {
@@ -1887,6 +1891,19 @@ var settingsOpen = null;
 function openSettings() {
   if (settingsOpen) { try { settingsOpen.close(); } catch (e) {} settingsOpen = null; return; }
   settingsOpen = sheet(t('set_app_title'), CONFIG.brand + ' · ' + CONFIG.appName + (isStandalone ? ' · uygulama modu' : ''), function (b) {
+    b.classList.add('settings-organized');
+    var copy=window.LUMIRA_LEARNING?.text||function(key){return key;};
+    var shortcuts=document.createElement('div');shortcuts.className='settings-shortcuts';
+    [['✍️','title','tabWriting'],['📖','stories','tabStories'],['🎙️','live','tabLiveTranslate'],['🎓','placement','tabPlacement']].forEach(function(item){
+      var button=document.createElement('button');button.type='button';
+      var labels=window.LUMIRA_LEARNING_COPY?.nav[window.NATIVE_LANG]||window.LUMIRA_LEARNING_COPY?.nav.en;
+      var index=['tabCards','tabQuiz','tabLiveTranslate','tabWriting','tabPersonal','tabNotebook','tabPlacement','tabStories'].indexOf(item[2]);
+      button.textContent=item[0]+' '+(labels?.[index]||copy(item[1]));button.onclick=function(){settingsOpen?.close();settingsOpen=null;$(item[2])?.click();};shortcuts.appendChild(button);
+    });
+    var quick=document.createElement('h3');quick.textContent=copy('tools');b.appendChild(quick);b.appendChild(shortcuts);
+    var groups={};
+    ['account','tools','notifications','preferences','savedData','privacy','technical'].forEach(function(key){var section=document.createElement('section');section.className='settings-group';section.dataset.settingsGroup=key;var h=document.createElement('h3');h.textContent=copy(key==='tools'?'learn':key);section.appendChild(h);groups[key]=section;b.appendChild(section);});
+    groups.admin=document.createElement('section');groups.admin.className='settings-group';groups.admin.dataset.settingsGroup='admin';b.appendChild(groups.admin);
 
     var liteOn = document.documentElement.classList.contains('lite');
     var liteRow = row('⚡', t('set_lite_row'),
@@ -1906,7 +1923,7 @@ function openSettings() {
       toast(next ? (window.t?window.t('set_lite_on_toast'):'⚡ Hafif mod açık — tam etki için sayfayı yenile')
                  : (window.t?window.t('set_lite_off_toast'):'Efektler geri açıldı — yenileyince tamamlanır'), { kind: 'good', duration: 5000 });
     };
-    b.appendChild(liteRow);
+    groups.preferences.appendChild(liteRow);
 
 
     /* --- Bildirimler ------------------------------------------------- */
@@ -1926,7 +1943,7 @@ function openSettings() {
         if (cur.on) { subscribePush(); toast(window.t?window.t('set_notif_on_toast'):'🔔 Hatırlatma açıldı', { kind: 'good' }); }
       });
     };
-    b.appendChild(notifRow);
+    groups.notifications.appendChild(notifRow);
 
     var timeRow = row('⏰', t('set_notif_time_row'), (window.t?window.t('set_notif_time_desc'):'Bildirimin geleceği saat'),
       '<input class="pwa-time" type="time" value="' + pad(s.hour) + ':' + pad(s.min) + '">');
@@ -1935,12 +1952,12 @@ function openSettings() {
     inp.onchange = function () {
       var parts = inp.value.split(':');
       var cur = reminderSettings();
-      cur.hour = parseInt(parts[0], 10) || 20;
-      cur.min = parseInt(parts[1], 10) || 0;
+      var hour=Number(parts[0]);cur.hour=Number.isInteger(hour)&&hour>=0&&hour<=23?hour:20;
+      var minute=Number(parts[1]);cur.min=Number.isInteger(minute)&&minute>=0&&minute<=59?minute:0;
       saveReminder(cur);
       toast((window.t?window.t('set_notif_time_updated_toast')(inp.value):('Saat güncellendi: ' + inp.value)), { kind: 'good' });
     };
-    b.appendChild(timeRow);
+    groups.notifications.appendChild(timeRow);
 
     var testRow = row('📨', t('set_notif_test_row'), (window.t?window.t('set_notif_test_desc'):'Çalışıyor mu diye bak'));
     testRow.onclick = function () {
@@ -1949,7 +1966,7 @@ function openSettings() {
         showNotification((window.t?window.t('set_notif_test_title'):'Merhaba! 👋'), (window.t?window.t('set_notif_test_body'):'Bildirimler çalışıyor. İyi çalışmalar!'), './?src=notification&tab=cards');
       });
     };
-    b.appendChild(testRow);
+    groups.technical.appendChild(testRow);
 
     /* --- Çevrimdışı --------------------------------------------------- */
     var packRow = row('📦', t('set_offline_row'), (window.t?window.t('set_offline_desc'):'6 dilin tüm sözlükleri · destek rozeti gerekir'));
@@ -1960,20 +1977,20 @@ function openSettings() {
     packRow.onclick = function () {
       downloadOfflinePack();
     };
-    b.appendChild(packRow); b.appendChild(bar);
+    groups.tools.appendChild(packRow); groups.tools.appendChild(bar);
     if (store('pwa_offline_pack')) cacheBar.style.width = '100%';
 
     estimateStorage().then(function (st) {
       if (!st) return;
       var r = row('💾', t('set_storage_row'), mb(st.used) + ' / ' + mb(st.quota));
       r.style.cursor = 'default';
-      b.insertBefore(r, packRow.nextSibling);
+      groups.technical.appendChild(r);
     });
 
     /* --- Favoriler & veri --------------------------------------------- */
-    var favRow = row('⭐', t('set_favs_row'), favs().length + ' kelime');
+    var favRow = row('⭐', t('set_favs_row'), (window.t?window.t('nb_word_count')(favs().length):String(favs().length)));
     favRow.onclick = function () { openFavorites(); };
-    b.appendChild(favRow);
+    groups.tools.appendChild(favRow);
 
     var check = row('🔍', t('set_check_row'), (window.t?window.t('set_check_desc'):'Kayıtlı ilerleme kayıtlarını say'));
     check.onclick = function () {
@@ -1988,31 +2005,31 @@ function openSettings() {
       } catch (e) {}
       toast((window.t?window.t('set_check_toast')(n,keys.length):('💾 ' + n + ' kayıt var, ' + keys.length + ' tanesi ilerleme verisi')), { duration: 7000 });
     };
-    b.appendChild(check);
+    groups.technical.appendChild(check);
 
     var exp = row('⬇️', t('set_export_row'), (window.t?window.t('set_export_desc'):'JSON dosyası indir veya paylaş'));
     exp.onclick = exportAllData;
-    b.appendChild(exp);
+    groups.savedData.appendChild(exp);
 
     var imp = row('⬆️', t('set_import_row'), (window.t?window.t('set_import_desc'):'Daha önce indirdiğin dosyayı seç'));
     imp.onclick = importData;
-    b.appendChild(imp);
+    groups.savedData.appendChild(imp);
 
     var shr = row('🔗', t('set_share_row'), (window.t?window.t('set_share_desc'):'Arkadaşlarına gönder'));
     shr.onclick = shareApp;
-    b.appendChild(shr);
+    groups.privacy.appendChild(shr);
 
     /* --- Kurulum / güncelleme ----------------------------------------- */
     if (!isStandalone && !isTwa) {
       var ins = row('📲', t('set_install_row'), (window.t?window.t('set_install_desc'):'Tam ekran, hızlı ve çevrimdışı'));
       ins.onclick = doInstall;
-      b.appendChild(ins);
+      groups.technical.appendChild(ins);
     }
 
     var myVer = (window.PWA && window.PWA.version) ? window.PWA.version : 'bilinmiyor';
     var upd = row('🔄', t('set_update_row'), (window.t?window.t('set_update_desc')(myVer):('Çalışan sürüm: ' + myVer)));
     var updDesc = qs('.tx span', upd);
-    b.appendChild(upd);
+    groups.technical.appendChild(upd);
 
     /* Service Worker'ın kendi sürümünü de göster: ikisi farklıysa cihazda
        eski dosyalar takılı kalmış demektir. */
@@ -2060,15 +2077,15 @@ function openSettings() {
         (window.t?window.t('set_force_update_confirm_body'):'Kayıtlı dosyalar silinip yeniden indirilecek. <b>İlerlemen, favorilerin ve ayarların silinmez.</b> Uygulama bir kez yenilenecek.'),
         function () { hardRefresh(true); });
     };
-    b.appendChild(force);
+    groups.technical.appendChild(force);
 
     var net = row('📶', (window.t?window.t('set_net_check_row'):'Bağlantı durumunu denetle'), (window.t?window.t('set_net_check_desc'):'Çevrimdışı uyarısı yanlışsa buraya bak'));
     net.onclick = function () { refreshOnlineState(); window.PWA.netStatus(); };
-    b.appendChild(net);
+    groups.technical.appendChild(net);
 
     var bug = row('🐞', (window.t?window.t('set_bug_row'):'Hata raporu'), (window.t?window.t('set_bug_desc'):'Sorun mu var? Rapor gönder'));
     bug.onclick = openErrorReport;
-    b.appendChild(bug);
+    groups.technical.appendChild(bug);
 
     var rate = row('💛', (window.t?window.t('set_rate_row'):'Puan ver'), (window.t?window.t('set_rate_desc'):'Play Store\'da değerlendir'));
     rate.onclick = function () {
@@ -2076,7 +2093,7 @@ function openSettings() {
       try { location.href = 'market://details?id=' + CONFIG.packageId; } catch (e) {}
       setTimeout(function () { window.open(CONFIG.playUrl, '_blank', 'noopener'); }, 700);
     };
-    b.appendChild(rate);
+    groups.privacy.appendChild(rate);
 
     /* --- Yönetici (yalnızca yönetici hesabında görünür) --------------- */
     (function (adminBox) {
@@ -2096,11 +2113,7 @@ function openSettings() {
       /* Bayrak zaten çözülmüşse hemen; değilse /admins okunduktan sonra. */
       if (isAdmin()) injectAdmin();
       else refreshAdminFlag(function (ok) { if (ok) injectAdmin(); });
-    })(b);
-
-    /* --- Profil (en altta) ------------------------------------------- */
-    b.insertAdjacentHTML('beforeend',
-      '<p class="pwa-note" style="margin:20px 2px 8px">' + t('account') + '</p>');
+    })(groups.admin);
 
     var curNative = window.NATIVE_LANG || 'tr';
     var curTarget = (window.isReversed && window.isReversed()) ? 'tr' : (window.TARGET_LANG || 'de');
@@ -2110,31 +2123,31 @@ function openSettings() {
       : (NATIVE_NAMES[curNative]||curNative) + ' konuşuyorsun · ' + (NATIVE_NAMES[curTarget]||curTarget) + ' öğreniyorsun';
     var langRow = row('🌐', t('language_row'), langSub);
     langRow.onclick = function () { openLanguageSettings(); };
-    b.appendChild(langRow);
+    groups.account.appendChild(langRow);
 
-    if(!isTwa&&typeof window.getDigitalGoodsService!=='function'){var pricing=row('💳',window.LUMIRA_BILLING?.text(0)||'Plans','');pricing.onclick=function(){location.href=new URL('./pricing/?lang='+(window.NATIVE_LANG||'tr'),location.href).href;};b.appendChild(pricing);}
+    if(!isTwa&&typeof window.getDigitalGoodsService!=='function'){var pricing=row('💳',window.LUMIRA_BILLING?.text(0)||'Plans','');pricing.onclick=function(){location.href=new URL('./pricing/?lang='+(window.NATIVE_LANG||'tr'),location.href).href;};groups.account.appendChild(pricing);}
     var prof = row('👤', t('profile_row'), t('profile_desc'));
     prof.onclick = function () {
       openProfile();
     };
-    b.appendChild(prof);
+    groups.account.appendChild(prof);
 
     var pdfRow = row('📄', (window.t?window.t('set_pdf_row'):'Kelimeleri PDF olarak indir'), (window.t?window.t('set_pdf_desc'):'Kitap düzeninde kelime listesi · rozet gerekir'));
     pdfRow.onclick = function () {
       if (typeof window.openPdfExport === 'function') window.openPdfExport();
     };
-    b.appendChild(pdfRow);
+    groups.tools.appendChild(pdfRow);
 
     var priv = row('🔒', (window.t?window.t('set_privacy_row'):'Gizlilik Politikası'), (window.t?window.t('set_privacy_desc'):'Hangi veriler saklanıyor?'));
     priv.onclick = function () { window.open('privacy/', '_blank', 'noopener'); };
-    b.appendChild(priv);
+    groups.privacy.appendChild(priv);
 
     var supRow = row('❤️', (window.t?window.t('set_support_row'):'Lumira\'yı Destekle'), (window.t?window.t('set_support_desc_row'):'Rozet kazan, gelişime katkıda bulun'));
     supRow.style.borderColor = 'rgba(255,95,184,.32)';
     supRow.onclick = function () {
       if (typeof window.openSupport === 'function') window.openSupport();
     };
-    b.appendChild(supRow);
+    groups.account.appendChild(supRow);
 
     b.insertAdjacentHTML('beforeend',
       '<p class="pwa-note">' + (window.t ? window.t('set_footer_note')(CONFIG.brand, CONFIG.appName, (store('pwa_opens') || 1)) :

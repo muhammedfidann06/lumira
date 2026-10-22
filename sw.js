@@ -16,12 +16,14 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.10.4';
+const CACHE_VERSION = 'v1.11.0';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
+const PHRASE_CACHE  = 'lumira-phrases-v1.11.0';
+const PHRASE_FILES  = ['en','ar','fr','es','ru'].map(lang=>'./phrase-translations/'+lang+'.json');
 const ASSET_CACHE   = 'lumira-assets-v1';
 const CDN_CACHE     = 'lumira-cdn-v1';
-const KEEP = [SHELL_CACHE, VOCAB_CACHE, ASSET_CACHE, CDN_CACHE, 'lumira-local-models-v1'];
+const KEEP = [SHELL_CACHE, VOCAB_CACHE, PHRASE_CACHE, ASSET_CACHE, CDN_CACHE, 'lumira-local-models-v1'];
 
 const OFFLINE_URL = './offline.html';
 
@@ -34,6 +36,13 @@ const SHELL = [
   './privacy/index.html',
   './manifest.json',
   './pwa.css',
+  './learning.css',
+  './practice-core.js',
+  './learning-i18n.js',
+  './learning.js',
+  './maintenance.js',
+  './phrases-de.js',
+  './public-pages.css',
   './pwa.js',
   './support-badges.js',
   './analytics.js',
@@ -123,7 +132,7 @@ self.addEventListener('install', (event) => {
         await vocab.add(new Request(url,{cache:'reload'}));
       }
     }));
-    await Promise.all(['./vocab-core.js','./vocab-pairs.js','./vocab-parallel.js','./vocab-identity.js'].map(url => cache.add(new Request(url,{cache:'reload'}))));
+    await Promise.all(['./vocab-core.js','./vocab-pairs.js','./vocab-parallel.js','./vocab-identity.js','./practice-core.js','./learning-i18n.js','./learning.js','./learning.css','./maintenance.js','./phrases-de.js'].map(url => cache.add(new Request(url,{cache:'reload'}))));
   })());
   /* DİKKAT: Buraya bir zamanlar koşulsuz self.skipWaiting() konmuştu.
      Sayfa tarafındaki "controllerchange → location.reload()" ile birleşince
@@ -180,6 +189,8 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(cacheFirst(req, VOCAB_CACHE));
     return;
   }
+
+  if(url.origin===self.location.origin&&/\/phrase-translations\/(en|ar|fr|es|ru)\.json$/i.test(url.pathname)){event.respondWith(cacheFirst(req,PHRASE_CACHE));return;}
 
   /* 3) Görsel / font / ses */
   if (url.origin === self.location.origin && isAsset(url)) {
@@ -257,7 +268,7 @@ async function handleNavigate(event) {
 
 async function cacheFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
-  const hit = await cache.match(req, { ignoreVary: true, ignoreSearch: cacheName === VOCAB_CACHE });
+  const hit = await cache.match(req, { ignoreVary: true, ignoreSearch: cacheName === VOCAB_CACHE || cacheName === PHRASE_CACHE });
   if (hit) return hit;
   try {
     const res = await fetch(req);
@@ -303,12 +314,12 @@ self.addEventListener('message', (event) => {
   /* Çevrimdışı paket: tüm sözlükleri arka planda indir, ilerlemeyi bildir */
   if (data.type === 'CACHE_ALL') {
     event.waitUntil((async () => {
-      const cache = await caches.open(VOCAB_CACHE);
-      const list = VOCAB_FILES.slice();
+      const list = VOCAB_FILES.concat(PHRASE_FILES);
       let done = 0;
       let failed = 0;
       for (const url of list) {
         try {
+          const cache=await caches.open(PHRASE_FILES.includes(url)?PHRASE_CACHE:VOCAB_CACHE);
           const already = await cache.match(url,{ignoreSearch:true});
           if (!already) await cache.add(new Request(url, { cache: 'reload' }));
         } catch (e) { failed++; }

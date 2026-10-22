@@ -1,6 +1,22 @@
 import {fault} from './feature-core.mjs';
 import {catalogPrices} from './paddle-api.mjs';
-export async function atomic(ref,change){const listener=()=>{};ref.on('value',listener);try{await ref.get();let failure;const result=await ref.transaction(value=>{failure=null;try{return change(value);}catch(error){failure=error;return;}},undefined,false);if(!result.committed)throw failure||fault('billing_busy',409);return result.snapshot.val();}finally{ref.off('value',listener);}}
+// A cold Firebase connection can exhaust its own conflict retries when several
+// webhook deliveries touch the same subscription. The change callback is pure:
+// refresh and retry only that SDK conflict, keeping ownership/event ordering.
+export async function atomic(ref,change){
+ for(let attempt=0;attempt<3;attempt++){
+  const listener=()=>{};ref.on('value',listener);
+  try{
+   await ref.get();let failure;
+   const result=await ref.transaction(value=>{failure=null;try{return change(value);}catch(error){failure=error;return;}},undefined,false);
+   if(!result.committed)throw failure||fault('billing_busy',409);
+   return result.snapshot.val();
+  }catch(error){
+   if(!/^(?:database\/)?maxretry$/i.test(String(error.code||error.message||''))||attempt===2)throw error;
+  }finally{ref.off('value',listener);}
+ }
+}
+
 const epoch=value=>{const n=Date.parse(value);return Number.isFinite(n)?n:null;};
 const priceIds=data=>(data.items||[]).map(item=>item.price?.id||item.price_id).filter(Boolean);
 function subscriptionValue(data,catalog){

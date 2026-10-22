@@ -211,6 +211,7 @@
       if (user()?.uid !== uid) throw fail('login_required');
       if (data.quota) publish(data.quota, uid);
       if (!response.ok) {
+        if(data.error==='maintenance'){window.LUMIRA_MAINTENANCE?.notice();window.LUMIRA_MAINTENANCE?.refresh(true).then(()=>window.LUMIRA_MAINTENANCE.enforceCurrent());}
         if(['writing_limit','live_limit','pdf_limit','pdf_badge_required'].includes(data.error))window.LUMIRA_ACCESS?.open(data.error,data.quota || cached);
         throw fail(data.error || 'usage_unavailable');
       }
@@ -253,6 +254,7 @@
     if (!id || !cachedToken || cachedTokenUid!==user()?.uid) return;
     fetch(endpoint('features'), { method: 'POST', credentials:'omit', keepalive: true, headers: { 'Content-Type':'application/json', Authorization:'Bearer ' + cachedToken }, body: JSON.stringify({ action:'liveStop', id }) }).catch(() => {});
   }
+  Object.keys(COPY).forEach(lang=>COPY[lang].maintenance={tr:'Sizin İçin Çalışıyoruz, Yakında Kullanıma Açılacaktır.',en:'We are improving this section. It will be available soon.',de:'Dieser Bereich wird verbessert und ist bald wieder verfügbar.',ar:'نعمل على تحسين هذا القسم. سيكون متاحًا قريبًا.',fr:'Nous améliorons cette section. Elle sera bientôt disponible.',es:'Estamos mejorando esta sección. Estará disponible pronto.',ru:'Мы улучшаем этот раздел. Скоро он будет доступен.'}[lang]);
   window.LUMIRA_FEATURES = { api, service:(service,action,params,options)=>api(action,params,{...options,service}), adminBadges:(action,params,options)=>api(action,params,{...options,admin:true}), audio:(params,options)=>api('audio',params,{...options,audio:true}), entitlement, text, errorText: e => text(e?.featureCode || 'usage_unavailable'), mountWriting, verifyPurchase, restorePurchases, releaseOnExit,
     id: () => crypto.randomUUID ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(20)), n => n.toString(16).padStart(2,'0')).join(''),
     getQuota: () => cachedUid === user()?.uid ? cached : null,

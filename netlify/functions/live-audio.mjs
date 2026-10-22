@@ -1,3 +1,4 @@
+import{assertAvailable}from'./_shared/maintenance.mjs';
 import { identity } from './_shared/feature-services.mjs';
 import { changeUsage, fault } from './_shared/feature-core.mjs';
 import { decodeWave, translateAudio } from './_shared/live-providers.mjs';
@@ -16,6 +17,7 @@ export function createAudioHandler(services = { identity, translateAudio }, cloc
       if(body.source!==undefined&&!['auto','tr','de','en','ar','fr','es','ru'].includes(body.source))throw fault('invalid_input',422);
       const audio = decodeWave(body.audio);
       const ctx = await services.identity(request);
+      await(services.assertAvailable||assertAvailable)(ctx,'live');
       ref = ctx.db.ref('serverFeatureUsage/' + ctx.uid);
       const listener = () => {}; ref.on('value',listener);
       try {

@@ -859,11 +859,8 @@
       awHtml = '<div class="pm-card"><h4>'+window.t('pm_achievements_header')+'</h4><div class="pm-awards">'+awRow+'</div></div>';
     }
 
-    html += '<button class="pm-btn small" id="pmLevelTestBtn">'+window.t('pm_level_test_btn')+'</button>';
     html += '<button class="pm-btn small" id="pmKnownBtn">✅ '+window.t('pm_known')+' ('+totalKnownLang+')</button>';
     html += '<button class="pm-btn small" id="pmWeakBtn">📉 '+window.t('pm_weak')+'</button>';
-    html += '<button class="pm-btn small" id="pmWritingBtn">'+window.t('nb_writing_practice')+'</button>';
-    html += '<button class="pm-btn small" id="pmStoryBtn">📖 '+window.LUMIRA_STORY_COPY.text('title')+'</button>';
     html += awHtml;    /* Başarımlar (mistakes butonunun altında) */
     html += supHtml;   /* Rozetler */
     html += '</div>';
@@ -904,11 +901,8 @@
       el.onclick = () => startGeneralReview(el.dataset.group);
     });
     document.getElementById('pmStartBtn').onclick = startSession;
-    document.getElementById('pmLevelTestBtn').onclick = openLevelTestPicker;
     document.getElementById('pmKnownBtn').onclick = renderKnownWords;
     document.getElementById('pmWeakBtn').onclick = renderWeakWords;
-    document.getElementById('pmWritingBtn').onclick=renderWritingLangSelect;
-    document.getElementById('pmStoryBtn').onclick=renderStories;
     const dueBtn = document.getElementById('pmDueBtn');
     if(dueBtn) dueBtn.onclick = startDailyReview;
 
@@ -1035,7 +1029,10 @@
     html += '</div>';
     html += '<button type="button" class="ctrl primary" id="pmBackHome" style="width:100%;margin-top:18px;">'+(window.t?window.t('pm_back_home_btn'):'← Ana Sayfaya Dön')+'</button></div>';
     root.innerHTML = html;
-    document.getElementById('pmBackHome').onclick = renderHome;
+    document.getElementById('pmBackHome').onclick=()=>document.getElementById('tabPersonal')?.click();
+    const label=document.createElement('label'),select=document.createElement('select');label.className='work-label';label.textContent=window.LUMIRA_LEARNING.text('choose');select.dataset.lumiraSelect='';
+    Object.keys(LANGS).forEach(code=>{if(code===(window.NATIVE_LANG||'tr'))return;const option=document.createElement('option');option.value=code;option.textContent=(window.t('lang_names')||{})[code]||LANGS[code].native;select.append(option);});select.value=activeLang;label.append(select);root.querySelector('.pm-head').append(label);window.LUMIRA_LANGUAGE?.enhance(select);
+    select.onchange=async()=>{select.disabled=true;try{await window.setLangPair(window.NATIVE_LANG,select.value);activeLevel='TÜMÜ';ltState=null;openLevelTestPicker();}catch{showToast(window.LUMIRA_LEARNING.text('error'));select.disabled=false;}};
     document.querySelectorAll('.lt-lv-opt').forEach(el=>{
       if(el.classList.contains('locked')) return;
       el.onclick = () => {
@@ -1052,8 +1049,7 @@
      kelimeler sorulur ve doğru bilinenler bilinenler listesine geçer. */
   function openLevelTestCategoryPicker(level){
     const pool = poolForActiveLang().filter(v=>v.level===level);
-    const catCounts = {};
-    pool.forEach(v=>{ const c = v.cat||'Genel'; catCounts[c] = (catCounts[c]||0)+1; });
+    const catCounts=Object.fromEntries(window.LUMIRA_CATALOG.categoryCounts(pool));
     const cats = Object.keys(catCounts).sort((a,b)=>catCounts[b]-catCounts[a]);
     const selected = new Set();
 
@@ -1128,7 +1124,7 @@
       '<div class="pm-options" id="pmOptions"></div>'+
       '<button type="button" class="ctrl primary" id="pmLtExit" style="width:100%;margin-top:16px;">'+(window.t?window.t('pm_save_exit'):'← Kaydet ve Çık')+'</button></div>';
     const wrap = document.getElementById('pmOptions');
-    document.getElementById('pmLtExit').onclick = () => { ltSaveProgress(); ltState = null; renderHome(); };
+    document.getElementById('pmLtExit').onclick = () => { ltSaveProgress(); ltState = null; openLevelTestPicker(); };
     opts.forEach(o=>{
       const b = document.createElement('button');
       b.className = 'pm-opt'; b.textContent = o;
@@ -1180,7 +1176,7 @@
       '<div class="pm-sub">'+t('pm_result_summary')(correct, order.length, pct, scopeTxt, 100, learnedKeys.length)+'</div></div>'+
       '<button type="button" class="ctrl primary" id="pmBackHome2" style="width:100%;margin-top:8px;">'+t('pm_back_home')+'</button></div>';
     root.innerHTML = html;
-    document.getElementById('pmBackHome2').onclick = renderHome;
+    document.getElementById('pmBackHome2').onclick = openLevelTestPicker;
     ltState = null;
   }
 
@@ -1768,7 +1764,8 @@
     root.querySelectorAll('[data-wp-lang]').forEach(el=>{
       el.onclick = () => { wpLang = el.getAttribute('data-wp-lang'); wpLevel = null; wpLastResult = null; renderWritingLevelSelect(); };
     });
-    document.getElementById('wpBackHomeBtn').onclick = () => { const t = document.getElementById('tabNotebook'); if(t) t.click(); };
+    document.getElementById('wpBackHomeBtn').onclick = () => window.PM_openWritingPractice();
+    document.getElementById('wpBackHomeBtn').textContent='← '+window.LUMIRA_LEARNING.text('title');
   }
 
   /* ---- 2. adım: seviye seçimi ---- */
@@ -1987,7 +1984,8 @@
     root.innerHTML = html;
     window.LUMIRA_FEATURES.mountWriting(root.querySelector('[data-writing-quota]'));
 
-    document.getElementById('wpBackHomeBtn').onclick = () => { const t = document.getElementById('tabNotebook'); if(t) t.click(); };
+    document.getElementById('wpBackHomeBtn').onclick = () => window.PM_openWritingPractice();
+    document.getElementById('wpBackHomeBtn').textContent='← '+window.LUMIRA_LEARNING.text('title');
     document.getElementById('wpBackLevelBtn').onclick = renderWritingLevelSelect;
     document.getElementById('wpCheckBtn').onclick = wpRunCheck;
     if(!lang.lt){
@@ -2001,7 +1999,9 @@
     }
   }
 
+  let openRun=0;
   function openPersonalMode(landingFn){
+    const request=++openRun,activeTab=document.querySelector('.tabs .tab.active')?.id;
     landingFn = (typeof landingFn === 'function') ? landingFn : renderHome;
     if(!root) return;
     injectStyles();
@@ -2013,7 +2013,7 @@
     }
     if(dataLoaded && currentName === name){ landingFn(); return; }
     root.innerHTML = '<div class="pm-root"><div class="pm-loading">'+(window.t?window.t('pm_loading'):'Kişisel alan yükleniyor...')+'</div></div>';
-    loadUserData(name, landingFn);
+    loadUserData(name,()=>{if(request===openRun&&root.style.display!=='none'&&document.querySelector('.tabs .tab.active')?.id===activeTab)landingFn();});
   }
 
   window.LB_onNameReady = function(name){
@@ -2026,7 +2026,9 @@
     // görünmesine yol açıyordu, çünkü renderHome kendi dil kutusu gizleme
     // mantığını çalıştırırken kullanıcı farklı bir ekrandaydı).
     const isVisible = root && root.style.display !== 'none';
-    loadUserData(name, (isVisible && !pmInWritingFlow && !pmInStoryFlow) ? renderHome : null);
+    const activeTab=document.querySelector('.tabs .tab.active')?.id;
+    const landing=isVisible?(activeTab==='tabPersonal'?renderHome:activeTab==='tabPlacement'?openLevelTestPicker:activeTab==='tabStories'?renderStories:activeTab==='tabWriting'&&!window.LUMIRA_LEARNING?.isMounted()?renderWritingLangSelect:null):null;
+    loadUserData(name,()=>{if(root.style.display!=='none'&&document.querySelector('.tabs .tab.active')?.id===activeTab)landing?.();});
   };
 
   window.PM_open = function(){ openPersonalMode(); };
@@ -2045,10 +2047,12 @@
         return;
       }
 
-      const personalTab = document.getElementById('tabPersonal');
-      if(!personalTab || !personalTab.classList.contains('active') || !root || root.style.display === 'none') return;
+      const personalTab=document.querySelector('#tabPersonal.active,#tabWriting.active,#tabPlacement.active,#tabStories.active');
+      if(!personalTab || !root || root.style.display === 'none') return;
       if(pmInStoryFlow&&window.LUMIRA_STORIES?.isMounted()){window.LUMIRA_STORIES.refreshLocale();return;}
 
+      if(window.LUMIRA_LEARNING?.isMounted())return;
+      if(document.getElementById('tabPlacement')?.classList.contains('active')){if(!ltState)openLevelTestPicker();return;}
       if(pmInWritingFlow){
         ['langBox','langPair','levelBox','chips'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
         if(wpBusy){ wpLocalePending = true; return; }
@@ -2086,8 +2090,10 @@
   /* Notlarım sekmesinden doğrudan Yazma Pratiği akışını açmak için:
      Kişisel sekmesine geçer (isim/veri kontrolü dahil) ve Ana Sayfa
      yerine doğrudan dil seçim ekranını gösterir. */
-  window.PM_openWritingPractice = function(){ openPersonalMode(renderWritingLangSelect); };
-  function renderStories(){pmInWritingFlow=false;pmInStoryFlow=true;['langBox','langPair','levelBox','chips'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});window.LUMIRA_STORIES.mount(root,renderHome);}
+  window.PM_openWritingPractice=function(){openRun++;pmInWritingFlow=true;pmInStoryFlow=false;injectStyles();window.LUMIRA_LEARNING.mount(root);};
+  window.PM_openTextWriting=function(){openPersonalMode(renderWritingLangSelect);};
+  window.PM_openPlacement=function(){pmInWritingFlow=false;pmInStoryFlow=false;openPersonalMode(openLevelTestPicker);};
+  function renderStories(){pmInWritingFlow=false;pmInStoryFlow=true;['langBox','langPair','levelBox','chips'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});window.LUMIRA_STORIES.mount(root,()=>document.getElementById('tabPersonal')?.click());}
   window.PM_openStories=function(){openPersonalMode(renderStories);};
   window.PR_storyWords=function(language){const uid=window.firebase?.auth?.().currentUser?.uid;if(!dataLoaded||!uid||currentKey!==uid||language!==TARGET_LANG)return[];return poolForActiveLang().filter(v=>getRecord(v)?.known).map(v=>({w:FRONT_W(v),meaning:BACK_W(v)}));};
   window.PM_openLiveTranslation = function(){

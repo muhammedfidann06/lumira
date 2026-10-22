@@ -17,5 +17,7 @@ const VOCAB = [];
 let _i = 0;
 function add(lang, level, cat, w, tr, pos, ex, exTr){
   const c = pair(_i++);
-  VOCAB.push({lang, level, cat, w, tr, pos, ex, exTr, c1:c[0], c2:c[1]});
+  VOCAB.push({lang,level,cat:String(cat||'Genel').normalize('NFC').trim()||'Genel',w,tr,pos,ex,exTr,c1:c[0],c2:c[1]});
 }
+
+globalThis.LUMIRA_CATALOG={categoryCounts(rows){const counts=new Map();for(const v of rows){const c=String(v.cat||'Genel').normalize('NFC').trim()||'Genel';counts.set(c,(counts.get(c)||0)+1);}return counts;}};

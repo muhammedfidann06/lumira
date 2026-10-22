@@ -677,7 +677,7 @@ html.lite .app .lang-opt.active::after{animation:none !important; opacity:.45;}
    flex-wrap ile, cihazın yazı boyutu büyükse satıra 3 yerine 2 düşüyordu —
    Android'de düzenin farklı görünmesinin sebeplerinden biri buydu. */
 .lang-box{
-  display:grid !important;
+  display:grid;
   grid-template-columns:repeat(3, minmax(0, 1fr));
   gap:8px;
 }

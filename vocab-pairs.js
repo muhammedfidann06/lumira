@@ -38,12 +38,13 @@ function parallel(target,native,own,sentences,reviewedMap){
 }
 function build(vocab,native,target){
   const nativeItems=vocab.filter(v=>v.lang===native),targets=vocab.filter(v=>v.lang===target);
+  const direct=targets.filter(v=>v.translations?.[native]).map(v=>({...v,tr:v.translations[native],exTr:v.exampleTranslations?.[native]||'',meaningLang:native,_exampleTranslation:'catalog',_sourceTr:v.tr,_sourceExTr:v.exTr}));
   const nativeMap=new Map(),targetMap=new Map();
   for(const [items,map] of [[nativeItems,nativeMap],[targets,targetMap]])for(const item of items){const k=normalize(item.tr);if(k){if(!map.has(k))map.set(k,[]);map.get(k).push(item);}}
-  const sentences=sentenceMap(nativeItems),out=[];
+  const sentences=sentenceMap(nativeItems),out=[...direct];
   const reviewedMap=new Map((root.LUMIRA_PARALLEL_EXAMPLES?.rows || []).map(row=>[normalize(row[0]),row]));
   for(const [key,items] of targetMap){
-    const targetWord=uniqueWord(items),nativeWords=nativeMap.get(key);
+    const targetWord=uniqueWord(items.filter(v=>!v.phraseId)),nativeWords=nativeMap.get(key);
     if(!targetWord || !nativeWords)continue;
     const nativeWord=uniqueWord(nativeWords.filter(n=>compatible(targetWord,n)));
     if(!nativeWord)continue;

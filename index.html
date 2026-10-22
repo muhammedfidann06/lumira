@@ -82,7 +82,7 @@ if (/Android/i.test(navigator.userAgent)) {
 <link rel="preload" as="image" href="./scene-bg.jpg">
 <link rel="preload" as="image" href="./icon-192.png">
 
-<script src="backend.js?v=1.10.2"></script>
+<script src="backend.js?v=1.11.0"></script>
 
 <!-- Firebase SDK'sı erkenden indirilsin: sıralama tablosu ilk ziyarette
      gecikmesin. preload, tarayıcıya üçünü paralel indirtir. -->
@@ -910,9 +910,10 @@ if (/Android/i.test(navigator.userAgent)) {
 .example-translation-note button{font:inherit;color:inherit;background:transparent;border:1px solid rgba(140,190,255,.28);border-radius:9px;padding:8px 12px;min-height:44px;cursor:pointer;}
 </style>
 <link rel="stylesheet" href="theme.css?v=1.10.2">
-<link rel="stylesheet" href="pwa.css?v=1.10.2">
+<link rel="stylesheet" href="pwa.css?v=1.11.0">
 <link rel="stylesheet" href="live-translate.css?v=1.10.2">
 <link rel="stylesheet" href="access-screen.css?v=1.10.2">
+<link rel="stylesheet" href="learning.css?v=1.11.0">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1052,12 +1053,15 @@ if (/Android/i.test(navigator.userAgent)) {
 
   <div class="level-box" id="levelBox"></div>
 
-  <div class="tabs">
-    <div class="tab active" id="tabCards">🧠 Kartlar</div>
-    <div class="tab" id="tabQuiz">🧩 Quiz</div>
-    <div class="tab" id="tabLiveTranslate">🎙️ Canlı Çeviri</div>
-    <div class="tab" id="tabPersonal">🎯 Kişisel</div>
-    <div class="tab" id="tabNotebook">📒 Notlarım</div>
+  <div class="tabs" role="tablist" aria-label="Lumira">
+    <button type="button" role="tab" aria-selected="true" class="tab active" id="tabCards">🧠 Kartlar</button>
+    <button type="button" role="tab" aria-selected="false" class="tab" id="tabQuiz">🧩 Quiz</button>
+    <button type="button" role="tab" aria-selected="false" class="tab" id="tabLiveTranslate">🎙️ Canlı Çeviri</button>
+    <button type="button" role="tab" aria-selected="false" class="tab" id="tabWriting">✍️ Yazma Pratiği</button>
+    <button type="button" role="tab" aria-selected="false" class="tab" id="tabPersonal">🎯 Kişisel</button>
+    <button type="button" role="tab" aria-selected="false" class="tab" id="tabNotebook">📒 Notlarım</button>
+    <button type="button" role="tab" aria-selected="false" class="tab" id="tabPlacement">🎓 Seviye Tespit</button>
+    <button type="button" role="tab" aria-selected="false" class="tab" id="tabStories">📖 Hikaye Oku</button>
   </div>
 
   <div class="chips" id="chips">
@@ -1300,15 +1304,16 @@ if (/Android/i.test(navigator.userAgent)) {
   </div>
 </div>
 
-<script src="vocab-core.js?v=1.10.2"></script>
+<script src="vocab-core.js?v=1.11.0"></script>
 <script src="vocab-parallel.js?v=1.10.2"></script>
-<script src="vocab-pairs.js?v=1.10.2"></script>
+<script src="vocab-pairs.js?v=1.11.0"></script>
 <script src="vocab-identity.js?v=1.10.2"></script>
 <!-- Açılışta SADECE Almanca yükleniyor. Diğer beş dil, kullanıcı o dile
      geçtiği anda pwa.js tarafından indiriliyor. Önceden altı dosyanın altısı
      birden (5,2 MB) her açılışta ayrıştırılıyordu; telefonlarda donmanın en
      büyük sebebi buydu. -->
 <script src="vocab-de.js?v=1.10.2"></script>
+<script src="phrases-de.js?v=1.11.0"></script>
 <script>
 /* ===================== SÖZLÜKLERİN İHTİYAÇ ANINDA YÜKLENMESİ =============
    Bu kod BİLEREK index.html'in içinde: sözlük etiketlerini kaldıran dosya ile
@@ -1458,7 +1463,7 @@ tr:{
   normal_speed:"Normal", slow_speed:"Yavaş",
   quiz_prompt:"Bu kelimenin anlamı nedir?", fill_blank:"Boşluğu doldur",
   settings_title:"⚙️ Ayarlar", account:"Hesap", language_row:"Dil", profile_row:"Profilim",
-  profile_desc:"Adını ve şifreni değiştir · 3. seviye gerekir",
+  profile_desc:"Hesap bilgilerin, rozetlerin ve aboneliklerin",
   save:"Kaydet", save_apply:"Kaydet ve uygula", cancel:"İptal", close:"Kapat", continue_btn:"Devam",
   applying:"Uygulanıyor…",
   onb_native_title:"Hangi dili konuşuyorsun?", onb_native_sub:"What language do you speak?",
@@ -1616,7 +1621,7 @@ en:{
   normal_speed:"Normal", slow_speed:"Slow",
   quiz_prompt:"What does this word mean?", fill_blank:"Fill in the blank",
   settings_title:"⚙️ Settings", account:"Account", language_row:"Language", profile_row:"My Profile",
-  profile_desc:"Change your name and password · Level 3 required",
+  profile_desc:"Your account details, badges and subscriptions",
   save:"Save", save_apply:"Save and apply", cancel:"Cancel", close:"Close", continue_btn:"Continue",
   applying:"Applying…",
   onb_native_title:"Which language do you speak?", onb_native_sub:"Hangi dili konuşuyorsun?",
@@ -1801,7 +1806,7 @@ de:{
   normal_speed:"Normal", slow_speed:"Langsam",
   quiz_prompt:"Was bedeutet dieses Wort?", fill_blank:"Lücke ausfüllen",
   settings_title:"⚙️ Einstellungen", account:"Konto", language_row:"Sprache", profile_row:"Mein Profil",
-  profile_desc:"Name und Passwort ändern · Stufe 3 erforderlich",
+  profile_desc:"Deine Kontodaten, Abzeichen und Abonnements",
   save:"Speichern", save_apply:"Speichern und anwenden", cancel:"Abbrechen", close:"Schließen", continue_btn:"Weiter",
   applying:"Wird angewendet…",
   onb_native_title:"Welche Sprache sprichst du?", onb_native_sub:"What language do you speak?",
@@ -1959,7 +1964,7 @@ ar:{
   normal_speed:"عادي", slow_speed:"بطيء",
   quiz_prompt:"ما معنى هذه الكلمة؟", fill_blank:"املأ الفراغ",
   settings_title:"⚙️ الإعدادات", account:"الحساب", language_row:"اللغة", profile_row:"ملفي الشخصي",
-  profile_desc:"غيّر اسمك وكلمة مرورك · يتطلب المستوى 3",
+  profile_desc:"بيانات حسابك وشاراتك واشتراكاتك",
   save:"حفظ", save_apply:"حفظ وتطبيق", cancel:"إلغاء", close:"إغلاق", continue_btn:"متابعة",
   applying:"جارٍ التطبيق…",
   onb_native_title:"ما اللغة التي تتحدثها؟", onb_native_sub:"What language do you speak?",
@@ -2117,7 +2122,7 @@ fr:{
   normal_speed:"Normal", slow_speed:"Lent",
   quiz_prompt:"Que signifie ce mot ?", fill_blank:"Complète le vide",
   settings_title:"⚙️ Paramètres", account:"Compte", language_row:"Langue", profile_row:"Mon profil",
-  profile_desc:"Modifier ton nom et mot de passe · Niveau 3 requis",
+  profile_desc:"Tes informations, badges et abonnements",
   save:"Enregistrer", save_apply:"Enregistrer et appliquer", cancel:"Annuler", close:"Fermer", continue_btn:"Continuer",
   applying:"Application en cours…",
   onb_native_title:"Quelle langue parles-tu ?", onb_native_sub:"What language do you speak?",
@@ -2306,7 +2311,7 @@ es:{
   normal_speed:"Normal", slow_speed:"Lento",
   quiz_prompt:"¿Qué significa esta palabra?", fill_blank:"Completa el espacio",
   settings_title:"⚙️ Ajustes", account:"Cuenta", language_row:"Idioma", profile_row:"Mi perfil",
-  profile_desc:"Cambia tu nombre y contraseña · Requiere nivel 3",
+  profile_desc:"Tu cuenta, insignias y suscripciones",
   save:"Guardar", save_apply:"Guardar y aplicar", cancel:"Cancelar", close:"Cerrar", continue_btn:"Continuar",
   applying:"Aplicando…",
   onb_native_title:"¿Qué idioma hablas?", onb_native_sub:"What language do you speak?",
@@ -2466,7 +2471,7 @@ ru:{
   normal_speed:"Обычно", slow_speed:"Медленно",
   quiz_prompt:"Что означает это слово?", fill_blank:"Заполни пропуск",
   settings_title:"⚙️ Настройки", account:"Аккаунт", language_row:"Язык", profile_row:"Мой профиль",
-  profile_desc:"Изменить имя и пароль · Требуется 3 уровень",
+  profile_desc:"Данные аккаунта, значки и подписки",
   save:"Сохранить", save_apply:"Сохранить и применить", cancel:"Отмена", close:"Закрыть", continue_btn:"Далее",
   applying:"Применяется…",
   onb_native_title:"На каком языке ты говоришь?", onb_native_sub:"What language do you speak?",
@@ -2724,7 +2729,8 @@ function cardBackLabel(v){
 /* basePool(): tüm seviye/kategori/quiz/dağıtıcı filtrelemesi TEK NOKTADAN
    buradan geçer. CROSS modda gerçek VOCAB yerine CROSS_DECK kullanılır;
    diğer iki modda eskisi gibi VOCAB, activeLang'e göre filtrelenir. */
-function basePool(){ return IS_CROSS ? CROSS_DECK : VOCAB.filter(v => v.lang===activeLang); }
+let poolSize=-1,languagePools=new Map();
+function basePool(){if(poolSize!==VOCAB.length){poolSize=VOCAB.length;languagePools=new Map();}if(!languagePools.has(activeLang))languagePools.set(activeLang,VOCAB.filter(v=>v.lang===activeLang));const rows=IS_CROSS?CROSS_DECK:languagePools.get(activeLang);return window.LUMIRA_MAINTENANCE?rows.filter(v=>LUMIRA_MAINTENANCE.categoryAvailable(v.cat)):rows;}
 window.basePool = basePool;
 
 /* Kelime anlamları ve örnek cümleler ayrı ayrı eşleştirilir. Aynı
@@ -2778,6 +2784,7 @@ function setLangPair(native, target){
     if(!window.VOCAB_LOADED[NATIVE_LANG]) need.push(window.ensureVocab(NATIVE_LANG));
     if(!window.VOCAB_LOADED[TARGET_LANG]) need.push(window.ensureVocab(TARGET_LANG));
   }
+  if(activeLang==='de'&&!REVERSED_MODE&&window.LUMIRA_PHRASES)need.push(LUMIRA_PHRASES.ready(NATIVE_LANG).catch(()=>false));
   return Promise.all(need).then(()=>{
     if(IS_CROSS){ CROSS_DECK = buildCrossDeck(NATIVE_LANG, TARGET_LANG); }
     /* Dinamik Notlarım/Yazma Pratiği ekranları DOM'a sonradan kurulduğu için
@@ -2810,6 +2817,7 @@ function applyUIChrome(){
     if($$('tabLiveTranslate')) $$('tabLiveTranslate').textContent = t('tab_live_translation');
     if($$('tabPersonal')) $$('tabPersonal').textContent = t('tab_personal');
     if($$('tabNotebook')) $$('tabNotebook').textContent = t('tab_notebook');
+    window.LUMIRA_LEARNING?.updateNav();
     /* Genel amaçlı statik metin çevirisi: Bilgilendirme/Nasıl Kullanılır
        panelleri gibi düz metin blokları data-i18n="anahtar" ile işaretlenir,
        burada tek seferde toplu olarak çevrilir. */
@@ -3331,7 +3339,8 @@ function poolForLevel(){
 
 function rebuildChips(){
   const pool = poolForLevel();
-  const cats = Array.from(new Set(pool.map(v=>v.cat))).sort((a,b)=>a.localeCompare(b,'tr'));
+  const categoryCounts=LUMIRA_CATALOG.categoryCounts(pool);
+  const cats=[...categoryCounts.keys()].sort((a,b)=>a.localeCompare(b,'tr'));
   if(cats.length && !cats.includes(activeCat) && activeCat !== 'Tümü') activeCat = 'Tümü';
 
   const gridEl = document.getElementById('catGrid');
@@ -3339,7 +3348,7 @@ function rebuildChips(){
   cats.forEach(cat=>{
     const c = document.createElement('div');
     c.className = 'chip' + (cat===activeCat ? ' active' : '');
-    c.textContent = catName(cat);
+    c.textContent = catName(cat)+' · '+categoryCounts.get(cat);
     c.dataset.cat = cat;
     c.onclick = () => {
       activeCat = cat;
@@ -3355,7 +3364,7 @@ function updateCatUI(){
   const allChip = document.getElementById('catAllChip');
   const trigger = document.getElementById('catTrigger');
   const isAll = activeCat === 'Tümü';
-  allChip.textContent = t('cat_all');
+  allChip.textContent = t('cat_all')+' · '+poolForLevel().length;
   allChip.classList.toggle('active', isAll);
   trigger.classList.toggle('active', !isAll);
   trigger.textContent = isAll ? ('📂 '+t('cat_pick')) : ('📂 ' + catName(activeCat));
@@ -3402,7 +3411,7 @@ function applyFilter(){
 /* ======================= CARD RENDER ======================= */
 var CAT_EMOJI = {
   'Aile':'👨‍👩‍👧','Alışveriş':'🛍️','Aylar':'📅','Bahçe':'🌷','Bayramlar':'🎉','Bağlaçlar':'🔗',
-  'Deyimler':'💬','Doğa':'🌿','Duygular':'😊','Duygu':'😊','Edatlar':'🔤','Ev Eşyaları':'🪑','Ev İşleri':'🧹',
+  'Kalıp Cümleler':'✉️','Deyimler':'💬','Doğa':'🌿','Duygular':'😊','Duygu':'😊','Edatlar':'🔤','Ev Eşyaları':'🪑','Ev İşleri':'🧹',
   'Ev':'🏠','Eylemler':'🏃','Fiiller':'🏃','Eğitim':'📚','Genel':'🗂️','Giysi':'👕','Günler':'📆','Hava Durumu':'🌤️',
   'Hayvanlar':'🐾','Hobiler':'🎨','Kişilik':'🧑','Malzeme':'🧱','Meslekler':'👔','Meslek':'👔','Mevsimler':'🍂',
   'Meyve ve Sebze':'🍎','Mutfak':'🍳','Okul':'🏫','Renkler':'🎨','Renk':'🎨','Sanat':'🎭','Sayılar':'🔢',
@@ -3426,6 +3435,7 @@ function renderCard(){
      return;
   }
   const v = deck[idx];
+  document.getElementById('card')?.classList.toggle('phrase-card',!!v.phraseId||cardFrontWord(v).length>65||cardBackWord(v).length>85);
   const L = LANGS[v.lang];
   const frontWordEl = document.getElementById('frontWord');
   frontWordEl.textContent = cardFrontWord(v);
@@ -3739,9 +3749,12 @@ document.getElementById('backToDoneBtn').onclick = () => {
 // çalışmamasına) yol açmaz.
 function $(id){ return document.getElementById(id); }
 function setDisplay(id, val){ const el = $(id); if(el) el.style.display = val; }
-function toggleActive(id, on){ const el = $(id); if(el) el.classList.toggle('active', on); }
+function toggleActive(id,on){const el=$(id);if(el){el.classList.toggle('active',on);if(el.getAttribute('role')==='tab'){el.setAttribute('aria-selected',String(on));el.tabIndex=on?0:-1;}}}
 
 function deactivateAllTabs(){
+  window.LUMIRA_STORIES?.unmount();window.LUMIRA_LEARNING?.unmount();
+  ['tabWriting','tabPlacement','tabStories'].forEach(id=>toggleActive(id,false));
+  setDisplay('maintenanceView','none');
   if(window.LUMIRA_LIVE && window.LUMIRA_LIVE.isMounted()) window.LUMIRA_LIVE.unmount();
   try{document.body.classList.remove('pm-active');}catch(e){}
   try{document.body.classList.remove('notebook-active');}catch(e){}
@@ -3762,6 +3775,7 @@ function deactivateAllTabs(){
   setDisplay('levelBox', '');
   setDisplay('chips', '');
   setDisplay('langBox', '');
+  setDisplay('mainSub', '');
 }
 if($('tabCards')) $('tabCards').onclick = () => {
   deactivateAllTabs();
@@ -3818,6 +3832,9 @@ if($('tabNotebook')) $('tabNotebook').onclick = () => {
   nbStudyPicking = false;
   nbRender();
 };
+
+['tabWriting','tabPlacement','tabStories'].forEach(id=>{const tab=$(id);tab.onclick=()=>{deactivateAllTabs();toggleActive(id,true);setDisplay('personalView','block');['langBox','langPair','levelBox','chips','mainSub'].forEach(key=>setDisplay(key,'none'));if(id==='tabWriting')window.PM_openWritingPractice?.();else if(id==='tabPlacement')window.PM_openPlacement?.();else window.PM_openStories?.();};});
+window.addEventListener('lumira:maintenancechange',()=>{rebuildChips();applyFilter();});
 
 /* =========================================================================
    📒 NOTLARIM — kullanıcının kendi eklediği kelime defteri + favoriler
@@ -3897,6 +3914,7 @@ const CAT_I18N = {
   "Toplum": { en:"Society", de:"Gesellschaft", ar:"المجتمع", fr:"Société", es:"Sociedad", ru:"Общество" },
   "Ulaşım": { en:"Transportation", de:"Transport", ar:"النقل", fr:"Transport", es:"Transporte", ru:"Транспорт" },
   "Vücut": { en:"Body", de:"Körper", ar:"الجسم", fr:"Corps", es:"Cuerpo", ru:"Тело" },
+  "Kalıp Cümleler": { en:"Useful Phrases",de:"Nützliche Sätze",ar:"عبارات مفيدة",fr:"Expressions utiles",es:"Expresiones útiles",ru:"Полезные выражения" },
   "Yerler": { en:"Places", de:"Orte", ar:"الأماكن", fr:"Lieux", es:"Lugares", ru:"Места" },
   "Yiyecek": { en:"Food", de:"Essen", ar:"الطعام", fr:"Nourriture", es:"Comida", ru:"Еда" },
   "Zaman": { en:"Time", de:"Zeit", ar:"الوقت", fr:"Temps", es:"Tiempo", ru:"Время" },
@@ -4472,8 +4490,6 @@ function nbRender(){
 
   html += '<button type="button" class="nb-start" id="nbStartStudy" '+(list.length===0?'disabled':'')+'>'+t('nb_start_study')(list.length)+'</button>';
   html += '<button type="button" class="nb-start-secondary" id="nbQuizOl" '+(list.length===0?'disabled style="opacity:.4;"':'')+'>'+t('nb_quiz_ol')+'</button>';
-  html += '<button type="button" class="nb-start-secondary" id="nbWritingBtn">'+t('nb_writing_practice')+'</button>';
-  html += '<button type="button" class="nb-start-secondary" id="nbStoryBtn">📖 '+window.LUMIRA_STORY_COPY.text('title')+'</button>';
 
   const filterLangs = nbLangsPresent(list);
   const filterCats = Array.from(new Set(list.map(it => it.cat).filter(Boolean))).sort();
@@ -4560,24 +4576,6 @@ function nbRender(){
     nbRender();
   };
 
-  const writingBtn = document.getElementById('nbWritingBtn');
-  if(writingBtn) writingBtn.onclick = () => {
-    /* tabPersonal'ın tıklama mantığıyla birebir aynı (bkz. yukarıdaki
-       $('tabPersonal').onclick), sadece sonunda ana sayfa yerine doğrudan
-       Yazma Pratiği'ni açar - iki ayrı openPersonalMode çağrısının yarış
-       durumuna (ve çift veri yüklemeye) yol açmaması için PM_open yerine
-       tek seferde PM_openWritingPractice çağrılır. */
-    deactivateAllTabs();
-    toggleActive('tabPersonal', true);
-    setDisplay('personalView', 'block');
-    setDisplay('levelBox', 'none');
-    setDisplay('chips', 'none');
-    setDisplay('langBox', 'none');
-    setDisplay('langPair', 'none');
-    if(window.PM_openWritingPractice) window.PM_openWritingPractice();
-  };
-
-  const storyBtn=document.getElementById('nbStoryBtn');if(storyBtn)storyBtn.onclick=()=>{deactivateAllTabs();toggleActive('tabPersonal',true);setDisplay('personalView','block');['levelBox','chips','langBox','langPair'].forEach(id=>setDisplay(id,'none'));window.PM_openStories?.();};
   host.querySelectorAll('[data-nb-add-lang]').forEach(el => {
     el.onclick = () => { nbSelectedAddLang = el.getAttribute('data-nb-add-lang'); nbRender(); };
   });
@@ -5144,14 +5142,18 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
 <script src="live-local-loader.js?v=1.10.2"></script>
 <script src="access-i18n.js?v=1.10.2"></script>
 <script src="play-store.js?v=1.10.2"></script>
-<script src="feature-usage.js?v=1.10.2"></script>
+<script src="feature-usage.js?v=1.11.0"></script>
 <script src="billing.js?v=1.10.4"></script>
-<script src="stories.js?v=1.10.2"></script>
+<script src="stories.js?v=1.11.0"></script>
 <script defer src="welcome-gift.js?v=1.10.2"></script>
 <script src="example-translations.js?v=1.10.2"></script>
 <script src="access-screen.js?v=1.10.2"></script>
 <script src="live-cloud.js?v=1.10.2"></script>
-<script src="progress.js?v=1.10.2"></script>
+<script src="practice-core.js?v=1.11.0"></script>
+<script src="learning-i18n.js?v=1.11.0"></script>
+<script src="learning.js?v=1.11.0"></script>
+<script src="maintenance.js?v=1.11.0"></script>
+<script src="progress.js?v=1.11.0"></script>
 <script src="live-source.js?v=1.10.2"></script>
 <script src="live-translate.js?v=1.10.2"></script>
 
@@ -5170,7 +5172,7 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.10.4"></script>
+<script defer src="pwa.js?v=1.11.0"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
 <script defer src="support-badges.js?v=1.10.3"></script>
@@ -5181,6 +5183,6 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
 <script defer src="admin-badges.js?v=1.10.2"></script>
-<script defer src="admin.js?v=1.10.2"></script>
+<script defer src="admin.js?v=1.11.0"></script>
 </body>
 </html>

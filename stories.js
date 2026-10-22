@@ -8,7 +8,7 @@
  const lex=(word,lang)=>fold(word,lang).match(/[\p{L}\p{M}]+(?:['-][\p{L}\p{M}]+)*|\p{N}+/gu)||[];
  let state,observer,speechRun=0;
  const valid=s=>state===s&&s.uid===uid()&&s.host.isConnected&&!s.controller.signal.aborted;
- const message=e=>t(e.featureCode==='story_more_words'?'more':e.featureCode==='story_vocabulary'?'vocabulary':e.featureCode==='story_busy'?'busy':e.featureCode==='login_required'?'login':e.featureCode==='story_not_found'?'missing':'unavailable');
+ const message=e=>e.featureCode==='maintenance'?root.LUMIRA_FEATURES.text('maintenance'):t(e.featureCode==='story_more_words'?'more':e.featureCode==='story_vocabulary'?'vocabulary':e.featureCode==='story_busy'?'busy':e.featureCode==='login_required'?'login':e.featureCode==='story_not_found'?'missing':'unavailable');
  function stop(){speechRun++;root.speechSynthesis?.cancel();if(state){state.playing=false;state.host.querySelectorAll('.is-speaking').forEach(e=>e.classList.remove('is-speaking'));const play=state.host.querySelector('[data-story-play]');if(play){play.textContent='▶ '+t('listen');play.setAttribute('aria-pressed','false');}}}
  function unmount(){stop();observer?.disconnect();state?.controller.abort();state?.popup?.remove();state?.shell?.classList.remove('is-story-open');document.body.classList.remove('story-focus');state=null;}
  const deviceVoices=lang=>root.speechSynthesis?.getVoices().filter(v=>v.lang.toLowerCase().split(/[-_]/)[0]===lang)||[];

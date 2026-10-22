@@ -3,6 +3,7 @@ import { identity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from 
 import { configuredProviders, connectProvider } from './_shared/live-providers.mjs';
 import { withCors } from './_shared/cors.mjs';
 import {welcomeGift} from './_shared/welcome-gift.mjs';
+import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 
 const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.10.0' };
@@ -22,6 +23,8 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       if (!body || typeof body !== 'object') throw fault('invalid_input');
       if (!['status', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
       ctx = await services.identity(request);
+      if(body.action==='check')await(services.assertAvailable||assertAvailable)(ctx,'writing');
+      if(['liveStart','liveConnect','liveRenew'].includes(body.action))await(services.assertAvailable||assertAvailable)(ctx,'live');
       if(['welcome','welcomeAck'].includes(body.action))return reply({welcome:await (services.welcomeGift||welcomeGift)(ctx,{ack:body.action==='welcomeAck'})});
       ref = ctx.db.ref(`serverFeatureUsage/${ctx.uid}`);
       const quota = value => summary(value, ctx.tier, clock(), zone);

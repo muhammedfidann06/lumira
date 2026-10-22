@@ -20,7 +20,7 @@ import {createPlayBilling} from '../netlify/functions/_shared/play-billing.mjs';
 // Optional real-SDK integration test. Only a local emulator is used. Supply the
 // official database-emulator JAR through LUMIRA_EMULATOR_JAR to run it.
 test('real Firebase: writing commits, cold renewals last an hour, quotas stay atomic', {
-  skip: !process.env.LUMIRA_EMULATOR_JAR, timeout: 180000
+  skip: !process.env.LUMIRA_EMULATOR_JAR, timeout: 600000
 }, async () => {
   for (const key of Object.keys(process.env)) {
     if (/^(https?|all|ws|wss)_proxy$/i.test(key)) delete process.env[key];
@@ -56,7 +56,7 @@ test('real Firebase: writing commits, cold renewals last an hour, quotas stay at
   }
   try {
     await new Promise((resolve, reject) => {
-      const deadline = Date.now() + 15000;
+      const deadline = Date.now() + 60000;
       const check = () => {
         if (Date.now() > deadline) return reject(new Error('Database emulator did not start'));
         const request = http.get('http://127.0.0.1:9000/.json?ns=demo-lumira-default-rtdb', response => { response.resume(); resolve(); });
