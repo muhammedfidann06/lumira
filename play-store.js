@@ -10,6 +10,7 @@
   ru:['Загрузка цен магазина…','Не удалось загрузить товары. Можно повторить попытку.','Этот товар пока недоступен в Google Play.','Сервис покупок ожидает обновления. Попробуй позже.','Повторить','Покупки Google Play недоступны на этом устройстве.','У этого товара нет нужного месячного плана.','Не удалось завершить покупку. Можно попробовать снова.']
  };
  const text=i=>(copy[root.NATIVE_LANG]||copy.en)[i],failure=code=>Object.assign(Error(code),{featureCode:code});
+ const log=(step,error)=>root.PWA?.logError?.({message:'Play '+step+': '+(error?.featureCode||error?.name||'store_unavailable'),stack:''});
  const errorText=error=>text(({store_item_unavailable:2,store_backend_pending:3,store_unsupported:5,store_plan_unavailable:6})[error?.featureCode]??1);
  const uid=()=>{try{return root.firebase.auth().currentUser?.uid||'';}catch{return'';}};
  const isNative=()=>typeof root.getDigitalGoodsService==='function'||/^android-app:/i.test(root.document.referrer)||new URL(root.location.href).searchParams.get('src')==='twa';
@@ -22,10 +23,10 @@
    if(typeof root.getDigitalGoodsService!=='function')throw failure('store_unsupported');
    const backend=account?(async()=>{try{const data=await root.LUMIRA_FEATURES.api('status',{}, {timeoutMs:8000});if(uid()!==account)throw failure('login_required');if(!Array.isArray(data.playProducts))throw failure('store_backend_pending');return new Set(data.playProducts);}catch(error){throw failure(error.featureCode==='login_required'?'login_required':'store_backend_pending');}})():Promise.resolve(null);
    backend.catch(()=>{});
-   let service;try{service=await bounded(root.getDigitalGoodsService('https://play.google.com/billing'));}catch{throw failure('store_unsupported');}
+   let service;try{service=await bounded(root.getDigitalGoodsService('https://play.google.com/billing'));}catch(error){log('bridge',error);throw failure('store_unsupported');}
    const result=new Map();result.errors=new Map();
    function accept(items){if(!Array.isArray(items))return;for(const item of items){const product=products.find(row=>row.sku===item.itemId);if(!product||!item.price||!Number.isFinite(Number(item.price.value))||Number(item.price.value)<0)continue;
-    if(!product.lifetime&&item.subscriptionPeriod&&item.subscriptionPeriod!=='P1M'){result.errors.set(product.sku,failure('store_plan_unavailable'));continue;}
+    if(item.itemType&&item.itemType!==(product.lifetime?'product':'subscription')||!product.lifetime&&item.subscriptionPeriod&&item.subscriptionPeriod!=='P1M'){result.errors.set(product.sku,failure('store_plan_unavailable'));continue;}
     try{result.set(item.itemId,{...product,price:new Intl.NumberFormat(root.NATIVE_LANG||'tr',{style:'currency',currency:item.price.currency}).format(Number(item.price.value))});result.errors.delete(product.sku);}catch{}
    }}
    // Some Play bridges reject a mixed list of in-app products and subscriptions.

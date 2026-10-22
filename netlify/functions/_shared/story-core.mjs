@@ -40,7 +40,7 @@ export function validateStory(raw,pool,options){
  const allowed=new Set(pool.flatMap(row=>tokens(row.w,options.language))),used=new Set();let count=0;
  const clean=s=>typeof s==='string'&&s.trim()&&s.length<=700&&!/[<>\u0000-\u001f\u202a-\u202e\u2066-\u2069]/u.test(s);
   const sentences=data.sentences.map(row=>{if(!clean(row?.text)||!clean(row?.translation))throw fault('story_invalid',502);const words=tokens(row.text,options.language);if(!words.length)throw fault('story_invalid',502);const unknown=[...new Set(words.filter(word=>!allowed.has(word)))];if(unknown.length)throw Object.assign(fault('story_unknown_word',502),{unknownWords:unknown.slice(0,30)});for(const word of words)used.add(word);if(tokens(row.translation,options.language).join(' ')===words.join(' '))throw fault('story_invalid',502);const script=options.native==='ar'?/\p{Script=Arabic}/u:options.native==='ru'?/\p{Script=Cyrillic}/u:/\p{Script=Latin}/u;if(!script.test(row.translation))throw fault('story_invalid',502);count+=words.length;return{text:row.text.trim(),translation:row.translation.trim()};});
- if(count<(Math.min(allowed.size,pool.length)<=80?8:20)||count>350||used.size<6)throw fault('story_invalid',502);
+ if(count<8||count>350||used.size<6)throw fault('story_invalid',502);
  const title=clean(data.title)&&tokens(data.title,options.language).length&&tokens(data.title,options.language).every(w=>allowed.has(w))?data.title.trim():null;
  return{title,sentences,wordCount:count,usedWords:used.size};
 }

@@ -20,7 +20,7 @@
    ========================================================================== */
 (function () {
 'use strict';
-var APP_VERSION='1.11.0';
+var APP_VERSION='1.11.1';
 
 
 /* ========================================================== AYARLAR ====== */
@@ -1031,6 +1031,9 @@ function setupTransitions() {
     var el = $(id);
     if (!el) return;
     el.addEventListener('click', function () {
+      if(document.documentElement.classList.contains('lite') ||
+         window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ||
+         window.LUMIRA_LIVE?.isActive?.())return;
       var app = qs('.app');
       if (!app) return;
       if (document.startViewTransition) {
@@ -1219,6 +1222,7 @@ function liteSetting() { return store('pwa_lite'); }   /* true / false / null(ot
 
 function applyLite(on) {
   document.documentElement.classList.toggle('lite', !!on);
+  window.dispatchEvent(new Event('lumira:performancechange'));
   if (on && typeof window.__snowStop === 'function') {
     try { window.__snowStop(); } catch (e) {}
   }
@@ -1227,7 +1231,9 @@ function applyLite(on) {
 /* Hafif mod YALNIZCA kullanıcı ayarlardan açtığında devreye girer.
    Cihaz özelliklerine bakıp otomatik açma kaldırıldı. */
 function initLite() {
-  applyLite(liteSetting() === true);
+  var preference=liteSetting();
+  var modest=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory&&navigator.deviceMemory<=4)||navigator.connection?.saveData||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  applyLite(preference===true||(preference!==false&&!!modest));
 }
 
 /* ======================= HOŞ GELDİN KARTI ============================== */
@@ -1570,6 +1576,11 @@ function openProfile() {
     };
     b.appendChild(passBtn);
 
+    var logoutText=window.LUMIRA_LEARNING_COPY.text;
+    var logout=bigButton(logoutText('logout'));logout.id='profileLogout';
+    logout.onclick=async function(){logout.disabled=true;try{window.LUMIRA_LIVE?.stop('stopped',false,true);window.VOICE_stop?.();await firebase.auth().signOut();location.reload();}catch(error){logError({message:'Sign out: '+(error.code||error.name||'failed')});logout.disabled=false;toast(T('toast_cannot_do'),{kind:'bad'});}};
+    var logoutNote=document.createElement('p');logoutNote.className='pwa-note';logoutNote.textContent=logoutText('logoutNote');b.append(logout,logoutNote);
+
     /* --- Hesabı sil (KALICI) --------------------------------------- */
     b.insertAdjacentHTML('beforeend',
       '<p class="pwa-note" style="margin:24px 2px 6px;color:#ff8a8a">' + T('profile_delete_header') + '</p>' +
@@ -1871,9 +1882,21 @@ function checkForUpdate(cb){
  updateFlight.then(function(state){cb(state);});
 }
 function reloadLatest(version){
+ if(window.LUMIRA_LIVE?.isActive?.()){toast(window.LUMIRA_LEARNING_COPY?.text('updateAfterLive')||'Güncelleme hazır. Çeviriyi durdurduktan sonra yükleyebilirsin.');return;}
  var url=new URL(location.href);url.searchParams.set('lumira_update',cleanVersion(version||releaseVersion||APP_VERSION));url.searchParams.set('__ping','lumira-update-'+Date.now());location.replace(url.href);
 }
+async function clearDownloadedData(){
+ window.LUMIRA_LIVE?.stop('stopped',false,true);window.VOICE_stop?.();
+ if(navigator.serviceWorker?.getRegistration){const reg=await navigator.serviceWorker.getRegistration(new URL('./',location.href).href);if(reg)await reg.unregister();}
+ if(window.caches){for(const name of await caches.keys()){
+  if(name.startsWith('lumira-'))await caches.delete(name);
+  else if(name==='transformers-cache'){const cache=await caches.open(name);for(const request of await cache.keys())if(new URL(request.url).pathname.includes('/Xenova/whisper-base/'))await cache.delete(request);}
+ }}
+ try{localStorage.removeItem('pwa_offline_pack');}catch{}
+ reloadLatest(releaseVersion);
+}
 function hardRefresh(full){
+ if(window.LUMIRA_LIVE?.isActive?.()){toast(window.LUMIRA_LEARNING_COPY?.text('updateAfterLive')||'Güncelleme hazır. Çeviriyi durdurduktan sonra yükleyebilirsin.');return Promise.resolve(false);}
  var worker=(swReg&&swReg.waiting)||waitingWorker;
  if(!full && worker && worker.state!=='redundant'){
   try{worker.postMessage({type:'SKIP_WAITING'});setTimeout(function(){reloadLatest(releaseVersion);},5000);return Promise.resolve();}catch(e){}
@@ -1981,10 +2004,13 @@ function openSettings() {
     if (store('pwa_offline_pack')) cacheBar.style.width = '100%';
 
     estimateStorage().then(function (st) {
-      if (!st) return;
-      var r = row('💾', t('set_storage_row'), mb(st.used) + ' / ' + mb(st.quota));
+      var r = row('💾', t('set_storage_row'), st?mb(st.used) + ' / ' + mb(st.quota):'—');
       r.style.cursor = 'default';
       groups.technical.appendChild(r);
+      var copy=window.LUMIRA_LEARNING_COPY.text,clear=bigButton(copy('storageClear'));clear.id='clearDownloadedData';
+      var note=document.createElement('p');note.className='pwa-note';note.textContent=copy('storageClearNote');
+      clear.onclick=async function(){clear.disabled=true;clear.textContent=copy('storageClearing');try{await clearDownloadedData();}catch(error){logError({message:'Clear downloads: '+(error.name||'failed')});clear.disabled=false;clear.textContent=copy('storageClear');toast(window.LUMIRA_LEARNING_COPY.text('error'),{kind:'bad'});}};
+      groups.technical.append(clear,note);
     });
 
     /* --- Favoriler & veri --------------------------------------------- */

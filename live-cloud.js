@@ -36,7 +36,8 @@
         const timer=setTimeout(()=>finish(fail('speech_unavailable')),6000);
         this.socket.onopen=()=>{
           if(this.closed)return;
-          this.socket.send(JSON.stringify({setup:{model:'models/'+this.credential.model,generationConfig:this.credential.config}}));
+          const {inputAudioTranscription,outputAudioTranscription,...generationConfig}=this.credential.config;
+          this.socket.send(JSON.stringify({setup:{model:'models/'+this.credential.model,generationConfig,inputAudioTranscription,outputAudioTranscription}}));
         };
         this.socket.onerror=()=>{finish(fail('speech_unavailable'));if(this.ready)this.fault();};
         this.socket.onclose=()=>{finish(fail('speech_unavailable'));if(!this.closed && this.ready)this.fault();};

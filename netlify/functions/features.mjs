@@ -6,7 +6,7 @@ import {welcomeGift} from './_shared/welcome-gift.mjs';
 import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.10.0' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.1' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.

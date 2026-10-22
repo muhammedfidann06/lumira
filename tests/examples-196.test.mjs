@@ -39,8 +39,9 @@ test('signed numbers retain their sign across Arabic digits',()=>{assert(!validE
 test('a Latin target rejects an entirely Arabic response',()=>assert(!validExample('Du bist nett.','أنت لطيف.','fr','de')));
 test('Groq uses its supported strict JSON schema mode',async()=>{let body;await translateExamples(['Du bist sehr nett.'],'de','ar',{env:{GROQ_API_KEY:'fixture'},fetcher:async(url,init)=>{body=JSON.parse(init.body);return Response.json({choices:[{message:{content:payload('أنت لطيف جداً.')}}]});}});assert.equal(body.response_format.type,'json_schema');assert.equal(body.response_format.json_schema.strict,true);assert.deepEqual(body.response_format.json_schema.schema.properties.translations.items.properties.id.enum,[0]);});
 test('curly apostrophe in English negation retains the negative meaning',()=>{assert(!validExample('He isn’t coming.','Er kommt.','de','en'));assert(validExample('He isn’t coming.','Er kommt nicht.','de','en'));});
-test('server whitelist contains exactly the current public dictionary examples',()=>{
- const corpus=vm.createContext({});for(const file of ['vocab-core.js',...['de','en','ar','fr','es','ru'].map(l=>'vocab-'+l+'.js'),'phrases-de.js'])vm.runInContext(fs.readFileSync(new URL('../'+file,import.meta.url),'utf8'),corpus);
+test('server whitelist contains exactly the current public dictionary examples',async()=>{
+ const corpus=vm.createContext({URL,AbortController,setTimeout,clearTimeout,location:{href:'https://lumira-tr.com/'},fetch:async url=>({ok:true,json:async()=>JSON.parse(fs.readFileSync(new URL('..'+new URL(url).pathname,import.meta.url),'utf8'))})});for(const file of ['vocab-core.js',...['de','en','ar','fr','es','ru'].map(l=>'vocab-'+l+'.js'),'phrases-de.js'])vm.runInContext(fs.readFileSync(new URL('../'+file,import.meta.url),'utf8'),corpus);
+ for(const language of ['en','ar','fr','es','ru'])await corpus.LUMIRA_PHRASES.ensureLanguage(language);
  const expected=Object.fromEntries(langs.map(l=>[l,new Set()]));for(const word of vm.runInContext('VOCAB',corpus)){expected[word.lang].add(word.ex);expected.tr.add(word.exTr);}
  for(const lang of langs){const digest=v=>createHash('sha256').update(JSON.stringify(v)).digest('hex');assert.equal(digest(sources[lang]),digest([...expected[lang]].sort()),'Run npm run build:examples after editing examples in '+lang);}
 });

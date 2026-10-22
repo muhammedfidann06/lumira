@@ -1302,3 +1302,10 @@ html.lumira-android .splash-lb{touch-action:pan-y;}
 /* Comfortable dialog widths and solid contrast on larger screens. */
 .pwa-sheet{isolation:isolate;background:linear-gradient(180deg,#131a34,#080b19)}
 @media(min-width:720px){.pwa-sheet{box-sizing:border-box;width:680px;left:calc(50% - 340px);right:auto;max-height:86dvh;border-radius:22px 22px 0 0}}
+
+/* Avoid repainting a blurred backdrop on both sides of a speaking card. */
+.card>.face{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.lite #sky-fx,html.lite .flutter,html.lite #grain{display:none!important}
+html.lite #scene-bg{transform:none!important;will-change:auto!important}
+html.lite .face,html.lite .tab,html.lite .quiz-card,html.lite .pwa-sheet,html.lite .pwa-sheet-backdrop,html.lite .opt,html.lite .ctrl{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.lite .card>.face{transition:none!important}

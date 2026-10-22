@@ -75,11 +75,18 @@ export class LocalSession {
     this.source = this.context.createMediaStreamSource(this.stream);
     this.mute = this.context.createGain(); this.mute.gain.value = 0;
     if (this.context.audioWorklet && window.AudioWorkletNode) {
-      await this.context.audioWorklet.addModule(new URL('./live-local-audio.mjs', import.meta.url));
-      if (this.closed) throw failure('local_cancelled');
-      this.capture = new AudioWorkletNode(this.context, 'lumira-capture', { channelCount: 1 });
-      this.capture.port.onmessage = event => this.receive(event.data);
-    } else {
+      try {
+        await this.context.audioWorklet.addModule(new URL('./live-local-audio.mjs', import.meta.url));
+        if (this.closed) throw failure('local_cancelled');
+        this.capture = new AudioWorkletNode(this.context, 'lumira-capture', { channelCount: 1 });
+        this.capture.port.onmessage = event => this.receive(event.data);
+      } catch (error) {
+        if (this.closed) throw failure('local_cancelled');
+        // Older WebViews or a failed module request must not disable every
+        // cloud provider. Keep the same microphone and AudioContext.
+      }
+    }
+    if (!this.capture) {
       this.capture = this.context.createScriptProcessor(4096, 1, 1);
       const resampler = new Resampler(this.context.sampleRate, audio => this.receive(audio));
       this.capture.onaudioprocess = event => resampler.push(event.inputBuffer.getChannelData(0));
@@ -115,6 +122,7 @@ export class LocalSession {
     this.collecting = true; this.pump();
   }
   pause() { this.collecting = false; this.recent.clear(); }
+  resumeCapture() { if (!this.closed && this.context.state !== 'running') this.context.resume().catch(() => {}); }
   resume() { this.recent.clear(); this.collecting = true; this.context.resume().catch(() => {}); }
   async pump() {
     if (this.processing || !this.collecting || this.closed) return;

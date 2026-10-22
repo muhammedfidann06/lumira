@@ -1,6 +1,6 @@
 .feature-quota{font-size:12px;line-height:1.6;color:var(--muted,#9caac4);margin:12px 0;overflow-wrap:anywhere;}
 .feature-error{color:#ffafb7;}
-body.lt-focus #mainApp>.top-row,body.lt-focus #mainSub,body.lt-focus #langPair,body.lt-focus #langBox,body.lt-focus #levelBox,body.lt-focus #chips,body.lt-focus .pwa-fab,body.lt-focus #sessionBar,body.lt-focus #supportRow{display:none!important;}
+body.lt-focus #mainSub,body.lt-focus #langPair,body.lt-focus #langBox,body.lt-focus #levelBox,body.lt-focus #chips,body.lt-focus .pwa-fab,body.lt-focus #sessionBar,body.lt-focus #supportRow{display:none!important;}
 body.lt-focus #mainApp{padding-top:max(18px,env(safe-area-inset-top));}
 .lt-screen{max-width:760px;margin:0 auto;color:var(--text,#eef4ff);}
 .lt-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;}
@@ -34,7 +34,6 @@ body.lt-focus #mainApp{padding-top:max(18px,env(safe-area-inset-top));}
 
 body.lt-focus #sessionTimer,body.lt-focus #profileTimer,body.lt-focus #myRankBox,body.lt-focus #mainApp>.credit,body.lt-focus .support-wrap,body.lt-focus #pwa-fab,body.lt-focus .flutter,body.lt-focus #sky-fx,body.lt-focus #fg-desk,body.lt-focus #grain{display:none!important;}
 body.lt-focus{padding-bottom:max(30px,env(safe-area-inset-bottom))!important;}
-body.lt-focus #scene-bg{filter:brightness(.48) saturate(.75);}
 .lt-screen{--panel:rgba(10,17,34,.82);--muted:#b8c4db;--text:#eef4ff;}
 
 .lt-source{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-bottom:20px;padding:16px;border:1px solid #476477;border-radius:17px;background:#132335}

@@ -16,10 +16,10 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.11.0';
+const CACHE_VERSION = 'v1.11.1';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
-const PHRASE_CACHE  = 'lumira-phrases-v1.11.0';
+const PHRASE_CACHE  = 'lumira-phrases-v1.11.1';
 const PHRASE_FILES  = ['en','ar','fr','es','ru'].map(lang=>'./phrase-translations/'+lang+'.json');
 const ASSET_CACHE   = 'lumira-assets-v1';
 const CDN_CACHE     = 'lumira-cdn-v1';
@@ -118,11 +118,13 @@ const isAsset = (url) => /\.(png|jpg|jpeg|webp|svg|gif|ico|woff2?|ttf|mp3|ogg)$/
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(SHELL_CACHE);
-    /* Tek tek ekliyoruz: eksik/başarısız bir dosya kurulumun tamamını
-       çökertmesin (addAll all-or-nothing çalışır). */
-    await Promise.allSettled(SHELL.map((url) =>
+    /* Tema ve kod dosyaları eksiksiz gelmeden yeni sürüm devralmasın.
+       Yalnızca isteğe bağlı görsellerin hatalarını tolere ediyoruz. */
+    const required=SHELL.filter(url=>/\.(?:m?js|css|html|json)$/.test(url)||url==='./');
+    await Promise.all(required.map((url) =>
       cache.add(new Request(url, { cache: 'reload' }))
     ));
+    await Promise.allSettled(SHELL.filter(url=>!required.includes(url)).map(url=>cache.add(new Request(url,{cache:'reload'}))));
     // Do not activate an incomplete dictionary update. Keep a user's downloaded
     // languages available offline, but fetch their corrected 1.9.5 contents.
     const vocab = await caches.open(VOCAB_CACHE);
@@ -222,8 +224,15 @@ self.addEventListener('fetch', (event) => {
 
 async function networkFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
+  const requested=new URL(req.url);
+  if(requested.searchParams.get('v')===CACHE_VERSION.slice(1)){
+    const exact=await cache.match(req,{ignoreVary:true});
+    const core=exact||await cache.match(new URL(requested.pathname,requested.origin).href,{ignoreVary:true});
+    if(core)return core;
+  }
   try {
-    const res = await fetch(req, { cache: 'no-cache' });
+    const res = await fetch(req, { cache: 'no-cache',signal:AbortSignal.timeout(6000) });
+    if(!res?.ok)throw Error('asset_unavailable');
     if (res && res.ok) cache.put(req, res.clone()).catch(() => {});
     return res;
   } catch (e) {
@@ -256,8 +265,9 @@ async function handleNavigate(event) {
   };
   try {
     const preload = await event.preloadResponse;
-    if (preload) return remember(preload);
-    return remember(await fetch(event.request));
+    const response=preload || await fetch(event.request);
+    if(!response.ok)throw Error('page_unavailable');
+    return remember(response);
   } catch (e) {
     return (await cache.match(key)) ||
            (appDocument && await cache.match('./')) ||

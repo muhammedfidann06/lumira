@@ -5,7 +5,7 @@ import {createPlayApi} from './play-api.mjs';
 const amounts=[1,5,10,25,50,100],hash=value=>createHash('sha256').update(value).digest('hex');
 export const PLAY_PRODUCTS=Object.freeze(Object.fromEntries(amounts.flatMap(amount=>[
  ['lumira_support_'+amount,{amount,lifetime:true}],
- ...(amount===100?[]:[['lumira_support_'+amount+'_monthly',{amount,lifetime:false,basePlanId:'monthly'}]])
+ ...(amount===100?[]:[['lumira_support_'+amount+'_monthly',{amount,lifetime:false}]])
 ])));
 const date=value=>{const n=Date.parse(value);return Number.isFinite(n)?n:null;};
 const idOK=id=>/^play_[a-f\d]{64}$/.test(id||'');
@@ -14,7 +14,7 @@ export function playMembership(data,sku,token,now=Date.now()){
  const lines=(data.lineItems||[]).filter(row=>row.productId===sku&&!row.deferredItemReplacement);
  if(lines.length!==1)throw fault('invalid_purchase',422);
  const item=lines[0],endsAt=date(item.expiryTime),basePlanId=item.offerDetails?.basePlanId;
- if(!endsAt||basePlanId!==product.basePlanId||!item.autoRenewingPlan||item.autoRenewingPlan.installmentDetails)throw fault('invalid_purchase',422);
+ if(!endsAt||typeof basePlanId!=='string'||!basePlanId||basePlanId.length>100||!item.autoRenewingPlan||item.autoRenewingPlan.installmentDetails)throw fault('invalid_purchase',422);
  const enabled=item.autoRenewingPlan.autoRenewEnabled===true;
  const permitted=['SUBSCRIPTION_STATE_ACTIVE','SUBSCRIPTION_STATE_IN_GRACE_PERIOD','SUBSCRIPTION_STATE_CANCELED'].includes(data.subscriptionState);
  const active=permitted&&endsAt>now;
@@ -22,12 +22,12 @@ export function playMembership(data,sku,token,now=Date.now()){
 }
 export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
  const catalog=new Map();
- async function monthlyPlan(sku){
-  if((catalog.get(sku)||0)>clock())return;
+ async function monthlyPlan(sku,basePlanId){
+  const key=sku+'/'+basePlanId;if((catalog.get(key)||0)>clock())return;
   const product=await api.call('/subscriptions/'+encodeURIComponent(sku));
-  const plan=product.basePlans?.find(row=>row.basePlanId==='monthly');
+  const plan=product.basePlans?.find(row=>row.basePlanId===basePlanId);
   if(!plan||plan.autoRenewingBasePlanType?.billingPeriodDuration!=='P1M'||plan.autoRenewingBasePlanType?.installmentDetails)throw fault('invalid_purchase',422);
-  catalog.set(sku,clock()+900000);
+  catalog.set(key,clock()+900000);
  }
  async function bind(ctx,token,sku){
   await atomic(ctx.db.ref('serverFeaturePurchases/'+hash(token)),old=>{
@@ -56,7 +56,7 @@ export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
   }else{
    const data=await api.call('/purchases/subscriptionsv2/tokens/'+encoded),value=playMembership(data,sku,token,observed);
    if(value.status!=='active')throw fault('purchase_not_completed',422);
-   await monthlyPlan(sku);
+   await monthlyPlan(sku,value.basePlanId);
    if(data.linkedPurchaseToken){
     const linked=(await ctx.db.ref('serverFeaturePurchases/'+hash(data.linkedPurchaseToken)).get()).val();
     if(linked&&linked.uid!==ctx.uid)throw fault('purchase_already_linked',409);

@@ -108,12 +108,12 @@
     var details = { total: { label: (window.t ? window.t('purchase_total_label') : 'Toplam'), amount: { currency: 'TRY', value: '0' } } };
     var request;
     try { request = new PaymentRequest(methodData, details); }
-    catch (e) { toast(window.t?window.t('purchase_start_failed'):'Satın alma başlatılamadı.', { kind: 'bad' }); return; }
+    catch (e) { window.PWA?.logError?.({message:'Play request ('+t.sku+'): '+(e.name||'failed'),stack:''});toast(window.t?window.t('purchase_start_failed'):'Satın alma başlatılamadı.', { kind: 'bad' }); return; }
 
     purchaseInFlight=true;
-    let shown;try{shown=request.show();}catch(e){purchaseInFlight=false;toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
-    shown.then(async function (response) {
-      const token=response.details?.token || response.details?.purchaseToken;
+    let shown;try{shown=request.show();}catch(e){purchaseInFlight=false;window.PWA?.logError?.({message:'Play show ('+t.sku+'): '+(e.name||'failed'),stack:''});toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
+    return shown.then(async function (response) {
+      const token=response.details?.purchaseToken || response.details?.token;
       try {
         if(!token || !window.LUMIRA_FEATURES)throw new Error('purchase_verification_unavailable');
         await window.LUMIRA_FEATURES.verifyPurchase(t.sku,token,purchaseUid);
@@ -123,11 +123,13 @@
         window.dispatchEvent(new Event('lumira:purchaseverified'));
         window.LUMIRA_FEATURES.api('status').catch(()=>{});
       }catch(e){
+        window.PWA?.logError?.({message:'Play verify ('+t.sku+'): '+(e.featureCode||e.code||e.name||'failed'),stack:''});
         try{await response.complete('fail');}catch(ignore){}
-        toast(window.LUMIRA_FEATURES?.text('purchase_verification_unavailable') || e.message,{kind:'bad',duration:8000});
+        toast(window.LUMIRA_FEATURES?.text(e.featureCode||'purchase_verification_unavailable') || e.message,{kind:'bad',duration:8000});
       }
     }).catch(function(e){
       if(e?.name==='AbortError' || /cancel/i.test(String(e?.message || e)))return;
+      window.PWA?.logError?.({message:'Play checkout ('+t.sku+'): '+(e?.name||'failed'),stack:''});
       toast(window.t?window.t('purchase_complete_failed'):'Satın alma tamamlanamadı.',{kind:'bad',duration:6000});
     }).finally(()=>{purchaseInFlight=false;});
   }

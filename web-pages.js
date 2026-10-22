@@ -46,10 +46,10 @@
   function render(){
    billingTerms.textContent=LUMIRA_ACCESS_COPY.text(frequency==='year'?'annualTerms':'monthlyTerms');monthly.setAttribute('aria-pressed',String(frequency==='month'));yearly.setAttribute('aria-pressed',String(frequency==='year'));box.replaceChildren();
    for(const [i,tier]of tiers.entries()){
-    const base=items?.get(tier.amount),item=frequency==='year'?base?.annual:base,expected=tier.priceId[frequency],available=item&&item.priceId===expected;
-    const card=n('article');card.className='pricing-tier'+(tier.featured?' is-featured':'');if(tier.featured)card.append(Object.assign(n('span',pc[7]),{className:'pricing-featured'}));card.append(n('h2',tier.name),n('p',pc[4+i]));const badge=n('span',LUMIRA_ACCESS_COPY.text('names')[[1,5,10,25,50,100].indexOf(tier.amount)]);badge.className='pricing-badge';card.append(badge);
-    const list=n('ul');for(const text of [LUMIRA_ACCESS_COPY.text('live',{n:tier.minutes}),LUMIRA_ACCESS_COPY.text('writing',{n:tier.count}),LUMIRA_ACCESS_COPY.text(tier.amount===1?'pdfTotal':'pdfUnlimited'),LUMIRA_ACCESS_COPY.text('offline')])list.append(n('li',text));card.append(list);
-    const price=n('strong',available?LUMIRA_BILLING.formatPrice(item):frequency==='year'?pc[3]:c[11]);price.dataset.price=tier.id;card.append(price,n('small',frequency==='year'?pc[1]:pc[0]));
+    const base=items?.get(tier.amount),item=base?.lifetime?base:frequency==='year'?base?.annual:base,expected=base?.lifetime?base.priceId:tier.priceId[frequency],available=item&&item.priceId===expected;
+    const card=n('article');card.className='pricing-tier'+(tier.featured?' is-featured':'');if(tier.featured)card.append(Object.assign(n('span',pc[7]),{className:'pricing-featured'}));const title=LUMIRA_ACCESS_COPY.text('names')[[1,5,10,25,50,100].indexOf(tier.amount)],badgeTitle={tr:title+' Rozeti',en:title+' Badge',de:title+'-Abzeichen',ar:'شارة '+title,fr:'Badge '+title,es:'Insignia '+title,ru:'Значок «'+title+'»'}[NATIVE_LANG];const emblem=n('img');emblem.className='pricing-emblem';emblem.src='../vendor/badges/'+['1f44d','2615','2764','1f49b','2b50','1f451'][i]+'.svg';emblem.alt='';emblem.width=emblem.height=44;card.append(emblem,n('h2',badgeTitle),n('p',LUMIRA_BILLING.text(base?.lifetime?3:4)));
+    const list=n('ul');for(const text of [LUMIRA_ACCESS_COPY.text(tier.minutes===null?'liveUnlimited':'live',{n:tier.minutes}),LUMIRA_ACCESS_COPY.text(tier.count===null?'writingUnlimited':'writing',{n:tier.count}),LUMIRA_ACCESS_COPY.text(tier.amount===1?'pdfTotal':'pdfUnlimited'),LUMIRA_ACCESS_COPY.text('offline')])list.append(n('li',text));card.append(list);
+    const price=n('strong',available?LUMIRA_BILLING.formatPrice(item):frequency==='year'?pc[3]:c[11]);price.dataset.price=tier.id;card.append(price,n('small',base?.lifetime?LUMIRA_BILLING.text(3):frequency==='year'?pc[1]:pc[0]));
     const subscribe=n('button',pc[2]);subscribe.type='button';subscribe.dataset.subscribe=tier.id;subscribe.disabled=!available||!items.checkoutReady;
     subscribe.onclick=async()=>{
      if(!available)return;subscribe.disabled=true;
@@ -58,7 +58,7 @@
    }
   }
   monthly.onclick=()=>{frequency='month';render();};yearly.onclick=()=>{frequency='year';render();};render();authReady();
-  try{items=await LUMIRA_BILLING.catalog();tiers=items.tiers;if(tiers.length!==3)throw Error();status.textContent=items.checkoutReady?'':pc[11];render();}catch{status.textContent=c[11];}
+  try{items=await LUMIRA_BILLING.catalog();tiers=[1,5,10,25,50,100].map((amount,i)=>{const item=items.get(amount);return {...(items.tiers.find(t=>t.amount===amount)||{}),id:['thanks','coffee','supporter','friend','star','king'][i],amount,minutes:[60,90,120,240,480,null][i],count:[25,50,100,150,300,null][i],priceId:{month:item&&!item.lifetime?item.priceId:null,year:item?.annual?.priceId||null}};});yearly.hidden=![...items.values()].some(item=>item.annual);status.textContent=items.checkoutReady?'':pc[11];render();}catch{status.textContent=c[11];}
  }else if(kind==='welcome'){
   main.append(n('p',pc[9]));const params=new URL(location.href).searchParams,id=params.get('transaction'),base=params.get('return')==='github'?'https://muhammedfidann06.github.io/lumira/':'https://lumira-tr.com/';
   const valid=/^txn_[a-z\d]{26}$/.test(id||'');main.append(link(c[4],base+'?web=1'+(valid?'&payment=return&transaction='+encodeURIComponent(id):'')));

@@ -7,10 +7,16 @@ const circuit = new Map();
 const available = (p, env) => p === 'azure' ? !!(env.AZURE_SPEECH_KEY && env.AZURE_SPEECH_REGION) : p === 'gemini' ? !!env.GEMINI_API_KEY : p === 'groq' ? !!env.GROQ_API_KEY : !!(env.CLOUDFLARE_API_TOKEN && /^[a-f\d]{32}$/i.test(env.CLOUDFLARE_ACCOUNT_ID || ''));
 export function configuredProviders(env = process.env) { return ORDER.filter(p => available(p, env)); }
 function blocked(provider) { if ((circuit.get(provider) || 0) > Date.now()) throw fault('speech_busy', 503); }
-async function call(provider, url, init, fetcher = fetch, timeout = 5000) {
+async function call(provider, url, init, fetcher = fetch, timeout = 5000, compatibilityBody) {
   blocked(provider);
-  let response;
-  try { response = await fetcher(url, { ...init, signal: AbortSignal.timeout(timeout) }); }
+  let response;const signal=AbortSignal.timeout(timeout);
+  try {
+    response = await fetcher(url, { ...init, signal });
+    if(response.status===400&&compatibilityBody){
+      const problem=await response.clone().json().catch(()=>null),detail=problem?.error?.message||'';
+      if(/(?:unknown|unsupported|cannot find).*bidiGenerateContentSetup/i.test(detail))response=await fetcher(url,{...init,body:JSON.stringify(compatibilityBody),signal});
+    }
+  }
   catch { circuit.set(provider, Date.now() + 10000); throw fault('speech_unavailable', 502); }
   if (!response.ok) {
     const seconds = Number(response.headers.get('retry-after'));
@@ -31,11 +37,13 @@ export async function connectProvider(provider, target, { env = process.env, fet
     if(source!=='auto')throw fault('speech_config_error',422);
     const model = 'gemini-3.5-live-translate-preview';
     const config = { responseModalities: ['AUDIO'], inputAudioTranscription: {}, outputAudioTranscription: {}, translationConfig: { targetLanguageCode: target, echoTargetLanguage: true } };
+    const setup={model:'models/'+model,generationConfig:{responseModalities:config.responseModalities,translationConfig:config.translationConfig},inputAudioTranscription:{},outputAudioTranscription:{}};
     const expiresAt = Date.now() + 30 * 60000;
+    const limits={uses:1,expireTime:new Date(expiresAt).toISOString(),newSessionExpireTime:new Date(Date.now()+60000).toISOString()};
     const data = await call(provider, 'https://generativelanguage.googleapis.com/v1beta/auth_tokens', {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
-      body: JSON.stringify({ uses: 1, expireTime: new Date(expiresAt).toISOString(), newSessionExpireTime: new Date(Date.now() + 60000).toISOString(), liveConnectConstraints: { model: 'models/' + model, config } })
-    }, fetcher);
+      body: JSON.stringify({...limits,bidiGenerateContentSetup:setup})
+    }, fetcher,5000,{...limits,liveConnectConstraints:{model:'models/'+model,config}});
     if (typeof data.name !== 'string' || !data.name.startsWith('auth_tokens/')) throw fault('speech_unavailable', 502);
     return { provider, credential: { token: data.name, expiresAt, model, config } };
   }

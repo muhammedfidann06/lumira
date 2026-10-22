@@ -5,3 +5,5 @@ html{min-height:100%;scroll-padding-top:24px}body{background:radial-gradient(ell
 @media(max-width:850px){main>nav{margin-bottom:30px}.public-brand{flex-basis:100%}.price-grid{gap:30px}.pricing-tier p{min-height:0}.pricing-tier{padding:26px}.pricing-tier.is-featured{padding:25px}}
 @media(max-width:480px){main,.privacy-page .wrap{padding:24px 18px 48px}main>nav{gap:10px 16px}.price-grid{margin-top:32px}.privacy-toc{grid-template-columns:1fr}.privacy-page .box,body[data-page] main>p{padding:16px 18px}.privacy-page h2{font-size:19px;margin-top:32px}.price-toggle button{min-width:100px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+
+.pricing-emblem{display:block;width:44px;height:44px;margin:2px 0 18px}.price-toggle [hidden]{display:none}.pricing-tier h2{font-size:22px;line-height:1.45}.pricing-tier ul{min-height:10em}

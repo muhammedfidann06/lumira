@@ -16,6 +16,12 @@
 
   var NS = 'http://www.w3.org/2000/svg';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var voiceBusy=false;
+  function light(){return reduce||document.documentElement.classList.contains('lite');}
+  function busy(){return light()||document.hidden||voiceBusy||document.body.classList.contains('lt-focus');}
+  function refreshEffects(){if(!fx)return;if(busy())fx.pause();else fx.resume();}
+  window.addEventListener('lumira:performancechange',refreshEffects);
+  window.addEventListener('lumira:voice-status',function(event){voiceBusy=['device-speaking','device-requested','online-requested','online-playing'].includes(event.detail?.status);refreshEffects();});
 
   /* ====================================================== 1. manzara katmanı */
   function sceneLayer() {
@@ -28,11 +34,11 @@
   }
 
   function parallax(bg) {
-    if (!bg || reduce) return;
+    if (!bg || light()) return;
     var tx = 0, ty = 0, cx = 0, cy = 0, queued = false;
 
     function apply() {
-      queued = false;
+      queued = false;if(busy())return;
       cx += (tx - cx) * 0.055;
       cy += (ty - cy) * 0.055;
       bg.style.transform =
@@ -43,13 +49,14 @@
     function req() { if (!queued) { queued = true; requestAnimationFrame(apply); } }
 
     window.addEventListener('pointermove', function (e) {
+      if(busy())return;
       tx = (e.clientX / window.innerWidth) * 2 - 1;
       ty = (e.clientY / window.innerHeight) * 2 - 1;
       req();
     }, { passive: true });
 
     window.addEventListener('deviceorientation', function (e) {
-      if (e.gamma == null) return;
+      if (e.gamma == null || busy()) return;
       tx = Math.max(-1, Math.min(1, e.gamma / 32));
       ty = Math.max(-1, Math.min(1, ((e.beta || 42) - 42) / 32));
       req();
@@ -241,7 +248,7 @@
     var raf = 0;
     function loop(now) {
       raf = requestAnimationFrame(loop);
-      if (scrolling) return;          /* kaydırma bitene kadar bekle */
+      if (scrolling||busy()) return;          /* kaydırma bitene kadar bekle */
       frame(now);
     }
     function start() { if (!raf) raf = requestAnimationFrame(loop); }
@@ -250,7 +257,7 @@
     /* Sekme arka plandayken boşuna çizmesin */
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) stop();
-      else if (!reduce) start();
+      else if (!busy()) start();
     });
 
     /* Konsoldan denemek için:
@@ -269,10 +276,10 @@
         else document.body.insertBefore(cv, document.body.firstChild);
         resize();
         window.addEventListener('resize', resize, { passive: true });
-        if (reduce) { frameOnce(); } else { start(); }
+        if (busy()) { frameOnce(); } else { start(); }
       },
       pause: stop,
-      resume: function () { if (!reduce) start(); }
+      resume: function () { if (!busy()) start(); }
     };
 
     function frameOnce() { frame(performance.now()); stop(); }
@@ -502,7 +509,7 @@
       var el = e.target && e.target.closest ? e.target.closest(TAPPABLE) : null;
       if (!el || el.hasAttribute('disabled')) return;
 
-      if (!reduce) {
+      if (!busy()) {
         var r = el.getBoundingClientRect();
         var dot = document.createElement('span');
         dot.className = 'tf-ripple';
@@ -511,10 +518,7 @@
         el.appendChild(dot);
         setTimeout(function () { if (dot.parentNode) dot.parentNode.removeChild(dot); }, 640);
 
-        el.classList.remove('tf-press');
-        void el.offsetWidth;               /* animasyonu yeniden tetikle */
-        el.classList.add('tf-press');
-        setTimeout(function () { el.classList.remove('tf-press'); }, 360);
+        if(el.animate)el.animate([{transform:'scale(1)'},{transform:'scale(.97)'},{transform:'scale(1)'}],{duration:220,easing:'ease-out'});
       }
     }, { passive: true });
   }
@@ -530,9 +534,10 @@
     safe(function () {
       document.addEventListener('visibilitychange', function () {
         if (!fx) return;
-        if (document.hidden) fx.pause(); else fx.resume();
+        refreshEffects();
       });
     }, 'visibilitychange');
+    safe(function(){new MutationObserver(refreshEffects).observe(document.body,{attributes:true,attributeFilter:['class']});},'performance-observer');
     safe(buildDesk, 'buildDesk');
     safe(buildFlies, 'buildFlies');
     safe(mergeProgress, 'mergeProgress');

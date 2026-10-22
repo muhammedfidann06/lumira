@@ -41,13 +41,13 @@ export async function identity(request) {
   return {...services,uid:claims.uid,tier:accountMemberships(grants.val()||{},verified.val()||{},currentBilling,optOut.val()||{},Date.now(),currentPlay,policies.val()||{}).tier};
 }
 export async function speechToken() {
-  const key = process.env.AZURE_SPEECH_KEY, region = process.env.AZURE_SPEECH_REGION;
+  const key = process.env.AZURE_SPEECH_KEY?.trim(), region = process.env.AZURE_SPEECH_REGION?.trim().toLowerCase();
   if (!key || !/^[a-z0-9-]+$/.test(region || '')) throw fault('speech_not_configured', 503);
   if (speechCache?.expiresAt > Date.now() + 60000) return speechCache;
   let token;
   try {
     const response = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issueToken`, {
-      method: 'POST', headers: { 'Ocp-Apim-Subscription-Key': key }, signal: AbortSignal.timeout(8000)
+      method: 'POST', headers: { 'Ocp-Apim-Subscription-Key': key }, signal: AbortSignal.timeout(5000)
     });
     if (!response.ok) throw new Error('provider_unavailable');
     token = (await response.text()).trim();

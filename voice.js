@@ -18,8 +18,8 @@
   }
   var status = 'idle';
   function setStatus(value) {
-    status = value;
-    window.dispatchEvent(new CustomEvent('lumira:voice-status', {detail:window.VOICE_debug ? window.VOICE_debug() : {status:value}}));
+    if(status===value)return;status = value;
+    window.dispatchEvent(new CustomEvent('lumira:voice-status', {detail:{status:value,ios:ios}}));
   }
   function prepareSession() {
     try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch(e) {}
@@ -185,9 +185,9 @@
     clearTimeout(startTimer); clearTimeout(watchTimer);
     if (utterance) utterance.onstart = utterance.onend = utterance.onerror = null;
     utterance = null;
-    try { if (synth) synth.cancel(); } catch(e) {}
+    try { if (synth && (synth.speaking||synth.pending)) synth.cancel(); } catch(e) {}
   }
-  window.VOICE_stop = function () { stopSpeech(); stopAudio(); };
+  window.VOICE_stop = function () { stopSpeech(); stopAudio(); setStatus('idle'); };
   window.speak = function (text, lang) {
     if (typeof soundOn !== 'undefined' && !soundOn) return;
     manualSpeak(text, lang, false);

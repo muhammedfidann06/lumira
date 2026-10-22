@@ -1,3 +1,4 @@
+import {knownStory} from './story-library.mjs';
 import {fault} from './feature-core.mjs';
 import {storyLexicon,storySchema,validateStory} from './story-core.mjs';
 
@@ -38,7 +39,7 @@ export async function generateStory(pool,options,{env=process.env,fetcher=fetch,
   const data=await complete('https://api.cloudflare.com/client/v4/accounts/'+env.CLOUDFLARE_ACCOUNT_ID+'/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast',{Authorization:'Bearer '+env.CLOUDFLARE_API_TOKEN},{messages:[{role:'system',content:instruction},{role:'user',content:content+(extra?'\n'+extra:'')}],response_format:{type:'json_object'},max_tokens:4096});
   if(data.success===false)throw fault('story_unavailable',502);return data.result?.response;
  }]);
- if(!attempts.length)throw fault('story_not_configured',503);
+ if(!attempts.length){const scene=knownStory(pool,options);if(scene)return scene;throw fault('story_not_configured',503);}
  let repair=null,rejected=false;
  for(const [provider,attempt]of attempts){
   if(clock()>=deadline)break;let raw;
@@ -51,5 +52,6 @@ export async function generateStory(pool,options,{env=process.env,fetcher=fetch,
    return{...validateStory(await repair.attempt(extra),pool,options),provider:repair.provider};
   }catch{}
  }
+ const scene=knownStory(pool,options);if(scene)return scene;
  throw fault(rejected?'story_vocabulary':'story_unavailable',502);
 }

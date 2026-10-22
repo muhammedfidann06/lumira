@@ -56,7 +56,7 @@ for(const language of LANGUAGES){
   const f=memoryDb({progress:{alice:firstFifty(language)},serverFeatureUsage:{alice:{writing:{count:7}}}});let calls=0;
   const handler=createStoriesHandler({identity:async()=>({uid:'alice',db:f.db}),wordPool:bank,generateStory:(pool,o)=>generateStory(pool,o,{env:envFor('groq'),fetcher:async()=>{calls++;return responseFor('groq',dataFor(language));}})});
   const body={action:'generate',id:'story-regression-1105-'+language,...options(language)},request=()=>new Request('https://lumira-tr.com/.netlify/functions/stories',{method:'POST',body:JSON.stringify(body)});
-  const response=await handler(request());assert.equal(response.status,200,await response.clone().text());assert.equal(response.headers.get('X-Lumira-Features-Version'),'1.11.0');
+  const response=await handler(request());assert.equal(response.status,200,await response.clone().text());assert.equal(response.headers.get('X-Lumira-Features-Version'),'1.11.1');
   const saved=(await response.json()).story;assert(f.get('serverStories/alice/'+body.id));assert.equal(saved.options.language,language);assert.equal(f.get('serverFeatureUsage/alice/writing/count'),7);
   assert.equal((await handler(request())).status,200);assert.equal(calls,1);
  });
@@ -81,17 +81,18 @@ test('older schema support falls back once and keeps the same vocabulary safegua
 for(const status of [401,403,429,500])test('provider HTTP '+status+' fails over without a schema retry',async()=>{
  let calls=0;const result=await generateStory(poolFor('en'),options('en'),{env:{...envFor('gemini'),...envFor('groq')},fetcher:async()=>++calls===1?Response.json({error:{message:'provider unavailable'}},{status}):responseFor('groq',dataFor('en'))});assert.equal(calls,2);assert.equal(result.provider,'groq');
 });
-test('a schema fallback still rejects unknown source words',async()=>{
+test('a schema fallback never returns unknown source words; a reviewed dialogue stays available',async()=>{
  let calls=0;const bad=dataFor('en');bad.sentences[0].segments.push('Xylophonium');
- await assert.rejects(generateStory(poolFor('en'),options('en'),{env:envFor('groq'),fetcher:async()=>++calls===1?Response.json({error:{message:'unsupported response_format schema'}},{status:400}):responseFor('groq',bad)}),e=>e.code==='story_vocabulary');assert.equal(calls,3);
+ const result=await generateStory(poolFor('en'),options('en'),{env:envFor('groq'),fetcher:async()=>++calls===1?Response.json({error:{message:'unsupported response_format schema'}},{status:400}):responseFor('groq',bad)});
+ assert.equal(result.provider,'guided');assert.equal(calls,3);for(const sentence of result.sentences)for(const token of tokens(sentence.text,'en'))assert(storyLexicon(poolFor('en'),'en').allowed.includes(token));
 });
-test('a failed repair stops after two generations and returns no partial unsafe story',async()=>{
+test('a failed repair is bounded and replaces the unsafe draft with a reviewed dialogue',async()=>{
  let calls=0;const bad=dataFor('en');bad.sentences[2].segments.push('Xylophonium');
- await assert.rejects(generateStory(poolFor('en'),options('en'),{env:envFor('groq'),fetcher:async()=>{calls++;return responseFor('groq',bad);}}),e=>e.code==='story_vocabulary');assert.equal(calls,2);
+ const result=await generateStory(poolFor('en'),options('en'),{env:envFor('groq'),fetcher:async()=>{calls++;return responseFor('groq',bad);}});assert.equal(calls,2);assert.equal(result.provider,'guided');assert(!JSON.stringify(result).includes('Xylophonium'));
 });
-test('the total provider deadline also bounds repair work',async()=>{
+test('the total provider deadline also bounds repair work and leaves the reviewed fallback available',async()=>{
  let now=0,calls=0;const bad=dataFor('en');bad.sentences[0].segments.push('Xylophonium');
- await assert.rejects(generateStory(poolFor('en'),options('en'),{env:{...envFor('gemini'),...envFor('groq')},clock:()=>now,fetcher:async()=>{calls++;now=30001;return responseFor('gemini',bad);}}),e=>e.code==='story_vocabulary');assert.equal(calls,1);
+ const result=await generateStory(poolFor('en'),options('en'),{env:{...envFor('gemini'),...envFor('groq')},clock:()=>now,fetcher:async()=>{calls++;now=30001;return responseFor('gemini',bad);}});assert.equal(calls,1);assert.equal(result.provider,'guided');
 });
 test('unlearned conjugations remain excluded',()=>{
  const pool=poolFor('de');assert(!storyLexicon(pool,'de').allowed.includes('bin'));const bad=dataFor('de');bad.sentences[1].segments=['Ich','bin','hier','.'];assert.throws(()=>validateStory(bad,pool,options('de')),e=>e.code==='story_unknown_word');

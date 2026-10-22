@@ -24,7 +24,8 @@
       button.setAttribute('aria-pressed', String(active()));
       button.disabled = false;
     }
-    if (select) select.disabled = active();
+    if (select && select.disabled!==active()) select.disabled = active();
+    const source=node('ltSource');if(source&&source.disabled!==active())source.disabled=active();
     if (clear) clear.disabled = active() || (!s.entries.length && !s.draft);
     if (statusBox) { statusBox.textContent = F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
     const backup=node('ltBackup'), retry=node('ltBackupRetry'), backupBox=node('ltBackupBox');
@@ -46,13 +47,17 @@
     }
     el.title = F.text('reset',{date:new Date(q.resetsAt).toLocaleString(window.NATIVE_LANG || 'tr',{timeZone:q.timeZone})}) + ' (' + q.timeZone + ')';
   }
-  function drawText() {
+  let textFrame=0;const painted=new WeakMap();
+  function drawText() {if(!textFrame)textFrame=requestAnimationFrame(()=>{textFrame=0;paintText();});}
+  function paintText() {
     const original = node('ltOriginal'), translated = node('ltTranslation');
     if (!original || !translated) return;
     const paint = (el, field, placeholder) => {
       const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight-60;
-      el.replaceChildren();
       const full = s.entries.map(e => e[field]).filter(Boolean).join('\n');
+      const value=full+(s.draft?.[field]?'\n'+s.draft[field]:'')||F.text(placeholder);
+      if(painted.get(el)===value)return;painted.set(el,value);
+      el.replaceChildren();
       if (full) el.appendChild(document.createTextNode(full));
       if (s.draft?.[field]) {
         const span = document.createElement('span'); span.className='lt-draft'; span.textContent=(full?'\n':'')+s.draft[field]; el.appendChild(span);
@@ -63,7 +68,6 @@
     paint(original,'original','emptySource'); paint(translated,'translated','emptyTarget');
     const detected = node('ltDetected');
     if (detected){const language=s.source==='auto'?s.detected:s.source;detected.textContent=language?(FLAGS[language]||'🌐')+' '+label(language):F.text('auto');}
-    drawControls();
   }
   function sdk() {
     if (window.SpeechSDK) return Promise.resolve(window.SpeechSDK);
@@ -85,6 +89,11 @@
       const local=new Local({target:s.target,sourceLanguage:s.source,audioContext:s.pendingAudio,
         onAudio:(audio,position)=>{
           if(generation!==s.generation || !active())return;
+          if(s.azureInput){
+            const bytes=new ArrayBuffer(audio.length*2),view=new DataView(bytes);
+            for(let i=0;i<audio.length;i++){const value=Math.max(-1,Math.min(1,audio[i]));view.setInt16(i*2,value<0?value*32768:value*32767,true);}
+            try{s.azureInput.write(bytes);}catch{fallback(generation);}
+          }
           s.cloud?.receive(audio,position);
           if(s.provider==='azure' && s.phase==='listening'){
             let energy=0;for(const v of audio)energy+=v*v;
@@ -107,7 +116,7 @@
     }catch(e){s.localError=true;drawControls();}
   }
   function warmLocal(generation) {
-    if(!s.local)return;
+    if(!s.local || !['local','local-preparing'].includes(s.provider))return;
     s.local.prepare().catch(()=>{if(generation===s.generation){s.localError=true;drawControls();}});
   }
   function heartbeat(generation,id) {
@@ -252,8 +261,9 @@
     finally{if(s.renewPending===id)s.renewPending=false;}
   }
   function releaseRecognizer(keepMicrophone) {
-    const r=s.recognizer,a=s.audio,input=s.inputStream;
-    s.recognizer=null;s.audio=null;s.inputStream=null;
+    const r=s.recognizer,a=s.audio,input=s.inputStream,pcm=s.azureInput;
+    s.recognizer=null;s.audio=null;s.inputStream=null;s.azureInput=null;
+    try{pcm?.close();}catch{}
     if(s.cancelStart){s.cancelStart();s.cancelStart=null;}
     if(!keepMicrophone){stopTracks(s.stream);s.stream=null;}
     return new Promise(resolve=>{
@@ -296,9 +306,16 @@
   async function connectRecognizer(generation) {
     const SDK=s.SDK,media=s.stream,speech=s.speech;
     if(!SDK || !media || !speech || generation!==s.generation || !active() || s.provider!=='azure')throw error('recognizer_replaced');
-    // Give the recognizer a clone: replacing it must not close the capture stream.
-    s.inputStream=media.clone();
-    s.audio=SDK.AudioConfig.fromStreamInput(s.inputStream);
+    // Reuse the capture opened by Start's user gesture. In particular, iOS
+    // must not create a second, suspended microphone AudioContext here.
+    if(s.local && SDK.AudioInputStream?.createPushStream && SDK.AudioStreamFormat?.getWaveFormatPCM){
+      await s.localArm;
+      if(generation!==s.generation || !active() || s.provider!=='azure')throw error('recognizer_replaced');
+      s.azureInput=SDK.AudioInputStream.createPushStream(SDK.AudioStreamFormat.getWaveFormatPCM(16000,16,1));
+      s.audio=SDK.AudioConfig.fromStreamInput(s.azureInput);
+    }else{
+      s.inputStream=media.clone();s.audio=SDK.AudioConfig.fromStreamInput(s.inputStream);
+    }
     const recognizer=window.LUMIRA_SOURCE.recognizer(SDK,speech,s.target,s.source,s.audio);
     s.recognizer=recognizer;
     const captureStart=s.local?.position || 0;
@@ -338,7 +355,7 @@
     }
     recognizer.recognizing=(_,e)=>result(e,false);
     recognizer.recognized=(_,e)=>result(e,true);
-    recognizer.canceled=()=>{if(current()){s.failed.add('azure');s.cancelStart?.();if(!s.switching)fallback(generation);}};
+    recognizer.canceled=(_,event)=>{if(current()){window.PWA?.logError?.({message:'Live Azure canceled: '+String(event?.errorCode??event?.reason??'unknown'),stack:''});s.failed.add('azure');s.cancelStart?.();if(!s.switching)fallback(generation);}};
     recognizer.sessionStopped=()=>{if(current())reconnect(generation);};
     await new Promise((resolve,reject)=>{
       let settled=false;
@@ -361,6 +378,7 @@
     s.restartTimer=null;s.restartPending=false;s.restartAttempt=0;s.authRetries=0;s.speech=null;s.azureFailures=0;s.provider='';s.switching=null;
     s.local?.stop();s.local=null;s.localArm=null;
     if(s.pendingAudio){s.pendingAudio.close().catch(()=>{});s.pendingAudio=null;}
+    if(s.previousAudioSession!==undefined){try{if(navigator.audioSession)navigator.audioSession.type=s.previousAudioSession;}catch{}s.previousAudioSession=undefined;}
     if(s.wakeLock){s.wakeLock.release().catch(()=>{});s.wakeLock=null;}
     releaseRecognizer();
     if(id){
@@ -377,6 +395,8 @@
     if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia){status('browser_unsupported',true);return;}
     const generation=++s.generation,id=F.id();
     s.failed=new Set();s.providers=[];s.provider='';s.phase='starting';s.sessionId=id;s.draft=null;s.detected='';s.localProgress=null;s.localError=false;s.lastResult=performance.now();s.awaitingSince=0;status('starting');drawText();
+    window.VOICE_stop?.();
+    try{if(navigator.audioSession){s.previousAudioSession=navigator.audioSession.type;navigator.audioSession.type='play-and-record';}}catch{}
     const Audio=window.AudioContext || window.webkitAudioContext;
     if(Audio){try{s.pendingAudio=new Audio({sampleRate:16000});}catch(e){try{s.pendingAudio=new Audio();}catch(e){}}s.pendingAudio?.resume().catch(()=>{});}
     s.sdkTask=sdk();s.sdkTask.catch(()=>{});
@@ -400,6 +420,7 @@
     }catch(e){
       if(generation!==s.generation)return;
       const kind=e.featureCode || (['NotAllowedError','PermissionDeniedError'].includes(e.name)?'microphone_denied':['NotFoundError','NotReadableError'].includes(e.name)?'microphone_unavailable':'speech_unavailable');
+      window.PWA?.logError?.({message:'Live start: '+String(e.featureCode||e.name||'failed'),stack:''});
       stop(kind,true);
     }
   }
@@ -455,10 +476,10 @@
   }
   F.subscribe(quota=>{if(s.root){s.quota=quota;drawQuota();}});
   document.addEventListener('visibilitychange',()=>{
-    if(!document.hidden && active()){holdScreen(s.generation);renew(s.generation,s.sessionId);}
+    if(!document.hidden && active()){s.local?.resumeCapture();holdScreen(s.generation);renew(s.generation,s.sessionId);}
   });
   window.addEventListener('pagehide',()=>{if(active() || s.sessionId)stop('paused',false,true);});
   window.addEventListener('offline',()=>{if(active())stop('speech_unavailable',true);});
   window.addEventListener('lumira:featureauthchange',()=>{if(s.root){stop('login_required',true);s.entries=[];s.draft=null;drawText();}});
-  window.LUMIRA_LIVE={mount,unmount,refreshLocale,isMounted:()=>!!s.root,stop};
+  window.LUMIRA_LIVE={mount,unmount,refreshLocale,isMounted:()=>!!s.root,isActive:active,stop};
 })();

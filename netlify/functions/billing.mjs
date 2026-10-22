@@ -6,7 +6,7 @@ import {atomic,applyPaddleEvent} from './_shared/paddle-events.mjs';
 import {playBilling} from './_shared/play-billing.mjs';
 import {badgePolicySnapshot} from './_shared/memberships.mjs';
 import {randomUUID} from 'node:crypto';
-const reply=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.10.3'}});
+const reply=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.11.1'}});
 const operation=id=>typeof id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(id);
 export function createBillingHandler({identify=identity,getAdmin=admin,makeApi=createPaddleApi,env=process.env,clock=Date.now,play=playBilling}={}){
  return withCors(async (request,context)=>{
