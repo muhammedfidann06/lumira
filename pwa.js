@@ -20,7 +20,7 @@
    ========================================================================== */
 (function () {
 'use strict';
-var APP_VERSION='1.11.1';
+var APP_VERSION='1.11.2';
 
 
 /* ========================================================== AYARLAR ====== */
@@ -47,6 +47,7 @@ function store(key, val) {
       var raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw) : null;
     }
+    if(window.LUMIRA_CLEARING_DATA)return null;
     localStorage.setItem(key, JSON.stringify(val));
     return val;
   } catch (e) { return null; }
@@ -1882,19 +1883,15 @@ function checkForUpdate(cb){
  updateFlight.then(function(state){cb(state);});
 }
 function reloadLatest(version){
+ if(window.LUMIRA_CLEARING_DATA)return;
  if(window.LUMIRA_LIVE?.isActive?.()){toast(window.LUMIRA_LEARNING_COPY?.text('updateAfterLive')||'Güncelleme hazır. Çeviriyi durdurduktan sonra yükleyebilirsin.');return;}
  var url=new URL(location.href);url.searchParams.set('lumira_update',cleanVersion(version||releaseVersion||APP_VERSION));url.searchParams.set('__ping','lumira-update-'+Date.now());location.replace(url.href);
 }
 async function clearDownloadedData(){
- window.LUMIRA_LIVE?.stop('stopped',false,true);window.VOICE_stop?.();
- if(navigator.serviceWorker?.getRegistration){const reg=await navigator.serviceWorker.getRegistration(new URL('./',location.href).href);if(reg)await reg.unregister();}
- if(window.caches){for(const name of await caches.keys()){
-  if(name.startsWith('lumira-'))await caches.delete(name);
-  else if(name==='transformers-cache'){const cache=await caches.open(name);for(const request of await cache.keys())if(new URL(request.url).pathname.includes('/Xenova/whisper-base/'))await cache.delete(request);}
- }}
- try{localStorage.removeItem('pwa_offline_pack');}catch{}
- reloadLatest(releaseVersion);
+ if(!window.LUMIRA_STORAGE)throw Error('storage_reset_unavailable');
+ return window.LUMIRA_STORAGE.begin();
 }
+
 function hardRefresh(full){
  if(window.LUMIRA_LIVE?.isActive?.()){toast(window.LUMIRA_LEARNING_COPY?.text('updateAfterLive')||'Güncelleme hazır. Çeviriyi durdurduktan sonra yükleyebilirsin.');return Promise.resolve(false);}
  var worker=(swReg&&swReg.waiting)||waitingWorker;

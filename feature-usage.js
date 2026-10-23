@@ -29,6 +29,7 @@
       "local_downloading": "Ücretsiz yedek hazırlanıyor · %{percent}. İlk yükleme internet kullanır.",
       "local_backup_error": "Ücretsiz yedek yüklenemedi. Bağlantını kontrol edip tekrar deneyebilirsin.",
       "local_retry": "Yedeği yeniden hazırla",
+      "local_device_limited": "Çeviri servisleri şu anda yanıt vermiyor. Bu cihazda ücretsiz yedek motor güvenle çalıştırılamıyor. Biraz sonra tekrar dene.",
       "local_unsupported": "Bu tarayıcı cihaz içi çeviriyi desteklemiyor. Güncel Chrome veya Safari ile aç.",
       "local_download_error": "Ücretsiz model yüklenemedi. İnternet bağlantını ve boş depolama alanını kontrol edip tekrar başlat.",
       "local_model_error": "Cihaz içi çeviri tamamlanamadı. Cihazda yeterli bellek kalmamış olabilir; yeniden açıp deneyebilirsin.",
@@ -46,6 +47,7 @@
       "local_downloading": "Preparing free backup · {percent}%. The first download uses internet data.",
       "local_backup_error": "The free backup could not load. Check your connection and try again.",
       "local_retry": "Prepare backup again",
+      "local_device_limited": "Translation services are unavailable. The free backup cannot run safely on this device. Please try again later.",
       "local_unsupported": "This browser does not support on-device translation. Open in a current Chrome or Safari.",
       "local_download_error": "Could not load the free model. Check your connection and available storage, then start again.",
       "local_model_error": "On-device translation could not finish. The device may be low on memory; reopen and try again.",
@@ -63,6 +65,7 @@
       "local_downloading": "Kostenlose Reserve wird vorbereitet · {percent} %. Der erste Download benötigt Internetdaten.",
       "local_backup_error": "Die kostenlose Reserve konnte nicht geladen werden. Prüfe die Verbindung und versuche es erneut.",
       "local_retry": "Reserve erneut vorbereiten",
+      "local_device_limited": "Die Übersetzungsdienste sind gerade nicht erreichbar. Die kostenlose Ersatzfunktion kann auf diesem Gerät nicht sicher ausgeführt werden. Bitte versuche es später erneut.",
       "local_unsupported": "Dieser Browser unterstützt die Übersetzung auf dem Gerät nicht. Öffne aktuelles Chrome oder Safari.",
       "local_download_error": "Das kostenlose Modell konnte nicht geladen werden. Prüfe Verbindung und freien Speicher und starte erneut.",
       "local_model_error": "Die Übersetzung auf dem Gerät konnte nicht abgeschlossen werden. Vielleicht ist zu wenig Arbeitsspeicher frei. Öffne die App erneut.",
@@ -80,6 +83,7 @@
       "local_downloading": "جارٍ تجهيز البديل المجاني · {percent}٪. التنزيل الأول يستهلك بيانات الإنترنت.",
       "local_backup_error": "تعذر تحميل البديل المجاني. تحقق من الاتصال وحاول مجددًا.",
       "local_retry": "تجهيز البديل مجددًا",
+      "local_device_limited": "خدمات الترجمة غير متاحة الآن. لا يمكن تشغيل المحرك الاحتياطي المجاني بأمان على هذا الجهاز. حاول لاحقًا.",
       "local_unsupported": "هذا المتصفح لا يدعم الترجمة على الجهاز. افتح الموقع في إصدار حديث من Chrome أو Safari.",
       "local_download_error": "تعذر تحميل النموذج المجاني. تحقق من الاتصال ومساحة التخزين ثم ابدأ مجددًا.",
       "local_model_error": "تعذر إكمال الترجمة على الجهاز. قد تكون الذاكرة غير كافية؛ أعد فتح التطبيق وحاول مجددًا.",
@@ -97,6 +101,7 @@
       "local_downloading": "Préparation du relais gratuit · {percent} %. Le premier téléchargement utilise des données Internet.",
       "local_backup_error": "Le relais gratuit n’a pas pu être chargé. Vérifie ta connexion et réessaie.",
       "local_retry": "Préparer à nouveau le relais",
+      "local_device_limited": "Les services de traduction sont indisponibles. Le moteur de secours gratuit ne peut pas fonctionner en toute sécurité sur cet appareil. Réessaie plus tard.",
       "local_unsupported": "Ce navigateur ne prend pas en charge la traduction locale. Ouvre une version récente de Chrome ou Safari.",
       "local_download_error": "Le modèle gratuit n’a pas pu être chargé. Vérifie la connexion et l’espace libre, puis recommence.",
       "local_model_error": "La traduction locale n’a pas pu aboutir. La mémoire de l’appareil est peut-être insuffisante ; rouvre l’application et réessaie.",
@@ -114,6 +119,7 @@
       "local_downloading": "Preparando respaldo gratuito · {percent} %. La primera descarga usa datos de Internet.",
       "local_backup_error": "No se pudo cargar el respaldo gratuito. Revisa la conexión e inténtalo de nuevo.",
       "local_retry": "Preparar respaldo otra vez",
+      "local_device_limited": "Los servicios de traducción no están disponibles. El motor gratuito de respaldo no puede funcionar de forma segura en este dispositivo. Inténtalo más tarde.",
       "local_unsupported": "Este navegador no admite la traducción en el dispositivo. Abre una versión actual de Chrome o Safari.",
       "local_download_error": "No se pudo cargar el modelo gratuito. Revisa la conexión y el almacenamiento libre y vuelve a empezar.",
       "local_model_error": "No se pudo completar la traducción local. Puede faltar memoria; abre de nuevo la aplicación e inténtalo otra vez.",
@@ -131,6 +137,7 @@
       "local_downloading": "Подготовка бесплатного резерва · {percent} %. Первая загрузка расходует интернет-трафик.",
       "local_backup_error": "Не удалось загрузить бесплатный резерв. Проверь подключение и повтори попытку.",
       "local_retry": "Подготовить резерв снова",
+      "local_device_limited": "Сервисы перевода недоступны. Бесплатный резервный движок нельзя безопасно запустить на этом устройстве. Повтори позже.",
       "local_unsupported": "Браузер не поддерживает перевод на устройстве. Открой сайт в актуальном Chrome или Safari.",
       "local_download_error": "Не удалось загрузить бесплатную модель. Проверь подключение и свободное место, затем начни снова.",
       "local_model_error": "Не удалось завершить перевод на устройстве. Возможно, не хватает памяти. Открой приложение заново и повтори попытку.",
@@ -238,7 +245,7 @@
   async function restorePurchases() {
     if (!user()) throw fail('login_required');
     if (typeof window.getDigitalGoodsService !== 'function') throw fail('purchase_verification_unavailable');
-    const uid = user().uid, service = await window.getDigitalGoodsService('https://play.google.com/billing');
+    const uid = user().uid, service = await (window.LUMIRA_PLAY?.service?.()||window.getDigitalGoodsService('https://play.google.com/billing'));
     const purchases = await service.listPurchases();
     let count = 0;
     for (const p of purchases) {

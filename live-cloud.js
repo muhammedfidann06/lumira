@@ -44,7 +44,7 @@
         this.socket.onmessage=async({data})=>{
           if(this.closed)return;
           try {
-            const event=JSON.parse(typeof data==='string'?data:await data.text());
+            const raw=typeof data==='string'?data:await data.text();if(raw.length>1000000)throw Error('response_too_large');const event=JSON.parse(raw);
             if(this.closed)return;
             if(event.error){finish(fail('speech_unavailable'));this.fault();return;}
             if(event.setupComplete || event.setup_complete){this.ready=true;finish();this.onReady?.();}
@@ -52,8 +52,8 @@
             if(content){
               const input=content.inputTranscription || content.input_transcription;
               const output=content.outputTranscription || content.output_transcription;
-              if(input?.text)this.original+=input.text;
-              if(output?.text){this.translated+=output.text;this.lastReply=performance.now();this.speechSince=0;}
+              if(typeof input?.text==='string')this.original=(this.original+input.text).slice(-30000);
+              if(typeof output?.text==='string'&&output.text){this.translated=(this.translated+output.text).slice(-30000);this.lastReply=performance.now();this.speechSince=0;}
               this.language=code(input?.languageCode || input?.language_code || this.language);
               if(input?.text || output?.text || content.turnComplete || content.turn_complete)this.onResult?.({id:this.entryId || this.id+'-gemini',original:this.original,translated:this.translated,language:this.language,partial:!(input?.finished || output?.finished || content.turnComplete || content.turn_complete)});
               if(output?.finished || content.turnComplete || content.turn_complete)this.onCommit?.(Math.max(0,this.position-2));
@@ -84,16 +84,17 @@
       }
       this.parts.push(audio.slice());this.length+=audio.length;this.quiet=speech?0:this.quiet+audio.length;
       if(this.length>16000*75){this.fault();return;}
-      if(this.length>=16000*6 || (this.length>=16000*4 && this.quiet>=9600))this.pump();
+      if(this.chunkReady())this.pump();
     }
+    chunkReady(){return this.length>=96000 || (this.length>=32000 && this.quiet>=7200);}
     async pump() {
-      if(this.closed || this.processing || this.length<64000)return;
+      if(this.closed || this.processing || this.length<32000)return;
       this.processing=true;
       const take=Math.min(96000,this.length), audio=new Float32Array(take+(this.tail?.length || 0));
       if(this.tail)audio.set(this.tail);
       let cursor=this.tail?.length || 0, remaining=take;
       while(remaining){const p=this.parts.shift(),n=Math.min(remaining,p.length);audio.set(p.subarray(0,n),cursor);cursor+=n;remaining-=n;if(n<p.length)this.parts.unshift(p.subarray(n));}
-      this.length-=take;this.tail=audio.slice(-5600);
+      this.length-=take;this.tail=audio.slice(-9600);
       const end=this.position-this.length/16000;
       let sum=0;for(const n of audio)sum+=n*n;
       try {
@@ -104,7 +105,7 @@
         if(!result.empty)this.onResult?.(result);
         this.onCommit?.(end);
       } catch(error) {if(!this.closed)this.onError?.(error.featureCode==='session_expired'?fail('speech_unavailable'):error);}
-      finally{this.processing=false;if(!this.closed && this.length>=96000)queueMicrotask(()=>this.pump());}
+      finally{this.processing=false;if(!this.closed && this.chunkReady())queueMicrotask(()=>this.pump());}
     }
     fault() {if(!this.closed){this.ready=false;this.onError?.(fail('speech_unavailable'));}}
     stop() {this.closed=true;this.ready=false;clearTimeout(this.rotate);this.abort.abort();this.cancelStart?.();this.cancelStart=null;this.socket?.close();this.parts=[];this.length=0;}

@@ -46,6 +46,7 @@
   };
   const focusText = (index,n)=>(FOCUS_COPY[window.NATIVE_LANG] || FOCUS_COPY.en)[index].replace('{n}',String(n??''));
 
+
   let currentName = '';
   let currentKey = '';
   let userLoadRun = 0;
@@ -82,6 +83,7 @@
     try{ const raw = localStorage.getItem(k); return raw ? JSON.parse(raw) : null; }catch(e){ return null; }
   }
   function safeLocalSet(k, val){
+    if(window.LUMIRA_CLEARING_DATA)return;
     try{ localStorage.setItem(k, JSON.stringify(val)); }catch(e){}
   }
   function todayStr(){
@@ -1750,18 +1752,17 @@
     injectStyles();
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+(window.t?window.t('nb_writing_practice'):'✍️ Yazma Pratiği')+'</div><div class="pm-sub">'+(window.t?window.t('wp_choose_lang_sub'):'Hangi dilde yazma pratiği yapmak istersin?')+'</div></div>';
     html += '<div class="feature-quota" data-writing-quota></div>';
-    html += '<div class="lang-box">';
+    html += '<div class="practice-language-grid">';
     WP_LANGS.filter(l => l.code !== (window.NATIVE_LANG || 'tr')).forEach(l=>{
       const L = (typeof LANGS !== 'undefined' && LANGS[l.code]) ? LANGS[l.code] : { label: l.code };
-      const landmark = (typeof LANG_LANDMARK !== 'undefined' && LANG_LANDMARK[l.code]) ? LANG_LANDMARK[l.code] : '';
-      const flag = (typeof LANG_FLAGS !== 'undefined' && LANG_FLAGS[l.code]) ? LANG_FLAGS[l.code] : '🌐';
-      html += '<div class="lang-opt" data-lang="'+l.code+'" data-wp-lang="'+l.code+'"><span class="landmark" aria-hidden="true">'+landmark+'</span><div class="flag">'+flag+'</div><div class="lname">'+escapeHtml((typeof nbLangLabel==='function')?nbLangLabel(l.code):L.label)+'</div></div>';
+      html += '<button type="button" class="practice-language" data-lang="'+l.code+'" data-wp-lang="'+l.code+'"><span class="lname">'+escapeHtml((typeof nbLangLabel==='function')?nbLangLabel(l.code):L.label)+'</span></button>';
     });
     html += '</div>';
     html += '<button class="pm-btn small" id="wpBackHomeBtn" style="margin-top:16px;">'+(window.t?window.t('wp_back_to_notebook'):'← Notlarım\'a Dön')+'</button></div>';
     root.innerHTML = html;
     window.LUMIRA_FEATURES.mountWriting(root.querySelector('[data-writing-quota]'));
     root.querySelectorAll('[data-wp-lang]').forEach(el=>{
+      window.LUMIRA_LEARNING.decorateLanguage(el,el.dataset.wpLang,window.t('lang_names')?.[el.dataset.wpLang]||el.dataset.wpLang,el.dataset.wpLang===wpLang);
       el.onclick = () => { wpLang = el.getAttribute('data-wp-lang'); wpLevel = null; wpLastResult = null; renderWritingLevelSelect(); };
     });
     document.getElementById('wpBackHomeBtn').onclick = () => window.PM_openWritingPractice();

@@ -3,6 +3,15 @@ import { AudioBufferQueue, Resampler, failure, removeOverlap, speechEnergy } fro
 
 export class LocalSession {
   static removeOverlap(previous, next, maxWords = 12) { return removeOverlap(previous, next, maxWords); }
+  static fallbackAllowed(device = navigator) {
+    // WebKit can terminate the whole page while the WASM models allocate
+    // memory. A worker error cannot catch that process kill. Never start
+    // this fallback on iOS or a phone with an unknown/small memory budget.
+    const ios = /iPad|iPhone|iPod/i.test(device.userAgent || '') || device.platform === 'MacIntel' && device.maxTouchPoints > 1;
+    const mobile = /Android|Mobile/i.test(device.userAgent || '');
+    const memory = Number(device.deviceMemory || 0);
+    return !ios && (!mobile || memory >= 8) && (!memory || memory >= 8);
+  }
   static supported() { return !!(window.Worker && window.WebAssembly && window.DecompressionStream && window.crypto?.subtle && (window.AudioContext || window.webkitAudioContext)); }
   constructor({ target, sourceLanguage='auto', onProgress, onResult, onError, onNotice, audioContext, onAudio }) {
     this.target = target; this.sourceLanguage=sourceLanguage; this.onProgress = onProgress; this.onResult = onResult;
@@ -46,6 +55,7 @@ export class LocalSession {
   async prepare() {
     if (this.preparing) return this.preparing;
     this.preparing = (async () => {
+      if (!LocalSession.fallbackAllowed()) throw failure('local_device_limited');
       if (!LocalSession.supported()) throw failure('local_unsupported');
       if (this.closed) throw failure('local_cancelled');
       this.worker = new Worker(new URL('./live-local-worker.mjs', import.meta.url), { type: 'module' });

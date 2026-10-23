@@ -4,7 +4,7 @@
    Strateji (Google'ın "app shell + runtime caching" önerisi):
 
      · Navigasyon (HTML)     → network-first + navigation preload → cache → offline.html
-     · Uygulama kabuğu       → stale-while-revalidate (anında açılır, arkada tazelenir)
+     · Uygulama kabuğu       → sürümüne sabitlenmiş HTML/kod/tasarım
      · vocab-*.js (büyük)    → cache-first (bir kez indirilir, kalıcı kalır)
      · Görseller / fontlar   → cache-first (limitli)
      · CDN (firebase, gsap)  → stale-while-revalidate, çevrimdışıyken sessizce atlanır
@@ -16,7 +16,13 @@
    ========================================================================== */
 'use strict';
 
-const CACHE_VERSION = 'v1.11.1';
+let storageReset=false;const storageAbort=new AbortController();
+const storageWrites=new Set();
+function trackWrite(promise){storageWrites.add(promise);promise.finally(()=>storageWrites.delete(promise)).catch(()=>{});return promise;}
+function addCache(cache,request){if(storageReset)return Promise.reject(Error('storage_paused'));return trackWrite(cache.add(request));}
+function putCache(cache,key,response){if(storageReset)return Promise.resolve();return trackWrite(cache.put(key,response));}
+
+const CACHE_VERSION = 'v1.11.2';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
 const PHRASE_CACHE  = 'lumira-phrases-v1.11.1';
@@ -36,8 +42,12 @@ const SHELL = [
   './privacy/index.html',
   './manifest.json',
   './pwa.css',
+  './device-storage.js',
+  './reset/',
+  './reset/index.html',
   './learning.css',
   './practice-core.js',
+  './practice-gloss.js',
   './learning-i18n.js',
   './learning.js',
   './maintenance.js',
@@ -120,21 +130,21 @@ self.addEventListener('install', (event) => {
     const cache = await caches.open(SHELL_CACHE);
     /* Tema ve kod dosyaları eksiksiz gelmeden yeni sürüm devralmasın.
        Yalnızca isteğe bağlı görsellerin hatalarını tolere ediyoruz. */
-    const required=SHELL.filter(url=>/\.(?:m?js|css|html|json)$/.test(url)||url==='./');
+    const required=SHELL.filter(url=>/\.(?:m?js|css|html|json)$/.test(url)||url==='./'||url==='./reset/');
     await Promise.all(required.map((url) =>
-      cache.add(new Request(url, { cache: 'reload' }))
+      addCache(cache,new Request(url, { cache: 'reload',signal:storageAbort.signal }))
     ));
-    await Promise.allSettled(SHELL.filter(url=>!required.includes(url)).map(url=>cache.add(new Request(url,{cache:'reload'}))));
+    await Promise.allSettled(SHELL.filter(url=>!required.includes(url)).map(url=>addCache(cache,new Request(url,{cache:'reload',signal:storageAbort.signal}))));
     // Do not activate an incomplete dictionary update. Keep a user's downloaded
     // languages available offline, but fetch their corrected 1.9.5 contents.
     const vocab = await caches.open(VOCAB_CACHE);
     const previous = await caches.open('lumira-vocab-v1');
     await Promise.all(VOCAB_FILES.map(async url => {
       if(!(await vocab.match(url,{ignoreSearch:true})) && (url.endsWith('vocab-de.js') || await previous.match(url,{ignoreSearch:true}))){
-        await vocab.add(new Request(url,{cache:'reload'}));
+        await addCache(vocab,new Request(url,{cache:'reload',signal:storageAbort.signal}));
       }
     }));
-    await Promise.all(['./vocab-core.js','./vocab-pairs.js','./vocab-parallel.js','./vocab-identity.js','./practice-core.js','./learning-i18n.js','./learning.js','./learning.css','./maintenance.js','./phrases-de.js'].map(url => cache.add(new Request(url,{cache:'reload'}))));
+    await Promise.all(['./vocab-core.js','./vocab-pairs.js','./vocab-parallel.js','./vocab-identity.js','./practice-core.js','./learning-i18n.js','./learning.js','./learning.css','./maintenance.js','./phrases-de.js'].map(url => addCache(cache,new Request(url,{cache:'reload',signal:storageAbort.signal}))));
   })());
   /* DİKKAT: Buraya bir zamanlar koşulsuz self.skipWaiting() konmuştu.
      Sayfa tarafındaki "controllerchange → location.reload()" ile birleşince
@@ -178,7 +188,8 @@ self.addEventListener('fetch', (event) => {
   if (isLive(url)) return;
   // The local translator verifies and caches these compressed model files
   // itself. A second CDN cache would double their storage on phones.
-  if (url.hostname === 'storage.googleapis.com' && url.pathname.includes('moz-fx-translations-data--303e-prod-translations-data')) return;
+  const modelDownload=(url.hostname==='storage.googleapis.com'&&url.pathname.includes('moz-fx-translations-data--303e-prod-translations-data')) || (url.hostname==='huggingface.co'&&/^\/Xenova\/whisper-(?:base|tiny)\//.test(url.pathname));
+  if(modelDownload){event.respondWith(storageReset?Promise.resolve(Response.error()):fetch(req,{signal:storageAbort.signal}).catch(()=>Response.error()));return;}
 
   /* 1) Sayfa açılışları */
   if (req.mode === 'navigate') {
@@ -206,7 +217,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* 5) Kendi kod dosyalarımız (js/css) — ÖNCE AĞ.
+  /* 5) Kendi kod dosyalarımız (js/css) — sürümün kurulu çekirdek dosyalarını koru.
      Eskiden "önbellekten ver, arkada tazele" idi; bu yüzden bir düzeltme
      yayınlandığında kullanıcı eski kodu bir açılış daha görüyordu. Dosyalar
      küçük olduğu için ağ öncelikli olması daha doğru; çevrimdışında yine
@@ -225,7 +236,9 @@ self.addEventListener('fetch', (event) => {
 async function networkFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
   const requested=new URL(req.url);
-  if(requested.searchParams.get('v')===CACHE_VERSION.slice(1)){
+  const scope=new URL(self.registration.scope),relative='./'+requested.pathname.slice(scope.pathname.length);
+  const releaseAsset=requested.origin===scope.origin && requested.pathname.startsWith(scope.pathname) && SHELL.includes(relative);
+  if(requested.searchParams.get('v')===CACHE_VERSION.slice(1) || (!requested.searchParams.has('v')&&releaseAsset)){
     const exact=await cache.match(req,{ignoreVary:true});
     const core=exact||await cache.match(new URL(requested.pathname,requested.origin).href,{ignoreVary:true});
     if(core)return core;
@@ -233,7 +246,7 @@ async function networkFirst(req, cacheName) {
   try {
     const res = await fetch(req, { cache: 'no-cache',signal:AbortSignal.timeout(6000) });
     if(!res?.ok)throw Error('asset_unavailable');
-    if (res && res.ok) cache.put(req, res.clone()).catch(() => {});
+    if (res && res.ok) putCache(cache,req,res.clone()).catch(() => {});
     return res;
   } catch (e) {
     const hit = await cache.match(req, { ignoreVary: true });
@@ -260,13 +273,20 @@ async function handleNavigate(event) {
     (requested.pathname === scope.pathname || requested.pathname === scope.pathname + 'index.html');
   const key = appDocument ? new URL('index.html', scope).href : requested.origin + requested.pathname;
   const remember = (response) => {
-    if (response.ok) cache.put(key, response.clone()).catch(() => {});
+    if (response.ok) putCache(cache,key,response.clone()).catch(() => {});
     return response;
   };
   try {
     const preload = await event.preloadResponse;
     const response=preload || await fetch(event.request);
     if(!response.ok)throw Error('page_unavailable');
+    if(appDocument){
+      const html=await response.clone().text(),release=html.match(/<meta\s+name=["']lumira-version["']\s+content=["']([^"']+)["']/i)?.[1];
+      // A newer HTML document must not overwrite the installed shell while
+      // its worker still owns the previous scripts and styles. The version
+      // endpoint can offer the update; activation swaps the whole release.
+      if(release&&release!==CACHE_VERSION.slice(1)){const installed=await cache.match(key);if(installed)return installed;throw Error('release_mismatch');}
+    }
     return remember(response);
   } catch (e) {
     return (await cache.match(key)) ||
@@ -282,7 +302,7 @@ async function cacheFirst(req, cacheName) {
   if (hit) return hit;
   try {
     const res = await fetch(req);
-    if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone()).catch(() => {});
+    if (res && (res.ok || res.type === 'opaque')) putCache(cache,req,res.clone()).catch(() => {});
     return res;
   } catch (e) {
     return hit || Response.error();
@@ -294,7 +314,7 @@ async function staleWhileRevalidate(req, cacheName, allowOpaque) {
   const hit = await cache.match(req, { ignoreVary: true });
   const network = fetch(req).then((res) => {
     if (res && (res.ok || (allowOpaque && res.type === 'opaque'))) {
-      cache.put(req, res.clone()).catch(() => {});
+      putCache(cache,req,res.clone()).catch(() => {});
     }
     return res;
   }).catch(() => null);
@@ -304,6 +324,8 @@ async function staleWhileRevalidate(req, cacheName, allowOpaque) {
 /* ========================================================== MESSAGE ====== */
 self.addEventListener('message', (event) => {
   const data = event.data || {};
+
+  if(data.type==='QUIESCE_STORAGE'){storageReset=true;storageAbort.abort();event.waitUntil((async()=>{const clientsList=await self.clients.matchAll({type:'window'});clientsList.forEach(client=>client.postMessage({type:'LUMIRA_STORAGE_PAUSE'}));await Promise.allSettled([...storageWrites]);event.ports?.[0]?.postMessage({stopped:true});})());return;}
 
   if (data.type === 'SKIP_WAITING') {
     self.skipWaiting();
@@ -323,15 +345,17 @@ self.addEventListener('message', (event) => {
 
   /* Çevrimdışı paket: tüm sözlükleri arka planda indir, ilerlemeyi bildir */
   if (data.type === 'CACHE_ALL') {
+    if(storageReset)return;
     event.waitUntil((async () => {
       const list = VOCAB_FILES.concat(PHRASE_FILES);
       let done = 0;
       let failed = 0;
       for (const url of list) {
+        if(storageReset)return;
         try {
           const cache=await caches.open(PHRASE_FILES.includes(url)?PHRASE_CACHE:VOCAB_CACHE);
           const already = await cache.match(url,{ignoreSearch:true});
-          if (!already) await cache.add(new Request(url, { cache: 'reload' }));
+          if (!already) await addCache(cache,new Request(url, { cache: 'reload',signal:storageAbort.signal }));
         } catch (e) { failed++; }
         done++;
         const clientsList = await self.clients.matchAll({ type: 'window' });
@@ -339,6 +363,7 @@ self.addEventListener('message', (event) => {
           type: 'CACHE_PROGRESS', done, total: list.length
         }));
       }
+      if(storageReset)return;
       const clientsList = await self.clients.matchAll({ type: 'window' });
       clientsList.forEach((c) => c.postMessage({ type: failed ? 'CACHE_FAILED' : 'CACHE_DONE' }));
     })());

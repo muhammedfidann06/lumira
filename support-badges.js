@@ -40,6 +40,7 @@
   function store(k, v) {
     try {
       if (v === undefined) { var r = localStorage.getItem(k); return r ? JSON.parse(r) : null; }
+      if(window.LUMIRA_CLEARING_DATA)return null;
       localStorage.setItem(k, JSON.stringify(v)); return v;
     } catch (e) { return null; }
   }
@@ -103,7 +104,7 @@
     if(purchaseInFlight)return;
     if(revoked(t.amount)){toast(({tr:'Bu rozet hesabında yönetici tarafından kaldırıldı.',en:'An administrator has removed this badge from your account.',de:'Dieses Abzeichen wurde von einem Administrator aus deinem Konto entfernt.',ar:'أزال المسؤول هذه الشارة من حسابك.',fr:'Un administrateur a retiré ce badge de ton compte.',es:'Un administrador ha retirado esta insignia de tu cuenta.',ru:'Администратор удалил этот значок из твоего аккаунта.'})[window.NATIVE_LANG||'tr']||'An administrator has removed this badge from your account.',{kind:'bad'});return;}
     const policy=window.LUMIRA_FEATURES?.entitlement();
-    if(policy?.supportAmounts?.includes(t.amount)||policy?.memberships?.some(row=>row.sources.some(source=>source.renewsAt&&!source.cancelAt&&source.active))){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
+    if(policy?.memberships?.some(row=>Array.isArray(row?.sources)&&row.sources.some(source=>source?.renewsAt&&!source.cancelAt&&source.active))){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: { sku: t.sku } }];
     var details = { total: { label: (window.t ? window.t('purchase_total_label') : 'Toplam'), amount: { currency: 'TRY', value: '0' } } };
     var request;
@@ -111,7 +112,7 @@
     catch (e) { window.PWA?.logError?.({message:'Play request ('+t.sku+'): '+(e.name||'failed'),stack:''});toast(window.t?window.t('purchase_start_failed'):'Satın alma başlatılamadı.', { kind: 'bad' }); return; }
 
     purchaseInFlight=true;
-    let shown;try{shown=request.show();}catch(e){purchaseInFlight=false;window.PWA?.logError?.({message:'Play show ('+t.sku+'): '+(e.name||'failed'),stack:''});toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
+    let shown;try{shown=request.show();}catch(e){purchaseInFlight=false;window.PWA?.logError?.({message:'Play show ('+t.sku+'): '+window.LUMIRA_PLAY.reason(e),stack:''});toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
     return shown.then(async function (response) {
       const token=response.details?.purchaseToken || response.details?.token;
       try {
@@ -129,7 +130,7 @@
       }
     }).catch(function(e){
       if(e?.name==='AbortError' || /cancel/i.test(String(e?.message || e)))return;
-      window.PWA?.logError?.({message:'Play checkout ('+t.sku+'): '+(e?.name||'failed'),stack:''});
+      window.PWA?.logError?.({message:'Play checkout ('+t.sku+'): '+window.LUMIRA_PLAY.reason(e),stack:''});
       toast(window.t?window.t('purchase_complete_failed'):'Satın alma tamamlanamadı.',{kind:'bad',duration:6000});
     }).finally(()=>{purchaseInFlight=false;});
   }
@@ -163,7 +164,7 @@
       b.appendChild(grid);
       if(native){
         const status=document.createElement('p'),retry=document.createElement('button');status.className='pwa-note';status.dataset.storeStatus='';status.setAttribute('role','status');retry.type='button';retry.dataset.storeRetry='';retry.className='pwa-btn';retry.textContent=window.LUMIRA_PLAY.text(4);retry.hidden=true;b.append(status,retry);
-        const load=async refresh=>{retry.disabled=true;status.textContent=window.LUMIRA_PLAY.text(0);try{const items=await window.LUMIRA_PLAY.catalog({refresh});if(!grid.isConnected)return;for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=!detail||revoked(row.t.amount);}const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;}catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;for(const row of storeCards){row.price.textContent=window.LUMIRA_PLAY.errorText(error);row.el.disabled=true;}}finally{retry.disabled=false;}};retry.onclick=()=>load(true);load(false);
+        const load=async refresh=>{retry.disabled=true;status.textContent=window.LUMIRA_PLAY.text(0);try{const items=await window.LUMIRA_PLAY.catalog({refresh});if(!grid.isConnected)return;for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=!detail||revoked(row.t.amount);}const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;}catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;for(const row of storeCards){row.price.textContent='—';row.el.disabled=true;}}finally{retry.disabled=false;}};retry.onclick=()=>load(true);load(false);
       }
       if (window.LUMIRA_FEATURES && typeof window.getDigitalGoodsService === 'function') {
         var restore = document.createElement('button');

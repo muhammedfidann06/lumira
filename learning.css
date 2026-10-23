@@ -15,3 +15,18 @@
 .settings-organized>h3{font-size:15px;margin:4px 2px 14px;color:#e1e8ff}.settings-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:24px}.settings-shortcuts button{border:1px solid #b4a3ff33;border-radius:15px;background:linear-gradient(120deg,#29334f,#202740);color:#eef1ff;font:600 13px/1.6 system-ui;padding:14px 10px;min-height:56px;cursor:pointer;word-break:normal;overflow-wrap:break-word}.settings-group{margin-block:24px}.settings-group>h3{font-size:12px;letter-spacing:.02em;margin:0 4px 12px;color:#b1bfe0}.settings-group:empty{display:none}.settings-group .pwa-row{margin-block:8px}.settings-group .pwa-progress{margin:4px 10px 12px}.settings-group[data-settings-group=technical]{border-top:1px solid #b4c4ff22;padding-top:22px}.settings-shortcuts button:focus-visible{outline:2px solid #9de1e8;outline-offset:3px}
 
 .tab-icon svg{display:block;width:20px;height:20px}.practice-mode-icon svg{width:25px;height:25px}.work-mascot svg{display:block;width:34px;height:28px}
+
+/* Share the home language cards without inheriting their navigation handlers. */
+.app .practice-language-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%}
+.app .practice-language{appearance:none;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:96px;padding:18px 12px;border:1px solid #90b9f02e;border-radius:18px;background-color:#101d3b99;color:#eaf1ff;font-family:inherit;text-align:center;overflow:hidden;isolation:isolate}
+.app .practice-language .flag{font-size:24px;line-height:1.2;margin:0}
+.app .practice-language .lname{font-size:clamp(13px,1.7vw,16px);font-weight:700;line-height:1.5;max-width:100%;white-space:normal;overflow-wrap:break-word}
+.app .practice-language .landmark{width:64px;height:64px;font-size:64px;inset-inline-end:-8px;right:auto}
+.app .practice-language:focus-visible{outline:3px solid #c1f5ff;outline-offset:4px}
+.app .practice-language[aria-pressed=true]{border-color:rgba(var(--lg),.7)}
+@media(max-width:480px){.app .practice-language-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.app .practice-language{min-height:88px;padding:16px 10px}}
+@media(prefers-reduced-motion:reduce){.app .practice-language{animation:none;transition:none}}
+
+.practice-gloss.is-unavailable{border-style:dashed;background:transparent}.practice-gloss.is-unavailable span{font-size:11px;max-width:22ch;line-height:1.7}
+
+.practice-language .landmark svg{display:block;width:100%;height:100%;color:#e8efff}

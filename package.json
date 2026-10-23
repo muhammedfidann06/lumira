@@ -1,7 +1,7 @@
 {
   "name": "lumira-features",
   "private": true,
-  "version": "1.11.1",
+  "version": "1.11.2",
   "description": "Server-side authentication and account usage for Lumira",
   "engines": {
     "node": ">=22"

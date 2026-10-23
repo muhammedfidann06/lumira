@@ -2,6 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="lumira-version" content="1.11.2">
+<script src="device-storage.js?v=1.11.2"></script>
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
@@ -15,11 +17,11 @@ if (/Android/i.test(navigator.userAgent)) {
 }
 </script>
 <title>Lumira | Dil Kartları</title>
-<script defer src="android-store.js?v=1.11.1"></script>
-<link rel="stylesheet" href="language-select.css?v=1.11.1">
-<script defer src="language-select.js?v=1.11.1"></script>
-<script src="story-i18n.js?v=1.11.1"></script>
-<link rel="stylesheet" href="stories.css?v=1.11.1">
+<script defer src="android-store.js?v=1.11.2"></script>
+<link rel="stylesheet" href="language-select.css?v=1.11.2">
+<script defer src="language-select.js?v=1.11.2"></script>
+<script src="story-i18n.js?v=1.11.2"></script>
+<link rel="stylesheet" href="stories.css?v=1.11.2">
 <meta name="description" content="6 dilde binlerce kelime kartı, quiz, seslendirme ve kişisel ilerleme takibi. Çevrimdışı çalışır.">
 <meta name="application-name" content="Lumira Dil Kartları">
 <meta name="author" content="Lumira">
@@ -82,7 +84,7 @@ if (/Android/i.test(navigator.userAgent)) {
 <link rel="preload" as="image" href="./scene-bg.jpg">
 <link rel="preload" as="image" href="./icon-192.png">
 
-<script src="backend.js?v=1.11.1"></script>
+<script src="backend.js?v=1.11.2"></script>
 
 <!-- Firebase SDK'sı erkenden indirilsin: sıralama tablosu ilk ziyarette
      gecikmesin. preload, tarayıcıya üçünü paralel indirtir. -->
@@ -909,11 +911,11 @@ if (/Android/i.test(navigator.userAgent)) {
 .example-translation-note[hidden]{display:none;}
 .example-translation-note button{font:inherit;color:inherit;background:transparent;border:1px solid rgba(140,190,255,.28);border-radius:9px;padding:8px 12px;min-height:44px;cursor:pointer;}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.11.1">
-<link rel="stylesheet" href="pwa.css?v=1.11.1">
-<link rel="stylesheet" href="live-translate.css?v=1.11.1">
-<link rel="stylesheet" href="access-screen.css?v=1.11.1">
-<link rel="stylesheet" href="learning.css?v=1.11.1">
+<link rel="stylesheet" href="theme.css?v=1.11.2">
+<link rel="stylesheet" href="pwa.css?v=1.11.2">
+<link rel="stylesheet" href="live-translate.css?v=1.11.2">
+<link rel="stylesheet" href="access-screen.css?v=1.11.2">
+<link rel="stylesheet" href="learning.css?v=1.11.2">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -1304,16 +1306,16 @@ if (/Android/i.test(navigator.userAgent)) {
   </div>
 </div>
 
-<script src="vocab-core.js?v=1.11.1"></script>
-<script src="vocab-parallel.js?v=1.11.1"></script>
-<script src="vocab-pairs.js?v=1.11.1"></script>
-<script src="vocab-identity.js?v=1.11.1"></script>
+<script src="vocab-core.js?v=1.11.2"></script>
+<script src="vocab-parallel.js?v=1.11.2"></script>
+<script src="vocab-pairs.js?v=1.11.2"></script>
+<script src="vocab-identity.js?v=1.11.2"></script>
 <!-- Açılışta SADECE Almanca yükleniyor. Diğer beş dil, kullanıcı o dile
      geçtiği anda pwa.js tarafından indiriliyor. Önceden altı dosyanın altısı
      birden (5,2 MB) her açılışta ayrıştırılıyordu; telefonlarda donmanın en
      büyük sebebi buydu. -->
-<script src="vocab-de.js?v=1.11.1"></script>
-<script src="phrases-de.js?v=1.11.1"></script>
+<script src="vocab-de.js?v=1.11.2"></script>
+<script src="phrases-de.js?v=1.11.2"></script>
 <script>
 /* ===================== SÖZLÜKLERİN İHTİYAÇ ANINDA YÜKLENMESİ =============
    Bu kod BİLEREK index.html'in içinde: sözlük etiketlerini kaldıran dosya ile
@@ -1422,7 +1424,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.11.1"></script>
+<script src="leaderboard.js?v=1.11.2"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -5143,23 +5145,24 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
   }, { once:true });
 })();
 </script>
-<script src="live-local-loader.js?v=1.11.1"></script>
-<script src="access-i18n.js?v=1.11.1"></script>
-<script src="play-store.js?v=1.11.1"></script>
-<script src="feature-usage.js?v=1.11.1"></script>
-<script src="billing.js?v=1.11.1"></script>
-<script src="stories.js?v=1.11.1"></script>
-<script defer src="welcome-gift.js?v=1.11.1"></script>
-<script src="example-translations.js?v=1.11.1"></script>
-<script src="access-screen.js?v=1.11.1"></script>
-<script src="live-cloud.js?v=1.11.1"></script>
-<script src="practice-core.js?v=1.11.1"></script>
-<script src="learning-i18n.js?v=1.11.1"></script>
-<script src="learning.js?v=1.11.1"></script>
-<script src="maintenance.js?v=1.11.1"></script>
-<script src="progress.js?v=1.11.1"></script>
-<script src="live-source.js?v=1.11.1"></script>
-<script src="live-translate.js?v=1.11.1"></script>
+<script src="live-local-loader.js?v=1.11.2"></script>
+<script src="access-i18n.js?v=1.11.2"></script>
+<script src="play-store.js?v=1.11.2"></script>
+<script src="feature-usage.js?v=1.11.2"></script>
+<script src="billing.js?v=1.11.2"></script>
+<script src="stories.js?v=1.11.2"></script>
+<script defer src="welcome-gift.js?v=1.11.2"></script>
+<script src="example-translations.js?v=1.11.2"></script>
+<script src="access-screen.js?v=1.11.2"></script>
+<script src="live-cloud.js?v=1.11.2"></script>
+<script src="practice-core.js?v=1.11.2"></script>
+<script src="learning-i18n.js?v=1.11.2"></script>
+<script src="practice-gloss.js?v=1.11.2"></script>
+<script src="learning.js?v=1.11.2"></script>
+<script src="maintenance.js?v=1.11.2"></script>
+<script src="progress.js?v=1.11.2"></script>
+<script src="live-source.js?v=1.11.2"></script>
+<script src="live-translate.js?v=1.11.2"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -5170,23 +5173,23 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.11.1"></script>
-<script defer src="theme.js?v=1.11.1"></script>
+<script defer src="voice.js?v=1.11.2"></script>
+<script defer src="theme.js?v=1.11.2"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.11.1"></script>
+<script defer src="pwa.js?v=1.11.2"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.11.1"></script>
+<script defer src="support-badges.js?v=1.11.2"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.11.1"></script>
-<script defer src="analytics.js?v=1.11.1"></script>
+<script defer src="splash.js?v=1.11.2"></script>
+<script defer src="analytics.js?v=1.11.2"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin-badges.js?v=1.11.1"></script>
-<script defer src="admin.js?v=1.11.1"></script>
+<script defer src="admin-badges.js?v=1.11.2"></script>
+<script defer src="admin.js?v=1.11.2"></script>
 </body>
 </html>

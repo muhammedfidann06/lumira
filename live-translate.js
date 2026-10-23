@@ -47,8 +47,13 @@
     }
     el.title = F.text('reset',{date:new Date(q.resetsAt).toLocaleString(window.NATIVE_LANG || 'tr',{timeZone:q.timeZone})}) + ' (' + q.timeZone + ')';
   }
+  function boundEntries(){
+    for(const row of s.entries){row.original=typeof row.original==='string'?row.original.slice(-30000):'';row.translated=typeof row.translated==='string'?row.translated.slice(-30000):'';}
+    let characters=s.entries.reduce((n,row)=>n+row.original.length+row.translated.length,0);
+    while(s.entries.length>250 || (characters>60000 && s.entries.length>1)){const row=s.entries.shift();characters-=row.original.length+row.translated.length;}
+  }
   let textFrame=0;const painted=new WeakMap();
-  function drawText() {if(!textFrame)textFrame=requestAnimationFrame(()=>{textFrame=0;paintText();});}
+  function drawText() {boundEntries();if(!textFrame)textFrame=requestAnimationFrame(()=>{textFrame=0;paintText();});}
   function paintText() {
     const original = node('ltOriginal'), translated = node('ltTranslation');
     if (!original || !translated) return;
@@ -198,6 +203,7 @@
         }
       }
       if(!current())return;
+      if(!window.LUMIRA_LOCAL?.fallbackAllowed?.())throw error('local_device_limited');
       s.provider='local-preparing';s.phase='preparing';status('local_preparing');
       clearInterval(s.timer);clearTimeout(s.deadlineTimer);
       const oldId=s.sessionId;s.sessionId=null;
@@ -323,31 +329,35 @@
     const seen=new Set();
     function result(event,final){
       if(!current())return;
-      s.lastResult=performance.now();s.awaitingSince=0;
-      const r=event.result;
-      if(!r || !r.text || (final && r.reason!==SDK.ResultReason.TranslatedSpeech))return;
-      let locale=r.language || '';
+      const r=event?.result;
+      if(!r || typeof r.text!=='string' || !r.text.trim() || r.text.length>4000 || (final && r.reason!==SDK.ResultReason.TranslatedSpeech))return;
+      let locale=typeof r.language==='string'?r.language:'';
       if(!locale){try{locale=SDK.AutoDetectSourceLanguageResult.fromResult(r).language || '';}catch(e){}}
       if(!locale){try{locale=r.properties.getProperty(SDK.PropertyId.SpeechServiceConnection_AutoDetectSourceLanguageResult)||'';}catch(e){}}
+      if(typeof locale!=='string')locale='';
       if(!locale || locale.startsWith('{')){
         try{
           const json=JSON.parse(locale.startsWith('{')?locale:(r.json || r.properties.getProperty(SDK.PropertyId.SpeechServiceResponse_JsonResult) || '{}'));
           locale=json.PrimaryLanguage?.Language || json.SpeechPhrase?.PrimaryLanguage?.Language || json.Language || '';
         }catch(e){locale='';}
       }
+      if(typeof locale!=='string')locale='';
       const observed=locale.split('-')[0].toLowerCase();
       if(s.source!=='auto'&&FLAGS[observed]&&observed!==s.source)return;
+      // NoMatch/empty events are not proof of a working transcription. They
+      // must not keep resetting the silent-service watchdog indefinitely.
+      s.lastResult=performance.now();s.awaitingSince=0;
       const code=s.source==='auto'?observed:s.source;
       if(s.source!=='auto'||final){if(FLAGS[code])s.detected=code;}
       let translated='';try{translated=r.translations.get(s.target)||'';}catch(e){}
       if(!translated && code===s.target)translated=r.text;
-      const entry={original:r.text,translated};
+      const entry={original:r.text.slice(0,4000),translated:typeof translated==='string'?translated.slice(0,4000):''};
       if(final){
         // Azure's translation resultId can be the same for a whole session.
         // Audio offsets, not resultId alone, distinguish successive sentences.
         const key=Number.isFinite(r.offset)?[r.resultId,r.offset,r.duration].join(':'):null;
         if(key && seen.has(key))return;
-        if(key)seen.add(key);
+        if(key){seen.add(key);if(seen.size>512)seen.delete(seen.values().next().value);}
         s.entries.push(entry);s.draft=null;s.restartAttempt=0;s.authRetries=0;s.azureFailures=0;
         if(Number.isFinite(r.offset) && Number.isFinite(r.duration))s.local?.markCommitted(captureStart+(r.offset+r.duration)/10000000);
       }else s.draft=entry;
@@ -355,6 +365,7 @@
     }
     recognizer.recognizing=(_,e)=>result(e,false);
     recognizer.recognized=(_,e)=>result(e,true);
+    recognizer.speechStartDetected=()=>{if(current()&&!s.awaitingSince)s.awaitingSince=performance.now();};
     recognizer.canceled=(_,event)=>{if(current()){window.PWA?.logError?.({message:'Live Azure canceled: '+String(event?.errorCode??event?.reason??'unknown'),stack:''});s.failed.add('azure');s.cancelStart?.();if(!s.switching)fallback(generation);}};
     recognizer.sessionStopped=()=>{if(current())reconnect(generation);};
     await new Promise((resolve,reject)=>{
@@ -402,7 +413,7 @@
     s.sdkTask=sdk();s.sdkTask.catch(()=>{});
     let media;
     try{
-      media=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+      media=await navigator.mediaDevices.getUserMedia({audio:{channelCount:{ideal:1},echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
       if(generation!==s.generation){stopTracks(media);return;}
       s.stream=media;
       if(s.releasePromise)await s.releasePromise;

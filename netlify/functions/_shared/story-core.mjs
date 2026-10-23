@@ -33,7 +33,7 @@ export function createWordPool(catalog){
   return [...pool.values()];
  };
 }
-export function validateOptions(body){if(!LANGUAGES.includes(body.language)||!LANGUAGES.includes(body.native)||body.language===body.native||!GENRES.includes(body.genre)||!STYLES.includes(body.style)||!VOICES.includes(body.voice)||![0,1,2,3].includes(body.level))throw fault('invalid_input',422);return Object.fromEntries(['language','native','genre','style','voice','level'].map(k=>[k,body[k]]));}
+export function validateOptions(body){if(!LANGUAGES.includes(body.language)||!LANGUAGES.includes(body.native)||body.language===body.native||!GENRES.includes(body.genre)||!STYLES.includes(body.style)||!VOICES.includes(body.voice)||![0,1,2,3].includes(body.level))throw fault('invalid_input',422);if(body.engine!==undefined&&!['auto','reviewed'].includes(body.engine))throw fault('invalid_input',422);return{...Object.fromEntries(['language','native','genre','style','voice','level'].map(k=>[k,body[k]])),...(body.engine?{engine:body.engine}:{})};}
 export function validateStory(raw,pool,options){
  const data=decodeStory(raw);
  if(!Array.isArray(data?.sentences)||data.sentences.length<4||data.sentences.length>18)throw fault('story_invalid',502);

@@ -27,15 +27,8 @@ export class LocalTextTranslator {
       this.pending.clear();
     };
     await this.rpc('initialize', [{ cacheSize: 0, useNativeIntGemm: false }]);
-    const pairs = LANGUAGES.filter(lang => lang !== 'en' && lang !== target).map(lang => `${lang}-en`);
-    if (target !== 'en') pairs.push(`en-${target}`);
-    const files = pairs.flatMap(pair => Object.values(this.models[pair]));
-    // Limit concurrent downloads and peak RAM. Prewarm every source language
-    // so changing speakers does not depend on the Azure service.
-    for (let index = 0; index < files.length; index += 2) {
-      await Promise.all(files.slice(index, index + 2).map(file => this.compressed(file)));
-      if (this.closed) throw failure('local_cancelled');
-    }
+    // Load only the target direction. Other directions stay on disk and
+    // are fetched on demand, without retaining every compressed model in RAM.
     if (target !== 'en') await this.load(`en-${target}`);
   }
   rpc(name, args, transfer = []) {
@@ -95,7 +88,10 @@ export class LocalTextTranslator {
     try {
       if (!this.cache) throw new Error('no cache');
       await this.cache.put(file.url, new Response(bytes, { headers: { 'Content-Type': 'application/octet-stream' } }));
-    } catch { this.memoryCache.set(file.url, bytes); }
+    } catch {
+      this.memoryCache.clear();
+      if(bytes.byteLength<=32000000)this.memoryCache.set(file.url, bytes);
+    }
     this.progress(file, file.bytes); return bytes;
   }
   async uncompressed(file) {
