@@ -194,3 +194,7 @@ body.story-focus #fg-desk{display:none!important}
 .story-quiz-feedback p{color:#bdcde2;font-size:14px}
 .story-languages{margin-bottom:8px}
 @media(max-width:360px){.story-quiz{padding:18px 13px}.story-quiz h2{font-size:18px}}
+
+.story-art>img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:3/2}.story-art{aspect-ratio:3/2}.story-art>small{position:absolute;bottom:14px;inset-inline-start:14px}
+
+.story-style-thumb{display:block;width:100%;aspect-ratio:3/2;height:auto;border-radius:10px;object-fit:cover;margin-bottom:8px}.story-choices[data-story-choices=style] .story-choice{padding:9px;gap:5px;overflow:hidden}

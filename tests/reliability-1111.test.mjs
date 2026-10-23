@@ -59,7 +59,7 @@ test('large learned pool can receive a grammatical short story without twenty-wo
  const bad=structuredClone(sentences);bad[2].text+=' dragons';assert.throws(()=>validateStory({sentences:bad},pool,options),e=>e.code==='story_unknown_word');
 });
 test('reviewed fallback refuses unrelated word lists rather than silently introducing new words',()=>{
- assert.equal(knownStory(['book','blue','table','window','quiet','large','green','house'].map(w=>({w})),{language:'en',native:'tr',level:0}),null);
+ assert.equal(knownStory(['satellite','algorithm','chromosome','quantum','logarithm','voltage','dioxide','neutron'].map(w=>({w})),{language:'en',native:'tr',level:0}),null);
 });
 
 function workerFixture({failedAsset='',status=200,responseBody='network'}={}){

@@ -1753,7 +1753,7 @@
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+(window.t?window.t('nb_writing_practice'):'✍️ Yazma Pratiği')+'</div><div class="pm-sub">'+(window.t?window.t('wp_choose_lang_sub'):'Hangi dilde yazma pratiği yapmak istersin?')+'</div></div>';
     html += '<div class="feature-quota" data-writing-quota></div>';
     html += '<div class="practice-language-grid">';
-    WP_LANGS.filter(l => l.code !== (window.NATIVE_LANG || 'tr')).forEach(l=>{
+    (window.learningLanguageCodes?.()||WP_LANGS.map(l=>l.code)).map(code=>WP_LANGS.find(l=>l.code===code)).filter(l=>l&&l.code!==(window.NATIVE_LANG||'tr')).forEach(l=>{
       const L = (typeof LANGS !== 'undefined' && LANGS[l.code]) ? LANGS[l.code] : { label: l.code };
       html += '<button type="button" class="practice-language" data-lang="'+l.code+'" data-wp-lang="'+l.code+'"><span class="lname">'+escapeHtml((typeof nbLangLabel==='function')?nbLangLabel(l.code):L.label)+'</span></button>';
     });

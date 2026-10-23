@@ -22,7 +22,7 @@ function trackWrite(promise){storageWrites.add(promise);promise.finally(()=>stor
 function addCache(cache,request){if(storageReset)return Promise.reject(Error('storage_paused'));return trackWrite(cache.add(request));}
 function putCache(cache,key,response){if(storageReset)return Promise.resolve();return trackWrite(cache.put(key,response));}
 
-const CACHE_VERSION = 'v1.11.2';
+const CACHE_VERSION = 'v1.11.3';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
 const PHRASE_CACHE  = 'lumira-phrases-v1.11.1';
@@ -87,6 +87,8 @@ const SHELL = [
   './live-cloud.js',
   './live-translate.js',
   './live-source.js',
+  './live-text.js',
+  './live-browser.js',
   './language-select.js',
   './language-select.css',
   './live-local-loader.js',

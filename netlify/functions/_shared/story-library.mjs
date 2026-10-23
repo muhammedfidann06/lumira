@@ -11,24 +11,18 @@ export function knownStory(pool,options){
  let sentences=target.slice(1).map((text,i)=>({text,translation:translated[i+1]}));
  if(level>0){const frame=readings.frames[language][level-1],translation=readings.frames[native][level-1];sentences=[{text:frame[0],translation:translation[0]},...sentences,{text:frame[1],translation:translation[1]}];}
  const reviewedForms={ar:{'ماء':['الماء'],'بيت':['البيت'],'عائلة':['العائلة','عائلتها'],'أب':['أبيها']},ru:{'мама':['мамы','маму','маме'],'сестра':['сестры','сестре','сестру'],'семья':['семье','семьи'],'хлеб':['хлеба']}};
+ const shown=new Set();
  const full=' '+tokens(sentences.map(row=>row.text).join(' '),language).join(' ')+' ',focus=[];
  for(const row of pool){
-  const base=key(row.w,language),forms=[base,...(reviewedForms[language]?.[base]||[])].filter(form=>form&&full.includes(' '+form+' '));if(!forms.length)continue;
+  const base=key(row.w,language),forms=[base,...(reviewedForms[language]?.[base]||[])].filter(form=>form&&full.includes(' '+form+' '));if(!forms.length||forms.some(form=>shown.has(normalize(form,language))))continue;
   // Turkish meanings can be reused directly. Other native languages use the
   // aligned public catalog, not a Turkish definition disguised as localization.
   const meaning=row.meaning||lookupMeaning(row.w,language,native);
   if(!meaning)continue;
-  focus.push({word:row.w,forms,meaning});if(focus.length===12)break;
+  for(const form of forms)shown.add(normalize(form,language));focus.push({word:row.w,forms,meaning});if(focus.length===32)break;
  }
  if(!focus.length)return null;
- const offset=level>0?1:0;
- const spec=readings.questions[genre];
- const questions=spec.evidence.map((index,number)=>{
-  const evidence=index+offset,correct=sentences[evidence].translation;
-  const choices=[correct,sentences[(index+2)%6+offset].translation,sentences[(index+4)%6+offset].translation];
-  const answer=number;for(let n=0;n<number;n++)choices.unshift(choices.pop());
-  return{question:spec[native][number],choices,answer,evidence};
- });
+ const questions=[]; // The validator builds answer keys from these exact paragraphs.
  try{return{...validateNarrative({title:target[0],sentences,focus,glossary:[],questions},pool,options,{reviewed:true}),provider:'library',method:'reviewed'};}catch{return null;}
 }
 // Compact, reviewed concepts cover the first lessons, including native UI
@@ -57,6 +51,14 @@ const concepts=[
  ['benim','my','mein','لي','mon','mi','мой'],
  ['bir','one','eins','واحد','un','uno','один'],
  ['bugün','today','heute','اليوم',"aujourd’hui",'hoy','сегодня'],
+ ['doktor','doctor','arzt','طبيب','médecin','médico','врач'],
+ ['sabah','morning','morgen','صباح','matin','mañana','утро'],
+ ['akşam','evening','abend','مساء','soir','noche','вечер'],
+ ['araba','car','auto','سيارة','voiture','coche','машина'],
+ ['soru','question','frage','سؤال','question','pregunta','вопрос'],
+ ['cevap','answer','antwort','جواب','réponse','respuesta','ответ'],
+ ['yatak','bed','bett','سرير','lit','cama','кровать'],
+ ['çocuk','child','kind','طفل','enfant','niño','ребёнок'],
  ['yakında','soon','bald','قريبا','bientôt','pronto','скоро']
 ],languages=['tr','en','de','ar','fr','es','ru'];
 function lookupMeaning(word,language,native){const position=languages.indexOf(language),row=concepts.find(values=>key(values[position],language)===key(word,language));return row?.[languages.indexOf(native)]||'';}

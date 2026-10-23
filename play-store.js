@@ -30,6 +30,12 @@
   if(refresh){serviceValue=null;serviceFlight=null;}if(serviceValue)return serviceValue;if(serviceFlight)return serviceFlight;
   const task=(async()=>{if(typeof root.getDigitalGoodsService!=='function')throw failure('store_unsupported');let last;for(let attempt=0;attempt<3;attempt++){try{const value=await bounded(root.getDigitalGoodsService('https://play.google.com/billing'));serviceValue=value;return value;}catch(error){last=error;const code=reason(error);if(['unsupportedcontext','unsupportedpaymentmethod','clientappunavailable','clientapperror'].includes(code)){const fault=failure(code==='clientappunavailable'||code==='clientapperror'?'store_app_unavailable':'store_native_setup');fault.storeReason=code;throw fault;}if(attempt<2)await new Promise(resolve=>setTimeout(resolve,250*(attempt+1)));}}const fault=failure('store_unavailable');fault.storeReason=reason(last);throw fault;})();serviceFlight=task;try{return await task;}finally{if(serviceFlight===task)serviceFlight=null;}
  }
+ let purchases=[],purchasesUid='';
+ async function owned(bridge,account){try{const rows=await bounded(bridge.listPurchases());if(uid()===account){purchases=Array.isArray(rows)?rows.filter(row=>products.some(product=>product.sku===row.itemId)&&typeof row.purchaseToken==='string'):[];purchasesUid=account;
+    // Bind/verify the old receipt before a replacement can charge a new plan.
+    // A Play account can contain purchases linked to another Lumira account.
+    await Promise.all(purchases.filter(row=>/_monthly$/.test(row.itemId)).map(async row=>{try{await root.LUMIRA_FEATURES.verifyPurchase(row.itemId,row.purchaseToken,account);if(uid()===account)row.verifiedForAccount=true;}catch(error){row.verificationError=error.featureCode||'purchase_verification_unavailable';}}));
+   }}catch{purchases=[];purchasesUid='';}}
  let pending,cache,until=0,cacheUid='',readyUid='',readyProducts=new Set();
  async function catalog({refresh=false}={}){
   const account=uid();
@@ -39,6 +45,7 @@
    const backend=account?(async()=>{try{const data=await root.LUMIRA_FEATURES.api('status',{}, {timeoutMs:8000});if(uid()!==account)throw failure('login_required');if(!Array.isArray(data.playProducts))throw failure('store_backend_pending');return new Set(data.playProducts);}catch(error){throw failure(error.featureCode==='login_required'?'login_required':'store_backend_pending');}})():Promise.resolve(null);
    backend.catch(()=>{});
    let bridge;try{bridge=await service({refresh});}catch(error){log('bridge',error);throw error;}
+   const purchaseRead=owned(bridge,account);
    const result=new Map();result.errors=new Map();
    function accept(items){if(!Array.isArray(items))return;for(const item of items){const product=products.find(row=>row.sku===item.itemId);if(!product||!item.price||!Number.isFinite(Number(item.price.value))||Number(item.price.value)<0)continue;
     if(item.itemType&&item.itemType!==(product.lifetime?'product':'subscription')||!product.lifetime&&item.subscriptionPeriod&&item.subscriptionPeriod!=='P1M'){result.errors.set(product.sku,failure('store_plan_unavailable'));continue;}
@@ -49,14 +56,14 @@
    // A missing or invalid product must not disable the remaining products.
    const missing=products.filter(row=>!result.has(row.sku)&&!result.errors.has(row.sku));
    await Promise.allSettled(missing.map(async row=>{try{accept(await bounded(bridge.getDetails([row.sku])));}catch{result.errors.set(row.sku,failure('store_item_unavailable'));}}));
-   const supported=await backend;if(uid()!==account)throw failure('login_required');
+   await purchaseRead;const supported=await backend;if(uid()!==account)throw failure('login_required');
    if(supported){readyUid=account;readyProducts=supported;for(const row of products)if(!supported.has(row.sku)){result.delete(row.sku);result.errors.set(row.sku,failure('store_backend_pending'));}}
    for(const row of products)if(!result.has(row.sku)&&!result.errors.has(row.sku))result.errors.set(row.sku,failure('store_item_unavailable'));
    cache=result;cacheUid=account;until=Date.now()+(result.size===products.length?30000:5000);return result;
   })();
   pending={uid:account,promise:task};try{return await task;}finally{if(pending?.promise===task)pending=null;}
  }
- const clear=()=>{cache=null;until=0;readyUid='';readyProducts=new Set();};
- root.LUMIRA_PLAY={products,catalog,service,reason,text,errorText,isNative,canPurchase:sku=>!!uid()&&readyUid===uid()&&readyProducts.has(sku)};
+ const clear=()=>{cache=null;until=0;readyUid='';readyProducts=new Set();purchases=[];purchasesUid='';};
+ root.LUMIRA_PLAY={products,catalog,service,reason,ownedPurchase:sku=>purchasesUid===uid()?purchases.find(row=>row.itemId===sku):null,replacement:()=>purchasesUid===uid()?purchases.find(row=>/_monthly$/.test(row.itemId)&&row.verifiedForAccount):null,replacementFailure:()=>purchasesUid===uid()?purchases.find(row=>/_monthly$/.test(row.itemId)&&!row.verifiedForAccount)?.verificationError:null,text,errorText,isNative,canPurchase:sku=>!!uid()&&readyUid===uid()&&readyProducts.has(sku)};
  root.addEventListener('lumira:localechange',()=>{cache=null;until=0;});root.addEventListener('lumira:featureauthchange',clear);
 })(window);

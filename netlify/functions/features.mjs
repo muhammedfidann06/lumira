@@ -1,16 +1,16 @@
 import { changeUsage, summary, fault } from './_shared/feature-core.mjs';
 import { identity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from './_shared/feature-services.mjs';
-import { configuredProviders, connectProvider } from './_shared/live-providers.mjs';
+import { configuredProviders, connectProvider, translateText } from './_shared/live-providers.mjs';
 import { withCors } from './_shared/cors.mjs';
 import {welcomeGift} from './_shared/welcome-gift.mjs';
 import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.1' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.3' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
-export function createHandler(services = { identity, speechToken, checkWriting, verifyPlayPurchase, sha256, configuredProviders, connectProvider }, clock = Date.now) {
+export function createHandler(services = { identity, speechToken, checkWriting, verifyPlayPurchase, sha256, configuredProviders, connectProvider, translateText }, clock = Date.now) {
   return withCors(async request => {
     if (request.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405);
     let ctx, ref, zone = process.env.LUMIRA_TIME_ZONE || 'Europe/Vienna';
@@ -21,10 +21,10 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       let body;
       try { body = JSON.parse(raw); } catch { throw fault('invalid_input'); }
       if (!body || typeof body !== 'object') throw fault('invalid_input');
-      if (!['status', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
+      if (!['status', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'liveText', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
       ctx = await services.identity(request);
       if(body.action==='check')await(services.assertAvailable||assertAvailable)(ctx,'writing');
-      if(['liveStart','liveConnect','liveRenew'].includes(body.action))await(services.assertAvailable||assertAvailable)(ctx,'live');
+      if(['liveStart','liveConnect','liveRenew','liveText'].includes(body.action))await(services.assertAvailable||assertAvailable)(ctx,'live');
       if(['welcome','welcomeAck'].includes(body.action))return reply({welcome:await (services.welcomeGift||welcomeGift)(ctx,{ack:body.action==='welcomeAck'})});
       ref = ctx.db.ref(`serverFeatureUsage/${ctx.uid}`);
       const quota = value => summary(value, ctx.tier, clock(), zone);
@@ -61,6 +61,11 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
         return reply({ verified: true });
       }
       if (!operationId(body.id)) throw fault('invalid_operation');
+      if(body.action==='liveText'){
+        if(typeof body.text!=='string'||!body.text.trim()||body.text.length>4000||!['tr','de','en','ar','fr','es','ru'].includes(body.source)||!['tr','de','en','ar','fr','es','ru'].includes(body.target))throw fault('invalid_input',422);
+        await mutate('liveConnect',{id:body.id});
+        return reply(await(services.translateText||translateText)(body.text,body.source,body.target));
+      }
       if (body.action === 'liveConnect') {
         await mutate('liveConnect', { id: body.id });
         return reply(await (services.connectProvider || connectProvider)(body.provider, body.target,{source:body.source||'auto'}));

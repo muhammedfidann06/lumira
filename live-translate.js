@@ -7,7 +7,7 @@
   const LOCAL_TEST = new URLSearchParams(window.location.search).get('liveEngine') === 'local';
   const LOCALES = ['tr-TR','de-DE','en-US','ar-SA','fr-FR','es-ES','ru-RU'];
   const FLAGS = { tr:'🇹🇷', de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
-  const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', source:'auto', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null, provider:'', local:null, localProgress:null, localError:false, localArm:null, switching:null, pendingAudio:null, azureStartedAt:0, azureFailures:0, providers:[], failed:new Set(), cloud:null, cloudEpoch:0, lastResult:0, awaitingSince:0, sdkTask:null };
+  const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', source:'auto', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null, provider:'', browser:null, textQueue:null, local:null, localProgress:null, localError:false, localArm:null, switching:null, pendingAudio:null, azureStartedAt:0, azureFailures:0, providers:[], failed:new Set(), cloud:null, cloudEpoch:0, lastResult:0, awaitingSince:0, sdkTask:null };
   const node = id => s.root?.querySelector('#' + id);
   const active = () => ['starting','listening','reconnecting','preparing'].includes(s.phase);
   const providerError = e => ['speech_unavailable','speech_not_configured','speech_auth_error','speech_busy','speech_config_error','sdk_unavailable'].includes(e?.featureCode);
@@ -134,7 +134,7 @@
     if(s.provider && !s.provider.endsWith('preparing'))s.failed.add(s.provider);
     s.switching=(async()=>{
       const current=()=>generation===s.generation && active();
-      s.cloudEpoch++;s.cloud?.stop();s.cloud=null;
+      s.cloudEpoch++;s.cloud?.stop();s.cloud=null;s.textQueue?.stop();s.textQueue=null;
       await releaseRecognizer(true);
       if(!current())return;
       for(const provider of s.providers){
@@ -203,7 +203,23 @@
         }
       }
       if(!current())return;
-      if(!window.LUMIRA_LOCAL?.fallbackAllowed?.())throw error('local_device_limited');
+      if(window.LUMIRA_BROWSER?.BrowserSession.supported()){
+        // Release cloud capture first. Running two microphone paths on iOS
+        // can suspend recognition; the browser owns capture in this mode.
+        s.local?.stop();s.local=null;s.localArm=null;stopTracks(s.stream);s.stream=null;
+        if(s.pendingAudio){s.pendingAudio.close().catch(()=>{});s.pendingAudio=null;}
+        const hint=s.detected||(typeof TARGET_LANG!=='undefined'?TARGET_LANG:'de');
+        const source=s.source==='auto'?(FLAGS[hint]?hint:'de'):s.source;
+        s.source=source;const select=node('ltSource');if(select){select.value=source;window.LUMIRA_LANGUAGE?.sync(select);}
+        s.provider='browser';s.phase='listening';
+        s.browser=new window.LUMIRA_BROWSER.BrowserSession({id:s.sessionId,source,target:s.target,
+          onReady:()=>{if(current())status('browser_listening');},
+          onDraft:text=>{if(current()){s.draft={original:text,translated:''};drawText();}},
+          onResult:entry=>{if(current()){s.entries.push(entry);s.draft=null;s.detected=source;status('browser_listening');drawText();}},
+          onError:(e,entry)=>{if(!current())return;if(e.featureCode==='text_translation_slow'){stop(e.featureCode,true);return;}if(e.featureCode==='text_translation_unavailable'){if(entry){s.entries.push({...entry,translated:F.text('translation_pending')});drawText();}status(e.featureCode,true);return;}stop(e.featureCode||'browser_speech_unavailable',true);}
+        });s.browser.start();status('browser_listening');holdScreen(generation);return;
+      }
+      if(!window.LUMIRA_LOCAL?.fallbackAllowed?.())throw error('browser_speech_unsupported');
       s.provider='local-preparing';s.phase='preparing';status('local_preparing');
       clearInterval(s.timer);clearTimeout(s.deadlineTimer);
       const oldId=s.sessionId;s.sessionId=null;
@@ -327,10 +343,14 @@
     const captureStart=s.local?.position || 0;
     const current=()=>generation===s.generation && active() && s.provider==='azure' && s.recognizer===recognizer;
     const seen=new Set();
+    if(recognizer.lumiraTranscriptOnly){s.textQueue?.stop();s.textQueue=new window.LUMIRA_TEXT.TextQueue({id:s.sessionId,target:s.target,
+      onResult:entry=>{if(current()){s.entries.push(entry);drawText();}},
+      onError:(e,entry)=>{if(current()){if(['login_required','live_limit','session_expired','maintenance','free_text_limit','text_translation_slow'].includes(e.featureCode)){stop(e.featureCode,true);return;}if(entry)s.entries.push({...entry,translated:F.text('translation_pending')});status(e.featureCode||'text_translation_unavailable',true);drawText();}}
+    });}
     function result(event,final){
       if(!current())return;
       const r=event?.result;
-      if(!r || typeof r.text!=='string' || !r.text.trim() || r.text.length>4000 || (final && r.reason!==SDK.ResultReason.TranslatedSpeech))return;
+      if(!r || typeof r.text!=='string' || !r.text.trim() || r.text.length>4000 || (final && r.reason!==(recognizer.lumiraTranscriptOnly?SDK.ResultReason.RecognizedSpeech:SDK.ResultReason.TranslatedSpeech)))return;
       let locale=typeof r.language==='string'?r.language:'';
       if(!locale){try{locale=SDK.AutoDetectSourceLanguageResult.fromResult(r).language || '';}catch(e){}}
       if(!locale){try{locale=r.properties.getProperty(SDK.PropertyId.SpeechServiceConnection_AutoDetectSourceLanguageResult)||'';}catch(e){}}
@@ -358,7 +378,7 @@
         const key=Number.isFinite(r.offset)?[r.resultId,r.offset,r.duration].join(':'):null;
         if(key && seen.has(key))return;
         if(key){seen.add(key);if(seen.size>512)seen.delete(seen.values().next().value);}
-        s.entries.push(entry);s.draft=null;s.restartAttempt=0;s.authRetries=0;s.azureFailures=0;
+        if(recognizer.lumiraTranscriptOnly&&FLAGS[code])s.textQueue.add({...entry,language:code});else s.entries.push(entry);s.draft=null;s.restartAttempt=0;s.authRetries=0;s.azureFailures=0;
         if(Number.isFinite(r.offset) && Number.isFinite(r.duration))s.local?.markCommitted(captureStart+(r.offset+r.duration)/10000000);
       }else s.draft=entry;
       drawText();
@@ -384,7 +404,7 @@
   }
   function stop(message, bad, exiting) {
     const id=s.sessionId;
-    ++s.generation;s.cloudEpoch++;s.cloud?.stop();s.cloud=null;s.sessionId=null;s.phase='idle';s.renewPending=false;s.draft=null;
+    ++s.generation;s.browser?.stop();s.browser=null;s.textQueue?.stop();s.textQueue=null;s.cloudEpoch++;s.cloud?.stop();s.cloud=null;s.sessionId=null;s.phase='idle';s.renewPending=false;s.draft=null;
     clearInterval(s.timer);clearInterval(s.tick);clearTimeout(s.deadlineTimer);clearTimeout(s.restartTimer);
     s.restartTimer=null;s.restartPending=false;s.restartAttempt=0;s.authRetries=0;s.speech=null;s.azureFailures=0;s.provider='';s.switching=null;
     s.local?.stop();s.local=null;s.localArm=null;

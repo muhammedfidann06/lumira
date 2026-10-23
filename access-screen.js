@@ -32,7 +32,7 @@ function open(reason,quota){
  const grid=create('div','la-grid');let selected=tiers.find(t=>t.amount>current)?.amount || null;
  const cards=[];const badgeFiles=['1f44d','2615','2764','1f49b','2b50','1f451'];
  tiers.forEach((tier,index)=>{
-  const card=create('button','la-card');card.type='button';card.dataset.tier=tier.amount;card.disabled=tier.amount<=current;
+  const card=create('button','la-card');card.type='button';card.dataset.tier=tier.amount;card.disabled=false;
   const heading=create('span','la-card-head');const badge=create('img','la-badge');badge.src='./vendor/badges/'+badgeFiles[index]+'.svg';badge.alt='';badge.width=28;badge.height=28;heading.append(badge,create('strong','',T('names')[index]));
   const check=create('span','la-check','✓');check.setAttribute('aria-hidden','true');heading.append(check);card.append(heading);
   const liveLines=[T(tier.minutes===null?'liveUnlimited':'live',{n:tier.minutes}),T(tier.count===null?'writingUnlimited':'writing',{n:tier.count})],otherLines=[T(tier.amount===1?'pdfTotal':'pdfUnlimited'),T('offline')];
@@ -69,7 +69,7 @@ function open(reason,quota){
  }
  if(current&&window.PWA?.openProfile){const manage=create('button','la-dismiss',window.LUMIRA_BILLING.text(22));manage.type='button';manage.onclick=()=>{close();window.PWA.openProfile();};panel.append(manage);}
  function update(){
-  cards.forEach(card=>{const amount=Number(card.dataset.tier),chosen=amount===selected;card.classList.toggle('is-selected',chosen);card.setAttribute('aria-pressed',String(chosen));card.disabled=amount<=current||!detailFor(amount)||purchasing;});
+  cards.forEach(card=>{const amount=Number(card.dataset.tier),chosen=amount===selected;card.classList.toggle('is-selected',chosen);card.setAttribute('aria-pressed',String(chosen));card.disabled=!detailFor(amount)||purchasing;});
   const item=detailFor(selected);buy.disabled=selected===null||!item||purchasing||(!native&&storeItems?.checkoutReady===false);
   buy.textContent=purchasing?window.LUMIRA_BILLING.text(27):T('buy');choice.hidden=!item;terms.hidden=!item;
   if(item){choice.replaceChildren(create('span','',T('selection')),create('strong','',name(selected)),create('span','',priceFor(item)+' · '+window.LUMIRA_BILLING.text(lifetimeFor(selected)?3:4)));terms.textContent=T(lifetimeFor(selected)?'lifetimeTerms':'monthlyTerms');}
@@ -89,7 +89,7 @@ function open(reason,quota){
   try{
    const items=await (native?window.LUMIRA_PLAY:window.LUMIRA_BILLING).catalog({refresh});if(active!==state)return;storeItems=items;
    for(const card of cards){const amount=Number(card.dataset.tier),item=detailFor(amount);card.querySelector('[data-store-price]').textContent=item?priceFor(item)+' · '+window.LUMIRA_BILLING.text(lifetimeFor(amount)?3:4):native?window.LUMIRA_PLAY.errorText(items.errors?.get(productFor(amount)?.sku)):T('storePartial');}
-   if(!detailFor(selected)||selected<=current)selected=tiers.find(tier=>tier.amount>current&&detailFor(tier.amount))?.amount||null;
+   if(!detailFor(selected))selected=tiers.find(tier=>detailFor(tier.amount))?.amount||null;
    const partial=items.size<tiers.length,unready=!native&&items.checkoutReady===false;status.textContent=unready?T('storeUnavailable'):partial?(native?window.LUMIRA_PLAY.text(1):T('storePartial')):'';retry.hidden=!partial&&!unready;update();
   }catch(error){
    if(active!==state)return;status.textContent=native?window.LUMIRA_PLAY.errorText(error):T('storeUnavailable');retry.hidden=false;

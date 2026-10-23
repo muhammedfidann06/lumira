@@ -104,8 +104,21 @@
     if(purchaseInFlight)return;
     if(revoked(t.amount)){toast(({tr:'Bu rozet hesabında yönetici tarafından kaldırıldı.',en:'An administrator has removed this badge from your account.',de:'Dieses Abzeichen wurde von einem Administrator aus deinem Konto entfernt.',ar:'أزال المسؤول هذه الشارة من حسابك.',fr:'Un administrateur a retiré ce badge de ton compte.',es:'Un administrador ha retirado esta insignia de tu cuenta.',ru:'Администратор удалил этот значок из твоего аккаунта.'})[window.NATIVE_LANG||'tr']||'An administrator has removed this badge from your account.',{kind:'bad'});return;}
     const policy=window.LUMIRA_FEATURES?.entitlement();
-    if(policy?.memberships?.some(row=>Array.isArray(row?.sources)&&row.sources.some(source=>source?.renewsAt&&!source.cancelAt&&source.active))){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
-    var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: { sku: t.sku } }];
+    const ownedPurchase=window.LUMIRA_PLAY.ownedPurchase?.(t.sku);
+    if(ownedPurchase){
+      purchaseInFlight=true;
+      return window.LUMIRA_FEATURES.verifyPurchase(t.sku,ownedPurchase.purchaseToken,purchaseUid).then(()=>{toast(window.LUMIRA_FEATURES.text('restored'),{kind:'good'});window.LUMIRA_FEATURES.api('status').catch(()=>{});}).catch(e=>toast(window.LUMIRA_FEATURES.text(e.featureCode||'purchase_verification_unavailable'),{kind:'bad'})).finally(()=>{purchaseInFlight=false;});
+    }
+    const renewing=policy?.memberships?.flatMap(row=>Array.isArray(row?.sources)?row.sources:[]).filter(source=>source?.renewsAt&&!source.cancelAt&&source.active)||[];
+    // Native subscription changes use Play's documented replacement fields.
+    // A Paddle subscription must be managed through its own customer portal.
+    if(renewing.some(source=>source.provider==='paddle')){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
+    const replacementFailure=window.LUMIRA_PLAY.replacementFailure?.();if(replacementFailure&&t.amount!==100){toast(window.LUMIRA_FEATURES.text(replacementFailure),{kind:'bad'});return;}
+    const replace=t.amount===100?null:window.LUMIRA_PLAY.replacement?.();
+    if(renewing.length&&(t.amount===100||!replace)){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
+
+    const paymentData={sku:t.sku};if(replace){paymentData.oldSku=replace.itemId;paymentData.purchaseToken=replace.purchaseToken;paymentData.replacementMode='withTimeProration';}
+    var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: paymentData }];
     var details = { total: { label: (window.t ? window.t('purchase_total_label') : 'Toplam'), amount: { currency: 'TRY', value: '0' } } };
     var request;
     try { request = new PaymentRequest(methodData, details); }
@@ -114,7 +127,8 @@
     purchaseInFlight=true;
     let shown;try{shown=request.show();}catch(e){purchaseInFlight=false;window.PWA?.logError?.({message:'Play show ('+t.sku+'): '+window.LUMIRA_PLAY.reason(e),stack:''});toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
     return shown.then(async function (response) {
-      const token=response.details?.purchaseToken || response.details?.token;
+      let paymentDetails=response.details;try{if(typeof paymentDetails==='string')paymentDetails=JSON.parse(paymentDetails);}catch{paymentDetails=null;}
+      const token=paymentDetails?.purchaseToken || paymentDetails?.token;
       try {
         if(!token || !window.LUMIRA_FEATURES)throw new Error('purchase_verification_unavailable');
         await window.LUMIRA_FEATURES.verifyPurchase(t.sku,token,purchaseUid);
@@ -129,7 +143,11 @@
         toast(window.LUMIRA_FEATURES?.text(e.featureCode||'purchase_verification_unavailable') || e.message,{kind:'bad',duration:8000});
       }
     }).catch(function(e){
-      if(e?.name==='AbortError' || /cancel/i.test(String(e?.message || e)))return;
+      // AbortError also covers native billing failures. Keep a sanitized
+      // diagnostic; never log the response details or purchase token.
+      window.LUMIRA_PLAY.catalog({refresh:true}).catch(()=>{});
+      if(e?.name==='AbortError'){toast(window.LUMIRA_PLAY.text(7),{duration:5000});return;}
+      if(/cancel/i.test(String(e?.message || e)))return;
       window.PWA?.logError?.({message:'Play checkout ('+t.sku+'): '+window.LUMIRA_PLAY.reason(e),stack:''});
       toast(window.t?window.t('purchase_complete_failed'):'Satın alma tamamlanamadı.',{kind:'bad',duration:6000});
     }).finally(()=>{purchaseInFlight=false;});

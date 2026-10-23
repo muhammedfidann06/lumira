@@ -11,3 +11,7 @@ const pools=new Map();export function poolFor(language='en',native=language==='t
 export function dataFor(language='en',native=language==='tr'?'en':'tr',level=0,genre='daily'){const story=knownStory(poolFor(language,native),options(language,native,level,genre));if(!story)throw Error('Missing reviewed fixture: '+language+'/'+native+'/'+genre+'/'+level);return story;}
 export const envFor=provider=>provider==='gemini'?{GEMINI_API_KEY:'fixture'}:provider==='groq'?{GROQ_API_KEY:'fixture'}:{CLOUDFLARE_ACCOUNT_ID:'a'.repeat(32),CLOUDFLARE_API_TOKEN:'fixture'};
 export const responseFor=(provider,data)=>Response.json(provider==='gemini'?{candidates:[{content:{parts:[{text:JSON.stringify(data)}]}}]}:provider==='groq'?{choices:[{message:{content:JSON.stringify(data)}}]}:{success:true,result:{response:data}});
+
+export function firstKnown(language,count=600){const words={};for(const row of catalog.filter(row=>row[0]===(language==='tr'?'de':language)).slice(0,count))words['u_'+encodeURIComponent(row[0]+'_'+row[1]+'_'+row[2].normalize('NFC')).replace(/\./g,'%2E')]={known:true};return{words};}
+export const narrativePoolFor=(language='en',native=language==='tr'?'en':'tr')=>bank(firstKnown(language),language,native);
+export const narrativeDataFor=(language='en',native=language==='tr'?'en':'tr',level=0,genre='daily')=>knownStory(narrativePoolFor(language,native),options(language,native,level,genre));
