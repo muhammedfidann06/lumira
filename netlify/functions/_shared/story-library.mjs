@@ -4,8 +4,10 @@
 import readings from './story-readings.json' with {type:'json'};
 import {normalize,tokens} from './story-core.mjs';
 import {validateNarrative} from './story-narrative.mjs';
+import {preparedStory} from './story-prepared.mjs';
 const key=(value,language)=>tokens(value,language).filter((word,index)=>!(language==='de'&&index===0&&['der','die','das'].includes(word))).join(' ');
 export function knownStory(pool,options){
+ if(options.plan)return preparedStory(pool,options,lookupMeaning);
  const language=options.language,native=options.native,genre=readings.stories[options.genre]?options.genre:'daily',level=options.level||0;
  const scene=readings.stories[genre],target=scene[language],translated=scene[native];if(!target||!translated)return null;
  let sentences=target.slice(1).map((text,i)=>({text,translation:translated[i+1]}));

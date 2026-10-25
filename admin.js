@@ -40,6 +40,8 @@
     if (!sheet()) return;
     window.PWA.sheet('🛡️ Yönetici Paneli', 'Yalnızca yönetici hesabında görünür.', function (b, panel) {
       var rows = [
+        ['🦋', window.LUMIRA_ANNOUNCEMENTS.text('title'), window.LUMIRA_ANNOUNCEMENTS.text('sub'), ()=>window.LUMIRA_ANNOUNCEMENTS.openAdmin()],
+        ['🛍️', window.LUMIRA_PLAY.setupText(0), window.LUMIRA_PLAY.setupText(1), ()=>window.LUMIRA_PLAY.openSetup()],
         ['🛠️', 'Bakım yönetimi', 'Bölümleri ve kelime kategorilerini aç veya bakıma al',()=>window.LUMIRA_MAINTENANCE.open()],
         ['📊', 'Kullanım istatistikleri', 'Günlük kullanıcı, olaylar, quiz hunisi', openStats],
         ['⭐', 'XP gönder',               'Bir kullanıcıya XP ekle',                openXp],

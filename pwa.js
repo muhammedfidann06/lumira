@@ -20,7 +20,7 @@
    ========================================================================== */
 (function () {
 'use strict';
-var APP_VERSION='1.11.3';
+var APP_VERSION='1.11.4';
 
 
 /* ========================================================== AYARLAR ====== */
@@ -695,7 +695,7 @@ function mb(n) { return (n / 1048576).toFixed(1) + ' MB'; }
 var FAV_KEY = 'lumira_favs_v1';
 function favs() { return window.NB_getFavorites ? window.NB_getFavorites() : (store(FAV_KEY) || []); }
 function favKey(o) { return JSON.stringify([o.lang || '',o.meaningLang || 'tr',o.w || '',o.tr || '']); }
-function isFav(o) { return favs().some(function (f) { return favKey(f) === favKey(o); }); }
+function isFav(o) { return window.NB_isFavorite?window.NB_isFavorite(o):favs().some(function (f) { return favKey(f) === favKey(o); }); }
 async function addFavorite(o) {
   try{
     if(window.NB_saveFavorite)return await window.NB_saveFavorite(o);
@@ -1037,23 +1037,11 @@ function setupTransitions() {
          window.LUMIRA_LIVE?.isActive?.())return;
       var app = qs('.app');
       if (!app) return;
-      if (document.startViewTransition) {
-        try {
-          var transition=document.startViewTransition(function () {});
-          // Rotation or another tab click can skip an animation normally.
-          // Its rejected ready promise must not become an application error.
-          transition.ready?.catch(function () {});
-          transition.finished?.catch(function () {});
-          transition.updateCallbackDone?.catch(function () {});
-          return;
-        } catch (e) {}
-      }
       var view = $('cardsView');
       var target = id === 'tabQuiz' ? $('quizView') : (id === 'tabLiveTranslate' ? $('liveTranslateView') : (['tabPersonal','tabWriting','tabPlacement','tabStories'].includes(id) ? $('personalView') : (id === 'tabNotebook' ? $('notebookView') : view)));
       if (target) {
-        target.classList.remove('pwa-fade-in');
-        void target.offsetWidth;
-        target.classList.add('pwa-fade-in');
+        target.getAnimations?.().forEach(function(animation){if(animation.id==='lumira-tab-entry')animation.cancel();});
+        if(target.animate){var animation=target.animate([{opacity:.85,transform:'translateY(3px)'},{opacity:1,transform:'translateY(0)'}],{duration:160,easing:'ease-out'});animation.id='lumira-tab-entry';}
       }
     });
   });

@@ -6,7 +6,11 @@ class LumiraCapture extends AudioWorkletProcessor {
     this.resampler = new Resampler(sampleRate, audio => this.port.postMessage(audio, [audio.buffer]));
   }
   process(inputs) {
-    const channel = inputs[0]?.[0];
+    // Virtual microphones may deliver speech on just one stereo channel.
+    // Select the channel with the strongest signal instead of discarding it
+    // or averaging phase-inverted channels into silence.
+    const channels=inputs[0]||[];let channel=channels[0],maximum=-1;
+    for(const candidate of channels){let energy=0;for(const value of candidate)energy+=value*value;if(energy>maximum){maximum=energy;channel=candidate;}}
     if (channel) this.resampler.push(channel);
     return true;
   }

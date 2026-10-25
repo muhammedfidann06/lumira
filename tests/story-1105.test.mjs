@@ -10,7 +10,7 @@ for(const language of LANGUAGES){
   const pool=poolFor(language);let calls=0;
   const result=await generateStory(pool,options(language),{env:envFor(provider),fetcher:async(_url,request)=>{
    calls++;const body=JSON.parse(request.body),content=JSON.parse(provider==='gemini'?body.contents[0].parts[0].text:body.messages[1].content);
-   assert.equal(content.learnedVocabulary.length,Math.min(120,pool.length));assert.equal(content.cefr,'A1');assert(!content.wordBank);
+   assert.equal(content.learnedVocabulary.length,Math.min(600,pool.length));assert.equal(content.cefr,'A1');assert(!content.wordBank);
    if(provider==='groq'){assert.equal(body.response_format.type,'json_schema');assert.equal(body.response_format.json_schema.strict,true);assert.deepEqual(body.response_format.json_schema.schema,narrativeSchema);}
    if(provider==='gemini')assert.deepEqual(body.generationConfig.responseFormat.text.schema,narrativeSchema);
    return responseFor(provider,dataFor(language));
@@ -21,7 +21,7 @@ for(const language of LANGUAGES){
   const f=memoryDb({progress:{alice:firstFifty(language)},serverFeatureUsage:{alice:{writing:{count:7}}}});let calls=0;
   const handler=createStoriesHandler({identity:async()=>({uid:'alice',db:f.db}),wordPool:bank,generateStory:(pool,o)=>generateStory(pool,o,{env:envFor('groq'),fetcher:async()=>{calls++;return responseFor('groq',dataFor(language));}})});
   const body={action:'generate',id:'story-regression-1112-'+language,...options(language)},request=()=>new Request('https://lumira-tr.com/.netlify/functions/stories',{method:'POST',body:JSON.stringify(body)});
-  const response=await handler(request());assert.equal(response.status,200,await response.clone().text());assert.equal(response.headers.get('X-Lumira-Features-Version'),'1.11.3');
+  const response=await handler(request());assert.equal(response.status,200,await response.clone().text());assert.equal(response.headers.get('X-Lumira-Features-Version'),'1.11.4');
   const saved=(await response.json()).story;assert.equal(saved.questions.length,3);assert(saved.pool.every(row=>row.meaning));assert.equal(saved.method,'ai');assert.equal(f.get('serverFeatureUsage/alice/writing/count'),7);assert.equal((await handler(request())).status,200);assert.equal(calls,1);
  });
 }

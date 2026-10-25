@@ -15,13 +15,14 @@
   'use strict';
 
   var NS = 'http://www.w3.org/2000/svg';
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var motionQuery=window.matchMedia('(prefers-reduced-motion: reduce)'),reduce=motionQuery.matches;
   var voiceBusy=false;
   function light(){return reduce||document.documentElement.classList.contains('lite');}
-  function busy(){return light()||document.hidden||voiceBusy||document.body.classList.contains('lt-focus');}
+  function busy(){return light()||document.hidden||document.body.classList.contains('lt-focus');}
   function refreshEffects(){if(!fx)return;if(busy())fx.pause();else fx.resume();}
   window.addEventListener('lumira:performancechange',refreshEffects);
   window.addEventListener('lumira:voice-status',function(event){voiceBusy=['device-speaking','device-requested','online-requested','online-playing'].includes(event.detail?.status);refreshEffects();});
+  motionQuery.addEventListener?.('change',function(event){reduce=event.matches;refreshEffects();});
 
   /* ====================================================== 1. manzara katmanı */
   function sceneLayer() {
@@ -38,7 +39,7 @@
     var tx = 0, ty = 0, cx = 0, cy = 0, queued = false;
 
     function apply() {
-      queued = false;if(busy())return;
+      queued = false;if(busy()||voiceBusy)return;
       cx += (tx - cx) * 0.055;
       cy += (ty - cy) * 0.055;
       bg.style.transform =
@@ -49,14 +50,14 @@
     function req() { if (!queued) { queued = true; requestAnimationFrame(apply); } }
 
     window.addEventListener('pointermove', function (e) {
-      if(busy())return;
+      if(busy()||voiceBusy)return;
       tx = (e.clientX / window.innerWidth) * 2 - 1;
       ty = (e.clientY / window.innerHeight) * 2 - 1;
       req();
     }, { passive: true });
 
     window.addEventListener('deviceorientation', function (e) {
-      if (e.gamma == null || busy()) return;
+      if (e.gamma == null || busy()||voiceBusy) return;
       tx = Math.max(-1, Math.min(1, e.gamma / 32));
       ty = Math.max(-1, Math.min(1, ((e.beta || 42) - 42) / 32));
       req();
@@ -84,8 +85,8 @@
     cv.id = 'sky-fx';
     cv.setAttribute('aria-hidden', 'true');
     var ctx = cv.getContext('2d');
-    var W = 0, H = 0, dpr = 1;
-    var flies = [], shots = [], t0 = performance.now();
+    var W = 0, H = 0, dpr = 1,quality=(navigator.deviceMemory&&navigator.deviceMemory<=4||navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4||navigator.connection?.saveData)?1:1.5;
+    var flies = [], shots = [], elapsed=0,lastFrame=0,frameCount=0,slowFrames=0;
     var nextShot = performance.now() + 4000;
 
     /* Ateş böceğinin ışıması her karede yeniden hesaplanıyordu:
@@ -118,7 +119,7 @@
     function seedFlies() {
       flies.length = 0;
       /* iki katına çıkarıldı: telefonda ~14, geniş ekranda en fazla 18 */
-      var n = Math.max(12, Math.round(Math.min(18, (W / 95 + 3) * 2)));
+      var n = quality===1?8:Math.max(12, Math.round(Math.min(18, (W / 95 + 3) * 2)));
       for (var i = 0; i < n; i++) {
         flies.push({
           x: Math.random() * W,
@@ -136,6 +137,7 @@
     }
 
     function spawnShot() {
+      if(shots.length)return;
       /* üst yarıda, aşağı-yana doğru; ince ve hızlı */
       var fromLeft = Math.random() < 0.62;
       var ang = (fromLeft ? 0.30 : 0.62) + Math.random() * 0.22;   /* radyan */
@@ -152,8 +154,9 @@
 
     function resize() {
       /* 1.5 üstü piksel oranı bu efekt için gereksiz — boşuna yük */
-      dpr = Math.min(1.5, window.devicePixelRatio || 1);
-      W = window.innerWidth; H = window.innerHeight;
+      var nextDpr=Math.min(quality,window.devicePixelRatio||1),nextW=window.innerWidth,nextH=window.innerHeight;
+      if(W===nextW&&H===nextH&&dpr===nextDpr)return;
+      dpr=nextDpr;W=nextW;H=nextH;
       cv.width = Math.round(W * dpr);
       cv.height = Math.round(H * dpr);
       cv.style.width = W + 'px';
@@ -163,7 +166,8 @@
     }
 
     function frame(now) {
-      var t = (now - t0) / 1000;
+      var dt=lastFrame?Math.min(.05,Math.max(0,(now-lastFrame)/1000)):1/60;lastFrame=now;elapsed+=dt;frameCount++;
+      var t = elapsed;
       ctx.clearRect(0, 0, W, H);
 
       /* ---- kayan yıldız: 10–20 sn'de bir, aynı anda tek ---- */
@@ -173,8 +177,8 @@
       }
       for (var k = shots.length - 1; k >= 0; k--) {
         var sh = shots[k];
-        sh.life += 1 / 60;
-        sh.x += sh.vx / 60; sh.y += sh.vy / 60;
+        sh.life += dt;
+        sh.x += sh.vx * dt; sh.y += sh.vy * dt;
         if (sh.life > sh.max || sh.x > W + 200 || sh.y > H * 0.7) { shots.splice(k, 1); continue; }
 
         var fade = 1 - sh.life / sh.max;
@@ -249,10 +253,12 @@
     function loop(now) {
       raf = requestAnimationFrame(loop);
       if (scrolling||busy()) return;          /* kaydırma bitene kadar bekle */
-      frame(now);
+      var started=performance.now();frame(now);
+      slowFrames=performance.now()-started>8?slowFrames+1:Math.max(0,slowFrames-1);
+      if(slowFrames>=5&&quality>1){quality=1;slowFrames=0;resize();}
     }
     function start() { if (!raf) raf = requestAnimationFrame(loop); }
-    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; }lastFrame=0; }
 
     /* Sekme arka plandayken boşuna çizmesin */
     document.addEventListener('visibilitychange', function () {
@@ -265,7 +271,7 @@
          THEME_debug()  → sahnedeki nesne sayılarını verir              */
     window.THEME_shoot = function () { spawnShot(); };
     window.THEME_debug = function () {
-      return { atesbocegi: flies.length, kayan: shots.length, yildiz: 0 };
+      return { atesbocegi: flies.length, kayan: shots.length, yildiz: 0,frames:frameCount,paused:!raf,quality:quality,dpr:dpr };
     };
 
     return {
@@ -275,7 +281,7 @@
         if (grade && grade.parentNode) grade.parentNode.insertBefore(cv, grade);
         else document.body.insertBefore(cv, document.body.firstChild);
         resize();
-        window.addEventListener('resize', resize, { passive: true });
+        var resizeFrame=0;window.addEventListener('resize',function(){if(!resizeFrame)resizeFrame=requestAnimationFrame(function(){resizeFrame=0;resize();});},{passive:true});
         if (busy()) { frameOnce(); } else { start(); }
       },
       pause: stop,
@@ -505,20 +511,24 @@
                  '.speak-icon-btn, .opt, .ctrl, .cat-trigger';
 
   function tapFeedback() {
+    var feedback=new WeakMap();
     document.addEventListener('pointerdown', function (e) {
       var el = e.target && e.target.closest ? e.target.closest(TAPPABLE) : null;
       if (!el || el.hasAttribute('disabled')) return;
 
       if (!busy()) {
+        var now=performance.now(),previous=feedback.get(el);
+        if(previous&&now-previous.at<80)return;
+        if(previous){clearTimeout(previous.timer);previous.dot?.remove();previous.animation?.cancel();}
         var r = el.getBoundingClientRect();
         var dot = document.createElement('span');
         dot.className = 'tf-ripple';
         dot.style.left = (e.clientX - r.left) + 'px';
         dot.style.top = (e.clientY - r.top) + 'px';
         el.appendChild(dot);
-        setTimeout(function () { if (dot.parentNode) dot.parentNode.removeChild(dot); }, 640);
-
-        if(el.animate)el.animate([{transform:'scale(1)'},{transform:'scale(.97)'},{transform:'scale(1)'}],{duration:220,easing:'ease-out'});
+        var timer=setTimeout(function () { if (dot.parentNode) dot.parentNode.removeChild(dot); }, 640);
+        var animation=el.animate?el.animate([{transform:'scale(1)'},{transform:'scale(.97)'},{transform:'scale(1)'}],{duration:220,easing:'ease-out'}):null;
+        feedback.set(el,{at:now,dot:dot,timer:timer,animation:animation});
       }
     }, { passive: true });
   }

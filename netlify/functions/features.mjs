@@ -5,8 +5,9 @@ import { withCors } from './_shared/cors.mjs';
 import {welcomeGift} from './_shared/welcome-gift.mjs';
 import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
+import {playCatalog} from './_shared/play-catalog.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.3' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.4' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
@@ -21,8 +22,10 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       let body;
       try { body = JSON.parse(raw); } catch { throw fault('invalid_input'); }
       if (!body || typeof body !== 'object') throw fault('invalid_input');
-      if (!['status', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'liveText', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
+      if (!['status', 'playCatalog', 'playStatus', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'liveText', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
       ctx = await services.identity(request);
+      if(body.action==='playCatalog')return reply(await(services.playCatalog||playCatalog).load({refresh:body.refresh===true}));
+      if(body.action==='playStatus'){if((await ctx.db.ref('admins/'+ctx.uid).get()).val()!==true)throw fault('admin_required',403);return reply(await(services.playCatalog||playCatalog).report());}
       if(body.action==='check')await(services.assertAvailable||assertAvailable)(ctx,'writing');
       if(['liveStart','liveConnect','liveRenew','liveText'].includes(body.action))await(services.assertAvailable||assertAvailable)(ctx,'live');
       if(['welcome','welcomeAck'].includes(body.action))return reply({welcome:await (services.welcomeGift||welcomeGift)(ctx,{ack:body.action==='welcomeAck'})});

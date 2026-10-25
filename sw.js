@@ -22,10 +22,10 @@ function trackWrite(promise){storageWrites.add(promise);promise.finally(()=>stor
 function addCache(cache,request){if(storageReset)return Promise.reject(Error('storage_paused'));return trackWrite(cache.add(request));}
 function putCache(cache,key,response){if(storageReset)return Promise.resolve();return trackWrite(cache.put(key,response));}
 
-const CACHE_VERSION = 'v1.11.3';
+const CACHE_VERSION = 'v1.11.4';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
-const VOCAB_CACHE   = 'lumira-vocab-v1.9.5';  /* düzeltilen sözlükler eski cache-first kayıttan okunmasın */
-const PHRASE_CACHE  = 'lumira-phrases-v1.11.1';
+const VOCAB_CACHE   = 'lumira-vocab-v1.11.4';
+const PHRASE_CACHE  = 'lumira-phrases-v1.11.4';
 const PHRASE_FILES  = ['en','ar','fr','es','ru'].map(lang=>'./phrase-translations/'+lang+'.json');
 const ASSET_CACHE   = 'lumira-assets-v1';
 const CDN_CACHE     = 'lumira-cdn-v1';
@@ -59,6 +59,8 @@ const SHELL = [
   './splash.js',
   './admin.js',
   './admin-badges.js',
+  './announcements.js',
+  './announcements.css',
   './theme.css',
   './theme.js',
   './voice.js',
@@ -71,6 +73,7 @@ const SHELL = [
   './play-store.js',
   './welcome-gift.js',
   './story-i18n.js',
+  './story-art.js',
   './stories.js',
   './stories.css',
   './example-translations.js',
@@ -103,6 +106,7 @@ const SHELL = [
   './live-translate.css',
   './leaderboard.js',
   './vocab-core.js',
+  './vocab-worker.js',
   './vocab-parallel.js',
   './vocab-pairs.js',
   './vocab-identity.js',
@@ -137,15 +141,18 @@ self.addEventListener('install', (event) => {
       addCache(cache,new Request(url, { cache: 'reload',signal:storageAbort.signal }))
     ));
     await Promise.allSettled(SHELL.filter(url=>!required.includes(url)).map(url=>addCache(cache,new Request(url,{cache:'reload',signal:storageAbort.signal}))));
-    // Do not activate an incomplete dictionary update. Keep a user's downloaded
-    // languages available offline, but fetch their corrected 1.9.5 contents.
+    // Keep every previously downloaded language available offline. Refresh it
+    // before activation, so the new total cannot accompany an old dictionary.
     const vocab = await caches.open(VOCAB_CACHE);
-    const previous = await caches.open('lumira-vocab-v1');
+    const existingNames=await caches.keys(),previous=await Promise.all(existingNames.filter(name=>name.startsWith('lumira-vocab-')&&name!==VOCAB_CACHE).map(name=>caches.open(name)));
+    const downloaded=async(url,stores)=>{for(const store of stores)if(await store.match(url,{ignoreSearch:true}))return true;return false;};
     await Promise.all(VOCAB_FILES.map(async url => {
-      if(!(await vocab.match(url,{ignoreSearch:true})) && (url.endsWith('vocab-de.js') || await previous.match(url,{ignoreSearch:true}))){
+      if(!(await vocab.match(url,{ignoreSearch:true})) && (url.endsWith('vocab-de.js') || await downloaded(url,previous))){
         await addCache(vocab,new Request(url,{cache:'reload',signal:storageAbort.signal}));
       }
     }));
+    const phrases=await caches.open(PHRASE_CACHE),previousPhrases=await Promise.all(existingNames.filter(name=>name.startsWith('lumira-phrases-')&&name!==PHRASE_CACHE).map(name=>caches.open(name)));
+    await Promise.all(PHRASE_FILES.map(async url=>{if(!(await phrases.match(url,{ignoreSearch:true}))&&await downloaded(url,previousPhrases))await addCache(phrases,new Request(url,{cache:'reload',signal:storageAbort.signal}));}));
     await Promise.all(['./vocab-core.js','./vocab-pairs.js','./vocab-parallel.js','./vocab-identity.js','./practice-core.js','./learning-i18n.js','./learning.js','./learning.css','./maintenance.js','./phrases-de.js'].map(url => addCache(cache,new Request(url,{cache:'reload',signal:storageAbort.signal}))));
   })());
   /* DİKKAT: Buraya bir zamanlar koşulsuz self.skipWaiting() konmuştu.
@@ -300,11 +307,18 @@ async function handleNavigate(event) {
 
 async function cacheFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
-  const hit = await cache.match(req, { ignoreVary: true, ignoreSearch: cacheName === VOCAB_CACHE || cacheName === PHRASE_CACHE });
+  const dictionary = cacheName === VOCAB_CACHE || cacheName === PHRASE_CACHE;
+  const hit = await cache.match(req, { ignoreVary: true, ignoreSearch: dictionary });
   if (hit) return hit;
   try {
     const res = await fetch(req);
-    if (res && (res.ok || res.type === 'opaque')) putCache(cache,req,res.clone()).catch(() => {});
+    if (res && (res.ok || res.type === 'opaque')) {
+      // CACHE_ALL and lazy loads share one entry even when the lazy URL has a
+      // release query. Fetch the original URL, then store a canonical key.
+      let key = req;
+      if (dictionary) { const url = new URL(req.url); url.search = ''; key = url.href; }
+      await putCache(cache,key,res.clone()).catch(() => {});
+    }
     return res;
   } catch (e) {
     return hit || Response.error();

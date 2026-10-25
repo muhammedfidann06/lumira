@@ -27,6 +27,7 @@ for(const native of languages)for(const target of languages){if(native===target)
    if(!v._exampleTranslation)continue;
    if(v._exampleTranslation==='unavailable'){assert.equal(v.exTr,'');continue;}
    const anchor=P.normalize(v._sourceExTr);
+   if(v.conceptId?.startsWith('1114-')){const original=all.find(row=>row.lang===target&&row.conceptId===v.conceptId);assert(original,'original parallel concept');assert.equal(v.ex,original.ex);assert.equal(v.exTr,original.exampleTranslations[native]);assert.equal(v.tr,original.translations[native]);continue;}
    if(v._exampleTranslation==='reviewed'){
     const row=c.LUMIRA_PARALLEL_EXAMPLES.rows.find(row=>P.normalize(row[0])===anchor);assert(row);assert.equal(v.exTr,row[c.LUMIRA_PARALLEL_EXAMPLES.languages.indexOf(native)]);assert.equal(P.normalize(v.ex),P.normalize(row[c.LUMIRA_PARALLEL_EXAMPLES.languages.indexOf(target)]));
    }else{
@@ -57,7 +58,7 @@ test('all reviewed sentence groups contain all seven languages',()=>{
  assert(c.LUMIRA_PARALLEL_EXAMPLES.rows.length>=44);const seen=new Set();for(const row of c.LUMIRA_PARALLEL_EXAMPLES.rows){assert.equal(row.length,7);for(const text of row)assert(text.trim());assert(!seen.has(P.normalize(row[0])));seen.add(P.normalize(row[0]));}
 });
 test('9 identified missing words added without removing existing words',()=>{
- assert.equal(all.length,36726);for(const [lang,w]of[['en','yours'],['en','hers'],['en','ours'],['en','theirs'],['de','Sie (höflich)'],['ar','أنتِ'],['fr','smartphone'],['es','teléfono inteligente'],['ru','смартфон']])assert(all.some(v=>v.lang===lang&&v.w===w));
+ assert(all.length>36726);assert.equal(c.LUMIRA_CATALOG.total,all.length);for(const [lang,w]of[['en','yours'],['en','hers'],['en','ours'],['en','theirs'],['de','Sie (höflich)'],['ar','أنتِ'],['fr','smartphone'],['es','teléfono inteligente'],['ru','смартфон']])assert(all.some(v=>v.lang===lang&&v.w===w));
 });
 test('German language name correctly capitalised in its example',()=>assert.equal(all.find(v=>v.lang==='de'&&v.w==='deutsch').ex,'Er lernt schnell Deutsch.'));
 test('all progress keys Firebase-safe, bounded, distinct for distinct word identities',()=>{

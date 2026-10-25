@@ -73,10 +73,12 @@ function index(language,native){
  if(caches.has(key))return caches.get(key);const map=new Map(),nativeMeanings=new Map();
  for(const v of vocab)if(v.lang===native&&!v.phraseId){const k=fold(v.tr,'tr');if(!nativeMeanings.has(k))nativeMeanings.set(k,new Set());nativeMeanings.get(k).add(v.w);}
  for(const v of vocab){
+  if(language==='tr'&&v.lang===native&&!v.phraseId){const form=String(v.tr).replace(/\s*\([^)]*\)/gu,'').trim();if(words(form,language).length<=5)add(map,fold(form,language),v.w);for(const shape of v.wordForms?.tr||[])add(map,fold(shape,language),v.w);continue;}
   if(v.lang!==language||v.phraseId)continue;let meaning=native==='tr'?v.tr:v.translations?.[native];
   if(!meaning){const matches=nativeMeanings.get(fold(v.tr,'tr'));if(matches?.size===1)meaning=[...matches][0];}
   if(!meaning)continue;const form=String(v.w).replace(/\s*\([^)]*\)/gu,'').trim();if(words(form,language).length<=5)add(map,fold(form,language),meaning);
   if(language==='de')add(map,fold(form.replace(/^(?:der|die|das)\s+/iu,''),language),meaning);
+  for(const shape of v.wordForms?.[language]||v.forms||[])if(words(shape,language).length<=5)add(map,fold(shape,language),meaning);
  }
  // Human-reviewed German chunks already have meanings in all seven UI languages.
  if(language==='de')for(const row of root.LUMIRA_PHRASES?.rows||[])if(row.chunks?.length)for(const[part,meaning]of root.LUMIRA_PHRASES.gloss(row,native,'de'))add(map,fold(part,language),meaning,1);

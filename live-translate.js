@@ -9,6 +9,11 @@
   const FLAGS = { tr:'🇹🇷', de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
   const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', source:'auto', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null, provider:'', browser:null, textQueue:null, local:null, localProgress:null, localError:false, localArm:null, switching:null, pendingAudio:null, azureStartedAt:0, azureFailures:0, providers:[], failed:new Set(), cloud:null, cloudEpoch:0, lastResult:0, awaitingSince:0, sdkTask:null };
   const node = id => s.root?.querySelector('#' + id);
+  s.microphoneId='';s.processing=true;s.inputPaint=0;
+  async function inputDevices(){
+    const host=s.root,select=node('ltInputDevice');if(!select||!navigator.mediaDevices?.enumerateDevices)return;
+    try{const devices=await navigator.mediaDevices.enumerateDevices();if(s.root!==host||!select.isConnected)return;select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent=window.LUMIRA_SOURCE.inputText(2);select.append(option);let number=0;for(const device of devices)if(device.kind==='audioinput'&&device.deviceId&&device.deviceId!=='default'){const row=document.createElement('option');row.value=device.deviceId;row.textContent=device.label||window.LUMIRA_SOURCE.inputText(1)+' '+(++number);select.append(row);}select.value=s.microphoneId;if(select.value!==s.microphoneId)s.microphoneId='';}catch{}
+  }
   const active = () => ['starting','listening','reconnecting','preparing'].includes(s.phase);
   const providerError = e => ['speech_unavailable','speech_not_configured','speech_auth_error','speech_busy','speech_config_error','sdk_unavailable'].includes(e?.featureCode);
   const label = code => { const names = window.t && window.t('lang_names'); return (names && names[code]) || code.toUpperCase(); };
@@ -26,6 +31,9 @@
     }
     if (select && select.disabled!==active()) select.disabled = active();
     const source=node('ltSource');if(source&&source.disabled!==active())source.disabled=active();
+    for(const id of['ltInputDevice','ltInputProcessing'])if(node(id))node(id).disabled=active();
+    if(!active()&&node('ltInputFill'))node('ltInputFill').style.transform='scaleX(0)';
+    for(const id of['ltInputLevel','ltInputHint'])if(node(id))node(id).hidden=s.provider==='browser'&&active();
     if (clear) clear.disabled = active() || (!s.entries.length && !s.draft);
     if (statusBox) { statusBox.textContent = F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
     const backup=node('ltBackup'), retry=node('ltBackupRetry'), backupBox=node('ltBackupBox');
@@ -94,6 +102,7 @@
       const local=new Local({target:s.target,sourceLanguage:s.source,audioContext:s.pendingAudio,
         onAudio:(audio,position)=>{
           if(generation!==s.generation || !active())return;
+          if(performance.now()-s.inputPaint>150){s.inputPaint=performance.now();let energy=0;for(const value of audio)energy+=value*value;const level=Math.min(1,Math.sqrt(energy/Math.max(1,audio.length))*5);const fill=node('ltInputFill');if(fill)fill.style.transform='scaleX('+level.toFixed(3)+')';}
           if(s.azureInput){
             const bytes=new ArrayBuffer(audio.length*2),view=new DataView(bytes);
             for(let i=0;i<audio.length;i++){const value=Math.max(-1,Math.min(1,audio[i]));view.setInt16(i*2,value<0?value*32768:value*32767,true);}
@@ -386,7 +395,7 @@
     recognizer.recognizing=(_,e)=>result(e,false);
     recognizer.recognized=(_,e)=>result(e,true);
     recognizer.speechStartDetected=()=>{if(current()&&!s.awaitingSince)s.awaitingSince=performance.now();};
-    recognizer.canceled=(_,event)=>{if(current()){window.PWA?.logError?.({message:'Live Azure canceled: '+String(event?.errorCode??event?.reason??'unknown'),stack:''});s.failed.add('azure');s.cancelStart?.();if(!s.switching)fallback(generation);}};
+    recognizer.canceled=(_,event)=>{if(current()){const raw=String(event?.errorDetails||'').toLowerCase(),kind=/auth|401|403|subscription/.test(raw)?'authentication':/quota|429|limit/.test(raw)?'quota':/timeout/.test(raw)?'timeout':/websocket|connect|network|dns/.test(raw)?'connection':'service';window.PWA?.logError?.({message:'Live Azure canceled: '+String(event?.errorCode??event?.reason??'unknown')+' ('+kind+')',stack:''});s.failed.add('azure');s.cancelStart?.();if(!s.switching)fallback(generation);}};
     recognizer.sessionStopped=()=>{if(current())reconnect(generation);};
     await new Promise((resolve,reject)=>{
       let settled=false;
@@ -433,9 +442,10 @@
     s.sdkTask=sdk();s.sdkTask.catch(()=>{});
     let media;
     try{
-      media=await navigator.mediaDevices.getUserMedia({audio:{channelCount:{ideal:1},echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+      media=await navigator.mediaDevices.getUserMedia({audio:{...(s.microphoneId?{deviceId:{ideal:s.microphoneId}}:{}),echoCancellation:s.processing,noiseSuppression:s.processing,autoGainControl:s.processing}});
       if(generation!==s.generation){stopTracks(media);return;}
       s.stream=media;
+      inputDevices();
       if(s.releasePromise)await s.releasePromise;
       if(generation!==s.generation){stopTracks(media);return;}
       await initLocal(generation);
@@ -461,6 +471,10 @@
     const backup=document.createElement('aside');backup.id='ltBackupBox';backup.className='lt-backup';backup.hidden=true;
     backup.innerHTML='<p id="ltBackup"></p><button type="button" class="lt-restore" id="ltBackupRetry" hidden></button>';
     node('liveTranslateScreen').append(backup);
+    const inputs=document.createElement('details');inputs.className='lt-input-options';inputs.innerHTML='<summary id="ltInputSummary"></summary><label for="ltInputDevice" id="ltInputLabel"></label><select id="ltInputDevice"></select><label><input type="checkbox" id="ltInputProcessing"><span id="ltInputProcessingLabel"></span></label><p id="ltInputHelp"></p><div class="lt-input-level" role="img" id="ltInputLevel"><span id="ltInputFill"></span></div><p id="ltInputHint"></p>';
+    node('ltSource').closest('.lt-source').after(inputs);node('ltInputProcessing').checked=s.processing;
+    node('ltInputDevice').onchange=()=>{s.microphoneId=node('ltInputDevice').value;try{localStorage.setItem('lumira_live_microphone_v1',s.microphoneId);}catch{}};
+    node('ltInputProcessing').onchange=()=>{s.processing=node('ltInputProcessing').checked;try{localStorage.setItem('lumira_live_processing_v1',String(s.processing));}catch{}};inputDevices();
     node('ltBackupRetry').onclick=()=>{s.localError=false;drawControls();warmLocal(s.generation);};
     const source=node('ltSource'),automatic=document.createElement('option');automatic.value='auto';automatic.textContent=window.LUMIRA_SOURCE.text(1);source.append(automatic);
     Object.keys(FLAGS).forEach(code=>{const option=document.createElement('option');option.value=code;option.textContent=FLAGS[code]+' '+label(code);source.append(option);});source.value=s.source;
@@ -479,6 +493,7 @@
   }
   function refreshLocale(){
     if(!s.root)return;
+    for(const[id,index]of Object.entries({ltInputSummary:0,ltInputLabel:1,ltInputProcessingLabel:5,ltInputHelp:6,ltInputHint:4}))if(node(id))node(id).textContent=window.LUMIRA_SOURCE.inputText(index);node('ltInputLevel')?.setAttribute('aria-label',window.LUMIRA_SOURCE.inputText(3));
     node('ltSourceLabel').textContent=window.LUMIRA_SOURCE.text(0);node('ltSourceHint').textContent=window.LUMIRA_SOURCE.text(2);node('ltSource').querySelectorAll('option').forEach(option=>{option.textContent=option.value==='auto'?window.LUMIRA_SOURCE.text(1):FLAGS[option.value]+' '+label(option.value);});
     const copy={ltBack:'back',ltTitle:'title',ltTargetLabel:'target',ltOriginalLabel:'original',ltTranslationLabel:'translation',ltClear:'clear',ltRestore:'restore'};
     Object.keys(copy).forEach(id=>{if(node(id))node(id).textContent=F.text(copy[id]);});
@@ -491,12 +506,13 @@
     if(!s.root)return;
     if(active() || s.sessionId)stop();
     s.observer?.disconnect();s.observer=null;s.root=null;
-    document.body.classList.remove('lt-focus');
+    document.body.classList.remove('lt-focus');window.dispatchEvent(new Event('lumira:performancechange'));
   }
   function mount(root){
     if(s.root)unmount();
+    try{s.microphoneId=localStorage.getItem('lumira_live_microphone_v1')||'';s.processing=localStorage.getItem('lumira_live_processing_v1')!=='false';}catch{s.microphoneId='';s.processing=true;}
     s.root=root;try{s.source=window.LUMIRA_SOURCE.normalize(localStorage.getItem('lumira_live_source_v1'));}catch{s.source='auto';}s.target=FLAGS[window.NATIVE_LANG]?window.NATIVE_LANG:'tr';s.entries=[];s.draft=null;s.detected='';s.message='ready';s.error=false;s.providerConfigured=null;
-    s.quota=F.getQuota();document.body.classList.add('lt-focus');shell();
+    s.quota=F.getQuota();document.body.classList.add('lt-focus');window.dispatchEvent(new Event('lumira:performancechange'));shell();
     s.observer=new MutationObserver(()=>{if(s.root && (!s.root.querySelector('#liveTranslateScreen') || s.root.style.display==='none'))unmount();});
     s.observer.observe(root,{childList:true,attributes:true,attributeFilter:['style']});
     F.api('status').then(data=>{

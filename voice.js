@@ -6,7 +6,8 @@
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var serial = 0, utterance = null, startTimer = null, watchTimer = null;
   var audio = null, audioSerial = 0, audioTimer = null;
-  var lastError = '';
+  var lastError = '', autoTimer = null, lastAutoAt = 0, autoMuted = false, readSerial = 0, readCancel = null;
+  function cancelRead(){var callback=readCancel;readCancel=null;readSerial++;if(callback)callback();}
 
   function stopAudio() {
     audioSerial++;
@@ -43,12 +44,13 @@
     };
     if (window.PWA && window.PWA.toast) window.PWA.toast(messages[window.NATIVE_LANG] || messages.en, {kind:'bad'});
   }
-  function audioChunks(text) {
+  function audioChunks(text, limit) {
+    limit = limit || 180;
     var chars = Array.from(String(text || '').trim()), chunks = [];
     while (chars.length) {
-      var end = Math.min(180, chars.length);
+      var end = Math.min(limit, chars.length);
       // Also respect the server's UTF-16 length limit for emoji/surrogates.
-      while (chars.slice(0, end).join('').length > 180) end--;
+      while (chars.slice(0, end).join('').length > limit) end--;
       if (end < chars.length) {
         for (var i = end - 1; i > end / 2; i--) {
           if (/\s/.test(chars[i])) { end = i + 1; break; }
@@ -59,7 +61,7 @@
     }
     return chunks;
   }
-  function speakGoogle(text, lang, slow, onEnd) {
+  function speakGoogle(text, lang, slow, onEnd, options) {
     stopAudio();
     prepareSession();
     lastError = '';
@@ -71,7 +73,7 @@
       clearTimeout(audioTimer);
       if (!ok) lastError = 'media-playback-failed';
       setStatus(ok ? 'online-ended' : 'online-error');
-      if (onEnd) onEnd(ok);
+      if (onEnd) onEnd(ok, chunks.slice(index).join(' '));
     }
     function playChunk() {
       if (done || id !== audioSerial) return;
@@ -80,6 +82,8 @@
         if (!audio) audio = new Audio();
         audio.playsInline = true;
         audio.preload = 'auto';
+        audio.playbackRate = options?.rate ? Math.min(1.3, Math.max(.65, options.rate / .92)) : 1;
+        audio.preservesPitch = true;
         audio.crossOrigin = 'anonymous';
         audio.src = (window.LUMIRA_BACKEND?.url('tts') || '/.netlify/functions/tts') + '?lang=' + encodeURIComponent(String(lang).split('-')[0]) +
           '&slow=' + (slow ? '1' : '0') + '&text=' + encodeURIComponent(chunks[index]);
@@ -91,6 +95,10 @@
         audio.onplaying = function () {
           if (id !== audioSerial) return;
           clearTimeout(audioTimer); setStatus('online-playing');
+          audioTimer = setTimeout(function () {
+            if (id !== audioSerial || done) return;
+            try { audio.pause(); } catch(e) {} finish(false);
+          }, Math.max(20000, chunks[index].length * 220));
         };
         clearTimeout(audioTimer);
         audioTimer = setTimeout(function () {
@@ -104,7 +112,7 @@
     }
     playChunk();
   }
-  function speakNative(text, lang, rate, onResult) {
+  function speakNative(text, lang, rate, onResult, pitch, exactRate) {
     var id = ++serial, done = false, started = false;
     clearTimeout(startTimer);
     clearTimeout(watchTimer);
@@ -135,11 +143,13 @@
         // can exist in getVoices() but be unavailable to web speech.
         if (!ios && typeof window.pickVoice === 'function') {
           var voice = window.pickVoice(u.lang);
-          if (voice) { u.voice = voice; u.lang = voice.lang; }
+          if (voice && String(voice.lang).toLowerCase().split(/[-_]/)[0] === String(u.lang).toLowerCase().split(/[-_]/)[0]) { u.voice = voice; u.lang = voice.lang; }
         }
-        u.rate = rate < 0.8 ? (ios ? 0.55 : 0.35) : (rate || 0.92);
-        u.pitch = 1; u.volume = 1;
-        u.onstart = function () { if (id === serial) { started = true; clearTimeout(watchTimer); setStatus('device-speaking'); } };
+        u.rate = exactRate ? Math.min(1.3,Math.max(.5,rate||.92)) : rate < 0.8 ? (ios ? 0.55 : 0.35) : (rate || 0.92);
+        u.pitch = Number.isFinite(pitch) ? Math.min(1.5, Math.max(.5, pitch)) : 1; u.volume = 1;
+        u.onstart = function () { if (id === serial) { started = true; clearTimeout(watchTimer); setStatus('device-speaking');
+          watchTimer = setTimeout(function () { if(done || id !== serial)return;lastError='speech-end-timeout';u.onerror=u.onend=null;try{synth.cancel();}catch(e){}finish(false); }, Math.max(20000, String(text).length * 240 / Math.max(.5, rate || .92)));
+        } };
         u.onend = function () { finish(true); };
         u.onerror = function (event) {
           if (id !== serial) return;
@@ -162,6 +172,8 @@
     else startTimer = setTimeout(start, 0);
   }
   function manualSpeak(text, lang, slow) {
+    cancelRead();
+    clearTimeout(autoTimer);autoTimer=null;autoMuted=false;
     if (!String(text || '').trim()) return;
     if (ios && navigator.onLine !== false) {
       stopSpeech();
@@ -187,7 +199,37 @@
     utterance = null;
     try { if (synth && (synth.speaking||synth.pending)) synth.cancel(); } catch(e) {}
   }
-  window.VOICE_stop = function () { stopSpeech(); stopAudio(); setStatus('idle'); };
+  window.VOICE_stop = function () { cancelRead();clearTimeout(autoTimer);autoTimer=null;autoMuted=false;stopSpeech(); stopAudio(); setStatus('idle'); };
+  // Explicit story controls use the same iOS media path as cards. They do not
+  // inherit auto-card mute or wait for getVoices() to be populated.
+  window.VOICE_canRead = function () { return !!(synth && window.SpeechSynthesisUtterance) || (navigator.onLine !== false && typeof Audio === 'function'); };
+  window.VOICE_read = function (text, options) {
+    options = options || {};clearTimeout(autoTimer);autoTimer=null;autoMuted=false;
+    cancelRead();var run=readSerial,done=false,mediaFailed=false,rate=Number.isFinite(options.rate)?options.rate:.92,pitch=Number.isFinite(options.pitch)?options.pitch:1;
+    readCancel=options.onCancel || null;
+    var locale={tr:'tr-TR',en:'en-US',de:'de-DE',ar:'ar-SA',fr:'fr-FR',es:'es-ES',ru:'ru-RU'};
+    var lang=locale[options.language] || options.language || 'de-DE',chunks=audioChunks(text,150),index=0;
+    stopSpeech();stopAudio();prepareSession();
+    function finish(ok){if(done||run!==readSerial)return;done=true;readCancel=null;(ok?options.onEnd:options.onError)?.();}
+    function native(){if(done||run!==readSerial)return;if(index>=chunks.length){finish(true);return;}
+      speakNative(chunks[index],lang,rate,function(ok){if(done||run!==readSerial)return;if(ok){index++;native();}else if(mediaFailed)finish(false);else media(chunks.slice(index).join(' '),false);},pitch,true);
+    }
+    function media(value,nativeFallback){if(done||run!==readSerial)return;if(navigator.onLine===false||typeof Audio!=='function'){finish(false);return;}
+      stopSpeech();speakGoogle(value,lang,false,function(ok,remaining){if(done||run!==readSerial)return;if(ok)finish(true);else{mediaFailed=true;if(nativeFallback&&synth){chunks=audioChunks(remaining||value,150);index=0;native();}else finish(false);}},{rate:rate});
+    }
+    if(!chunks.length){finish(false);return false;}
+    if(ios&&navigator.onLine!==false)media(chunks.join(' '),true);else native();return true;
+  };
+  // A rapid burst reads its final card. It never queues dozens of platform
+  // utterances or repeatedly starts the network player between animation frames.
+  window.VOICE_autoSpeak = function (text, lang) {
+    if (typeof soundOn !== 'undefined' && !soundOn) return;
+    clearTimeout(autoTimer);autoTimer=null;
+    var now=performance.now(),rapid=now-lastAutoAt<180;lastAutoAt=now;
+    if(!rapid){autoMuted=false;manualSpeak(text,lang,false);return;}
+    if(!autoMuted){stopSpeech();stopAudio();autoMuted=true;}
+    autoTimer=setTimeout(function(){autoTimer=null;autoMuted=false;manualSpeak(text,lang,false);},180);
+  };
   window.speak = function (text, lang) {
     if (typeof soundOn !== 'undefined' && !soundOn) return;
     manualSpeak(text, lang, false);
@@ -204,7 +246,7 @@
     try { if (synth) synth.getVoices(); } catch (e) {}
   };
   window.VOICE_debug = function () {
-    return {version:'1.9.8', status:status, mode:ios ? 'media' : 'device', ios:ios, available:!!synth, voices:synth ? synth.getVoices().length : 0, audioSession:navigator.audioSession ? navigator.audioSession.type : 'unavailable',
+    return {version:'1.11.4', status:status, mode:ios ? 'media' : 'device', ios:ios, available:!!synth, voices:synth ? synth.getVoices().length : 0, audioSession:navigator.audioSession ? navigator.audioSession.type : 'unavailable',
       speaking:!!(synth && synth.speaking), lastError:lastError};
   };
 })();

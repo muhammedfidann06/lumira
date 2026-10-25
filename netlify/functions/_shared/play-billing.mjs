@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import {fault} from './feature-core.mjs';
 import {atomic} from './paddle-events.mjs';
 import {createPlayApi} from './play-api.mjs';
+import {createPlayCatalog} from './play-catalog.mjs';
 const amounts=[1,5,10,25,50,100],hash=value=>createHash('sha256').update(value).digest('hex');
 export const PLAY_PRODUCTS=Object.freeze(Object.fromEntries(amounts.flatMap(amount=>[
  ['lumira_support_'+amount,{amount,lifetime:true}],
@@ -9,8 +10,8 @@ export const PLAY_PRODUCTS=Object.freeze(Object.fromEntries(amounts.flatMap(amou
 ])));
 const date=value=>{const n=Date.parse(value);return Number.isFinite(n)?n:null;};
 const idOK=id=>/^play_[a-f\d]{64}$/.test(id||'');
-export function playMembership(data,sku,token,now=Date.now()){
- const product=PLAY_PRODUCTS[sku];if(!product||product.lifetime)throw fault('invalid_purchase',422);
+export function playMembership(data,sku,token,now=Date.now(),product=PLAY_PRODUCTS[sku]){
+ if(!product||product.lifetime)throw fault('invalid_purchase',422);
  const lines=(data.lineItems||[]).filter(row=>row.productId===sku&&!row.deferredItemReplacement);
  if(lines.length!==1)throw fault('invalid_purchase',422);
  const item=lines[0],endsAt=date(item.expiryTime),basePlanId=item.offerDetails?.basePlanId;
@@ -21,6 +22,7 @@ export function playMembership(data,sku,token,now=Date.now()){
  return{id:'play_'+hash(token),provider:'google_play',sku,basePlanId,amount:product.amount,lifetime:false,status:active?'active':'expired',storeState:data.subscriptionState,startsAt:date(data.startTime),endsAt,renewsAt:active&&enabled?endsAt:null,cancelAt:enabled?null:endsAt,purchaseToken:token,checkedAt:now};
 }
 export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
+ const resolver=createPlayCatalog({api,clock}),productFor=async sku=>PLAY_PRODUCTS[sku]||resolver.resolve(sku);
  const catalog=new Map();
  async function monthlyPlan(sku,basePlanId){
   const key=sku+'/'+basePlanId;if((catalog.get(key)||0)>clock())return;
@@ -44,7 +46,8 @@ export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
   });return saved;
  }
  async function verify(ctx,sku,token){
-  const product=PLAY_PRODUCTS[sku];if(!product||typeof token!=='string'||token.length<10||token.length>4096)throw fault('invalid_purchase',422);
+  if(typeof sku!=='string'||!/^[a-z0-9][a-z0-9_.]{0,149}$/.test(sku)||typeof token!=='string'||token.length<10||token.length>4096)throw fault('invalid_purchase',422);
+  const product=await productFor(sku);
   if((await ctx.db.ref('serverFeatureEntitlements/'+ctx.uid+'/'+product.amount).get()).val()===false)throw fault('purchase_revoked',403);
   const observed=clock(),encoded=encodeURIComponent(token);
   if(product.lifetime){
@@ -54,7 +57,7 @@ export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
    if(data.acknowledgementState===0)await api.call(path+':acknowledge',{method:'POST',body:{}});
    await atomic(ctx.db.ref('serverFeatureEntitlements/'+ctx.uid+'/'+product.amount),old=>{if(old===false)throw fault('purchase_revoked',403);return true;});
   }else{
-   const data=await api.call('/purchases/subscriptionsv2/tokens/'+encoded),value=playMembership(data,sku,token,observed);
+   const data=await api.call('/purchases/subscriptionsv2/tokens/'+encoded),value=playMembership(data,sku,token,observed,product);
    if(value.status!=='active')throw fault('purchase_not_completed',422);
    await monthlyPlan(sku,value.basePlanId);
    if(data.linkedPurchaseToken){
@@ -69,11 +72,11 @@ export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
   }
   return product.amount;
  }
- async function owned(ctx,id){if(!idOK(id))throw fault('invalid_input');const value=(await ctx.db.ref('serverPlayAccounts/'+ctx.uid+'/subscriptions/'+id).get()).val();if(!value?.purchaseToken||!PLAY_PRODUCTS[value.sku]||PLAY_PRODUCTS[value.sku].lifetime)throw fault('billing_not_owned',403);return value;}
+ async function owned(ctx,id){if(!idOK(id))throw fault('invalid_input');const value=(await ctx.db.ref('serverPlayAccounts/'+ctx.uid+'/subscriptions/'+id).get()).val();if(!value?.purchaseToken)throw fault('billing_not_owned',403);if((await productFor(value.sku)).lifetime)throw fault('billing_not_owned',403);return value;}
  async function cancel(ctx,id){
-  const value=await owned(ctx,id),path='/purchases/subscriptionsv2/tokens/'+encodeURIComponent(value.purchaseToken),before=await api.call(path),current=playMembership(before,value.sku,value.purchaseToken,clock());
+  const value=await owned(ctx,id),product=await productFor(value.sku),path='/purchases/subscriptionsv2/tokens/'+encodeURIComponent(value.purchaseToken),before=await api.call(path),current=playMembership(before,value.sku,value.purchaseToken,clock(),product);
   if(!current.cancelAt&&current.status==='active')await api.call(path+':cancel',{method:'POST',body:{cancellationContext:{cancellationType:'USER_REQUESTED_STOP_RENEWALS'}}});
-  const after=await api.call(path),result=playMembership(after,value.sku,value.purchaseToken,clock());
+  const after=await api.call(path),result=playMembership(after,value.sku,value.purchaseToken,clock(),product);
   if(result.status==='active'&&!result.cancelAt)throw fault('billing_unavailable',503);
   return save(ctx,result);
  }
@@ -84,7 +87,7 @@ export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
   if(!candidates.length)return account;
   try{await atomic(ctx.db.ref('serverPlayRefresh/'+ctx.uid),old=>{if(old?.until>now)throw fault('billing_busy',409);return{until:now+60000};});}catch{return account;}
   await Promise.allSettled(candidates.slice(0,5).map(async value=>{
-   try{const data=await api.call('/purchases/subscriptionsv2/tokens/'+encodeURIComponent(value.purchaseToken));await save(ctx,playMembership(data,value.sku,value.purchaseToken,now));}
+   try{const data=await api.call('/purchases/subscriptionsv2/tokens/'+encodeURIComponent(value.purchaseToken));await save(ctx,playMembership(data,value.sku,value.purchaseToken,now,await productFor(value.sku)));}
    catch(error){if(error.code==='invalid_purchase')await save(ctx,{...value,status:'expired',endsAt:Math.min(now,value.endsAt),renewsAt:null,cancelAt:Math.min(now,value.endsAt),checkedAt:now});}
   }));
   return(await ctx.db.ref('serverPlayAccounts/'+ctx.uid).get()).val()||account;

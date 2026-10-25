@@ -218,9 +218,15 @@
     if(window.LB_updateXp) window.LB_updateXp(meta.xp||0);
     if(cb) cb();
   }
+  let mirrorTimer=0,mirrorPending=null;
+  function flushLocalMirror(){clearTimeout(mirrorTimer);mirrorTimer=0;const pending=mirrorPending;mirrorPending=null;if(pending)safeLocalSet(pending.key,{words:pending.words,meta:pending.meta});}
   function persistLocalMirror(){
-    safeLocalSet('pm_data_'+currentKey, { words: wordProgress, meta: meta });
+    const key='pm_data_'+currentKey;if(mirrorPending&&mirrorPending.key!==key)flushLocalMirror();
+    mirrorPending={key,words:wordProgress,meta};clearTimeout(mirrorTimer);mirrorTimer=setTimeout(flushLocalMirror,250);
   }
+  window.addEventListener('pagehide',flushLocalMirror);
+  window.addEventListener('lumira:storagepause',()=>{clearTimeout(mirrorTimer);mirrorTimer=0;mirrorPending=null;});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)flushLocalMirror();});
   function persistMeta(){
     persistLocalMirror();
     const ref = dbRef('progress/'+currentKey+'/meta');
@@ -1032,9 +1038,9 @@
     html += '<button type="button" class="ctrl primary" id="pmBackHome" style="width:100%;margin-top:18px;">'+(window.t?window.t('pm_back_home_btn'):'← Ana Sayfaya Dön')+'</button></div>';
     root.innerHTML = html;
     document.getElementById('pmBackHome').onclick=()=>document.getElementById('tabPersonal')?.click();
-    const label=document.createElement('label'),select=document.createElement('select');label.className='work-label';label.textContent=window.LUMIRA_LEARNING.text('choose');select.dataset.lumiraSelect='';
-    Object.keys(LANGS).forEach(code=>{if(code===(window.NATIVE_LANG||'tr'))return;const option=document.createElement('option');option.value=code;option.textContent=(window.t('lang_names')||{})[code]||LANGS[code].native;select.append(option);});select.value=activeLang;label.append(select);root.querySelector('.pm-head').append(label);window.LUMIRA_LANGUAGE?.enhance(select);
-    select.onchange=async()=>{select.disabled=true;try{await window.setLangPair(window.NATIVE_LANG,select.value);activeLevel='TÜMÜ';ltState=null;openLevelTestPicker();}catch{showToast(window.LUMIRA_LEARNING.text('error'));select.disabled=false;}};
+    const label=document.createElement('h3'),picker=document.createElement('div');label.className='work-label';label.id='ltLanguageLabel';label.textContent=window.LUMIRA_LEARNING.text('choose');picker.className='practice-language-grid';picker.setAttribute('role','group');picker.setAttribute('aria-labelledby',label.id);
+    for(const code of(window.learningLanguageCodes?.()||Object.keys(LANGS).filter(code=>code!==window.NATIVE_LANG))){const button=document.createElement('button');button.type='button';button.dataset.ltLanguage=code;window.LUMIRA_LEARNING.decorateLanguage(button,code,(window.t('lang_names')||{})[code]||LANGS[code].native,code===(window.TARGET_LANG||activeLang));button.onclick=async()=>{if(code===(window.TARGET_LANG||activeLang))return;for(const item of picker.children)item.disabled=true;try{await window.setLangPair(window.NATIVE_LANG,code);if(!picker.isConnected||root.style.display==='none')return;activeLevel='TÜMÜ';ltState=null;openLevelTestPicker();}catch{if(!picker.isConnected)return;showToast(window.LUMIRA_LEARNING.text('error'));for(const item of picker.children)item.disabled=false;}};picker.append(button);}
+    root.querySelector('.pm-head').append(label,picker);
     document.querySelectorAll('.lt-lv-opt').forEach(el=>{
       if(el.classList.contains('locked')) return;
       el.onclick = () => {

@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="lumira-version" content="1.11.3">
-<script src="device-storage.js?v=1.11.3"></script>
+<meta name="lumira-version" content="1.11.4">
+<script src="device-storage.js?v=1.11.4"></script>
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
@@ -17,11 +17,17 @@ if (/Android/i.test(navigator.userAgent)) {
 }
 </script>
 <title>Lumira | Dil Kartları</title>
-<script defer src="android-store.js?v=1.11.3"></script>
-<link rel="stylesheet" href="language-select.css?v=1.11.3">
-<script defer src="language-select.js?v=1.11.3"></script>
-<script src="story-i18n.js?v=1.11.3"></script>
-<link rel="stylesheet" href="stories.css?v=1.11.3">
+<script defer src="android-store.js?v=1.11.4"></script>
+<link rel="stylesheet" href="language-select.css?v=1.11.4">
+<script defer src="language-select.js?v=1.11.4"></script>
+<script src="story-i18n.js?v=1.11.4"></script>
+<link rel="stylesheet" href="stories.css?v=1.11.4">
+<link rel="stylesheet" href="announcements.css?v=1.11.4">
+<script defer src="announcements.js?v=1.11.4"></script>
+<style>
+/* Hide the surrounding footer before the live module's stylesheet arrives. */
+body.lt-focus #sessionTimer,body.lt-focus #profileTimer,body.lt-focus #myRankBox,body.lt-focus #mainApp>.credit,body.lt-focus #supportRow,body.lt-focus .support-wrap{display:none!important}
+</style>
 <meta name="description" content="6 dilde binlerce kelime kartı, quiz, seslendirme ve kişisel ilerleme takibi. Çevrimdışı çalışır.">
 <meta name="application-name" content="Lumira Dil Kartları">
 <meta name="author" content="Lumira">
@@ -84,7 +90,7 @@ if (/Android/i.test(navigator.userAgent)) {
 <link rel="preload" as="image" href="./scene-bg.jpg">
 <link rel="preload" as="image" href="./icon-192.png">
 
-<script src="backend.js?v=1.11.3"></script>
+<script src="backend.js?v=1.11.4"></script>
 
 <!-- Firebase SDK'sı erkenden indirilsin: sıralama tablosu ilk ziyarette
      gecikmesin. preload, tarayıcıya üçünü paralel indirtir. -->
@@ -911,11 +917,11 @@ if (/Android/i.test(navigator.userAgent)) {
 .example-translation-note[hidden]{display:none;}
 .example-translation-note button{font:inherit;color:inherit;background:transparent;border:1px solid rgba(140,190,255,.28);border-radius:9px;padding:8px 12px;min-height:44px;cursor:pointer;}
 </style>
-<link rel="stylesheet" href="theme.css?v=1.11.3">
-<link rel="stylesheet" href="pwa.css?v=1.11.3">
-<link rel="stylesheet" href="live-translate.css?v=1.11.3">
-<link rel="stylesheet" href="access-screen.css?v=1.11.3">
-<link rel="stylesheet" href="learning.css?v=1.11.3">
+<link rel="stylesheet" href="theme.css?v=1.11.4">
+<link rel="stylesheet" href="pwa.css?v=1.11.4">
+<link rel="stylesheet" href="live-translate.css?v=1.11.4">
+<link rel="stylesheet" href="access-screen.css?v=1.11.4">
+<link rel="stylesheet" href="learning.css?v=1.11.4">
 </head>
 <body>
 <!-- Açılış ekranı (splash.js yönetir; kritik stil satır içi, anında boyanır) -->
@@ -925,7 +931,7 @@ if (/Android/i.test(navigator.userAgent)) {
     <div class="lms-glow"></div>
     <img class="lms-logo" src="splash-logo.png" alt="Lumira" width="128" height="128">
     <div class="lms-name">Lumira</div>
-    <div class="lms-tag">6 dil · 36.702 kart</div>
+    <div class="lms-tag">6 dil · <span data-vocab-total></span> kart</div>
   </div>
   <div class="lms-load"><i></i></div>
 </div>
@@ -1306,16 +1312,16 @@ if (/Android/i.test(navigator.userAgent)) {
   </div>
 </div>
 
-<script src="vocab-core.js?v=1.11.3"></script>
-<script src="vocab-parallel.js?v=1.11.3"></script>
-<script src="vocab-pairs.js?v=1.11.3"></script>
-<script src="vocab-identity.js?v=1.11.3"></script>
+<script src="vocab-core.js?v=1.11.4"></script>
+<script src="vocab-parallel.js?v=1.11.4"></script>
+<script src="vocab-pairs.js?v=1.11.4"></script>
+<script src="vocab-identity.js?v=1.11.4"></script>
 <!-- Açılışta SADECE Almanca yükleniyor. Diğer beş dil, kullanıcı o dile
      geçtiği anda pwa.js tarafından indiriliyor. Önceden altı dosyanın altısı
      birden (5,2 MB) her açılışta ayrıştırılıyordu; telefonlarda donmanın en
      büyük sebebi buydu. -->
-<script src="vocab-de.js?v=1.11.3"></script>
-<script src="phrases-de.js?v=1.11.3"></script>
+<script src="vocab-de.js?v=1.11.4"></script>
+<script src="phrases-de.js?v=1.11.4"></script>
 <script>
 /* ===================== SÖZLÜKLERİN İHTİYAÇ ANINDA YÜKLENMESİ =============
    Bu kod BİLEREK index.html'in içinde: sözlük etiketlerini kaldıran dosya ile
@@ -1327,19 +1333,50 @@ window.VOCAB_LOADED = { de: true };
   var loading = {};
   var NAMES = { de:'Almanca', en:'İngilizce', ar:'Arapça', fr:'Fransızca', es:'İspanyolca', ru:'Rusça' };
 
+  var vocabularyQueue=Promise.resolve(),activeVocabularyWorker=null,activeVocabularyCancel=null;
+  function workerVocabulary(lang){
+    const run=()=>new Promise(function(resolve,reject){
+      if(typeof Worker!=='function'||window.LUMIRA_CLEARING_DATA){reject(new Error('dictionary_worker'));return;}
+      var worker,staged=[],expected=0,timer,settled=false;
+      const cleanup=()=>{clearTimeout(timer);if(worker){worker.onmessage=worker.onerror=worker.onmessageerror=null;worker.terminate();}if(activeVocabularyWorker===worker){activeVocabularyWorker=null;activeVocabularyCancel=null;}};
+      const fail=event=>{event?.preventDefault?.();if(settled)return;settled=true;cleanup();staged=[];reject(new Error('dictionary_worker'));};
+      const arm=()=>{clearTimeout(timer);timer=setTimeout(fail,20000);};
+      try{worker=new Worker(new URL('vocab-worker.js?v=1.11.4',document.baseURI));activeVocabularyWorker=worker;activeVocabularyCancel=fail;}
+      catch(error){fail();return;}
+      worker.onerror=worker.onmessageerror=fail;
+      worker.onmessage=function(event){
+        if(settled)return;if(window.LUMIRA_CLEARING_DATA){fail();return;}
+        const data=event.data||{};arm();
+        if(data.type==='meta'){if(expected||!Number.isInteger(data.total)||data.total<1||data.total>100000){fail();return;}expected=data.total;return;}
+        if(data.type==='batch'){
+          if(!expected||data.offset!==staged.length||!Array.isArray(data.rows)||data.rows.length>256||staged.length+data.rows.length>expected||data.rows.some(row=>!row||row.lang!==lang||typeof row.w!=='string'||typeof row.tr!=='string'||typeof row.ex!=='string'||typeof row.exTr!=='string')){fail();return;}
+          staged.push(...data.rows);setTimeout(()=>{if(!settled)worker.postMessage({type:'next'});},0);return;
+        }
+        if(data.type!=='done'||data.total!==expected||staged.length!==expected){fail();return;}
+        settled=true;cleanup();var offset=0;
+        // Commit only a complete dictionary. Failed worker downloads cannot
+        // leave partial rows that a legacy fallback would duplicate.
+        function append(){
+          const end=Math.min(staged.length,offset+256);
+          for(;offset<end;offset++){const row=staged[offset],colors=pair(_i++);row.c1=colors[0];row.c2=colors[1];VOCAB.push(row);}
+          if(offset<staged.length)setTimeout(append,0);else{staged=[];resolve(true);}
+        }
+        append();
+      };
+      arm();worker.postMessage({type:'load',language:lang,version:'1.11.4'});
+    });
+    const task=vocabularyQueue.then(run);vocabularyQueue=task.catch(()=>{});return task;
+  }
+  window.addEventListener('lumira:storagepause',()=>activeVocabularyCancel?.());
+  function legacyVocabulary(lang){return new Promise(function(resolve,reject){var script=document.createElement('script');script.src='vocab-'+lang+'.js?v=1.11.4';script.async=false;script.onload=()=>resolve(true);script.onerror=()=>{script.remove();reject(new Error(lang));};document.head.append(script);});}
+
   function ensure(lang){
+    if(window.LUMIRA_CLEARING_DATA||!['tr','de','en','ar','fr','es','ru'].includes(lang))return Promise.reject(new Error('dictionary_unavailable'));
     // Turkish is a virtual reverse deck; there is no vocab-tr.js.
     if(lang === 'tr') return Promise.resolve(true);
     if(window.VOCAB_LOADED[lang]) return window.LUMIRA_PHRASES ? LUMIRA_PHRASES.ensureLanguage(lang).then(function(){return true;}) : Promise.resolve(true);
     if(loading[lang]) return loading[lang];
-    loading[lang] = new Promise(function(res, rej){
-      var sc = document.createElement('script');
-      sc.src = 'vocab-' + lang + '.js?v=1.11.1';
-      sc.async = false;
-      sc.onload = function(){ window.VOCAB_LOADED[lang] = true; Promise.resolve(window.LUMIRA_PHRASES?.ensureLanguage(lang)).then(function(){delete loading[lang];res(true);},function(error){delete loading[lang];rej(error);}); };
-      sc.onerror = function(){ delete loading[lang]; rej(new Error(lang)); };
-      document.head.appendChild(sc);
-    });
+    loading[lang]=workerVocabulary(lang).catch(function(error){if(window.LUMIRA_CLEARING_DATA)throw error;return legacyVocabulary(lang);}).then(function(){if(window.LUMIRA_CLEARING_DATA)throw new Error('dictionary_paused');window.VOCAB_LOADED[lang]=true;return Promise.resolve(window.LUMIRA_PHRASES?.ensureLanguage(lang)).then(()=>true);}).finally(function(){delete loading[lang];});
     return loading[lang];
   }
   window.ensureVocab = ensure;
@@ -1353,19 +1390,25 @@ window.VOCAB_LOADED = { de: true };
      arka planda yükleniyor. Açılış hızı korunuyor, hiçbir ekran eksik
      kalmıyor. */
   var REST = ['en','ar','fr','es','ru'];
-  var preloadRunning=false;
-  function preloadRest(){
+  var preloadRunning=false,preloadForced=false,lastInput=0,voiceBusy=false;
+  var constrainedDevice=(Number(navigator.deviceMemory)>0&&Number(navigator.deviceMemory)<=2)||navigator.connection?.saveData===true;
+  document.addEventListener('pointerdown',()=>{lastInput=performance.now();},{passive:true,capture:true});
+  document.addEventListener('keydown',()=>{lastInput=performance.now();},{passive:true,capture:true});
+  window.addEventListener('lumira:voice-status',event=>{voiceBusy=['device-requested','device-speaking','online-requested','online-playing'].includes(event.detail?.status);});
+  function preloadRest(force){
+    if(force===true)preloadForced=true;
+    if(constrainedDevice&&!preloadForced)return;
     if(preloadRunning)return;preloadRunning=true;
     var i = 0;
     (function next(){
       if(i >= REST.length){preloadRunning=false;return;}
-      if(window.LUMIRA_LIVE?.isActive?.()||document.hidden){setTimeout(next,10000);return;}
+      if(window.LUMIRA_LIVE?.isActive?.()||document.hidden||voiceBusy||performance.now()-lastInput<800){setTimeout(next,1200);return;}
       var lang = REST[i++];
       if(window.VOCAB_LOADED[lang]) return next();
       ensure(lang).then(function(){
         /* Ekranda açık olan liste varsa tazelensin */
         try{ if(typeof applyFilter === 'function' && window.VOCAB_LOADED[lang]) {} }catch(e){}
-        setTimeout(next, 400);          /* aralık bırak: arayüz takılmasın */
+        setTimeout(()=>{if(window.requestIdleCallback)requestIdleCallback(next,{timeout:6000});else next();},400);
       }).catch(function(){ setTimeout(next, 1500); });
     })();
   }
@@ -1381,7 +1424,7 @@ window.VOCAB_LOADED = { de: true };
   /* Kişisel sekmesine geçilirse beklemeden tamamla */
   document.addEventListener('click', function(e){
     var t = e.target && e.target.closest ? e.target.closest('#tabPersonal') : null;
-    if(t) preloadRest();
+    if(t) preloadRest(true);
   }, true);
 
   function note(msg){
@@ -1426,7 +1469,7 @@ window.VOCAB_LOADED = { de: true };
   }, true);
 })();
 </script>
-<script src="leaderboard.js?v=1.11.3"></script>
+<script src="leaderboard.js?v=1.11.4"></script>
 <script>
 /* ================================================================
    ŞİFRE GÖSTER/GİZLE — Maymun emoji animasyonu (sadece görsel, saf UI)
@@ -1476,7 +1519,7 @@ tr:{
   onb_native_title:"Hangi dili konuşuyorsun?", onb_native_sub:"What language do you speak?",
   onb_welcome_eyebrow:"Lumira · Dil Kartları",
   onb_welcome_h1a:"Hoş geldin.", onb_welcome_h1b:"Yeni bir dile", onb_welcome_h1c:"başla.",
-  onb_welcome_p:"Altı dilde 36.702 kelime kartı, örnek cümleleri ve karşılıklarıyla. Günde on dakika yeter.",
+  onb_welcome_p:"Altı dilde {vocabTotal} kelime kartı, örnek cümleleri ve karşılıklarıyla. Günde on dakika yeter.",
   onb_start:"Başlayalım",
   onb_target_title:"Ne öğrenmek istiyorsun?",
   onb_level_title:"Seviyen nedir?",
@@ -1634,7 +1677,7 @@ en:{
   onb_native_title:"Which language do you speak?", onb_native_sub:"Hangi dili konuşuyorsun?",
   onb_welcome_eyebrow:"Lumira · Language Cards",
   onb_welcome_h1a:"Welcome.", onb_welcome_h1b:"Start a", onb_welcome_h1c:"new language.",
-  onb_welcome_p:"36,702 word cards in six languages, with example sentences and translations. Ten minutes a day is enough.",
+  onb_welcome_p:"{vocabTotal} word cards in six languages, with example sentences and translations. Ten minutes a day is enough.",
   onb_start:"Let's begin",
   onb_target_title:"What do you want to learn?",
   onb_level_title:"What's your level?",
@@ -1819,7 +1862,7 @@ de:{
   onb_native_title:"Welche Sprache sprichst du?", onb_native_sub:"What language do you speak?",
   onb_welcome_eyebrow:"Lumira · Sprachkarten",
   onb_welcome_h1a:"Willkommen.", onb_welcome_h1b:"Beginne eine", onb_welcome_h1c:"neue Sprache.",
-  onb_welcome_p:"36.702 Wortkarten in sechs Sprachen mit Beispielsätzen und Übersetzungen. Zehn Minuten am Tag genügen.",
+  onb_welcome_p:"{vocabTotal} Wortkarten in sechs Sprachen mit Beispielsätzen und Übersetzungen. Zehn Minuten am Tag genügen.",
   onb_start:"Los geht\u2019s",
   onb_target_title:"Was möchtest du lernen?",
   onb_level_title:"Was ist dein Niveau?",
@@ -1977,7 +2020,7 @@ ar:{
   onb_native_title:"ما اللغة التي تتحدثها؟", onb_native_sub:"What language do you speak?",
   onb_welcome_eyebrow:"Lumira · بطاقات اللغة",
   onb_welcome_h1a:"أهلاً بك.", onb_welcome_h1b:"ابدأ بتعلّم", onb_welcome_h1c:"لغة جديدة.",
-  onb_welcome_p:"36,702 بطاقة كلمة بست لغات، مع جمل توضيحية وترجمات. عشر دقائق يومياً تكفي.",
+  onb_welcome_p:"{vocabTotal} بطاقة كلمة بست لغات، مع جمل توضيحية وترجمات. عشر دقائق يومياً تكفي.",
   onb_start:"لنبدأ",
   onb_target_title:"ماذا تريد أن تتعلم؟",
   onb_level_title:"ما مستواك؟",
@@ -2135,7 +2178,7 @@ fr:{
   onb_native_title:"Quelle langue parles-tu ?", onb_native_sub:"What language do you speak?",
   onb_welcome_eyebrow:"Lumira · Cartes de langue",
   onb_welcome_h1a:"Bienvenue.", onb_welcome_h1b:"Commence une", onb_welcome_h1c:"nouvelle langue.",
-  onb_welcome_p:"36 702 cartes de mots en six langues, avec phrases d\u2019exemple et traductions. Dix minutes par jour suffisent.",
+  onb_welcome_p:"{vocabTotal} cartes de mots en six langues, avec phrases d\u2019exemple et traductions. Dix minutes par jour suffisent.",
   onb_start:"Commençons",
   onb_target_title:"Que veux-tu apprendre ?",
   onb_level_title:"Quel est ton niveau ?",
@@ -2324,7 +2367,7 @@ es:{
   onb_native_title:"¿Qué idioma hablas?", onb_native_sub:"What language do you speak?",
   onb_welcome_eyebrow:"Lumira · Tarjetas de idiomas",
   onb_welcome_h1a:"Bienvenido.", onb_welcome_h1b:"Empieza un", onb_welcome_h1c:"nuevo idioma.",
-  onb_welcome_p:"36.702 tarjetas de palabras en seis idiomas, con frases de ejemplo y traducciones. Diez minutos al día bastan.",
+  onb_welcome_p:"{vocabTotal} tarjetas de palabras en seis idiomas, con frases de ejemplo y traducciones. Diez minutos al día bastan.",
   onb_start:"Empecemos",
   onb_target_title:"¿Qué quieres aprender?",
   onb_level_title:"¿Cuál es tu nivel?",
@@ -2484,7 +2527,7 @@ ru:{
   onb_native_title:"На каком языке ты говоришь?", onb_native_sub:"What language do you speak?",
   onb_welcome_eyebrow:"Lumira · Языковые карточки",
   onb_welcome_h1a:"Добро пожаловать.", onb_welcome_h1b:"Начни изучать", onb_welcome_h1c:"новый язык.",
-  onb_welcome_p:"36 702 карточки слов на шести языках, с примерами предложений и переводами. Достаточно десяти минут в день.",
+  onb_welcome_p:"{vocabTotal} карточки слов на шести языках, с примерами предложений и переводами. Достаточно десяти минут в день.",
   onb_start:"Начнём",
   onb_target_title:"Что ты хочешь выучить?",
   onb_level_title:"Какой у тебя уровень?",
@@ -2639,9 +2682,10 @@ function t(key){
   var dict = I18N[lang] || I18N.tr;
   var v = (dict && Object.prototype.hasOwnProperty.call(dict,key)) ? dict[key] : undefined;
   if(v===undefined) v = (I18N.tr && I18N.tr[key]);
+  if(typeof v==='string'&&v.includes('{vocabTotal}'))v=v.replaceAll('{vocabTotal}',Number(window.LUMIRA_CATALOG?.total||0).toLocaleString(lang));
   return (v===undefined) ? key : v;
 }
-window.t = t; window.I18N = I18N;
+window.t = t; window.I18N = I18N;for(const node of document.querySelectorAll('[data-vocab-total]'))node.textContent=Number(window.LUMIRA_CATALOG?.total||0).toLocaleString(window.NATIVE_LANG||'tr');
 </script>
 <script>
 /* Kelime verisi vocab-core.js + vocab-<dil>.js dosyalarından geliyor.
@@ -2935,7 +2979,7 @@ if('speechSynthesis' in window){
    2. UYGUN TTS SESİNİ BUL
    ========================================================= */
 function pickVoice(langCode){
-  loadVoices();
+  if(!voicesCache.length) loadVoices();
   const prefix = String(langCode || '')
     .split('-')[0]
     .toLowerCase();
@@ -3515,30 +3559,35 @@ document.getElementById('turtleBtn').onclick = (e) => {
 };
 
 document.getElementById('card').onclick = () => {
+  flushCardNavigation();
   flipped = !flipped;
   document.getElementById('card').classList.toggle('flipped', flipped);
   const v = deck[idx];
   if(!v) return;
-  if(!flipped){ speak(cardFrontWord(v), cardFrontVoice(v)); }
+  if(!flipped){ (window.VOICE_autoSpeak||speak)(cardFrontWord(v), cardFrontVoice(v)); }
   saveCardPosition();
 };
 
+let cardNavigationFrame=0;
+function flushCardNavigation(){
+  if(!cardNavigationFrame)return;
+  cancelAnimationFrame(cardNavigationFrame);cardNavigationFrame=0;
+  renderCard();saveCardPosition();
+}
+function scheduleCardNavigation(){
+  if(!cardNavigationFrame)cardNavigationFrame=requestAnimationFrame(flushCardNavigation);
+  const v=deck[idx];
+  if(v)(window.VOICE_autoSpeak||speak)(cardFrontWord(v),cardFrontVoice(v));
+}
 document.getElementById('nextBtn').onclick = () => {
   if(deck.length===0) return;
   idx = (idx+1) % deck.length;
-  renderCard();
-  const v = deck[idx];
-  speak(cardFrontWord(v), cardFrontVoice(v));
-  spawnShootingStar();
-  saveCardPosition();
+  scheduleCardNavigation();
 };
 document.getElementById('prevBtn').onclick = () => {
   if(deck.length===0) return;
   idx = (idx-1+deck.length) % deck.length;
-  renderCard();
-  const v = deck[idx];
-  speak(cardFrontWord(v), cardFrontVoice(v));
-  saveCardPosition();
+  scheduleCardNavigation();
 };
 document.getElementById('shuffleBtn').onclick = () => {
   for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
@@ -3967,8 +4016,23 @@ function nbSanitizeKey(s){
   return 'u_'+encodeURIComponent(String(s||'').normalize('NFC').trim()).replace(/\./g,'%2E');
 }
 function nbFavKey(lang, w){ return 'fav_' + (lang||'de') + '_' + nbSanitizeKey(w); }
+let nbFavoriteIndexSource=null,nbFavoriteIndex=new Map(),nbFavoriteList=[];
+function nbFavoriteIdentity(v){return JSON.stringify([v.lang||'de',v.meaningLang||'tr',v.w,v.tr||'']);}
+function nbInvalidateFavoriteIndex(){nbFavoriteIndexSource=null;}
+function nbEnsureFavoriteIndex(){
+  if(nbFavoriteIndexSource===nbWords)return;
+  nbFavoriteIndexSource=nbWords;nbFavoriteIndex=new Map();nbFavoriteList=[];
+  for(const[id,it]of Object.entries(nbWords||{})){
+    if(!it)continue;const key=nbFavoriteIdentity(it);if(!nbFavoriteIndex.has(key))nbFavoriteIndex.set(key,id);
+    if(it.isFavorite)nbFavoriteList.push({...it,id,source:'favorite',lang:it.lang||'de',meaningLang:it.meaningLang||'tr'});
+  }
+  nbFavoriteList.sort((a,b)=>(b.ts||0)-(a.ts||0));
+}
+window.addEventListener?.('lumira:notebookchange',nbInvalidateFavoriteIndex);
 function nbExistingFavId(v, words=nbWords){
-  const exact=Object.keys(words||{}).find(id=>{const it=words[id];return it && (it.lang||'de')===v.lang && (it.meaningLang||'tr')===(v.meaningLang||'tr') && it.w===v.w && (it.tr||'')===(v.tr||'');});
+  let exact;
+  if(words===nbWords){nbEnsureFavoriteIndex();exact=nbFavoriteIndex.get(nbFavoriteIdentity(v));}
+  else exact=Object.keys(words||{}).find(id=>{const it=words[id];return it && (it.lang||'de')===v.lang && (it.meaningLang||'tr')===(v.meaningLang||'tr') && it.w===v.w && (it.tr||'')===(v.tr||'');});
   if(exact) return exact;
   const base=nbFavKey(v.lang,v.w); let key=base, suffix=2;
   while(words[key]) key=base+'_'+suffix++;
@@ -4705,6 +4769,7 @@ function nbRender(){
          alınamaz bir "favoriden çıkarma" değil, doğrudan bir "sil". */
       let backupWord = nbWords[id];
       delete nbWords[id];
+      nbInvalidateFavoriteIndex();
       if(nbEditingId === id) nbEditingId = null;
       nbRender();
       db.ref('progress/'+uid2+'/notebook/'+id).remove().then(() => {
@@ -4712,6 +4777,7 @@ function nbRender(){
       }).catch(err => {
         console.error('Silinemedi:', err);
         if(backupWord) nbWords[id] = backupWord;
+        nbInvalidateFavoriteIndex();
         nbRenderIfOpen();
         nbToast(t('nb_delete_failed_toast'), 'bad');
       });
@@ -4901,6 +4967,7 @@ async function nbSetFavorite(word, desired){
   nbFavoriteWrites.add(writeKey);
   const payload=existing?{...existing,isFavorite:on}:{w:v.w,tr:v.tr,ex:v.ex||'',exTr:v.exTr||'',pos:v.pos||'',lang:v.lang,meaningLang:v.meaningLang||'tr',cat:v.cat||'',level:v.level||'',difficulty:'orta',isFavorite:on,ts:Date.now()};
   nbWords[favId]=payload;
+  nbInvalidateFavoriteIndex();
   nbUpdateFavStar();nbRenderIfOpen();window.dispatchEvent(new Event('lumira:notebookchange'));
   try{
     if(existing) await db.ref('progress/'+uid+'/notebook/'+favId).update({isFavorite:on});
@@ -4909,6 +4976,7 @@ async function nbSetFavorite(word, desired){
   }catch(error){
     if(nbSyncedUid===uid){
       if(existing) nbWords[favId]=existing;else delete nbWords[favId];
+      nbInvalidateFavoriteIndex();
       nbUpdateFavStar();nbRenderIfOpen();window.dispatchEvent(new Event('lumira:notebookchange'));
     }
     throw new Error(on?'nb_fav_add_failed':'nb_fav_remove_failed');
@@ -4934,8 +5002,9 @@ window.NB_saveFavorite=word=>nbSetFavorite(word,true);
 window.NB_removeFavorite=word=>nbSetFavorite(word,false);
 window.NB_getFavorites=function(){
   if(!nbSyncedUid || window.LB_getUid?.()!==nbSyncedUid) return [];
-  return nbCombinedList().filter(it=>it.source==='favorite');
+  nbEnsureFavoriteIndex();return nbFavoriteList;
 };
+window.NB_isFavorite=function(word){nbEnsureFavoriteIndex();const id=nbFavoriteIndex.get(nbFavoriteIdentity(word));return !!(id&&nbWords[id]?.isFavorite);};
 window.NB_toggleFavoriteFromCard=()=>nbToggleFavorite(true);
 window.NB_unfavoriteByWord=function(lang,w){
   const item=Object.values(nbWords).find(it=>it.lang===lang && it.w===w);
@@ -5147,26 +5216,27 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
   }, { once:true });
 })();
 </script>
-<script src="live-local-loader.js?v=1.11.3"></script>
-<script src="access-i18n.js?v=1.11.3"></script>
-<script src="play-store.js?v=1.11.3"></script>
-<script src="feature-usage.js?v=1.11.3"></script>
-<script src="billing.js?v=1.11.3"></script>
-<script src="stories.js?v=1.11.3"></script>
-<script defer src="welcome-gift.js?v=1.11.3"></script>
-<script src="example-translations.js?v=1.11.3"></script>
-<script src="access-screen.js?v=1.11.3"></script>
-<script src="live-cloud.js?v=1.11.3"></script>
-<script src="practice-core.js?v=1.11.3"></script>
-<script src="learning-i18n.js?v=1.11.3"></script>
-<script src="practice-gloss.js?v=1.11.3"></script>
-<script src="learning.js?v=1.11.3"></script>
-<script src="maintenance.js?v=1.11.3"></script>
-<script src="progress.js?v=1.11.3"></script>
-<script src="live-text.js?v=1.11.3"></script>
-<script src="live-browser.js?v=1.11.3"></script>
-<script src="live-source.js?v=1.11.3"></script>
-<script src="live-translate.js?v=1.11.3"></script>
+<script src="live-local-loader.js?v=1.11.4"></script>
+<script src="access-i18n.js?v=1.11.4"></script>
+<script src="play-store.js?v=1.11.4"></script>
+<script src="feature-usage.js?v=1.11.4"></script>
+<script src="billing.js?v=1.11.4"></script>
+<script src="story-art.js?v=1.11.4"></script>
+<script src="stories.js?v=1.11.4"></script>
+<script defer src="welcome-gift.js?v=1.11.4"></script>
+<script src="example-translations.js?v=1.11.4"></script>
+<script src="access-screen.js?v=1.11.4"></script>
+<script src="live-cloud.js?v=1.11.4"></script>
+<script src="practice-core.js?v=1.11.4"></script>
+<script src="learning-i18n.js?v=1.11.4"></script>
+<script src="practice-gloss.js?v=1.11.4"></script>
+<script src="learning.js?v=1.11.4"></script>
+<script src="maintenance.js?v=1.11.4"></script>
+<script src="progress.js?v=1.11.4"></script>
+<script src="live-text.js?v=1.11.4"></script>
+<script src="live-browser.js?v=1.11.4"></script>
+<script src="live-source.js?v=1.11.4"></script>
+<script src="live-translate.js?v=1.11.4"></script>
 
 <!-- Service Worker kaydı, güncelleme kontrolü, bildirimler ve geri tuşu
      yönetimi artık pwa.js içinde (sayfanın en altında yükleniyor). -->
@@ -5177,23 +5247,23 @@ setLangPair(NATIVE_LANG, TARGET_LANG).then(function(){
      sadece giriş koreografisi CSS ile yapılır. -->
 <!-- GSAP ve Lenis kaldırıldı: projede hiçbir yerde kullanılmıyordu ama her
      açılışta indirilip ayrıştırılıyordu (~130 KB). -->
-<script defer src="voice.js?v=1.11.3"></script>
-<script defer src="theme.js?v=1.11.3"></script>
+<script defer src="voice.js?v=1.11.4"></script>
+<script defer src="theme.js?v=1.11.4"></script>
 
 <!-- ===================== LUMIRA · PWA KATMANI =====================
      Service Worker, çevrimdışı paket, bildirimler, geri tuşu, kısayollar,
      deep link, favoriler, yedekleme ve güncelleme yönetimi. -->
-<script defer src="pwa.js?v=1.11.3"></script>
+<script defer src="pwa.js?v=1.11.4"></script>
 
 <!-- Destek rozetleri, seviye kilitleri ve PDF dışa aktarma -->
-<script defer src="support-badges.js?v=1.11.3"></script>
+<script defer src="support-badges.js?v=1.11.4"></script>
 
 <!-- Kullanım ölçümü (yönetici panelinde görüntülenir) -->
-<script defer src="splash.js?v=1.11.3"></script>
-<script defer src="analytics.js?v=1.11.3"></script>
+<script defer src="splash.js?v=1.11.4"></script>
+<script defer src="analytics.js?v=1.11.4"></script>
 
 <!-- Yönetici paneli (yalnızca yetkili hesapta açılır) -->
-<script defer src="admin-badges.js?v=1.11.3"></script>
-<script defer src="admin.js?v=1.11.3"></script>
+<script defer src="admin-badges.js?v=1.11.4"></script>
+<script defer src="admin.js?v=1.11.4"></script>
 </body>
 </html>

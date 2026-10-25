@@ -88,7 +88,7 @@ export class LocalSession {
       try {
         await this.context.audioWorklet.addModule(new URL('./live-local-audio.mjs', import.meta.url));
         if (this.closed) throw failure('local_cancelled');
-        this.capture = new AudioWorkletNode(this.context, 'lumira-capture', { channelCount: 1 });
+        this.capture = new AudioWorkletNode(this.context, 'lumira-capture', { channelCountMode:'max' });
         this.capture.port.onmessage = event => this.receive(event.data);
       } catch (error) {
         if (this.closed) throw failure('local_cancelled');
@@ -97,9 +97,9 @@ export class LocalSession {
       }
     }
     if (!this.capture) {
-      this.capture = this.context.createScriptProcessor(4096, 1, 1);
+      this.capture = this.context.createScriptProcessor(4096, Math.min(2,this.stream.getAudioTracks?.()[0]?.getSettings?.().channelCount||1), 1);
       const resampler = new Resampler(this.context.sampleRate, audio => this.receive(audio));
-      this.capture.onaudioprocess = event => resampler.push(event.inputBuffer.getChannelData(0));
+      this.capture.onaudioprocess = event => {let best=event.inputBuffer.getChannelData(0),maximum=-1;for(let n=0;n<event.inputBuffer.numberOfChannels;n++){const channel=event.inputBuffer.getChannelData(n);let energy=0;for(const value of channel)energy+=value*value;if(energy>maximum){maximum=energy;best=channel;}}resampler.push(best);};
     }
     this.source.connect(this.capture); this.capture.connect(this.mute); this.mute.connect(this.context.destination);
     await this.context.resume();

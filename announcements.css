@@ -1,0 +1,14 @@
+.lumira-notice-backdrop{position:fixed;inset:0;z-index:10060;display:grid;place-items:center;padding:24px;background:#030817bf;overflow:auto;overscroll-behavior:contain}
+.lumira-notice{position:relative;isolation:isolate;box-sizing:border-box;min-width:0;width:min(460px,100%);max-height:calc(100dvh - 48px);overflow:auto;padding:38px 28px 26px;border:1px solid #82dffb66;border-radius:28px;color:#edf5ff;background:radial-gradient(ellipse at 0 0,#204d6e88,transparent 65%),linear-gradient(140deg,#121f36,#201b36);box-shadow:0 30px 100px #0008;font:15px/1.8 system-ui,-apple-system,sans-serif;text-align:center}
+.lumira-notice::before{content:'';position:absolute;z-index:-1;inset:12px;border:1px solid #a8baff18;border-radius:20px;pointer-events:none}
+.lumira-notice-mascot{display:block;width:82px;height:68px;margin:0 auto 20px;filter:drop-shadow(0 0 18px #a5c3ff66)}
+.lumira-notice-eyebrow{display:block;color:#9cdeee;font-size:10px;letter-spacing:.15em;font-weight:750}
+.lumira-notice h2{margin:10px 0 16px;font-size:25px;line-height:1.4;overflow-wrap:break-word;text-wrap:balance}
+.lumira-notice-message{margin:0 0 24px;color:#bfcee6;white-space:pre-wrap;overflow-wrap:anywhere;text-align:start;line-height:1.9}
+.lumira-notice-close{position:absolute;top:14px;inset-inline-end:14px;display:grid;place-items:center;width:40px;height:40px;padding:0;border:1px solid #c4d3ff2a;border-radius:50%;background:#b2c9fc0c;color:#b5c6df;font:24px/1 system-ui;cursor:pointer}
+.lumira-notice-done{width:100%;min-height:50px;padding:13px 20px;border:0;border-radius:15px;background:linear-gradient(110deg,#69e0f1,#af9cf6);color:#0b1b31;font:750 15px/1.6 system-ui;cursor:pointer}
+.lumira-notice button:focus-visible{outline:3px solid #c7efff;outline-offset:4px}
+.notice-compose textarea{display:block;min-height:160px;width:100%;resize:vertical;box-sizing:border-box}
+.notice-compose .pwa-field{display:block}.notice-preview{margin:20px 0;padding:20px;border:1px solid #7ac4ff44;border-radius:18px;background:linear-gradient(130deg,#15283e,#28213d);white-space:pre-wrap;overflow-wrap:anywhere}.notice-preview strong{display:block;margin-bottom:10px;font-size:18px;color:#c5f4ff}
+@media(prefers-reduced-motion:no-preference){.lumira-notice{animation:lumiraNoticeIn .3s ease-out}.lumira-notice-mascot{animation:lumiraNoticeFloat 4s ease-in-out infinite;transform-origin:50% 70%}@keyframes lumiraNoticeIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes lumiraNoticeFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}}
+@media(max-width:360px){.lumira-notice-backdrop{padding:16px}.lumira-notice{padding:34px 20px 22px;max-height:calc(100dvh - 32px)}.lumira-notice h2{font-size:23px}}

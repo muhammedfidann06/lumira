@@ -109,6 +109,7 @@
 .story-word-card h2{margin:12px 0;line-height:1.5;overflow-wrap:break-word}
 .story-word-card p{color:#b8cbdc;line-height:1.8;overflow-wrap:break-word}
 .story-word-card button{font-family:inherit}
+.story-word-card{position:relative;padding-top:44px}.story-word-favorite{position:absolute;top:12px;inset-inline-end:14px;display:grid;place-items:center;width:46px;height:46px;padding:0;border:1px solid #d8bd6555;border-radius:14px;background:#d9ac2f12;color:#ffdc7a;font-size:28px;line-height:1;cursor:pointer}.story-word-favorite[aria-pressed=true]{background:#8d6c2640;border-color:#ffe6a0}.story-word-favorite:disabled{opacity:.4}.story-word-meaning{font-size:18px;font-weight:600}
 .story-loading{display:grid;place-content:center;min-height:280px;padding:32px;text-align:center}
 .story-loading>span{font-size:52px;line-height:1}
 .story-loading>span svg{width:72px;height:54px}
@@ -195,6 +196,12 @@ body.story-focus #fg-desk{display:none!important}
 .story-languages{margin-bottom:8px}
 @media(max-width:360px){.story-quiz{padding:18px 13px}.story-quiz h2{font-size:18px}}
 
-.story-art>img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:3/2}.story-art{aspect-ratio:3/2}.story-art>small{position:absolute;bottom:14px;inset-inline-start:14px}
+.story-art{display:block;width:100%;max-width:100%;min-height:0!important;aspect-ratio:3/2;isolation:isolate}.story-art>img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:100%;object-fit:cover}.story-art>small{position:absolute;bottom:14px;inset-inline-start:14px}.story-preview{overflow:hidden}
 
 .story-style-thumb{display:block;width:100%;aspect-ratio:3/2;height:auto;border-radius:10px;object-fit:cover;margin-bottom:8px}.story-choices[data-story-choices=style] .story-choice{padding:9px;gap:5px;overflow:hidden}
+
+.story-popup-context p{margin:.65rem 0;line-height:1.65;overflow-wrap:anywhere}.story-popup-context p:first-child{color:var(--text,#e8f1ff);font-size:.94rem}.story-word-card[aria-busy=true] .story-word-favorite{opacity:.45}
+
+.story-art-v2{isolation:isolate;aspect-ratio:3/2;background:#111b2d}.story-art-v2::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(6,12,24,.8),transparent 45%);pointer-events:none}.story-art-v2>small{z-index:4;background:rgba(11,20,36,.82);padding:7px 12px;border:1px solid #ffffff26;border-radius:99px;max-width:calc(100% - clamp(84px,24%,132px));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.story-art-v2 .story-art-symbol{position:absolute;z-index:3;inset-inline-end:14px;bottom:14px;width:clamp(45px,19%,100px);height:auto;padding:10px;box-sizing:border-box;color:var(--story-art-accent);background:#101a30e8;border:1px solid #ffffff32;border-radius:24%;pointer-events:none}.story-art-orbit{position:absolute;inset-inline-end:20px;top:14px;z-index:3;color:var(--story-art-accent);font-size:28px;line-height:1;pointer-events:none}.story-art-v2[data-style=anime]::after{background:linear-gradient(0deg,#242247aa,transparent 65%),linear-gradient(120deg,#d7b9ff22,#c5eafa15)}.story-art-v2[data-style=dream]::after{background:linear-gradient(0deg,#0e1939c9,transparent 70%),linear-gradient(110deg,#13214d55,#58428225)}.story-art-v2[data-style=fantasy]::after{background:radial-gradient(ellipse at 80% 0,#d9bbff35,transparent 70%),linear-gradient(0deg,#1d163fbb,transparent 60%)}.story-art-v2[data-style=minimal] .story-art-symbol{background:#111b2dfa;color:#d5e6ec}.story-art-v2[data-style=minimal]::after{background:linear-gradient(0deg,#071423d9,transparent 80%)}.story-art-v2[data-style=watercolor]::after{background:linear-gradient(0deg,#332738aa,transparent 70%),linear-gradient(140deg,#ffc19526,#c3f2e51c)}
+
+.story-choice[data-story-style=anime] .story-style-thumb{filter:saturate(.7) brightness(1.08)}.story-choice[data-story-style=dream] .story-style-thumb{filter:brightness(.65) saturate(.7)}.story-choice[data-story-style=fantasy] .story-style-thumb{filter:hue-rotate(15deg) saturate(1.15)}.story-choice[data-story-style=minimal] .story-style-thumb{filter:saturate(.35)}.story-choice[data-story-style=watercolor] .story-style-thumb{filter:sepia(.2) saturate(.9)}
