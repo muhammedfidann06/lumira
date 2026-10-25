@@ -22,13 +22,17 @@ export async function admin() {
   })().catch(e => { adminPromise = null; throw e; });
   return adminPromise;
 }
-export async function identity(request) {
+export async function authenticatedIdentity(request) {
   const bearer = request.headers.get('authorization')?.match(/^Bearer ([^\s]+)$/i)?.[1];
   if (!bearer) throw fault('login_required', 401);
   const services = await admin();
   let claims;
   try { claims = await services.auth.verifyIdToken(bearer, true); }
   catch { throw fault('login_required', 401); }
+  return {...services, uid:claims.uid};
+}
+export async function identity(request) {
+  const services = await authenticatedIdentity(request), claims = {uid:services.uid};
   const [grants, verified, billing, optOut, play, policies] = await Promise.all([
     services.db.ref(`progress/${claims.uid}/meta/supportGrants`).get(),
     services.db.ref(`serverFeatureEntitlements/${claims.uid}`).get(),

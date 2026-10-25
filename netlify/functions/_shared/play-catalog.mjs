@@ -16,12 +16,12 @@ export function createPlayCatalog({env=process.env,api=createPlayApi({env}),cloc
  async function load({refresh=false}={}){
   if(!refresh&&cache&&until>clock())return cache;if(pending)return pending;
   pending=(async()=>{
-   const products=[],issues=[];let pageToken,seen=new Set();
+   const products=[],issues=[];let pageToken,activationProject,seen=new Set();
    try{do{const page=await api.call('/subscriptions?pageSize=1000'+(pageToken?'&pageToken='+encodeURIComponent(pageToken):''));for(const row of page.subscriptions||[]){
     const amount=catalogAmount(row);if(!amount||amount===100||row.archived)continue;
     const plans=(row.basePlans||[]).filter(plan=>plan.state==='ACTIVE'&&plan.autoRenewingBasePlanType?.billingPeriodDuration==='P1M'&&!plan.autoRenewingBasePlanType.installmentDetails);
     if(plans.length)products.push({amount,sku:row.productId,canonicalSku:canonicalSku(amount),lifetime:false,basePlans:plans.map(plan=>plan.basePlanId)});
-   }pageToken=page.nextPageToken;if(pageToken&&seen.has(pageToken))throw fault('store_catalog_invalid',502);if(pageToken)seen.add(pageToken);}while(pageToken&&seen.size<5);}catch(error){issues.push(error.code||'purchase_verification_unavailable');}
+   }pageToken=page.nextPageToken;if(pageToken&&seen.has(pageToken))throw fault('store_catalog_invalid',502);if(pageToken)seen.add(pageToken);}while(pageToken&&seen.size<5);}catch(error){issues.push(error.code||'purchase_verification_unavailable');if(/^\d{1,20}$/.test(error.activationProject||''))activationProject=error.activationProject;}
    const resolved=[];
    for(const amount of amounts){
     const candidates=products.filter(row=>row.amount===amount),exact=candidates.find(row=>row.sku===canonicalSku(amount));
@@ -31,12 +31,13 @@ export function createPlayCatalog({env=process.env,api=createPlayApi({env}),cloc
     else resolved.push({amount,sku:canonicalSku(amount),canonicalSku:canonicalSku(amount),lifetime:amount===100});
    }
    const ids=resolved.map(row=>row.sku);if(ids.some(id=>typeof id!=='string'||!/^[a-z0-9][a-z0-9_.]{0,149}$/.test(id)))throw fault('store_catalog_invalid',502);
-   cache={products:resolved,issues:[...new Set(issues)]};until=clock()+(issues.length?30000:300000);return cache;
+   cache={products:resolved,issues:[...new Set(issues)],...(activationProject?{activationProject}:{})};until=clock()+(issues.length?30000:300000);return cache;
   })();try{return await pending;}finally{pending=null;}
  }
  async function resolve(sku){const value=(await load()).products.find(row=>row.sku===sku&&!row.unavailable);if(!value)throw fault('invalid_purchase',422);return value;}
- async function report(){const catalog=await load({refresh:true}),raw=env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON||env.FIREBASE_SERVICE_ACCOUNT_JSON;let accountEmail='';try{const value=JSON.parse(raw||'{}').client_email;if(typeof value==='string'&&value.length<200)accountEmail=value;}catch{}
-  return{...catalog,packageName:api.packageName||env.GOOGLE_PLAY_PACKAGE_NAME||'com.lumira.dilkartlari',credentialConfigured:!!raw,accountEmail,mappedMonthly:catalog.products.filter(row=>!row.lifetime&&!row.unavailable&&row.basePlans?.length).length,catalogReady:!catalog.issues.length&&catalog.products.filter(row=>!row.lifetime&&row.basePlans?.length).length===5};
+ async function report(){const catalog=await load({refresh:true}),raw=env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON||env.FIREBASE_SERVICE_ACCOUNT_JSON;let accountEmail='',projectId='';try{const account=JSON.parse(raw||'{}'),value=account.client_email;if(typeof value==='string'&&value.length<200)accountEmail=value;if(/^[a-z][a-z0-9-]{4,61}[a-z0-9]$/.test(account.project_id||''))projectId=account.project_id;}catch{}
+  const activationProject=catalog.activationProject||projectId;
+  return{...catalog,packageName:api.packageName||env.GOOGLE_PLAY_PACKAGE_NAME||'com.lumira.dilkartlari',credentialConfigured:!!raw,accountEmail,projectId,...(catalog.issues.includes('play_api_disabled')&&activationProject?{activationUrl:'https://console.cloud.google.com/apis/library/androidpublisher.googleapis.com?project='+encodeURIComponent(activationProject)}:{}),mappedMonthly:catalog.products.filter(row=>!row.lifetime&&!row.unavailable&&row.basePlans?.length).length,catalogReady:!catalog.issues.length&&catalog.products.filter(row=>!row.lifetime&&row.basePlans?.length).length===5};
  }
  return{load,resolve,report};
 }

@@ -246,7 +246,7 @@
     try { if (synth) synth.getVoices(); } catch (e) {}
   };
   window.VOICE_debug = function () {
-    return {version:'1.11.4', status:status, mode:ios ? 'media' : 'device', ios:ios, available:!!synth, voices:synth ? synth.getVoices().length : 0, audioSession:navigator.audioSession ? navigator.audioSession.type : 'unavailable',
+    return {version:'1.11.5', status:status, mode:ios ? 'media' : 'device', ios:ios, available:!!synth, voices:synth ? synth.getVoices().length : 0, audioSession:navigator.audioSession ? navigator.audioSession.type : 'unavailable',
       speaking:!!(synth && synth.speaking), lastError:lastError};
   };
 })();
