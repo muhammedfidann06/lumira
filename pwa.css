@@ -771,6 +771,7 @@ html.lite .app .chip{text-shadow:none !important;}
   box-shadow:0 8px 22px rgba(79,232,255,.20);
   transition:transform .16s cubic-bezier(.22,1.4,.36,1), opacity .2s ease;
 }
+.pwa-btn[hidden]{display:none!important;}
 .pwa-btn:active{transform:scale(.98);}
 .pwa-btn[disabled]{opacity:.55; cursor:default;}
 .pwa-btn.ghost{

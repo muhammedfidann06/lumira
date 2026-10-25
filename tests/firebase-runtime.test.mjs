@@ -20,6 +20,10 @@ test('Firebase loads and JWKS signatures verify with Lambda module restrictions'
 
       let server, services;
       try {
+        await import('./tests/no-external-network.mjs');
+        // Constructing an Admin database reference initializes its connection.
+        // Keep that connection local even though this test only checks its key.
+        process.env.FIREBASE_DATABASE_EMULATOR_HOST = '127.0.0.1:1';
         const require = createRequire(import.meta.url);
         const firebaseRequire = createRequire(require.resolve('firebase-admin/app'));
         const jwks = firebaseRequire('jwks-rsa');

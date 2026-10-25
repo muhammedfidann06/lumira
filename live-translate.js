@@ -21,6 +21,24 @@
   function error(code) { return Object.assign(new Error(code), { featureCode:code }); }
   function stopTracks(stream) { try { stream?.getTracks().forEach(track => track.stop()); } catch (e) {} }
   function status(message, bad) { s.message = message; s.error = !!bad; drawControls(); }
+  async function captureReady(generation){
+    if(!s.localArm)return;
+    let timer;
+    try{await Promise.race([s.localArm,new Promise((_,reject)=>{timer=setTimeout(()=>reject(error('capture_unavailable')),6000);})]);}
+    catch{throw error('capture_unavailable');}
+    finally{clearTimeout(timer);}
+    if(generation!==s.generation||!active())throw error('recognizer_replaced');
+  }
+  function captureHealth(generation){
+    if(generation!==s.generation||s.phase!=='listening'||!s.local||!s.providers.includes(s.provider)||!s.captureArmedAt)return;
+    const now=performance.now();
+    if(now-(s.lastAudioAt||s.captureArmedAt)<4000)return;
+    if(!s.captureRecoveryAt){s.captureRecoveryAt=now;s.local.resumeCapture();return;}
+    if(now-s.captureRecoveryAt<2000)return;
+    s.captureUnavailable=true;s.providers.forEach(provider=>s.failed.add(provider));
+    window.PWA?.logError?.({message:'Live capture: no_pcm_frames',stack:''});
+    fallback(generation);
+  }
   function drawControls() {
     if (!s.root) return;
     const button = node('ltMic'), select = node('ltTarget'), clear = node('ltClear'), statusBox = node('ltStatus');
@@ -102,6 +120,7 @@
       const local=new Local({target:s.target,sourceLanguage:s.source,audioContext:s.pendingAudio,
         onAudio:(audio,position)=>{
           if(generation!==s.generation || !active())return;
+          s.lastAudioAt=performance.now();s.captureRecoveryAt=0;s.audioFrames++;
           if(performance.now()-s.inputPaint>150){s.inputPaint=performance.now();let energy=0;for(const value of audio)energy+=value*value;const level=Math.min(1,Math.sqrt(energy/Math.max(1,audio.length))*5);const fill=node('ltInputFill');if(fill)fill.style.transform='scaleX('+level.toFixed(3)+')';}
           if(s.azureInput){
             const bytes=new ArrayBuffer(audio.length*2),view=new DataView(bytes);
@@ -126,6 +145,7 @@
       });
       s.pendingAudio=null;s.local=local;
       s.localArm=local.arm(s.stream);
+      s.localArm.then(()=>{if(generation===s.generation&&s.local===local)s.captureArmedAt=performance.now();},()=>{});
       s.localArm.catch(()=>{if(generation===s.generation){s.localError=true;drawControls();}});
     }catch(e){s.localError=true;drawControls();}
   }
@@ -135,7 +155,7 @@
   }
   function heartbeat(generation,id) {
     clearInterval(s.timer);clearInterval(s.tick);
-    s.timer=setInterval(()=>renew(generation,id),5000);s.tick=setInterval(drawQuota,1000);
+    s.timer=setInterval(()=>renew(generation,id),5000);s.tick=setInterval(()=>{drawQuota();captureHealth(generation);},1000);
   }
   async function fallback(generation) {
     if(generation!==s.generation || !active() || s.provider==='local')return;
@@ -161,7 +181,7 @@
             if(s.failed.has('azure'))throw error('speech_unavailable');
           }else{
             if(!s.local || !window.LUMIRA_CLOUD)throw error('sdk_unavailable');
-            await s.localArm;
+            await captureReady(generation);
             if(!current())return;
             const previous=s.entries.slice(-3), baseOriginal=previous.map(e=>e.original).join(' '), baseTranslation=previous.map(e=>e.translated).join(' ');
             let lastOriginal=baseOriginal,lastTranslation=baseTranslation,firstResult=true;
@@ -201,12 +221,14 @@
             // Replay only the recent uncommitted tail; memory stays bounded.
             const replay=s.local.recentAudio?.();
             if(replay?.length)for(let n=0;n<replay.length;n+=1600)cloud.receive(replay.subarray(n,n+1600),Math.max(0,s.local.position-(replay.length-n-1600)/16000));
+            if(s.failed.has(provider)||cloud.closed||!cloud.ready)throw error('speech_unavailable');
             s.phase='listening';status('listening');holdScreen(generation);warmLocal(generation);
           }
           if(current())return;
         }catch(e){
           if(!current())return;
           if(['login_required','live_limit','usage_unavailable','live_already_active'].includes(e.featureCode))throw e;
+          if(e.featureCode==='capture_unavailable'){s.captureUnavailable=true;s.providers.forEach(value=>s.failed.add(value));await releaseRecognizer(true);break;}
           s.failed.add(provider);s.cloud?.stop();s.cloud=null;
           await releaseRecognizer(true);
         }
@@ -228,6 +250,7 @@
           onError:(e,entry)=>{if(!current())return;if(e.featureCode==='text_translation_slow'){stop(e.featureCode,true);return;}if(e.featureCode==='text_translation_unavailable'){if(entry){s.entries.push({...entry,translated:F.text('translation_pending')});drawText();}status(e.featureCode,true);return;}stop(e.featureCode||'browser_speech_unavailable',true);}
         });s.browser.start();status('browser_listening');holdScreen(generation);return;
       }
+      if(s.captureUnavailable)throw error('microphone_unavailable');
       if(!window.LUMIRA_LOCAL?.fallbackAllowed?.())throw error('browser_speech_unsupported');
       s.provider='local-preparing';s.phase='preparing';status('local_preparing');
       clearInterval(s.timer);clearTimeout(s.deadlineTimer);
@@ -244,7 +267,16 @@
       s.local.start({original:previous.map(e=>e.original).join(' '),translated:previous.map(e=>e.translated).join(' ')});
       s.draft=null;s.phase='listening';status('local_listening');heartbeat(generation,id);holdScreen(generation);
     })().catch(e=>{if(generation===s.generation && active())stop(e.featureCode || 'speech_unavailable',true);})
-      .finally(()=>{if(generation===s.generation)s.switching=null;});
+      .finally(()=>{
+        if(generation!==s.generation)return;
+        s.switching=null;
+        // A cancellation can arrive after the successful start callback but
+        // before this switch settles. Its error handler marks the provider;
+        // finish the pending failover instead of leaving a dead listener.
+        if(active()&&s.failed.has(s.provider))queueMicrotask(()=>{
+          if(generation===s.generation&&active()&&s.failed.has(s.provider))fallback(generation);
+        });
+      });
     return s.switching;
   }
   function applyLease(data, generation) {
@@ -340,7 +372,7 @@
     // Reuse the capture opened by Start's user gesture. In particular, iOS
     // must not create a second, suspended microphone AudioContext here.
     if(s.local && SDK.AudioInputStream?.createPushStream && SDK.AudioStreamFormat?.getWaveFormatPCM){
-      await s.localArm;
+      await captureReady(generation);
       if(generation!==s.generation || !active() || s.provider!=='azure')throw error('recognizer_replaced');
       s.azureInput=SDK.AudioInputStream.createPushStream(SDK.AudioStreamFormat.getWaveFormatPCM(16000,16,1));
       s.audio=SDK.AudioConfig.fromStreamInput(s.azureInput);
@@ -409,7 +441,7 @@
       s.cancelStart=cancel;
       recognizer.startContinuousRecognitionAsync(()=>finish(),()=>finish(error('speech_unavailable')));
     });
-    if(current()){s.azureStartedAt=performance.now();s.phase='listening';status('listening');holdScreen(generation);warmLocal(generation);}
+    if(current()){if(s.failed.has('azure'))throw error('speech_unavailable');s.azureStartedAt=performance.now();s.phase='listening';status('listening');holdScreen(generation);warmLocal(generation);}
   }
   function stop(message, bad, exiting) {
     const id=s.sessionId;
@@ -434,6 +466,7 @@
     if(active())return;
     if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia){status('browser_unsupported',true);return;}
     const generation=++s.generation,id=F.id();
+    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;
     s.failed=new Set();s.providers=[];s.provider='';s.phase='starting';s.sessionId=id;s.draft=null;s.detected='';s.localProgress=null;s.localError=false;s.lastResult=performance.now();s.awaitingSince=0;status('starting');drawText();
     window.VOICE_stop?.();
     try{if(navigator.audioSession){s.previousAudioSession=navigator.audioSession.type;navigator.audioSession.type='play-and-record';}}catch{}
@@ -528,5 +561,6 @@
   window.addEventListener('pagehide',()=>{if(active() || s.sessionId)stop('paused',false,true);});
   window.addEventListener('offline',()=>{if(active())stop('speech_unavailable',true);});
   window.addEventListener('lumira:featureauthchange',()=>{if(s.root){stop('login_required',true);s.entries=[];s.draft=null;drawText();}});
-  window.LUMIRA_LIVE={mount,unmount,refreshLocale,isMounted:()=>!!s.root,isActive:active,stop};
+  window.LUMIRA_LIVE={mount,unmount,refreshLocale,isMounted:()=>!!s.root,isActive:active,stop,
+    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null})};
 })();

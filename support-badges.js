@@ -181,8 +181,17 @@
       });
       b.appendChild(grid);
       if(native){
-        const status=document.createElement('p'),retry=document.createElement('button');status.className='pwa-note';status.dataset.storeStatus='';status.setAttribute('role','status');retry.type='button';retry.dataset.storeRetry='';retry.className='pwa-btn';retry.textContent=window.LUMIRA_PLAY.text(4);retry.hidden=true;b.append(status,retry);
-        const load=async refresh=>{retry.disabled=true;status.textContent=window.LUMIRA_PLAY.text(0);try{const items=await window.LUMIRA_PLAY.catalog({refresh});if(!grid.isConnected)return;for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=!detail||revoked(row.t.amount);}const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;}catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;for(const row of storeCards){row.price.textContent='—';row.el.disabled=true;}}finally{retry.disabled=false;}};retry.onclick=()=>load(true);load(false);
+        const status=document.createElement('p'),retry=document.createElement('button'),setup=document.createElement('button');let admin=false,setupRelevant=false;
+        status.className='pwa-note';status.dataset.storeStatus='';status.setAttribute('role','status');retry.type='button';retry.dataset.storeRetry='';retry.className='pwa-btn';retry.textContent=window.LUMIRA_PLAY.text(4);retry.hidden=true;
+        setup.type='button';setup.className='pwa-btn ghost';setup.textContent=window.LUMIRA_PLAY.setupText(0);setup.dataset.storeSetup='';setup.hidden=true;setup.onclick=()=>window.LUMIRA_PLAY.openSetup();b.append(status,retry,setup);
+        const account=window.firebase?.auth?.().currentUser?.uid;
+        try{const ref=window.LB_getDb?.()?.ref('admins/'+account);ref?.once('value').then(snapshot=>{if(grid.isConnected&&window.firebase.auth().currentUser?.uid===account){admin=snapshot.val()===true;setup.hidden=!admin||!setupRelevant;}},()=>{});}catch{}
+        const load=async refresh=>{retry.disabled=true;setupRelevant=false;setup.hidden=true;status.textContent=window.LUMIRA_PLAY.text(0);try{
+          const items=await window.LUMIRA_PLAY.catalog({refresh});if(!grid.isConnected)return;
+          for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=!detail||revoked(row.t.amount);}
+          const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;setupRelevant=partial;
+        }catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;setupRelevant=true;for(const row of storeCards){row.price.textContent='—';row.el.disabled=true;}}
+        finally{retry.disabled=false;setup.hidden=!admin||!setupRelevant;}};retry.onclick=()=>load(true);load(false);
       }
       if (window.LUMIRA_FEATURES && typeof window.getDigitalGoodsService === 'function') {
         var restore = document.createElement('button');

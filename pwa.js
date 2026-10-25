@@ -20,7 +20,7 @@
    ========================================================================== */
 (function () {
 'use strict';
-var APP_VERSION='1.11.5';
+var APP_VERSION='1.11.6';
 
 
 /* ========================================================== AYARLAR ====== */
@@ -990,7 +990,7 @@ function openErrorReport() {
     var snd = row('📤', window.t?window.t('err_share_row'):'Raporu paylaş / indir', window.t?window.t('err_share_desc'):'Cihaz bilgisi + son hatalar');
     snd.onclick = function () {
       shareOrSave('hata-raporu-' + today() + '.json',
-        JSON.stringify({ app: CONFIG.brand, ua: navigator.userAgent, errors: list }, null, 2),
+        JSON.stringify({ app: CONFIG.brand, version:APP_VERSION, ua: navigator.userAgent, live:window.LUMIRA_LIVE?.debug?.()||null, errors: list }, null, 2),
         'application/json', window.t?window.t('err_report_title2'):'Hata raporu');
     };
     b.appendChild(snd);
