@@ -270,7 +270,7 @@ function initLeaderboard(){
       // currentUid az önce belli oldu; yeni bir veritabanı yazması beklemeden
       // önbellekteki son liderlik verisiyle "kaçıncı sıradayım" kutusunu hemen
       // güncelle (aksi halde bir sonraki veri değişikliğine kadar boş görünür).
-      if(lastLbVal) processLbSnapshot(lastLbVal);
+      renderRanks();
       listenOwnProfile(uid, name);
       // Göçü SADECE ilk kayıtta değil, HER girişte tekrar dene — bu sayede
       // güvenlik kuralları yeni yayınlandığında veya ilk göç bir sebeple
@@ -297,6 +297,8 @@ function initLeaderboard(){
       }
       db.ref('leaderboard/' + uid).on('value', (snap) => {
         const val = snap.val();
+        /* Sıram, sunucu özetindeki puanlara göre kendi kaydımdan hesaplanır. */
+        if(currentUid === uid){ myEntry = val; renderRanks(); }
         const total = val && typeof val.totalSeconds === 'number' ? val.totalSeconds : 0;
         el.textContent = window.t ? window.t('total_time_label')(name, fmtTime(total)) : `👤 ${name} — Toplam süren: ${fmtTime(total)}`;
       });
@@ -484,60 +486,57 @@ function initLeaderboard(){
         </div>`;
     }
 
-    let lastLbVal = null;
-
-    /* Son tablo cihazda saklanıyor: yeni açılışta Firebase cevap verene kadar
-       ekran boş kalmasın, önceki sıralama anında görünsün. */
-    const LB_CACHE_KEY = 'lumira_lb_cache_v1';
-    function cacheLb(val){
-      try{ localStorage.setItem(LB_CACHE_KEY, JSON.stringify({ t: Date.now(), v: val })); }catch(e){}
+    /* ÖNCEKİ YÖNTEM: Her uygulama 'leaderboard' düğümünün TAMAMINI canlı
+       dinliyordu. Her öğrencinin düzenli süre yazımı açık olan bütün
+       uygulamalara gönderiliyor, tablo her telefonda yeniden sıralanıyordu;
+       kullanıcı sayısı arttıkça Firebase trafiği katlanarak büyüyordu.
+       ŞİMDİ: Sunucu tabloyu okuyup özetliyor (ilk 5 + sıralama için yalnızca
+       puanlar) ve Netlify CDN bu özeti 5 dakika saklıyor. Uygulama 2 dakikada
+       bir (yalnızca ekrandayken) bu küçük özeti alır; kendi süren/XP'in ise
+       yalnızca kendi kaydını dinleyen dinleyiciden anlık güncellenir. */
+    let lastTop = null, myEntry = null;
+    const LB_TOP_KEY = 'lumira_lb_top_v1', LB_CACHE_KEY = 'lumira_lb_cache_v1';
+    function summarize(val){
+      const rows = Object.entries(val && typeof val === 'object' ? val : {})
+        .filter(([, v]) => v && typeof v === 'object' && (v.name || v.xp || v.totalSeconds))
+        .map(([uid, v]) => ({ uid, name: String(v.name || '').trim().slice(0, 30), totalSeconds: Math.max(0, Math.floor(Number(v.totalSeconds) || 0)), xp: Math.max(0, Math.floor(Number(v.xp) || 0)) }));
+      const byTime = rows.slice().sort((a, b) => b.totalSeconds - a.totalSeconds);
+      const byLevel = rows.slice().sort((a, b) => b.xp - a.xp);
+      return { updatedAt: Date.now(), total: rows.length, time: byTime.slice(0, 5), level: byLevel.slice(0, 5), timeScores: byTime.map(r => r.totalSeconds), xpScores: byLevel.map(r => r.xp) };
     }
-    function readLbCache(){
+    function validTop(top){ return !!top && Array.isArray(top.time) && Array.isArray(top.level) && Array.isArray(top.timeScores) && Array.isArray(top.xpScores); }
+    function readTopCache(){
       try{
-        const raw = localStorage.getItem(LB_CACHE_KEY);
-        if(!raw) return null;
-        const o = JSON.parse(raw);
-        if(!o || !o.v) return null;
-        if(Date.now() - (o.t||0) > 7*86400000) return null;   /* bir haftadan eskiyse gösterme */
-        return o.v;
-      }catch(e){ return null; }
+        const o = JSON.parse(localStorage.getItem(LB_TOP_KEY) || 'null');
+        if(o && validTop(o.v) && Date.now() - (o.t || 0) < 7 * 86400000) return o.v;
+        /* Eski sürümün sakladığı ham tablo: bir kez özetlenip gösterilir. */
+        const legacy = JSON.parse(localStorage.getItem(LB_CACHE_KEY) || 'null');
+        if(legacy && legacy.v && Date.now() - (legacy.t || 0) < 7 * 86400000) return summarize(legacy.v);
+      }catch(e){}
+      return null;
     }
-
-    let lbCachedAt = 0;
-    window.addEventListener('pagehide', () => { if(lastLbVal) cacheLb(lastLbVal); });
-    function processLbSnapshot(val){
+    /* Puanlar büyükten küçüğe sıralı: sıram = benden yüksek puan sayısı + 1. */
+    function rankOf(scores, value){
+      if(!Array.isArray(scores) || !Number.isFinite(value)) return null;
+      let higher = 0; for(const score of scores){ if(score > value) higher++; else break; }
+      return higher + 1;
+    }
+    function renderRanks(){
+      if(!lastTop) return;
+      const has = myEntry && (myEntry.name || myEntry.xp || myEntry.totalSeconds);
+      if(!currentUid || !has){ renderMyRanks(null, lastTop.total || 0, null, lastTop.total || 0); return; }
+      renderMyRanks(
+        rankOf(lastTop.timeScores, Math.floor(Number(myEntry.totalSeconds) || 0)), lastTop.total || 0,
+        rankOf(lastTop.xpScores, Math.floor(Number(myEntry.xp) || 0)), lastTop.total || 0
+      );
+    }
+    function renderTop(top){
       try { window.__lumLbReady = true; } catch(e){}   /* splash: sıralama hazır sinyali */
-      lastLbVal = val;
-      /* Tüm tabloyu senkron yazmak ana iş parçacığını kilitliyordu: dakikada bir
-         ve sayfa kapanırken yazılır. */
-      if(Date.now() - lbCachedAt > 60000){ lbCachedAt = Date.now(); cacheLb(val); }
-      /* Eskiden yalnızca "name" alanı dolu olan kayıtlar listeye giriyordu.
-         Bir kaydın adı herhangi bir sebeple boş kalırsa (ör. yalnızca xp
-         yazılmışsa) kişi sıralamada HİÇ görünmüyordu. Artık adı olmayan ama
-         verisi olan kayıtlar da listeye giriyor. */
-      const all = Object.entries(val || {})
-        .filter(([k, v]) => v && (v.name || v.xp || v.totalSeconds))
-        .map(([k, v]) => ({
-          uid: k,
-          name: v.name || (window.t?window.t('fallback_user'):'Kullanıcı'),
-          totalSeconds: v.totalSeconds || 0,
-          xp: v.xp || 0
-        }));
-
-      const byTime = all.slice().sort((a,b) => (b.totalSeconds||0) - (a.totalSeconds||0));
-      const byLevel = all.slice().sort((a,b) => (b.xp||0) - (a.xp||0));
-
-      renderTimeBoard(byTime.slice(0, 5));
-      renderLevelBoard(byLevel.slice(0, 5));
-
-      let timeRank = null, levelRank = null;
-      if(currentUid){
-        const ti = byTime.findIndex(e => e.uid === currentUid);
-        const li = byLevel.findIndex(e => e.uid === currentUid);
-        timeRank = ti >= 0 ? ti + 1 : null;
-        levelRank = li >= 0 ? li + 1 : null;
-      }
-      renderMyRanks(timeRank, byTime.length, levelRank, byLevel.length);
+      lastTop = top;
+      const named = e => ({ ...e, name: e.name || (window.t ? window.t('fallback_user') : 'Kullanıcı') });
+      renderTimeBoard(top.time.map(named));
+      renderLevelBoard(top.level.map(named));
+      renderRanks();
     }
 
     /* Veri gelene kadar boş kutu yerine yüklenme iskeleti göster */
@@ -549,34 +548,43 @@ function initLeaderboard(){
       });
     }
 
+    let topFetchedAt = 0, topTimer = 0, topFailures = 0, topLoading = false;
+    async function refreshTop(){
+      clearTimeout(topTimer); topTimer = 0;
+      if(document.hidden || topLoading) return;
+      topLoading = true;
+      try{
+        const response = await fetch(window.LUMIRA_BACKEND.url('leaderboard-top'), { credentials: 'omit' });
+        const top = response.ok ? await response.json() : null;
+        if(!validTop(top)) throw new Error('leaderboard_top');
+        topFetchedAt = Date.now(); topFailures = 0;
+        renderTop(top);
+        try{ localStorage.setItem(LB_TOP_KEY, JSON.stringify({ t: Date.now(), v: top })); localStorage.removeItem(LB_CACHE_KEY); }catch(e){}
+      }catch(error){
+        topFailures++;
+        /* Yeni fonksiyon henüz yayında değilse (veya geçici hata varsa) tablo
+           seyrek olarak BİR KEZ okunur — kalıcı bir canlı dinleyici kurulmaz. */
+        if(db && (topFailures === 1 || topFailures % 5 === 0)){
+          try{ const snap = await db.ref('leaderboard').once('value'); topFetchedAt = Date.now(); renderTop(summarize(snap.val() || {})); }
+          catch(err){ if(!lastTop){ renderTimeBoard([]); renderLevelBoard([]); renderMyRanks(null, 0, null, 0); } }
+        }else if(!lastTop){ renderTimeBoard([]); renderLevelBoard([]); renderMyRanks(null, 0, null, 0); }
+      }finally{
+        topLoading = false;
+        if(!document.hidden) topTimer = setTimeout(refreshTop, 120000);
+      }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if(document.hidden){ clearTimeout(topTimer); topTimer = 0; }
+      else if(Date.now() - topFetchedAt > 60000) refreshTop();
+      else if(!topTimer && !topLoading) topTimer = setTimeout(refreshTop, 120000);
+    });
+
     function listenLeaderboard(){
       /* Önce cihazdaki son kopya — anında görünür */
-      const cached = readLbCache();
-      if(cached) { try{ processLbSnapshot(cached); }catch(e){} }
+      const cached = readTopCache();
+      if(cached) { try{ renderTop(cached); }catch(e){} }
       else showLbSkeleton();
-
-      if(!db){
-        renderTimeBoard([]);
-        renderLevelBoard([]);
-        renderMyRanks(null, 0, null, 0);
-        return;
-      }
-      /* Her öğrencinin yazımı burada bir 'value' olayı üretir. Tabloyu her
-         seferinde sıralayıp yeniden çizmek ve tamamını localStorage'a yazmak
-         telefonu kasıyordu: güncellemeler 4 sn'de bir işlenir, arka plandayken
-         hiç işlenmez. */
-      let lbPending, lbTimer = 0, lbLast = 0;
-      const lbRun = () => { lbTimer = 0; if(document.hidden) return; const val = lbPending; lbPending = undefined; if(val === undefined) return; lbLast = Date.now(); processLbSnapshot(val); };
-      const lbSchedule = val => { lbPending = val; if(lbTimer || document.hidden) return; lbTimer = setTimeout(lbRun, Math.max(0, 4000 - (Date.now() - lbLast))); };
-      document.addEventListener('visibilitychange', () => { if(!document.hidden && lbPending !== undefined && !lbTimer) lbTimer = setTimeout(lbRun, 0); });
-      db.ref('leaderboard').on('value', (snap) => {
-        lbSchedule(snap.val() || {});
-      }, (err) => {
-        console.warn('Liderlik verisi okunamadı:', err);
-        renderTimeBoard([]);
-        renderLevelBoard([]);
-        renderMyRanks(null, 0, null, 0);
-      });
+      refreshTop();
     }
 
     /* ---------------- BAŞLAT ---------------- */

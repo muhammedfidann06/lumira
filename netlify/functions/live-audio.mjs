@@ -1,10 +1,10 @@
 import{assertAvailable}from'./_shared/maintenance.mjs';
-import { identity } from './_shared/feature-services.mjs';
+import { identity, liveIdentity } from './_shared/feature-services.mjs';
 import { changeUsage, fault } from './_shared/feature-core.mjs';
 import { decodeWave, translateAudio } from './_shared/live-providers.mjs';
 import { withCors } from './_shared/cors.mjs';
 const headers = { 'Content-Type':'application/json; charset=utf-8', 'Cache-Control':'private, no-store', 'X-Content-Type-Options':'nosniff' };
-export function createAudioHandler(services = { identity, translateAudio }, clock = Date.now) {
+export function createAudioHandler(services = { identity, liveIdentity, translateAudio }, clock = Date.now) {
   return withCors(async request => {
     if (request.method !== 'POST') return new Response('{}',{status:405,headers});
     let ref, lockId;
@@ -16,7 +16,8 @@ export function createAudioHandler(services = { identity, translateAudio }, cloc
       if (!/^[a-zA-Z0-9_-]{16,80}$/.test(body.id || '') || !['groq','cloudflare','azure-http','gemini-http'].includes(body.provider) || !['tr','de','en','ar','fr','es','ru'].includes(body.target)) throw fault('invalid_input',422);
       if(body.source!==undefined&&!['auto','tr','de','en','ar','fr','es','ru'].includes(body.source))throw fault('invalid_input',422);
       const audio = decodeWave(body.audio);
-      const ctx = await services.identity(request);
+      // Audio arrives every few seconds during a lesson; reuse the recent tier.
+      const ctx = await (services.liveIdentity || services.identity)(request);
       await(services.assertAvailable||assertAvailable)(ctx,'live');
       ref = ctx.db.ref('serverFeatureUsage/' + ctx.uid);
       const listener = () => {}; ref.on('value',listener);

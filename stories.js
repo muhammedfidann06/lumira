@@ -1,6 +1,9 @@
 (function(root){'use strict';
  const genres=['adventure','fairy','scifi','mystery','daily','comedy'],styles=['cinematic','anime','dream','fantasy','minimal','watercolor'],voices=['natural','warm','calm','bright'],icons=['🧭','🏰','🪐','🔍','☕','🎭'];
  const t=(key,values)=>root.LUMIRA_STORY_COPY.text(key,values),api=(action,params,options)=>root.LUMIRA_FEATURES.service('stories',action,params,options);
+ // Word taps use the small story-word function (no 6.8 MB catalog to load);
+ // the stories endpoint still answers if the new function is not deployed yet.
+ const wordApi=(params,options)=>root.LUMIRA_FEATURES.service('story-word','word',params,options).catch(error=>error?.featureCode==='backend_unavailable'&&!options?.signal?.aborted?api('word',params,options):Promise.reject(error));
  const n=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;if(cls==='story-butterfly'||text==='🦋'){e.textContent='';e.innerHTML='<svg viewBox="0 0 64 48" aria-hidden="true"><path fill="#a5ecdb" d="M30 22C25 2 2-2 6 13c3 9 13 13 24 12C12 22 9 39 20 40c9 1 11-10 12-14Z"/><path fill="#b4b9ee" d="M34 22C39 2 62-2 58 13c-3 9-13 13-24 12 18-3 21 14 10 15-9 1-11-10-12-14Z"/></svg>';}return e;};
  const btn=(text,cls,fn)=>{const e=n('button',cls,text);e.type='button';e.onclick=fn;return e;};
  const uid=()=>{try{return root.firebase.auth().currentUser?.uid;}catch{return null;}};
@@ -49,7 +52,7 @@
  function meaningCache(){if(meaningStore)return meaningStore;meaningStore=new Map();try{const rows=JSON.parse(localStorage.getItem(MEANINGS)||'[]');if(Array.isArray(rows))for(const row of rows.slice(-300))if(Array.isArray(row)&&typeof row[0]==='string'&&typeof row[1]==='string'&&row[1].length<=140)meaningStore.set(row[0],{meaning:row[1],contextual:true});}catch{}return meaningStore;}
  function rememberMeaning(key,value){if(!value.contextual||root.LUMIRA_CLEARING_DATA)return;const store=meaningCache();store.delete(key);store.set(key,value);while(store.size>300)store.delete(store.keys().next().value);try{localStorage.setItem(MEANINGS,JSON.stringify([...store].map(([id,row])=>[id,row.meaning])));}catch{}}
  let textLoader;
- function textEngine(){if(root.LUMIRA_TEXT)return Promise.resolve(root.LUMIRA_TEXT);if(textLoader)return textLoader;textLoader=new Promise((resolve,reject)=>{const script=n('script');script.src=new URL('live-text.js?v=1.11.12',document.baseURI).href;script.onload=()=>root.LUMIRA_TEXT?resolve(root.LUMIRA_TEXT):reject(Error());script.onerror=()=>{textLoader=null;reject(Error());};document.head.append(script);});return textLoader;}
+ function textEngine(){if(root.LUMIRA_TEXT)return Promise.resolve(root.LUMIRA_TEXT);if(textLoader)return textLoader;textLoader=new Promise((resolve,reject)=>{const script=n('script');script.src=new URL('live-text.js?v=1.11.13',document.baseURI).href;script.onload=()=>root.LUMIRA_TEXT?resolve(root.LUMIRA_TEXT):reject(Error());script.onerror=()=>{textLoader=null;reject(Error());};document.head.append(script);});return textLoader;}
  function wordDefinition(s,word,index){
   const language=s.story.options.language,native=s.story.options.native,key=fold(word,language),bare=value=>String(value).replace(language==='de'?/^(?:der|die|das)\s+/iu:language==='fr'?/^(?:le|la|les)\s+/iu:language==='es'?/^(?:el|la|los|las)\s+/iu:/$^/u,'');
   const clean=entry=>entry&&entry.meaning&&lex(bare(entry.w),language).length===1&&lex(entry.meaning,native).length<=12&&entry.meaning.length<=140&&!(lex(s.story.sentences[index].translation,native).length>2&&fold(entry.meaning,native)===fold(s.story.sentences[index].translation,native));
@@ -88,7 +91,7 @@
    // contextual meaning is still being prepared; the latter replaces it.
    let plain=null;const plainOnce=()=>plain||=fallback();
    const quick=entry?.meaning?0:setTimeout(()=>{plainOnce().catch(()=>{});},600);
-   const server=api('word',{id:s.story.id,sentence:sentenceIndex,position},{signal:controller.signal,timeoutMs:11000}).then(value=>value?.meaning?setDefinition({...value,contextual:value.contextual!==false},controller):null,()=>null);
+   const server=wordApi({id:s.story.id,sentence:sentenceIndex,position},{signal:controller.signal,timeoutMs:11000}).then(value=>value?.meaning?setDefinition({...value,contextual:value.contextual!==false},controller):null,()=>null);
    server.then(()=>{clearTimeout(quick);return definition?null:plainOnce();}).catch(()=>{}).finally(()=>{clearTimeout(timer);s.controller.signal.removeEventListener('abort',abort);lookupPending=false;if(overlay.isConnected&&valid(s)){card.setAttribute('aria-busy','false');favorite.disabled=!definition;if(!favoriteBusy)paintFavorite();if(!definition)meaning.textContent=t('lookupUnavailable');}});
   }
   overlay.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();close();}if(e.key==='Tab'){const items=[...card.querySelectorAll('button:not(:disabled)')];if(e.shiftKey&&document.activeElement===items[0]){e.preventDefault();items.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===items.at(-1)){e.preventDefault();items[0].focus();}}};

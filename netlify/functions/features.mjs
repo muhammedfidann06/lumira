@@ -1,5 +1,5 @@
 import { changeUsage, summary, fault } from './_shared/feature-core.mjs';
-import { identity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from './_shared/feature-services.mjs';
+import { identity, liveIdentity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from './_shared/feature-services.mjs';
 import { configuredProviders, connectProvider, translateText } from './_shared/live-providers.mjs';
 import { withCors } from './_shared/cors.mjs';
 import {welcomeGift} from './_shared/welcome-gift.mjs';
@@ -7,11 +7,11 @@ import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 import {playCatalog} from './_shared/play-catalog.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.12' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.13' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
-export function createHandler(services = { identity, speechToken, checkWriting, verifyPlayPurchase, sha256, configuredProviders, connectProvider, translateText }, clock = Date.now) {
+export function createHandler(services = { identity, liveIdentity, speechToken, checkWriting, verifyPlayPurchase, sha256, configuredProviders, connectProvider, translateText }, clock = Date.now) {
   return withCors(async request => {
     if (request.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405);
     let ctx, ref, zone = process.env.LUMIRA_TIME_ZONE || 'Europe/Vienna';
@@ -23,7 +23,10 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       try { body = JSON.parse(raw); } catch { throw fault('invalid_input'); }
       if (!body || typeof body !== 'object') throw fault('invalid_input');
       if (!['status', 'playCatalog', 'playStatus', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'liveText', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
-      ctx = await services.identity(request);
+      // Frequent in-lesson requests reuse a recently computed badge tier; a
+      // new lesson (liveStart) and every other action recompute it.
+      const frequent = ['liveRenew', 'liveConnect', 'liveText', 'liveStop'].includes(body.action);
+      ctx = await (frequent && services.liveIdentity ? services.liveIdentity : services.identity)(request);
       if(body.action==='playCatalog')return reply(await(services.playCatalog||playCatalog).load({refresh:body.refresh===true}));
       if(body.action==='playStatus'){if((await ctx.db.ref('admins/'+ctx.uid).get()).val()!==true)throw fault('admin_required',403);return reply(await(services.playCatalog||playCatalog).report());}
       if(body.action==='check')await(services.assertAvailable||assertAvailable)(ctx,'writing');

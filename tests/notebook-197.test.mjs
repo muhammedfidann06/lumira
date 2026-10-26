@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8'),pwa=fs.readFileSync(new URL('../pwa.js',import.meta.url),'utf8');
+const html=fs.readFileSync(new URL('../app-main.js',import.meta.url),'utf8'),pwa=fs.readFileSync(new URL('../pwa.js',import.meta.url),'utf8');
 const notebook=html.slice(html.indexOf('let nbWords = {}'),html.indexOf('/* ======================= INIT =======================',html.indexOf('let nbWords = {}')));
 const pwaFavorites=pwa.slice(pwa.indexOf("var FAV_KEY = 'lumira_favs_v1'"),pwa.indexOf('function activeLangCode()'));
 const languages=['tr','en','de','ar','fr','es','ru'];

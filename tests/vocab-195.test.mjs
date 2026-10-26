@@ -7,7 +7,7 @@ const c=vm.createContext({});c.window=c;
 for(const f of ['vocab-core.js','vocab-parallel.js','vocab-pairs.js','vocab-identity.js',...['de','en','ar','fr','es','ru'].map(l=>'vocab-'+l+'.js')])vm.runInContext(read(f),c,{filename:f});
 const all=vm.runInContext('VOCAB',c), P=c.LUMIRA_VOCAB_PAIRS, ID=c.LUMIRA_VOCAB_ID, languages=['tr','de','en','ar','fr','es','ru'];
 const sentenceProof=new Set(all.map(v=>JSON.stringify([v.lang,P.normalize(v.exTr),v.ex])));
-const source=read('index.html');
+const source=read('app-main.js');
 const config=source.slice(source.indexOf('const LANGS = {'),source.indexOf('/* ======================= ANA DİL'));
 const helpers=source.slice(source.indexOf('function isReversed()'),source.indexOf('/* Notlarım çalışma/quiz'));
 vm.runInContext(config+'\nvar NATIVE_LANG="tr",TARGET_LANG="de",activeLang="de",REVERSED_MODE=false,IS_CROSS=false;\n'+helpers,c);

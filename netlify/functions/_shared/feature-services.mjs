@@ -32,7 +32,20 @@ export async function authenticatedIdentity(request) {
   return {...services, uid:claims.uid};
 }
 export async function identity(request) {
-  const services = await authenticatedIdentity(request), claims = {uid:services.uid};
+  return tierIdentity(await authenticatedIdentity(request));
+}
+// A live lesson renews its lease every 5 s and sends audio every few seconds.
+// Recomputing badges/billing (six reads plus store reconciliation) for each of
+// those requests cost ~4,000 database reads per hour. The ID token is still
+// verified on every request; only the computed tier is reused for 60 s.
+const tierCache = new Map(), TIER_CACHE_MS = 60000;
+export async function liveIdentity(request, clock = Date.now) {
+  const services = await authenticatedIdentity(request), hit = tierCache.get(services.uid);
+  if (hit && hit.until > clock()) return {...services, tier:hit.tier};
+  return tierIdentity(services, clock);
+}
+async function tierIdentity(services, clock = Date.now) {
+  const claims = {uid:services.uid};
   const [grants, verified, billing, optOut, play, policies] = await Promise.all([
     services.db.ref(`progress/${claims.uid}/meta/supportGrants`).get(),
     services.db.ref(`serverFeatureEntitlements/${claims.uid}`).get(),
@@ -42,7 +55,10 @@ export async function identity(request) {
     services.db.ref(`serverBadgePolicyVersions/${claims.uid}`).get()
   ]);
   const [currentBilling,currentPlay]=await Promise.all([reconcileAccount(services.db,claims.uid,billing.val()||{}),playBilling.reconcile({...services,uid:claims.uid},play.val()||{})]);
-  return {...services,uid:claims.uid,tier:accountMemberships(grants.val()||{},verified.val()||{},currentBilling,optOut.val()||{},Date.now(),currentPlay,policies.val()||{}).tier};
+  const tier = accountMemberships(grants.val()||{},verified.val()||{},currentBilling,optOut.val()||{},Date.now(),currentPlay,policies.val()||{}).tier;
+  tierCache.delete(claims.uid); tierCache.set(claims.uid, {tier, until:clock()+TIER_CACHE_MS});
+  while (tierCache.size > 500) tierCache.delete(tierCache.keys().next().value);
+  return {...services,uid:claims.uid,tier};
 }
 export async function speechToken() {
   const key = process.env.AZURE_SPEECH_KEY?.trim(), region = process.env.AZURE_SPEECH_REGION?.trim().toLowerCase();

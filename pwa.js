@@ -20,7 +20,7 @@
    ========================================================================== */
 (function () {
 'use strict';
-var APP_VERSION='1.11.12';
+var APP_VERSION='1.11.13';
 
 
 /* ========================================================== AYARLAR ====== */
@@ -970,11 +970,17 @@ function setupErrorReporting() {
 }
 function openErrorReport() {
   var list = groupErrors(store(ERR_KEY));
-  sheet(window.t?window.t('err_report_title'):'🐞 Hata raporu', list.length ? (window.t?window.t('err_records_found')(list.length):(list.length + ' kayıt bulundu.')) : (window.t?window.t('err_no_records'):'Kayıtlı hata yok — her şey yolunda.'), function (b) {
-    if (!list.length) {
-      b.innerHTML = '<div class="pwa-empty">'+(window.t?window.t('err_none_logged'):'🎉 Hiç hata kaydedilmemiş.')+'</div>';
+  /* Tarayıcı eklentilerinin hataları (ör. "reading 'M_ID'") kayıtta kalır ve
+     dışa aktarılan raporda yer alır, ama listede Lumira'nın hatalarını
+     gölgelemesin diye gösterilmez; yalnızca sayıları belirtilir. */
+  var visible = list.filter(function (e) { return e.kind !== 'extension'; }), hidden = list.length - visible.length;
+  var hiddenCopy = {tr:'Tarayıcı eklentilerinden gelen {n} kayıt gizlendi (Lumira’nın hatası değil).',en:'{n} records from browser extensions are hidden (not Lumira errors).',de:'{n} Einträge von Browser-Erweiterungen ausgeblendet (keine Lumira-Fehler).',ar:'أُخفي {n} من سجلات إضافات المتصفح (ليست أخطاء Lumira).',fr:'{n} entrées provenant d’extensions du navigateur sont masquées (pas des erreurs de Lumira).',es:'Se ocultan {n} registros de extensiones del navegador (no son errores de Lumira).',ru:'Скрыто записей от расширений браузера: {n} (это не ошибки Lumira).'};
+  sheet(window.t?window.t('err_report_title'):'🐞 Hata raporu', visible.length ? (window.t?window.t('err_records_found')(visible.length):(visible.length + ' kayıt bulundu.')) : (window.t?window.t('err_no_records'):'Kayıtlı hata yok — her şey yolunda.'), function (b) {
+    if (hidden) { var note = document.createElement('p'); note.className = 'pwa-note'; note.textContent = (hiddenCopy[window.NATIVE_LANG] || hiddenCopy.en).replace('{n}', String(hidden)); b.appendChild(note); }
+    if (!visible.length) {
+      b.insertAdjacentHTML('beforeend', '<div class="pwa-empty">'+(window.t?window.t('err_none_logged'):'🎉 Hiç hata kaydedilmemiş.')+'</div>');
     } else {
-      list.slice(0, 8).forEach(function (e) {
+      visible.slice(0, 8).forEach(function (e) {
         var item = row('•', escapeHtml((e.m || '').slice(0, 100)), new Date(e.t).toLocaleString(window.NATIVE_LANG || 'en') + ' · ' + errorSourceLabel(e.kind) + (e.count > 1 ? ' · ×' + e.count : ''));
         item.onclick = function () {
           sheet(errorSourceLabel(e.kind), cleanErrorText(e.m, 1000), function (details) {
