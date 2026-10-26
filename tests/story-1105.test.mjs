@@ -21,7 +21,7 @@ for(const language of LANGUAGES){
   const f=memoryDb({progress:{alice:firstFifty(language)},serverFeatureUsage:{alice:{writing:{count:7}}}});let calls=0;
   const handler=createStoriesHandler({identity:async()=>({uid:'alice',db:f.db}),wordPool:bank,generateStory:(pool,o)=>generateStory(pool,o,{env:envFor('groq'),fetcher:async()=>{calls++;return responseFor('groq',dataFor(language));}})});
   const body={action:'generate',id:'story-regression-1112-'+language,...options(language)},request=()=>new Request('https://lumira-tr.com/.netlify/functions/stories',{method:'POST',body:JSON.stringify(body)});
-  const response=await handler(request());assert.equal(response.status,200,await response.clone().text());assert.equal(response.headers.get('X-Lumira-Features-Version'),'1.11.10');
+  const response=await handler(request());assert.equal(response.status,200,await response.clone().text());assert.equal(response.headers.get('X-Lumira-Features-Version'),'1.11.12');
   const saved=(await response.json()).story;assert.equal(saved.questions.length,3);assert(saved.pool.every(row=>row.meaning));assert.equal(saved.method,'ai');assert.equal(f.get('serverFeatureUsage/alice/writing/count'),7);assert.equal((await handler(request())).status,200);assert.equal(calls,1);
  });
 }

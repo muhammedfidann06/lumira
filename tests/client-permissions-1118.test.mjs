@@ -19,3 +19,15 @@ for(const [level,expected]of[[.1,true],[0,false],[.02,false]])test(level===.1?'s
  vm.runInNewContext(code,{window:root,document:{hidden:false,addEventListener(){}},navigator:{},URLSearchParams,performance:{now:()=>clock},Promise,Date,Set,WeakMap,Float32Array,DataView,ArrayBuffer,setTimeout,clearTimeout,clearInterval,setInterval:()=>1,queueMicrotask,requestAnimationFrame:()=>1,cancelAnimationFrame(){}});
  const {s,initLocal}=root.__captureTest;Object.assign(s,{generation:1,phase:'listening',provider:'azure',providers:['azure'],sessionId:'session-fixture-1118',lastResult:clock,stream:{getTracks:()=>[]}});await initLocal(1);const pcm=new Float32Array(1600).fill(level);for(let i=0;i<140;i++){clock+=160;onAudio(pcm,i/10);}await new Promise(r=>setImmediate(r));assert.equal(browsers,expected?1:0);assert.equal(s.provider,expected?'browser':'azure');
 });
+test('a microphone that delivers only digital silence is reported once and clears when sound arrives',async()=>{
+ let clock=1000,onAudio,browsers=0;const logs=[];
+ class Local{constructor(options){onAudio=options.onAudio;this.captureMode='worklet';this.context={sampleRate:48000};}arm(){return Promise.resolve();}stop(){}}
+ const root={location:{search:''},AudioContext:class{},LUMIRA_LOCAL:Local,LUMIRA_FEATURES:{subscribe(){},text:k=>k},LUMIRA_BROWSER:{BrowserSession:class{static supported(){return true;}start(){browsers++;}stop(){}}},PWA:{logError:entry=>logs.push(entry.message)},addEventListener(){}};
+ const code=fs.readFileSync(new URL('../live-translate.js',import.meta.url),'utf8').replace('  window.LUMIRA_LIVE={mount,','  window.__captureTest={s,initLocal};window.LUMIRA_LIVE={mount,');
+ vm.runInNewContext(code,{window:root,document:{hidden:false,addEventListener(){}},navigator:{},URLSearchParams,performance:{now:()=>clock},Promise,Date,Set,WeakMap,Float32Array,DataView,ArrayBuffer,setTimeout,clearTimeout,clearInterval,setInterval:()=>1,queueMicrotask,requestAnimationFrame:()=>1,cancelAnimationFrame(){}});
+ const {s,initLocal}=root.__captureTest;Object.assign(s,{generation:1,phase:'listening',provider:'azure',providers:['azure'],sessionId:'session-fixture-1119',lastResult:clock,stream:{getTracks:()=>[],getAudioTracks:()=>[{muted:true}]}});await initLocal(1);
+ const silence=new Float32Array(1600);for(let i=0;i<80;i++){clock+=100;onAudio(silence,i/10);}
+ assert.equal(s.silentInput,true);assert.equal(logs.filter(message=>message.includes('silent_input')).length,1);assert(logs.find(message=>message.includes('silent_input')).includes('muted'));assert.equal(browsers,0);assert.equal(s.provider,'azure');
+ onAudio(new Float32Array(1600).fill(.05),9);assert.equal(s.silentInput,false);
+ const debug=root.LUMIRA_LIVE.debug();assert.equal(debug.silentInput,false);assert(debug.inputPeak>=.05);
+});

@@ -50,12 +50,14 @@
     }
     if (select && select.disabled!==active()) select.disabled = active();
     const source=node('ltSource');if(source&&source.disabled!==active())source.disabled=active();
-    for(const id of['ltInputDevice','ltInputProcessing'])if(node(id))node(id).disabled=active();
+    // Microphone choices stay usable while listening; a change restarts capture.
+    for(const id of['ltInputDevice','ltInputProcessing'])if(node(id))node(id).disabled=false;
     if(!active()&&node('ltInputFill'))node('ltInputFill').style.transform='scaleX(0)';
     for(const id of['ltInputLevel','ltInputHint'])if(node(id))node(id).hidden=s.provider==='browser'&&active();
     if (clear) clear.disabled = active() || (!s.entries.length && !s.draft);
     const browserRetry=node('ltBrowserRetry');if(browserRetry){browserRetry.hidden=!window.LUMIRA_BROWSER?.BrowserSession.supported()||!(s.error||s.failed.size);browserRetry.textContent=browserRetryCopy[window.NATIVE_LANG]||browserRetryCopy.en;}
-    if (statusBox) { statusBox.textContent = s.autoFixed&&['listening','browser_listening'].includes(s.message)?(autoFixedCopy[window.NATIVE_LANG]||autoFixedCopy.en).replace('{language}',label(s.source)):F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
+    if (statusBox&&s.silentInput&&(active()||s.error)) { statusBox.textContent=silentCopy[window.NATIVE_LANG]||silentCopy.en; statusBox.className='lt-status is-error'; }
+    else if (statusBox) { statusBox.textContent = s.autoFixed&&['listening','browser_listening'].includes(s.message)?(autoFixedCopy[window.NATIVE_LANG]||autoFixedCopy.en).replace('{language}',label(s.source)):F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
     const backup=node('ltBackup'), retry=node('ltBackupRetry'), backupBox=node('ltBackupBox');
     const showBackup=active() && (s.localError || (s.localProgress && !s.localProgress.ready));
     if(backupBox)backupBox.hidden=!showBackup;
@@ -85,6 +87,22 @@
   // on phones set to one language). Fall back to the most likely language.
   const LID_FAILED='lumira_live_azure_lid_failed_v1';
   const autoFixedCopy={tr:'Otomatik dil tespiti bu bağlantıda çalışmadı; konuşulan dil {language} olarak ayarlandı. Gerekirse yukarıdan değiştir.',en:'Automatic language detection did not work on this connection; the spoken language was set to {language}. Change it above if needed.',de:'Die automatische Spracherkennung funktionierte hier nicht; die gesprochene Sprache ist jetzt {language}. Ändere sie oben bei Bedarf.',ar:'لم يعمل اكتشاف اللغة التلقائي على هذا الاتصال؛ تم ضبط لغة الكلام على {language}. غيّرها من الأعلى عند الحاجة.',fr:'La détection automatique n’a pas fonctionné sur cette connexion ; la langue parlée est réglée sur {language}. Modifie-la ci-dessus si besoin.',es:'La detección automática no funcionó en esta conexión; el idioma hablado se fijó en {language}. Cámbialo arriba si hace falta.',ru:'Автоопределение языка не сработало в этом подключении; язык речи установлен: {language}. При необходимости измени его выше.'};
+  // Chrome can report an open microphone while the OS feeds pure silence
+  // (Windows privacy setting, wrong default input, BlueStacks microphone off).
+  // Packets then keep arriving, so this is detected from the signal itself.
+  const silentCopy={tr:'Mikrofondan ses gelmiyor. Aşağıdaki Mikrofon ayarlarından doğru mikrofonu seç ve konuşarak seviye çubuğunu kontrol et. Windows’ta Ayarlar › Gizlilik › Mikrofon’da masaüstü uygulamalarının (Chrome) erişimine izin ver; BlueStacks’te Ayarlar › Ses’ten mikrofonu etkinleştir.',en:'No sound is reaching the app from the microphone. Pick the right microphone in Microphone settings below and watch the level bar while speaking. On Windows, allow desktop apps (Chrome) under Settings › Privacy › Microphone; in BlueStacks, enable the microphone under Settings › Audio.',de:'Vom Mikrofon kommt kein Ton an. Wähle unten in den Mikrofoneinstellungen das richtige Mikrofon und prüfe beim Sprechen die Pegelanzeige. Erlaube unter Windows in Einstellungen › Datenschutz › Mikrofon den Desktop-Apps (Chrome) den Zugriff; aktiviere in BlueStacks das Mikrofon unter Einstellungen › Audio.',ar:'لا يصل أي صوت من الميكروفون. اختر الميكروفون الصحيح من إعدادات الميكروفون أدناه وراقب شريط المستوى أثناء الكلام. في Windows اسمح لتطبيقات سطح المكتب (Chrome) من الإعدادات › الخصوصية › الميكروفون، وفي BlueStacks فعّل الميكروفون من الإعدادات › الصوت.',fr:'Aucun son n’arrive du microphone. Choisis le bon micro dans les réglages du microphone ci-dessous et surveille la barre de niveau en parlant. Sous Windows, autorise les applications de bureau (Chrome) dans Paramètres › Confidentialité › Microphone ; dans BlueStacks, active le micro dans Paramètres › Audio.',es:'No llega sonido del micrófono. Elige el micrófono correcto en los ajustes de micrófono de abajo y mira la barra de nivel al hablar. En Windows, permite las aplicaciones de escritorio (Chrome) en Configuración › Privacidad › Micrófono; en BlueStacks, activa el micrófono en Ajustes › Audio.',ru:'Звук с микрофона не поступает. Выбери нужный микрофон в настройках микрофона ниже и следи за индикатором уровня, говоря вслух. В Windows разреши доступ классическим приложениям (Chrome) в Параметры › Конфиденциальность › Микрофон; в BlueStacks включи микрофон в Настройки › Звук.'};
+  function checkSilence(peak,early){
+    if(peak>(s.inputPeak||0))s.inputPeak=peak;
+    if(s.silentInput&&peak>.004){s.silentInput=false;drawControls();return;}
+    // `early` is used just before capture is handed to the browser engine,
+    // which uses the same default device but cannot be measured afterwards.
+    if(s.silenceChecked||!s.captureArmedAt||performance.now()-s.captureArmedAt<(early?2500:7000))return;
+    s.silenceChecked=true;if((s.inputPeak||0)>=.0005)return;
+    s.silentInput=true;const track=s.stream?.getAudioTracks?.()[0];
+    window.PWA?.logError?.({message:'Live capture: silent_input ('+(s.local?.captureMode||'none')+', '+(s.local?.context?.sampleRate||0)+' Hz'+(track?.muted?', muted':'')+(s.microphoneId?', chosen device':', default device')+')',stack:''});
+    const options=s.root?.querySelector('.lt-input-options');if(options)options.open=true;
+    drawControls();
+  }
   function lidFailedRecently(){try{return Date.now()-Number(localStorage.getItem(LID_FAILED)||0)<86400000;}catch{return false;}}
   function useFixedSource(){
     if(s.source!=='auto')return false;
@@ -148,6 +166,7 @@
         onAudio:(audio,position)=>{
           if(generation!==s.generation || !active())return;
           s.lastAudioAt=performance.now();s.captureRecoveryAt=0;s.audioFrames++;
+          let peak=0;for(let i=0;i<audio.length;i++){const value=audio[i]<0?-audio[i]:audio[i];if(value>peak)peak=value;}checkSilence(peak);
           if(performance.now()-s.inputPaint>150){s.inputPaint=performance.now();let energy=0;for(const value of audio)energy+=value*value;const level=Math.min(1,Math.sqrt(energy/Math.max(1,audio.length))*5);const fill=node('ltInputFill');if(fill)fill.style.transform='scaleX('+level.toFixed(3)+')';}
           if(s.azureInput){
             const bytes=new ArrayBuffer(audio.length*2),view=new DataView(bytes);
@@ -231,7 +250,7 @@
                   lastOriginal=entry.original || lastOriginal;lastTranslation=entry.translated || lastTranslation;firstResult=false;
                 }
                 if(s.source!=='auto')s.detected=s.source;else if(!entry.partial&&FLAGS[entry.language])s.detected=entry.language;
-                s.draft=null;s.lastResult=performance.now();s.awaitingSince=0;drawText();
+                s.draft=null;s.lastResult=performance.now();s.awaitingSince=0;s.silentInput=false;drawText();
               },
               onCommit:position=>{if(current() && s.cloud===cloud)s.local?.markCommitted(position);},
               onError:e=>{
@@ -271,6 +290,7 @@
       if(window.LUMIRA_BROWSER?.BrowserSession.supported()){
         // Release cloud capture first. Running two microphone paths on iOS
         // can suspend recognition; the browser owns capture in this mode.
+        checkSilence(0,true);
         s.local?.stop();s.local=null;s.localArm=null;stopTracks(s.stream);s.stream=null;
         if(s.pendingAudio){s.pendingAudio.close().catch(()=>{});s.pendingAudio=null;}
         const hint=s.detected||(typeof TARGET_LANG!=='undefined'?TARGET_LANG:'de');
@@ -279,8 +299,8 @@
         s.provider='browser';s.phase='listening';
         s.browser=new window.LUMIRA_BROWSER.BrowserSession({id:s.sessionId,source,target:s.target,
           onReady:()=>{if(current())status('browser_listening');},
-          onDraft:text=>{if(current()){s.draft={original:text,translated:''};drawText();}},
-          onFinal:text=>{if(!current())return null;const row={original:text,translated:''};s.entries.push(row);s.draft=null;s.detected=source;drawText();return row;},
+          onDraft:text=>{if(current()){s.silentInput=false;s.draft={original:text,translated:''};drawText();}},
+          onFinal:text=>{if(!current())return null;s.silentInput=false;const row={original:text,translated:''};s.entries.push(row);s.draft=null;s.detected=source;drawText();return row;},
           onResult:entry=>{if(current()){applyTranslation(entry,entry.translated);s.draft=null;s.detected=source;status('browser_listening');drawText();}},
           // A slow or exhausted text service keeps the recognized speech and
           // marks only its translation as pending; recognition keeps running.
@@ -454,7 +474,7 @@
       if(s.source!=='auto'&&FLAGS[observed]&&observed!==s.source)return;
       // NoMatch/empty events are not proof of a working transcription. They
       // must not keep resetting the silent-service watchdog indefinitely.
-      s.lastResult=performance.now();s.azureResultAt=s.lastResult;s.awaitingSince=0;s.voicedSinceResult=0;
+      s.lastResult=performance.now();s.azureResultAt=s.lastResult;s.awaitingSince=0;s.voicedSinceResult=0;s.silentInput=false;
       const code=s.source==='auto'?observed:s.source;
       if(s.source!=='auto'||final){if(FLAGS[code])s.detected=code;}
       let translated='';try{translated=r.translations.get(s.target)||'';}catch(e){}
@@ -529,7 +549,7 @@
     if(active())return;
     if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia){status('browser_unsupported',true);return;}
     const generation=++s.generation,id=F.id();
-    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;s.lastFailure=null;s.azureResultAt=0;s.voicedSinceResult=0;s.azureRetryPlain=false;s.azureRetryFixed=false;s.azureFixedTried=false;s.autoFixed=false;
+    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;s.lastFailure=null;s.azureResultAt=0;s.voicedSinceResult=0;s.azureRetryPlain=false;s.azureRetryFixed=false;s.azureFixedTried=false;s.autoFixed=false;s.inputPeak=0;s.silenceChecked=false;s.silentInput=false;
     try{s.azurePlain=localStorage.getItem('lumira_live_azure_plain_v1')==='1';}catch{s.azurePlain=false;}
     s.failed=new Set();s.providers=[];s.provider='';s.phase='starting';s.sessionId=id;s.draft=null;s.detected='';s.localProgress=null;s.localError=false;s.lastResult=performance.now();s.awaitingSince=0;status('starting');drawText();
     window.VOICE_stop?.();
@@ -576,8 +596,8 @@
     const browserRetry=document.createElement('button');browserRetry.type='button';browserRetry.className='lt-restore';browserRetry.id='ltBrowserRetry';browserRetry.hidden=true;browserRetry.onclick=()=>{if(active())stop();start({browserOnly:true});};node('liveTranslateScreen').append(browserRetry);
     const inputs=document.createElement('details');inputs.className='lt-input-options';inputs.innerHTML='<summary id="ltInputSummary"></summary><label for="ltInputDevice" id="ltInputLabel"></label><select id="ltInputDevice"></select><label><input type="checkbox" id="ltInputProcessing"><span id="ltInputProcessingLabel"></span></label><p id="ltInputHelp"></p><div class="lt-input-level" role="img" id="ltInputLevel"><span id="ltInputFill"></span></div><p id="ltInputHint"></p>';
     node('ltSource').closest('.lt-source').after(inputs);node('ltInputProcessing').checked=s.processing;
-    node('ltInputDevice').onchange=()=>{s.microphoneId=node('ltInputDevice').value;try{localStorage.setItem('lumira_live_microphone_v1',s.microphoneId);}catch{}};
-    node('ltInputProcessing').onchange=()=>{s.processing=node('ltInputProcessing').checked;try{localStorage.setItem('lumira_live_processing_v1',String(s.processing));}catch{}};inputDevices();
+    node('ltInputDevice').onchange=()=>{s.microphoneId=node('ltInputDevice').value;try{localStorage.setItem('lumira_live_microphone_v1',s.microphoneId);}catch{}if(active()){stop();start();}};
+    node('ltInputProcessing').onchange=()=>{s.processing=node('ltInputProcessing').checked;try{localStorage.setItem('lumira_live_processing_v1',String(s.processing));}catch{}if(active()){stop();start();}};inputDevices();
     node('ltBackupRetry').onclick=()=>{s.localError=false;drawControls();warmLocal(s.generation);};
     const source=node('ltSource'),automatic=document.createElement('option');automatic.value='auto';automatic.textContent=window.LUMIRA_SOURCE.text(1);source.append(automatic);
     Object.keys(FLAGS).forEach(code=>{const option=document.createElement('option');option.value=code;option.textContent=FLAGS[code]+' '+label(code);source.append(option);});source.value=s.source;
@@ -632,5 +652,5 @@
   window.addEventListener('offline',()=>{if(active())stop('speech_unavailable',true);});
   window.addEventListener('lumira:featureauthchange',()=>{if(s.root){stop('login_required',true);s.entries=[];s.draft=null;drawText();}});
   window.LUMIRA_LIVE={mount,unmount,refreshLocale,isMounted:()=>!!s.root,isActive:active,stop,
-    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null,captureMode:s.local?.captureMode||null,sampleRate:s.local?.context?.sampleRate||s.pendingAudio?.sampleRate||null,lastFailure:s.lastFailure||null,azurePlain:!!s.azurePlain,autoFixed:!!s.autoFixed})};
+    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null,captureMode:s.local?.captureMode||null,sampleRate:s.local?.context?.sampleRate||s.pendingAudio?.sampleRate||null,lastFailure:s.lastFailure||null,azurePlain:!!s.azurePlain,autoFixed:!!s.autoFixed,inputPeak:Math.round((s.inputPeak||0)*10000)/10000,silentInput:!!s.silentInput})};
 })();

@@ -116,30 +116,35 @@
     // A sheet that never settled must not block every later tap silently.
     if(purchaseInFlight&&Date.now()-purchaseStartedAt<120000){blocked('checkout_in_progress');say(window.LUMIRA_BILLING.text(27),'good');return;}
     purchaseInFlight=false;
-    if(revoked(t.amount)){blocked('badge_revoked');say(N('revoked'),'bad');return;}
-    const policy=window.LUMIRA_FEATURES?.entitlement(),purchaseSku=window.LUMIRA_PLAY.purchaseSku?.(t.sku)||t.sku;
+    const F=window.LUMIRA_FEATURES,policy=F?.entitlement(),row=policy?.memberships?.find(item=>item?.amount===t.amount),purchaseSku=window.LUMIRA_PLAY.purchaseSku?.(t.sku)||t.sku;
+    // Only an administrative lock stops Checkout, because the server refuses
+    // to activate that purchase. A badge the buyer hid in My Profile can be
+    // bought again: the verified purchase shows it again.
+    if(revoked(t.amount)&&!(row?.removed&&!row?.revoked)){
+      blocked('badge_revoked');
+      const reopened=()=>F.api('status').catch(()=>{}).then(()=>{window.PR_refreshBadges?.();window.dispatchEvent(new Event('lumira:playsetupready'));say(N('allowed'),'good');});
+      if(options.isAdmin?.())say(N('revoked')+' '+N('adminHint'),'bad',{action:N('allow'),duration:12000,onAction:()=>F.adminBadges('allow',{uids:[purchaseUid],amount:t.amount,id:F.id()}).then(reopened).catch(error=>say(F.errorText(error),'bad'))});
+      else say(N('revoked'),'bad');
+      return;
+    }
     const ownedPurchase=window.LUMIRA_PLAY.ownedPurchase?.(t.sku);
     if(ownedPurchase){
       window.LUMIRA_PLAY.checkoutStep?.('restoring',purchaseSku);
       purchaseInFlight=true;purchaseStartedAt=Date.now();say(N('owned'));
       return window.LUMIRA_FEATURES.verifyPurchase(purchaseSku,ownedPurchase.purchaseToken,purchaseUid).then(()=>{window.LUMIRA_PLAY.checkoutStep?.('restored',purchaseSku);say(window.LUMIRA_FEATURES.text('restored'),'good');window.LUMIRA_FEATURES.api('status').catch(()=>{});}).catch(e=>{window.LUMIRA_PLAY.checkoutStep?.('verification_failed',purchaseSku,e);say(window.LUMIRA_FEATURES.text(e.featureCode||'purchase_verification_unavailable'),'bad');}).finally(()=>{purchaseInFlight=false;});
     }
-    const renewing=policy?.memberships?.flatMap(row=>Array.isArray(row?.sources)?row.sources:[]).filter(source=>source?.renewsAt&&!source.cancelAt&&source.active)||[];
-    // The lifetime Crown never replaces a subscription, so an active monthly
-    // badge is no reason to refuse it. A monthly Play badge is upgraded with
-    // Play's replacement fields when possible; otherwise the buyer decides.
-    const replacementFailure=t.amount===100?null:window.LUMIRA_PLAY.replacementFailure?.();
-    if(replacementFailure&&!options.force){blocked(replacementFailure);say(window.LUMIRA_FEATURES.text(replacementFailure),'bad');return;}
-    const replace=t.amount===100||options.force?null:window.LUMIRA_PLAY.replacement?.();
-    if(t.amount!==100&&renewing.length&&!replace&&!options.force){
-      // Previously this only toasted "Manage subscription" and opened the
-      // profile, so a tap on any badge looked like nothing happened.
-      blocked(renewing.some(source=>source.provider==='paddle')?'subscription_active_paddle':'subscription_active');
-      say(N(renewing.some(source=>source.provider==='paddle')?'paddle':'active'),'bad',{action:N('anyway'),duration:12000,onAction:()=>purchaseTier(t,Object.assign({},options,{force:true}))});
+    // Every badge is its own purchase. Owning one badge never blocks, and never
+    // replaces, another: buying Kahve while holding Destekçi adds Kahve.
+    // (Play replacement used to swap the old subscription away, and other
+    // active subscriptions stopped Checkout altogether.) Only the very same
+    // badge, already active, asks once so it is not paid for twice by mistake.
+    if(!options.force&&policy?.supportAmounts?.includes(t.amount)){
+      blocked('badge_already_active');
+      say(N('already'),'good',{action:N('anyway'),duration:12000,onAction:()=>purchaseTier(t,Object.assign({},options,{force:true}))});
       return;
     }
 
-    const paymentData={sku:purchaseSku};if(replace){paymentData.oldSku=replace.itemId;paymentData.purchaseToken=replace.purchaseToken;paymentData.replacementMode='withTimeProration';paymentData.prorationMode='immediateWithTimeProration';}
+    const paymentData={sku:purchaseSku};
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: paymentData }];
     // Google Play charges its own store price. Chrome's Play Billing guide uses
     // a placeholder total when the store price has not been read yet.
@@ -199,7 +204,7 @@
       grid.className = 'sup-grid';
 
       const native=window.LUMIRA_PLAY.isNative();
-      const storeCards=[];let report=null;
+      const storeCards=[];let report=null,adminViewer=false;
       TIERS.forEach(function (t) {
         var owned = hasBadge(t.badge);
         var el = document.createElement('button');
@@ -210,11 +215,11 @@
           '<span class="sup-eur">' + window.LUMIRA_BILLING.text(native?(t.amount===100?3:4):28) + '</span>' +
           '<span class="sup-badge">' + t.badge + '</span>' +
           '<span class="sup-xp">+' + t.xp + ' XP</span>';
-        // Cards stay tappable while prices load or fail: a tap then opens the
-        // Google Play sheet or explains why it cannot, instead of doing nothing.
-        el.disabled=native&&revoked(t.amount);
+        // Cards stay tappable while prices load or fail, and also for removed
+        // badges: a disabled card swallowed the tap without any explanation.
+        el.disabled=false;
         if(native){const price=document.createElement('span');price.className='sup-store-price';price.style.cssText='display:block;font-size:14px;line-height:1.6;margin:6px 0;color:#b9f4df';price.textContent=window.LUMIRA_BILLING.text(24);el.append(price);storeCards.push({t,el,price});}
-        el.onclick = function () { purchaseTier(t,{report:function(text){if(report)report(text);}}); };
+        el.onclick = function () { purchaseTier(t,{report:function(text){if(report)report(text);},isAdmin:function(){return adminViewer;}}); };
         grid.appendChild(el);
       });
       b.appendChild(grid);
@@ -225,12 +230,12 @@
         // The latest checkout step stays visible under the cards.
         report=text=>{if(grid.isConnected)status.textContent=text;};
         const account=window.firebase?.auth?.().currentUser?.uid;
-        try{const ref=window.LB_getDb?.()?.ref('admins/'+account);ref?.once('value').then(snapshot=>{if(grid.isConnected&&window.firebase.auth().currentUser?.uid===account){admin=snapshot.val()===true;setup.hidden=!admin||!setupRelevant;}},()=>{});}catch{}
+        try{const ref=window.LB_getDb?.()?.ref('admins/'+account);ref?.once('value').then(snapshot=>{if(grid.isConnected&&window.firebase.auth().currentUser?.uid===account){admin=snapshot.val()===true;adminViewer=admin;setup.hidden=!admin||!setupRelevant;}},()=>{});}catch{}
         const load=async refresh=>{retry.disabled=true;setupRelevant=false;setup.hidden=true;status.textContent=window.LUMIRA_PLAY.text(0);try{
           const items=await window.LUMIRA_PLAY.catalog({refresh});if(!grid.isConnected)return;
-          for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=revoked(row.t.amount);}
+          for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=(detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku)))+(revoked(row.t.amount)?' · '+window.LUMIRA_PLAY.notice('locked'):'');}
           const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;setupRelevant=partial;
-        }catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;setupRelevant=true;for(const row of storeCards){row.price.textContent='—';row.el.disabled=revoked(row.t.amount);}}
+        }catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;setupRelevant=true;for(const row of storeCards){row.price.textContent='—'+(revoked(row.t.amount)?' · '+window.LUMIRA_PLAY.notice('locked'):'');}}
         finally{retry.disabled=false;setup.hidden=!admin||!setupRelevant;}};retry.onclick=()=>load(true);
         const refresh=()=>{if(grid.isConnected)load(true);};window.addEventListener('lumira:playsetupready',refresh);
         const close=panel.close;panel.close=()=>{window.removeEventListener('lumira:playsetupready',refresh);close();};load(false);
