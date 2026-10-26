@@ -40,7 +40,8 @@ function open(reason,quota){
   lines.forEach(line=>{const row=create('span','la-benefit');const icon=create('span','la-benefit-icon','✓');icon.setAttribute('aria-hidden','true');row.append(icon,create('span','',line));card.append(row);});
   const price=create('span','la-price',native?window.LUMIRA_PLAY.text(0):T('loadingPrices'));price.dataset.storePrice='';card.append(price);
   if(card.disabled)card.append(create('span','la-owned',T('owned')));
-  card.onclick=()=>{selected=tier.amount;update();};cards.push(card);grid.append(card);
+  if(native)card.append(create('span','la-card-action',T('buy')));
+  card.onclick=()=>{if(card.disabled)return;selected=tier.amount;update();if(native)buy.onclick();};cards.push(card);grid.append(card);
  });
  panel.append(grid);
  if(benefits||shop)panel.append(create('p','la-note',T('pdfNote')),create('p','la-note la-note-small',T('pdfOther')));else panel.append(create('p','la-note',T('note')));
@@ -56,9 +57,9 @@ function open(reason,quota){
  buy.onclick=async()=>{
   if(purchasing||buy.disabled)return;
   const tier=window.LUMIRA_BADGES?.tiers.find(t=>t.amount===selected);
-  if(!tier||!window.purchaseSupportTier)return;
+  if(!tier||!window.purchaseSupportTier){status.textContent=window.LUMIRA_PLAY?.text(3)||T('storeUnavailable');window.LUMIRA_PLAY?.checkoutStep?.('blocked',productFor(selected)?.sku,{featureCode:'checkout_module_unavailable'});window.PWA?.logError?.({message:'Play checkout: checkout_module_unavailable',stack:''});return;}
   purchasing=true;update();
-  try{await window.purchaseSupportTier(tier);}finally{purchasing=false;if(active===state)update();}
+  try{await window.purchaseSupportTier(tier);}catch(error){window.LUMIRA_PLAY?.checkoutStep?.('client_failed',tier.sku,error);window.PWA?.logError?.({message:'Play client: '+window.LUMIRA_PLAY.reason(error),stack:''});if(active===state)status.textContent=window.LUMIRA_PLAY.text(7);}finally{purchasing=false;if(active===state)update();}
  };
  const dismiss=create('button','la-dismiss',T('dismiss'));dismiss.type='button';dismiss.onclick=close;panel.append(buy,dismiss);
  panel.insertBefore(retry,dismiss);

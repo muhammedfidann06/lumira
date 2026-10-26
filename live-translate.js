@@ -7,6 +7,7 @@
   const LOCAL_TEST = new URLSearchParams(window.location.search).get('liveEngine') === 'local';
   const LOCALES = ['tr-TR','de-DE','en-US','ar-SA','fr-FR','es-ES','ru-RU'];
   const FLAGS = { tr:'🇹🇷', de:'🇩🇪', en:'🇬🇧', ar:'🇸🇦', fr:'🇫🇷', es:'🇪🇸', ru:'🇷🇺' };
+  const browserRetryCopy={tr:'Tarayıcı motoruyla yeniden dene',en:'Retry with the browser engine',de:'Mit Browser-Erkennung erneut versuchen',ar:'أعد المحاولة باستخدام محرك المتصفح',fr:'Réessayer avec le moteur du navigateur',es:'Reintentar con el motor del navegador',ru:'Повторить с распознаванием браузера'};
   const s = { root:null, phase:'idle', generation:0, entries:[], draft:null, detected:'', source:'auto', target:'tr', quota:null, sessionId:null, recognizer:null, stream:null, inputStream:null, audio:null, observer:null, timer:null, deadlineTimer:null, tick:null, leaseDeadline:0, tokenDeadline:0, remainingAt:0, remaining:null, sdkPromise:null, SDK:null, speech:null, restartTimer:null, restartPending:false, restartAttempt:0, authRetries:0, cancelStart:null, wakeLock:null, message:'ready', error:false, renewPending:false, releasePromise:null, providerConfigured:null, provider:'', browser:null, textQueue:null, local:null, localProgress:null, localError:false, localArm:null, switching:null, pendingAudio:null, azureStartedAt:0, azureFailures:0, providers:[], failed:new Set(), cloud:null, cloudEpoch:0, lastResult:0, awaitingSince:0, sdkTask:null };
   const node = id => s.root?.querySelector('#' + id);
   s.microphoneId='';s.processing=true;s.inputPaint=0;
@@ -53,6 +54,7 @@
     if(!active()&&node('ltInputFill'))node('ltInputFill').style.transform='scaleX(0)';
     for(const id of['ltInputLevel','ltInputHint'])if(node(id))node(id).hidden=s.provider==='browser'&&active();
     if (clear) clear.disabled = active() || (!s.entries.length && !s.draft);
+    const browserRetry=node('ltBrowserRetry');if(browserRetry){browserRetry.hidden=!window.LUMIRA_BROWSER?.BrowserSession.supported()||!(s.error||s.failed.size);browserRetry.textContent=browserRetryCopy[window.NATIVE_LANG]||browserRetryCopy.en;}
     if (statusBox) { statusBox.textContent = F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
     const backup=node('ltBackup'), retry=node('ltBackupRetry'), backupBox=node('ltBackupBox');
     const showBackup=active() && (s.localError || (s.localProgress && !s.localProgress.ready));
@@ -131,7 +133,7 @@
           if(s.provider==='azure' && s.phase==='listening'){
             let energy=0;for(const v of audio)energy+=v*v;
             if(Math.sqrt(energy/Math.max(1,audio.length))>.01 && !s.awaitingSince)s.awaitingSince=performance.now();
-            if(s.awaitingSince && performance.now()-s.awaitingSince>15000 && performance.now()-s.lastResult>15000)fallback(generation);
+            if(s.awaitingSince && performance.now()-s.awaitingSince>8000 && performance.now()-s.lastResult>8000){window.PWA?.logError?.({message:'Live Azure: audio_without_transcript',stack:''});fallback(generation);}
           }
         },
         onProgress:progress=>{if(generation===s.generation){s.localProgress=progress;s.localError=false;drawControls();}},
@@ -444,6 +446,7 @@
     if(current()){if(s.failed.has('azure'))throw error('speech_unavailable');s.azureStartedAt=performance.now();s.phase='listening';status('listening');holdScreen(generation);warmLocal(generation);}
   }
   function stop(message, bad, exiting) {
+    if(bad){s.lastFailure={code:String(message||'speech_unavailable').replace(/[^a-z_]/gi,'').slice(0,80),provider:s.provider,phase:s.phase,at:Date.now()};window.PWA?.logError?.({message:'Live stopped ('+(s.provider||'starting')+'): '+s.lastFailure.code,stack:''});}
     const id=s.sessionId;
     ++s.generation;s.browser?.stop();s.browser=null;s.textQueue?.stop();s.textQueue=null;s.cloudEpoch++;s.cloud?.stop();s.cloud=null;s.sessionId=null;s.phase='idle';s.renewPending=false;s.draft=null;
     clearInterval(s.timer);clearInterval(s.tick);clearTimeout(s.deadlineTimer);clearTimeout(s.restartTimer);
@@ -462,11 +465,11 @@
     status(message || 'stopped',bad);drawText();
     if(message==='live_limit')window.LUMIRA_ACCESS?.open('live_limit',s.quota);
   }
-  async function start() {
+  async function start({browserOnly=false}={}) {
     if(active())return;
     if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia){status('browser_unsupported',true);return;}
     const generation=++s.generation,id=F.id();
-    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;
+    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;s.lastFailure=null;
     s.failed=new Set();s.providers=[];s.provider='';s.phase='starting';s.sessionId=id;s.draft=null;s.detected='';s.localProgress=null;s.localError=false;s.lastResult=performance.now();s.awaitingSince=0;status('starting');drawText();
     window.VOICE_stop?.();
     try{if(navigator.audioSession){s.previousAudioSession=navigator.audioSession.type;navigator.audioSession.type='play-and-record';}}catch{}
@@ -488,7 +491,7 @@
       media.getTracks().forEach(track=>track.addEventListener('ended',()=>{if(generation===s.generation)stop('microphone_unavailable',true);},{once:true}));
       const configured=await F.api('status');
       if(generation!==s.generation)return;
-      s.providers=LOCAL_TEST?[]:(configured.providers || (configured.speechConfigured?['azure']:[])).filter(provider=>s.source==='auto'||provider!=='gemini');
+      s.providers=LOCAL_TEST||browserOnly?[]:(configured.providers || (configured.speechConfigured?['azure']:[])).flatMap(provider=>provider==='azure'?['azure',...(s.source==='auto'?[]:['azure-http'])]:provider==='gemini'?[...(s.source==='auto'?['gemini']:[]),'gemini-http']:[provider]);
       const data=await F.api('liveStart',{id,provider:'local'});
       if(generation!==s.generation){F.api('liveStop',{id}).catch(()=>{});return;}
       applyLease(data,generation);heartbeat(generation,id);
@@ -506,6 +509,7 @@
     const backup=document.createElement('aside');backup.id='ltBackupBox';backup.className='lt-backup';backup.hidden=true;
     backup.innerHTML='<p id="ltBackup"></p><button type="button" class="lt-restore" id="ltBackupRetry" hidden></button>';
     node('liveTranslateScreen').append(backup);
+    const browserRetry=document.createElement('button');browserRetry.type='button';browserRetry.className='lt-restore';browserRetry.id='ltBrowserRetry';browserRetry.hidden=true;browserRetry.onclick=()=>{if(active())stop();start({browserOnly:true});};node('liveTranslateScreen').append(browserRetry);
     const inputs=document.createElement('details');inputs.className='lt-input-options';inputs.innerHTML='<summary id="ltInputSummary"></summary><label for="ltInputDevice" id="ltInputLabel"></label><select id="ltInputDevice"></select><label><input type="checkbox" id="ltInputProcessing"><span id="ltInputProcessingLabel"></span></label><p id="ltInputHelp"></p><div class="lt-input-level" role="img" id="ltInputLevel"><span id="ltInputFill"></span></div><p id="ltInputHint"></p>';
     node('ltSource').closest('.lt-source').after(inputs);node('ltInputProcessing').checked=s.processing;
     node('ltInputDevice').onchange=()=>{s.microphoneId=node('ltInputDevice').value;try{localStorage.setItem('lumira_live_microphone_v1',s.microphoneId);}catch{}};
@@ -564,5 +568,5 @@
   window.addEventListener('offline',()=>{if(active())stop('speech_unavailable',true);});
   window.addEventListener('lumira:featureauthchange',()=>{if(s.root){stop('login_required',true);s.entries=[];s.draft=null;drawText();}});
   window.LUMIRA_LIVE={mount,unmount,refreshLocale,isMounted:()=>!!s.root,isActive:active,stop,
-    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null,captureMode:s.local?.captureMode||null,sampleRate:s.local?.context?.sampleRate||s.pendingAudio?.sampleRate||null})};
+    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null,captureMode:s.local?.captureMode||null,sampleRate:s.local?.context?.sampleRate||s.pendingAudio?.sampleRate||null,lastFailure:s.lastFailure||null})};
 })();

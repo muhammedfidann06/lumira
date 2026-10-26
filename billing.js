@@ -67,7 +67,11 @@
   try{return await task;}finally{if(catalogPending===task)catalogPending=null;}
  }
  async function purchase(amount,{priceId}={}){
-  if(typeof root.getDigitalGoodsService==='function'||/^android-app:/i.test(document.referrer)||new URL(root.location.href).searchParams.get('src')==='twa'){root.PWA?.toast(T(21),{kind:'bad'});return;}
+  if(typeof root.getDigitalGoodsService==='function'||/^android-app:/i.test(document.referrer)||new URL(root.location.href).searchParams.get('src')==='twa'){
+   const tier=root.LUMIRA_BADGES?.tiers?.find(row=>row.amount===Number(amount));
+   if(tier&&typeof root.purchaseSupportTier==='function')return root.purchaseSupportTier(tier);
+   root.LUMIRA_PLAY?.checkoutStep?.('blocked',undefined,{featureCode:'checkout_module_unavailable'});root.PWA?.logError?.({message:'Play checkout: checkout_module_unavailable',stack:''});root.PWA?.toast(T(21),{kind:'bad'});return;
+  }
   const current=uid();if(!current){root.PWA?.toast(root.LUMIRA_FEATURES?.text('login_required')||root.LUMIRA_ACCESS_COPY.text('login'),{kind:'bad'});return;}
   if(purchasing)return;purchasing=true;showPurchaseNotice(T(27));
   try{

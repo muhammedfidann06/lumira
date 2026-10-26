@@ -86,11 +86,11 @@
       if(this.length>16000*75){this.fault();return;}
       if(this.chunkReady())this.pump();
     }
-    chunkReady(){return this.length>=96000 || (this.length>=32000 && this.quiet>=7200);}
+    chunkReady(){return this.length>=(this.provider.endsWith('-http')?64000:96000) || (this.length>=32000 && this.quiet>=7200);}
     async pump() {
       if(this.closed || this.processing || this.length<32000)return;
       this.processing=true;
-      const take=Math.min(96000,this.length), audio=new Float32Array(take+(this.tail?.length || 0));
+      const take=Math.min(this.provider.endsWith('-http')?64000:96000,this.length), audio=new Float32Array(take+(this.tail?.length || 0));
       if(this.tail)audio.set(this.tail);
       let cursor=this.tail?.length || 0, remaining=take;
       while(remaining){const p=this.parts.shift(),n=Math.min(remaining,p.length);audio.set(p.subarray(0,n),cursor);cursor+=n;remaining-=n;if(n<p.length)this.parts.unshift(p.subarray(n));}
@@ -101,6 +101,7 @@
         if(Math.sqrt(sum/audio.length)<0.006){this.onCommit?.(end);return;}
         const result=await window.LUMIRA_FEATURES.audio({id:this.id,provider:this.provider,target:this.target,source:this.source,audio:wave(audio)},{signal:this.abort.signal,timeoutMs:11500});
         if(this.closed)return;
+        if(result.transcriptOnly&&!result.empty){result.translated=await window.LUMIRA_TEXT.translate(result.original,result.language,this.target,{id:this.id,signal:this.abort.signal});if(this.closed)return;}
         this.lastReply=performance.now();
         if(!result.empty)this.onResult?.(result);
         this.onCommit?.(end);

@@ -1,4 +1,4 @@
-.lumira-notice-backdrop{position:fixed;inset:0;z-index:10060;display:grid;place-items:center;padding:24px;background:#030817bf;overflow:auto;overscroll-behavior:contain}
+.lumira-notice-backdrop{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:24px;background:#030817bf;overflow:auto;overscroll-behavior:contain}
 .lumira-notice{position:relative;isolation:isolate;box-sizing:border-box;min-width:0;width:min(460px,100%);max-height:calc(100dvh - 48px);overflow:auto;padding:38px 28px 26px;border:1px solid #82dffb66;border-radius:28px;color:#edf5ff;background:radial-gradient(ellipse at 0 0,#204d6e88,transparent 65%),linear-gradient(140deg,#121f36,#201b36);box-shadow:0 30px 100px #0008;font:15px/1.8 system-ui,-apple-system,sans-serif;text-align:center}
 .lumira-notice::before{content:'';position:absolute;z-index:-1;inset:12px;border:1px solid #a8baff18;border-radius:20px;pointer-events:none}
 .lumira-notice-mascot{display:block;width:82px;height:68px;margin:0 auto 20px;filter:drop-shadow(0 0 18px #a5c3ff66)}

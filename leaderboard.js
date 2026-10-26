@@ -311,6 +311,7 @@ function initLeaderboard(){
 
     function addSeconds(uid, name, seconds, useBeacon){
       if(!uid) return;
+      if(authSvc?.currentUser?.uid!==uid)return;
       /* KALDIRILDI: buradaki kimliksiz (auth'suz) REST PUT güvenlik kuralları
          'auth != null' istediği için zaten sessizce reddediliyordu (ölü kod) ve
          kimliksiz yazma yüzeyi bırakıyordu. 'useBeacon' imza uyumu için duruyor
@@ -322,6 +323,7 @@ function initLeaderboard(){
       if(!db) return;
       const ref = db.ref('leaderboard/' + uid);
       ref.transaction((current) => {
+        if(authSvc?.currentUser?.uid!==uid)return;
         const prev = current && typeof current === 'object' ? current : { name: name, totalSeconds: 0 };
         /* ÖNEMLİ: Buradan SIFIRDAN yeni bir nesne döndürülüyordu ve içinde "xp"
            alanı yoktu. Süre her kaydedildiğinde (giriş anında, sekme
@@ -329,11 +331,11 @@ function initLeaderboard(){
            sıralamasında bir görünüp kaybolmasının ve "XP silinmiş gibi"
            düşmesinin sebebi buydu. Artık mevcut alanlar korunuyor. */
         return Object.assign({}, prev, {
-          name: name || prev.name || (window.t?window.t('fallback_user'):'Kullanıcı'),
-          totalSeconds: (prev.totalSeconds || 0) + seconds,
+          name: String(name || prev.name || (window.t?window.t('fallback_user'):'Kullanıcı')).trim().slice(0,30),
+          totalSeconds: Math.max(0,Number(prev.totalSeconds)||0) + Math.max(0,Number(seconds)||0),
           lastSeen: Date.now()
         });
-      });
+      }).catch(error=>window.PWA?.logError?.({message:'Firebase leaderboard_time: '+String(error?.code||error?.message||'write_failed').replace(/[^a-z_]/gi,'').slice(0,80),stack:''}));
     }
 
     document.addEventListener('visibilitychange', () => {
@@ -395,21 +397,24 @@ function initLeaderboard(){
     // XP/seviyeyi okuyabilir, ekstra bir veri okumasına gerek kalmaz.
     window.LB_updateXp = function(xp){
       if(!currentUid || !db) return;
+      if(authSvc?.currentUser?.uid!==currentUid)return;
+      const owner=currentUid;
       const ref = db.ref('leaderboard/' + currentUid);
       ref.transaction((current) => {
+        if(authSvc?.currentUser?.uid!==owner)return;
         const prev = current && typeof current === 'object' ? current : { name: currentName, totalSeconds: 0 };
         /* XP asla GERİ ALINMAZ.
            Aynı hesapla birden fazla cihaz/sekme açıkken her biri kendi
            belleğindeki değeri yazıyor; biri düşük kalmışsa sıralama sürekli
            bir yükselip bir iniyordu. Artık yalnızca daha yüksek değer geçer. */
         const prevXp = (prev && typeof prev.xp === 'number') ? prev.xp : 0;
-        const nextXp = Math.max(prevXp, xp || 0);
+        const nextXp = Math.max(prevXp,Math.min(100000000,Number.isFinite(Number(xp))?Math.max(0,Number(xp)):0));
         return Object.assign({}, prev, {
-          name: currentName || prev.name || (window.t?window.t('fallback_user'):'Kullanıcı'),   /* ad asla boş kalmasın */
+          name: String(currentName || prev.name || (window.t?window.t('fallback_user'):'Kullanıcı')).trim().slice(0,30),
           xp: nextXp,
           lastSeen: Date.now()
         });
-      });
+      }).catch(error=>window.PWA?.logError?.({message:'Firebase leaderboard_xp: '+String(error?.code||error?.message||'write_failed').replace(/[^a-z_]/gi,'').slice(0,80),stack:''}));
     };
     function renderBoard(elId, entries, formatValue){
       const list = document.getElementById(elId);

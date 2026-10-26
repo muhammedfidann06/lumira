@@ -42,6 +42,9 @@
   }
   function db()   { try { return firebase.database(); } catch (e) { return null; } }
   function user() { try { return firebase.auth().currentUser; } catch (e) { return null; } }
+  // Metrics are optional. A denied write must not escape as an unhandled
+  // rejection or interfere with a lesson, login or payment click.
+  function optional(task,done){Promise.resolve(task).then(function(){if(done)done();},function(){});}
 
   /* artırma: ServerValue.increment varsa onu, yoksa transaction'ı kullan */
   function bump(path, amount) {
@@ -49,12 +52,12 @@
     amount = amount || 1;
     try {
       var inc = firebase.database.ServerValue && firebase.database.ServerValue.increment;
-      if (inc) { d.ref(path).set(inc(amount)); return; }
+      if (inc) { optional(d.ref(path).set(inc(amount))); return; }
     } catch (e) {}
     /* yedek: transaction */
-    d.ref(path).transaction(function (cur) {
+    optional(d.ref(path).transaction(function (cur) {
       return (typeof cur === 'number' ? cur : 0) + amount;
-    });
+    }));
   }
 
   /* ------------------------------------------------------- yazma / tampon -- */
@@ -86,10 +89,10 @@
     run(function () {
       var u = user(); if (!u) return;
       var day = today();
-      var guard = 'lumira_dau_' + day;
+      var guard = 'lumira_dau_' + day + '_' + key(u.uid);
       try { if (localStorage.getItem(guard)) return; } catch (e) {}
-      db() && db().ref('analytics/dau/' + day + '/' + key(u.uid)).set(1);
-      try { localStorage.setItem(guard, '1'); } catch (e) {}
+      var database=db();if(!database)return;
+      optional(database.ref('analytics/dau/' + day + '/' + key(u.uid)).set(1),function(){try{localStorage.setItem(guard,'1');}catch(e){}});
     });
   }
 
@@ -110,6 +113,7 @@
   /* --------------------------------------------------------- auth durumu -- */
   var anonTried = false;
   function onAuth() {
+    if(!user()){ready=false;return;}
     if (user()) {
       if (!ready) {
         ready = true;

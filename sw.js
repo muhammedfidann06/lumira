@@ -22,7 +22,7 @@ function trackWrite(promise){storageWrites.add(promise);promise.finally(()=>stor
 function addCache(cache,request){if(storageReset)return Promise.reject(Error('storage_paused'));return trackWrite(cache.add(request));}
 function putCache(cache,key,response){if(storageReset)return Promise.resolve();return trackWrite(cache.put(key,response));}
 
-const CACHE_VERSION = 'v1.11.7';
+const CACHE_VERSION = 'v1.11.8';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.11.4';
 const PHRASE_CACHE  = 'lumira-phrases-v1.11.4';

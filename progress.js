@@ -244,7 +244,7 @@
            "ilk N kişi" gibi kayıt-sırası bazlı işler için gerekli. */
         meta.joinedAt = (cur && cur.joinedAt) ? cur.joinedAt : Date.now();
         return meta;
-      }, function(){ persistLocalMirror(); }, false);
+      }, function(){ persistLocalMirror(); }, false).catch(error=>{persistLocalMirror();window.PWA?.logError?.({message:'Firebase progress_meta: '+String(error?.code||error?.message||'write_failed').replace(/[^a-z_]/gi,'').slice(0,80),stack:''});});
     }
     // Seviye liderlik tablosu 'leaderboard/{uid}/xp' alanını okur; her meta
     // kaydında (görev tamamlama, XP kazanma, oturum bitişi vb.) burayı da

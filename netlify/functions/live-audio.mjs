@@ -13,7 +13,7 @@ export function createAudioHandler(services = { identity, translateAudio }, cloc
       const raw = await request.text();
       if (raw.length > 950000) throw fault('invalid_input',413);
       let body; try { body = JSON.parse(raw); } catch { throw fault('invalid_input'); }
-      if (!/^[a-zA-Z0-9_-]{16,80}$/.test(body.id || '') || !['groq','cloudflare'].includes(body.provider) || !['tr','de','en','ar','fr','es','ru'].includes(body.target)) throw fault('invalid_input',422);
+      if (!/^[a-zA-Z0-9_-]{16,80}$/.test(body.id || '') || !['groq','cloudflare','azure-http','gemini-http'].includes(body.provider) || !['tr','de','en','ar','fr','es','ru'].includes(body.target)) throw fault('invalid_input',422);
       if(body.source!==undefined&&!['auto','tr','de','en','ar','fr','es','ru'].includes(body.source))throw fault('invalid_input',422);
       const audio = decodeWave(body.audio);
       const ctx = await services.identity(request);
