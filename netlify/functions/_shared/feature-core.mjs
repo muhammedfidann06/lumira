@@ -124,10 +124,12 @@ export function changeUsage(value, tier, action, p, now, zone = 'Europe/Vienna')
       if (interval) interval.end = Math.min(now, interval.end);
       delete s.live.session;
     }
-  } else if (action === 'liveConnect' || action === 'liveAudioBegin') {
+  } else if (action === 'liveConnect' || action === 'liveAudioBegin' || action === 'liveText') {
     if (!s.live.session || s.live.session.id !== p.id) throw fault('session_expired', 409);
-    const key = action === 'liveConnect' ? 'connects' : 'requests';
-    const maximum = action === 'liveConnect' ? 18 : 30;
+    // Each finished sentence needs one text translation. Counting those as
+    // provider connections exhausted 18/min in fast lessons and stopped them.
+    const key = action === 'liveConnect' ? 'connects' : action === 'liveText' ? 'texts' : 'requests';
+    const maximum = action === 'liveConnect' ? 18 : action === 'liveText' ? 90 : 30;
     s.live[key] = (s.live[key] || []).filter(at => at > now - 60000);
     if (s.live[key].length >= maximum) throw fault('speech_busy', 429);
     s.live[key].push(now);

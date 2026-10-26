@@ -82,7 +82,7 @@
 
   /* Play: five monthly subscriptions plus one lifetime Crown. Old one-time
      identifiers remain accepted by the server for purchase restoration. */
-  let purchaseInFlight=false;
+  let purchaseInFlight=false,purchaseStartedAt=0;
   function purchaseTier(t) {
     window.LUMIRA_PLAY.checkoutStep?.('selected',t.sku);
     const blocked=code=>{window.LUMIRA_PLAY.checkoutStep?.('blocked',t.sku,{featureCode:code});window.PWA?.logError?.({message:'Play checkout blocked ('+t.sku+'): '+code,stack:''});};
@@ -103,14 +103,20 @@
       return window.LUMIRA_BILLING?.purchase(t.amount);
     }
     if(!window.PaymentRequest||typeof window.getDigitalGoodsService!=='function'){blocked('store_unsupported');toast(window.LUMIRA_PLAY.text(5),{kind:'bad'});return;}
-    if(!window.LUMIRA_PLAY.canPurchase(t.sku)){blocked('catalog_not_ready');toast(window.LUMIRA_PLAY.text(3),{kind:'bad'});window.LUMIRA_PLAY.catalog({refresh:true}).catch(()=>{});return;}
-    if(purchaseInFlight){blocked('checkout_in_progress');return;}
+    const apiBlock=window.LUMIRA_PLAY.blockedReason?.();if(apiBlock){blocked(apiBlock);toast(window.LUMIRA_PLAY.errorText({featureCode:apiBlock}),{kind:'bad'});return;}
+    // A product that is not in the cached catalog yet is no reason to ignore
+    // the tap: Google Play shows its sheet (or its own error) and the server
+    // still verifies every receipt before a badge opens.
+    const catalogReady=window.LUMIRA_PLAY.canPurchase(t.sku);
+    // A sheet that never settled must not block every later tap silently.
+    if(purchaseInFlight&&Date.now()-purchaseStartedAt<120000){blocked('checkout_in_progress');toast(window.LUMIRA_BILLING.text(27),{kind:'good'});return;}
+    purchaseInFlight=false;
     if(revoked(t.amount)){toast(({tr:'Bu rozet hesabında yönetici tarafından kaldırıldı.',en:'An administrator has removed this badge from your account.',de:'Dieses Abzeichen wurde von einem Administrator aus deinem Konto entfernt.',ar:'أزال المسؤول هذه الشارة من حسابك.',fr:'Un administrateur a retiré ce badge de ton compte.',es:'Un administrador ha retirado esta insignia de tu cuenta.',ru:'Администратор удалил этот значок из твоего аккаунта.'})[window.NATIVE_LANG||'tr']||'An administrator has removed this badge from your account.',{kind:'bad'});return;}
     const policy=window.LUMIRA_FEATURES?.entitlement(),purchaseSku=window.LUMIRA_PLAY.purchaseSku?.(t.sku)||t.sku;
     const ownedPurchase=window.LUMIRA_PLAY.ownedPurchase?.(t.sku);
     if(ownedPurchase){
       window.LUMIRA_PLAY.checkoutStep?.('restoring',purchaseSku);
-      purchaseInFlight=true;
+      purchaseInFlight=true;purchaseStartedAt=Date.now();
       return window.LUMIRA_FEATURES.verifyPurchase(purchaseSku,ownedPurchase.purchaseToken,purchaseUid).then(()=>{toast(window.LUMIRA_FEATURES.text('restored'),{kind:'good'});window.LUMIRA_FEATURES.api('status').catch(()=>{});}).catch(e=>toast(window.LUMIRA_FEATURES.text(e.featureCode||'purchase_verification_unavailable'),{kind:'bad'})).finally(()=>{purchaseInFlight=false;});
     }
     const renewing=policy?.memberships?.flatMap(row=>Array.isArray(row?.sources)?row.sources:[]).filter(source=>source?.renewsAt&&!source.cancelAt&&source.active)||[];
@@ -123,15 +129,18 @@
 
     const paymentData={sku:purchaseSku};if(replace){paymentData.oldSku=replace.itemId;paymentData.purchaseToken=replace.purchaseToken;paymentData.replacementMode='withTimeProration';paymentData.prorationMode='immediateWithTimeProration';}
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: paymentData }];
-    const price=window.LUMIRA_PLAY.paymentAmount?.(t.sku);
-    if(!price){blocked('catalog_not_ready');toast(window.LUMIRA_PLAY.text(3),{kind:'bad'});return;}
+    // Google Play charges its own store price. Chrome's Play Billing guide uses
+    // a placeholder total when the store price has not been read yet.
+    const price=window.LUMIRA_PLAY.paymentAmount?.(t.sku)||{currency:'USD',value:'0'};
     var details = { total: { label: tierName(t), amount:price } };
     var request;
     try { request = new PaymentRequest(methodData, details); }
     catch (e) { window.LUMIRA_PLAY.checkoutStep?.('request_failed',purchaseSku,e);window.PWA?.logError?.({message:'Play request ('+t.sku+'): '+(e.name||'failed'),stack:''});toast(window.t?window.t('purchase_start_failed'):'Satın alma başlatılamadı.', { kind: 'bad' }); return; }
 
-    purchaseInFlight=true;
+    purchaseInFlight=true;purchaseStartedAt=Date.now();
     let shown;try{window.LUMIRA_PLAY.checkoutStep?.('opening',purchaseSku);shown=request.show();}catch(e){purchaseInFlight=false;window.LUMIRA_PLAY.checkoutStep?.('show_failed',purchaseSku,e);window.PWA?.logError?.({message:'Play show ('+t.sku+'): '+window.LUMIRA_PLAY.reason(e),stack:''});toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
+    // Read prices/owned purchases after show() so the tap's activation is used first.
+    if(!catalogReady)window.LUMIRA_PLAY.catalog().catch(()=>{});
     return shown.then(async function (response) {
       window.LUMIRA_PLAY.checkoutStep?.('verifying',purchaseSku);
       let paymentDetails=response.details;try{if(typeof paymentDetails==='string')paymentDetails=JSON.parse(paymentDetails);}catch{paymentDetails=null;}
@@ -184,7 +193,9 @@
           '<span class="sup-eur">' + window.LUMIRA_BILLING.text(native?(t.amount===100?3:4):28) + '</span>' +
           '<span class="sup-badge">' + t.badge + '</span>' +
           '<span class="sup-xp">+' + t.xp + ' XP</span>';
-        el.disabled=native;
+        // Cards stay tappable while prices load or fail: a tap then opens the
+        // Google Play sheet or explains why it cannot, instead of doing nothing.
+        el.disabled=native&&revoked(t.amount);
         if(native){const price=document.createElement('span');price.className='sup-store-price';price.style.cssText='display:block;font-size:14px;line-height:1.6;margin:6px 0;color:#b9f4df';price.textContent=window.LUMIRA_BILLING.text(24);el.append(price);storeCards.push({t,el,price});}
         el.onclick = function () { purchaseTier(t); };
         grid.appendChild(el);
@@ -198,9 +209,9 @@
         try{const ref=window.LB_getDb?.()?.ref('admins/'+account);ref?.once('value').then(snapshot=>{if(grid.isConnected&&window.firebase.auth().currentUser?.uid===account){admin=snapshot.val()===true;setup.hidden=!admin||!setupRelevant;}},()=>{});}catch{}
         const load=async refresh=>{retry.disabled=true;setupRelevant=false;setup.hidden=true;status.textContent=window.LUMIRA_PLAY.text(0);try{
           const items=await window.LUMIRA_PLAY.catalog({refresh});if(!grid.isConnected)return;
-          for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=!detail||revoked(row.t.amount);}
+          for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=revoked(row.t.amount);}
           const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;setupRelevant=partial;
-        }catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;setupRelevant=true;for(const row of storeCards){row.price.textContent='—';row.el.disabled=true;}}
+        }catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;setupRelevant=true;for(const row of storeCards){row.price.textContent='—';row.el.disabled=revoked(row.t.amount);}}
         finally{retry.disabled=false;setup.hidden=!admin||!setupRelevant;}};retry.onclick=()=>load(true);
         const refresh=()=>{if(grid.isConnected)load(true);};window.addEventListener('lumira:playsetupready',refresh);
         const close=panel.close;panel.close=()=>{window.removeEventListener('lumira:playsetupready',refresh);close();};load(false);

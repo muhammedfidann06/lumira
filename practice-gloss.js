@@ -69,7 +69,10 @@ const entries=[
 const caches=new Map();
 function add(map,key,value,priority=0){if(!key||!value)return;const old=map.get(key);if(!old||priority>old.priority)map.set(key,{value,priority});else if(priority===old.priority&&old.value!==value)map.set(key,{value:null,priority});}
 function index(language,native){
- const vocab=typeof VOCAB==='undefined'?[]:VOCAB,revision=root.LUMIRA_PHRASES?.revision||0,key=language+'|'+native+'|'+vocab.length+'|'+revision;
+ // Key on the two dictionaries this index reads. Keying on the total VOCAB
+ // length rebuilt the whole index (a full scan) whenever an unrelated
+ // language finished loading in the background, freezing the next tap.
+ const vocab=typeof VOCAB==='undefined'?[]:VOCAB,revision=root.LUMIRA_PHRASES?.revision||0,loaded=root.VOCAB_LOADED,state=code=>code==='tr'?1:loaded?(loaded[code]?1:0):vocab.length,key=language+'|'+native+'|'+state(language)+'|'+state(native)+'|'+revision;
  if(caches.has(key))return caches.get(key);const map=new Map(),nativeMeanings=new Map();
  for(const v of vocab)if(v.lang===native&&!v.phraseId){const k=fold(v.tr,'tr');if(!nativeMeanings.has(k))nativeMeanings.set(k,new Set());nativeMeanings.get(k).add(v.w);}
  for(const v of vocab){

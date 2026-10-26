@@ -52,8 +52,8 @@
             if(content){
               const input=content.inputTranscription || content.input_transcription;
               const output=content.outputTranscription || content.output_transcription;
-              if(typeof input?.text==='string')this.original=(this.original+input.text).slice(-30000);
-              if(typeof output?.text==='string'&&output.text){this.translated=(this.translated+output.text).slice(-30000);this.lastReply=performance.now();this.speechSince=0;}
+              if(typeof input?.text==='string'){this.original=(this.original+input.text).slice(-30000);if(input.text){this.lastReply=performance.now();this.voiced=0;}}
+              if(typeof output?.text==='string'&&output.text){this.translated=(this.translated+output.text).slice(-30000);this.lastReply=performance.now();this.voiced=0;}
               this.language=code(input?.languageCode || input?.language_code || this.language);
               if(input?.text || output?.text || content.turnComplete || content.turn_complete)this.onResult?.({id:this.entryId || this.id+'-gemini',original:this.original,translated:this.translated,language:this.language,partial:!(input?.finished || output?.finished || content.turnComplete || content.turn_complete)});
               if(output?.finished || content.turnComplete || content.turn_complete)this.onCommit?.(Math.max(0,this.position-2));
@@ -77,8 +77,10 @@
         // A failover replays up to 60 seconds of uncommitted PCM. Its encoded
         // burst must fit without falsely rejecting a healthy next provider.
         if(this.socket.bufferedAmount>3*1024*1024){this.fault();return;}
-        if(speech && !this.speechSince)this.speechSince=performance.now();
-        if(this.speechSince && performance.now()-this.speechSince>15000 && performance.now()-this.lastReply>15000){this.fault();return;}
+        // Only clearly voiced audio counts toward the silent-service watchdog;
+        // background noise above the old 0.008 level faulted quiet lessons.
+        if(Math.sqrt(sum/Math.max(1,audio.length))>0.03)this.voiced=(this.voiced||0)+audio.length/16000;
+        if(this.voiced>12 && performance.now()-this.lastReply>20000){this.fault();return;}
         try{this.socket.send(JSON.stringify({realtimeInput:{audio:{data:base64(pcm(audio)),mimeType:'audio/pcm;rate=16000'}}}));}catch{this.fault();}
         return;
       }

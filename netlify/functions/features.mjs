@@ -7,7 +7,7 @@ import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 import {playCatalog} from './_shared/play-catalog.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.8' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.9' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
@@ -66,7 +66,7 @@ export function createHandler(services = { identity, speechToken, checkWriting, 
       if (!operationId(body.id)) throw fault('invalid_operation');
       if(body.action==='liveText'){
         if(typeof body.text!=='string'||!body.text.trim()||body.text.length>4000||!['tr','de','en','ar','fr','es','ru'].includes(body.source)||!['tr','de','en','ar','fr','es','ru'].includes(body.target))throw fault('invalid_input',422);
-        await mutate('liveConnect',{id:body.id});
+        await mutate('liveText',{id:body.id});
         return reply(await(services.translateText||translateText)(body.text,body.source,body.target));
       }
       if (body.action === 'liveConnect') {

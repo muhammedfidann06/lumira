@@ -384,6 +384,12 @@ body{
   70%{transform:translate(-30px,18px) rotate(-11deg);}
 }
 
+/* Tam ekran pencere, canlı çeviri veya hikâye okuma açıkken arka plan
+   hareketleri duraklar: örtülü sahne için bulanık katmanlar yeniden çizilmez. */
+html.lumira-overlay .flutter,html.lumira-overlay .flutter .wing,html.lumira-overlay .steam path,
+body.lt-focus .flutter,body.lt-focus .flutter .wing,
+body.story-focus .flutter,body.story-focus .flutter .wing{animation-play-state:paused !important;}
+
 /* --------------------------------------------------------------- ekranlar */
 @media (max-width:380px){
   .flutter.f3,.flutter.f6{display:none;}

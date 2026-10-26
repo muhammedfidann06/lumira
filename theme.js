@@ -16,9 +16,15 @@
 
   var NS = 'http://www.w3.org/2000/svg';
   var motionQuery=window.matchMedia('(prefers-reduced-motion: reduce)'),reduce=motionQuery.matches;
-  var voiceBusy=false;
+  var voiceBusy=false,overlayOpen=false;
   function light(){return reduce||document.documentElement.classList.contains('lite');}
-  function busy(){return light()||document.hidden||document.body.classList.contains('lt-focus');}
+  /* Tam ekran bir pencere (blur'lu sayfa, ödeme, bildirim, kelime kartı) ya da
+     hikâye okuma ekranı açıkken arka plan zaten örtülüdür. Ateş böcekleri her
+     karede değiştiğinde üstteki tüm bulanık katmanlar yeniden hesaplanıyor ve
+     telefonda kasmaya yol açıyordu; bu sürede çizim duraklatılır. */
+  var OVERLAYS='body>.pwa-sheet-backdrop,body>.la-backdrop,body>.lumira-notice-backdrop,body>.story-word-popup';
+  function syncOverlay(){var open=!!document.querySelector(OVERLAYS);if(open!==overlayOpen){overlayOpen=open;document.documentElement.classList.toggle('lumira-overlay',open);}}
+  function busy(){return light()||document.hidden||overlayOpen||document.body.classList.contains('lt-focus')||document.body.classList.contains('story-focus');}
   function refreshEffects(){if(!fx)return;if(busy())fx.pause();else fx.resume();}
   window.addEventListener('lumira:performancechange',refreshEffects);
   window.addEventListener('lumira:voice-status',function(event){voiceBusy=['device-speaking','device-requested','online-requested','online-playing'].includes(event.detail?.status);refreshEffects();});
@@ -35,7 +41,10 @@
   }
 
   function parallax(bg) {
-    if (!bg || light()) return;
+    /* Telefonda eğim sensörü saniyede ~60 olay üretir; arka plan hiç durmadan
+       kayınca üstündeki bulanık paneller her karede yeniden çiziliyordu.
+       Paralaks yalnızca fareyle kullanılan ekranlarda kalır. */
+    if (!bg || light() || window.matchMedia?.('(pointer: coarse)').matches) return;
     var tx = 0, ty = 0, cx = 0, cy = 0, queued = false;
 
     function apply() {
@@ -249,10 +258,16 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('touchmove', onScroll, { passive: true });
 
-    var raf = 0;
+    var raf = 0,lastDraw=0;
+    /* Android'de ateş böcekleri ~30 kare/sn ile çizilir: yavaş salınımda fark
+       edilmez, ama üstteki bulanık katmanların yeniden hesaplanması yarıya iner.
+       (iOS'taki 120 Hz takılma notu nedeniyle yalnızca Android'de.) */
+    var minGap=document.documentElement.classList.contains('lumira-android')?31:0;
     function loop(now) {
       raf = requestAnimationFrame(loop);
       if (scrolling||busy()) return;          /* kaydırma bitene kadar bekle */
+      if (minGap && now-lastDraw<minGap) return;
+      lastDraw=now;
       var started=performance.now();frame(now);
       slowFrames=performance.now()-started>8?slowFrames+1:Math.max(0,slowFrames-1);
       if(slowFrames>=5&&quality>1){quality=1;slowFrames=0;resize();}
@@ -547,7 +562,7 @@
         refreshEffects();
       });
     }, 'visibilitychange');
-    safe(function(){new MutationObserver(refreshEffects).observe(document.body,{attributes:true,attributeFilter:['class']});},'performance-observer');
+    safe(function(){syncOverlay();new MutationObserver(function(){syncOverlay();refreshEffects();}).observe(document.body,{attributes:true,attributeFilter:['class'],childList:true});},'performance-observer');
     safe(buildDesk, 'buildDesk');
     safe(buildFlies, 'buildFlies');
     safe(mergeProgress, 'mergeProgress');

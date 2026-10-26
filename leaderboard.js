@@ -239,7 +239,10 @@ function initLeaderboard(){
     let activeAccumulated = 0;
     let lastActivity = Date.now();
     let lastTick = Date.now();
-    const FLUSH_MS = 5000;
+    /* 5 sn idi: her açık uygulama 5 sn'de bir yazınca, tüm tabloyu dinleyen
+       herkes saniyede onlarca güncelleme alıyordu. Süre yine kaybolmaz —
+       sekme gizlenirken ve kapanırken ayrıca yazılır. */
+    const FLUSH_MS = 15000;
     const IDLE_MS = 600000; /* 10 dakika (önceden 1dk) */
 
     const ACTIVITY_EVENTS = ['click','touchstart','touchmove','mousemove','keydown','scroll','pointerdown'];
@@ -500,10 +503,14 @@ function initLeaderboard(){
       }catch(e){ return null; }
     }
 
+    let lbCachedAt = 0;
+    window.addEventListener('pagehide', () => { if(lastLbVal) cacheLb(lastLbVal); });
     function processLbSnapshot(val){
       try { window.__lumLbReady = true; } catch(e){}   /* splash: sıralama hazır sinyali */
       lastLbVal = val;
-      cacheLb(val);
+      /* Tüm tabloyu senkron yazmak ana iş parçacığını kilitliyordu: dakikada bir
+         ve sayfa kapanırken yazılır. */
+      if(Date.now() - lbCachedAt > 60000){ lbCachedAt = Date.now(); cacheLb(val); }
       /* Eskiden yalnızca "name" alanı dolu olan kayıtlar listeye giriyordu.
          Bir kaydın adı herhangi bir sebeple boş kalırsa (ör. yalnızca xp
          yazılmışsa) kişi sıralamada HİÇ görünmüyordu. Artık adı olmayan ama
@@ -554,8 +561,16 @@ function initLeaderboard(){
         renderMyRanks(null, 0, null, 0);
         return;
       }
+      /* Her öğrencinin yazımı burada bir 'value' olayı üretir. Tabloyu her
+         seferinde sıralayıp yeniden çizmek ve tamamını localStorage'a yazmak
+         telefonu kasıyordu: güncellemeler 4 sn'de bir işlenir, arka plandayken
+         hiç işlenmez. */
+      let lbPending, lbTimer = 0, lbLast = 0;
+      const lbRun = () => { lbTimer = 0; if(document.hidden) return; const val = lbPending; lbPending = undefined; if(val === undefined) return; lbLast = Date.now(); processLbSnapshot(val); };
+      const lbSchedule = val => { lbPending = val; if(lbTimer || document.hidden) return; lbTimer = setTimeout(lbRun, Math.max(0, 4000 - (Date.now() - lbLast))); };
+      document.addEventListener('visibilitychange', () => { if(!document.hidden && lbPending !== undefined && !lbTimer) lbTimer = setTimeout(lbRun, 0); });
       db.ref('leaderboard').on('value', (snap) => {
-        processLbSnapshot(snap.val() || {});
+        lbSchedule(snap.val() || {});
       }, (err) => {
         console.warn('Liderlik verisi okunamadı:', err);
         renderTimeBoard([]);

@@ -44,7 +44,11 @@ export function createAnnouncementsHandler(services={identity:authenticatedIdent
   if(!body||!['create','inbox','claim','ack','history'].includes(body.action))throw fault('invalid_action');
   const ctx=await services.identity(request),now=clock();
   const publicRef=ctx.db.ref('serverAnnouncements/broadcast'),personalRef=ctx.db.ref('serverAnnouncements/users/'+ctx.uid),readsRef=ctx.db.ref('serverAnnouncementReads/'+ctx.uid);
-  const recent=async ref=>{const query=ref.orderByChild?ref.orderByChild('createdAt').limitToLast(100):ref;return(await query.get()).val()||{};};
+  // get() on orderByChild() is rejected with "Index not defined" unless the
+  // published rules contain ".indexOn": "createdAt". That surfaced to every
+  // user as announcements_unavailable. These nodes are small and expire, so a
+  // plain read sorted here works with or without the index.
+  const recent=async ref=>{let rows;try{rows=(await(ref.orderByChild?ref.orderByChild('createdAt').limitToLast(100):ref).get()).val();}catch{rows=(await ref.get()).val();}return Object.fromEntries(Object.entries(rows||{}).filter(([,row])=>row&&typeof row==='object').sort((a,b)=>(Number(a[1].createdAt)||0)-(Number(b[1].createdAt)||0)).slice(-100));};
   if(['create','history'].includes(body.action)){
    if((await ctx.db.ref('admins/'+ctx.uid).get()).val()!==true)throw fault('admin_required',403);
    if(body.action==='history')return reply({messages:Object.entries(await recent(ctx.db.ref('serverAnnouncementAudit'))).map(([id,row])=>({id,...row})).sort((a,b)=>b.createdAt-a.createdAt).slice(0,50)});
@@ -86,6 +90,10 @@ export function createAnnouncementsHandler(services={identity:authenticatedIdent
    return{seenAt:now};
   });
   return reply({seen:true});
- }catch(error){return reply({error:error.code||'announcements_unavailable'},error.status||503);}
+ }catch(error){
+  // Uncoded database errors were invisible; log a path-free summary only.
+  if(!error?.code)console.error('[Lumira announcements]',String(error?.message||'unknown').replace(/\/[^\s"',]+/g,'/…').slice(0,160));
+  return reply({error:error.code||'announcements_unavailable'},error.status||503);
+ }
 });}
 export default createAnnouncementsHandler();

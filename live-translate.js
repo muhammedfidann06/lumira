@@ -80,22 +80,32 @@
     let characters=s.entries.reduce((n,row)=>n+row.original.length+row.translated.length,0);
     while(s.entries.length>250 || (characters>60000 && s.entries.length>1)){const row=s.entries.shift();characters-=row.original.length+row.translated.length;}
   }
+  // A queued translation fills the sentence rows that are already visible.
+  // Batched rows keep their own originals; the last one carries the text.
+  function applyTranslation(entry,translated){
+    const rows=(entry.rows||(entry.row?[entry.row]:[])).filter(row=>s.entries.includes(row));
+    if(rows.length)rows.forEach((row,i)=>{row.translated=i===rows.length-1?translated:(row.translated||'');});
+    else s.entries.push({original:entry.original,translated});
+  }
   let textFrame=0;const painted=new WeakMap();
   function drawText() {boundEntries();if(!textFrame)textFrame=requestAnimationFrame(()=>{textFrame=0;paintText();});}
   function paintText() {
     const original = node('ltOriginal'), translated = node('ltTranslation');
     if (!original || !translated) return;
+    // One block per sentence: a new partial result re-lays out only the last
+    // lines instead of re-rendering up to 60,000 characters on every update.
     const paint = (el, field, placeholder) => {
       const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight-60;
-      const full = s.entries.map(e => e[field]).filter(Boolean).join('\n');
-      const value=full+(s.draft?.[field]?'\n'+s.draft[field]:'')||F.text(placeholder);
-      if(painted.get(el)===value)return;painted.set(el,value);
-      el.replaceChildren();
-      if (full) el.appendChild(document.createTextNode(full));
-      if (s.draft?.[field]) {
-        const span = document.createElement('span'); span.className='lt-draft'; span.textContent=(full?'\n':'')+s.draft[field]; el.appendChild(span);
-      }
-      if (!full && !s.draft?.[field]) { const span=document.createElement('span');span.className='lt-placeholder';span.textContent=F.text(placeholder);el.appendChild(span); }
+      const lines = s.entries.map(e => e[field]).filter(Boolean), draft=s.draft?.[field]||'';
+      let view=painted.get(el);
+      if(!view||view.host!==el.firstChild&&view.lines.length){el.replaceChildren();view={lines:[],nodes:[],draft:null,empty:null,host:null};painted.set(el,view);}
+      let same=0;while(same<view.lines.length&&same<lines.length&&view.lines[same]===lines[same])same++;
+      for(const row of view.nodes.splice(same))row.remove();
+      view.draft?.remove();view.draft=null;view.empty?.remove();view.empty=null;
+      for(let i=same;i<lines.length;i++){const row=document.createElement('div');row.textContent=lines[i];el.appendChild(row);view.nodes.push(row);}
+      view.lines=lines;view.host=view.nodes[0]||null;
+      if(draft){view.draft=document.createElement('div');view.draft.className='lt-draft';view.draft.textContent=draft;el.appendChild(view.draft);}
+      if(!lines.length&&!draft){view.empty=document.createElement('span');view.empty.className='lt-placeholder';view.empty.textContent=F.text(placeholder);el.appendChild(view.empty);}
       if (nearBottom) el.scrollTop = el.scrollHeight;
     };
     paint(original,'original','emptySource'); paint(translated,'translated','emptyTarget');
@@ -131,9 +141,12 @@
           }
           s.cloud?.receive(audio,position);
           if(s.provider==='azure' && s.phase==='listening'){
+            // Count only clearly voiced audio. Room noise boosted by automatic
+            // gain passed the old 0.01 threshold and abandoned a healthy Azure
+            // session after eight quiet seconds.
             let energy=0;for(const v of audio)energy+=v*v;
-            if(Math.sqrt(energy/Math.max(1,audio.length))>.01 && !s.awaitingSince)s.awaitingSince=performance.now();
-            if(s.awaitingSince && performance.now()-s.awaitingSince>8000 && performance.now()-s.lastResult>8000){window.PWA?.logError?.({message:'Live Azure: audio_without_transcript',stack:''});fallback(generation);}
+            if(Math.sqrt(energy/Math.max(1,audio.length))>.03)s.voicedSinceResult=(s.voicedSinceResult||0)+audio.length/16000;
+            if(s.voicedSinceResult>12 && performance.now()-s.lastResult>20000){s.voicedSinceResult=0;window.PWA?.logError?.({message:'Live Azure: audio_without_transcript',stack:''});fallback(generation);}
           }
         },
         onProgress:progress=>{if(generation===s.generation){s.localProgress=progress;s.localError=false;drawControls();}},
@@ -163,12 +176,14 @@
     if(generation!==s.generation || !active() || s.provider==='local')return;
     if(s.switching)return s.switching;
     if(s.provider && !s.provider.endsWith('preparing'))s.failed.add(s.provider);
+    if(s.azureRetryPlain){s.azureRetryPlain=false;s.failed.delete('azure');}
     s.switching=(async()=>{
       const current=()=>generation===s.generation && active();
       s.cloudEpoch++;s.cloud?.stop();s.cloud=null;s.textQueue?.stop();s.textQueue=null;
       await releaseRecognizer(true);
       if(!current())return;
-      for(const provider of s.providers){
+      for(let index=0;index<s.providers.length;index++){
+        const provider=s.providers[index];
         if(s.failed.has(provider))continue;
         s.provider=provider;s.phase='reconnecting';s.draft=null;s.awaitingSince=0;status('reconnecting');
         const epoch=++s.cloudEpoch;
@@ -233,6 +248,8 @@
           if(e.featureCode==='capture_unavailable'){s.captureUnavailable=true;s.providers.forEach(value=>s.failed.add(value));await releaseRecognizer(true);break;}
           s.failed.add(provider);s.cloud?.stop();s.cloud=null;
           await releaseRecognizer(true);
+          // A rejected Azure setting during startup gets the same single retry.
+          if(provider==='azure'&&s.azureRetryPlain&&current()){s.azureRetryPlain=false;s.failed.delete('azure');index--;}
         }
       }
       if(!current())return;
@@ -248,8 +265,11 @@
         s.browser=new window.LUMIRA_BROWSER.BrowserSession({id:s.sessionId,source,target:s.target,
           onReady:()=>{if(current())status('browser_listening');},
           onDraft:text=>{if(current()){s.draft={original:text,translated:''};drawText();}},
-          onResult:entry=>{if(current()){s.entries.push(entry);s.draft=null;s.detected=source;status('browser_listening');drawText();}},
-          onError:(e,entry)=>{if(!current())return;if(e.featureCode==='text_translation_slow'){stop(e.featureCode,true);return;}if(e.featureCode==='text_translation_unavailable'){if(entry){s.entries.push({...entry,translated:F.text('translation_pending')});drawText();}status(e.featureCode,true);return;}stop(e.featureCode||'browser_speech_unavailable',true);}
+          onFinal:text=>{if(!current())return null;const row={original:text,translated:''};s.entries.push(row);s.draft=null;s.detected=source;drawText();return row;},
+          onResult:entry=>{if(current()){applyTranslation(entry,entry.translated);s.draft=null;s.detected=source;status('browser_listening');drawText();}},
+          // A slow or exhausted text service keeps the recognized speech and
+          // marks only its translation as pending; recognition keeps running.
+          onError:(e,entry)=>{if(!current())return;if(entry&&!['login_required','live_limit','session_expired','maintenance'].includes(e.featureCode)){applyTranslation(entry,F.text('translation_pending'));drawText();status(e.featureCode==='free_text_limit'?'free_text_limit':'text_translation_unavailable',true);return;}stop(e.featureCode||'browser_speech_unavailable',true);}
         });s.browser.start();status('browser_listening');holdScreen(generation);return;
       }
       if(s.captureUnavailable)throw error('microphone_unavailable');
@@ -308,8 +328,9 @@
     s.renewPending=id;
     try {
       let data;
-      try{data=await F.api('liveRenew',{id,provider:'local'});}
-      catch(e){if(generation!==s.generation || id!==s.sessionId || !active())return;if(e.featureCode!=='session_expired')throw e;data=await F.api('liveStart',{id,provider:'local'});}
+      // A hung request must not hold the heartbeat past the 15-second lease.
+      try{data=await F.api('liveRenew',{id,provider:'local'},{timeoutMs:6000});}
+      catch(e){if(generation!==s.generation || id!==s.sessionId || !active())return;if(e.featureCode!=='session_expired')throw e;data=await F.api('liveStart',{id,provider:'local'},{timeoutMs:6000});}
       if(generation!==s.generation || id!==s.sessionId || !active()){F.api('liveStop',{id}).catch(()=>{});return;}
       applyLease(data,generation);
       if(s.provider==='azure' && s.tokenDeadline-performance.now()<60000){
@@ -320,9 +341,17 @@
             s.speech=token.speech;s.tokenDeadline=performance.now()+token.speech.expiresAt-Date.now();
             if(s.recognizer)s.recognizer.authorizationToken=token.speech.token;
           }
-        }catch(e){if(generation===s.generation && epoch===s.cloudEpoch && s.provider==='azure')fallback(generation);}
+        // The current token stays valid for up to a minute; later heartbeats
+        // retry, and Azure is abandoned only when the token is about to expire.
+        }catch(e){if(generation===s.generation && epoch===s.cloudEpoch && s.provider==='azure' && s.tokenDeadline-performance.now()<15000)fallback(generation);}
       }
-    }catch(e){if(generation===s.generation && id===s.sessionId)stop(e.featureCode || 'usage_unavailable',true);}
+    }catch(e){
+      if(generation!==s.generation || id!==s.sessionId)return;
+      // One slow or failed heartbeat used to end the whole lesson. Retry soon;
+      // the lease timer still stops at the last server-authorized second.
+      if(['login_required','live_limit','maintenance','live_already_active'].includes(e.featureCode)){stop(e.featureCode,true);return;}
+      clearTimeout(s.renewRetry);s.renewRetry=setTimeout(()=>renew(generation,id),1500);
+    }
     finally{if(s.renewPending===id)s.renewPending=false;}
   }
   function releaseRecognizer(keepMicrophone) {
@@ -352,7 +381,7 @@
     }).catch(()=>{});
   }
   function reconnect(generation) {
-    if(generation!==s.generation || !active() || s.provider!=='azure' || s.restartPending || s.restartTimer)return;
+    if(generation!==s.generation || !active() || s.provider!=='azure' || s.restartPending || s.restartTimer || s.switching)return;
     if(performance.now()-s.azureStartedAt>30000)s.azureFailures=0;
     if(++s.azureFailures>2){fallback(generation);return;}
     s.restartPending=true;s.phase='reconnecting';s.draft=null;status('reconnecting');
@@ -361,7 +390,8 @@
       const delay=Math.min(5000,250*Math.pow(2,Math.min(s.restartAttempt++,5)));
       s.restartTimer=setTimeout(async()=>{
         s.restartTimer=null;s.restartPending=false;
-        if(generation!==s.generation || !active() || s.provider!=='azure')return;
+        // A provider switch that began meanwhile owns the next recognizer.
+        if(generation!==s.generation || !active() || s.provider!=='azure' || s.switching)return;
         if(s.leaseDeadline<=performance.now()){reconnect(generation);return;}
         try{await connectRecognizer(generation);}
         catch(e){if(generation===s.generation && active() && e.featureCode!=='recognizer_replaced')fallback(generation);}
@@ -381,14 +411,14 @@
     }else{
       s.inputStream=media.clone();s.audio=SDK.AudioConfig.fromStreamInput(s.inputStream);
     }
-    const recognizer=window.LUMIRA_SOURCE.recognizer(SDK,speech,s.target,s.source,s.audio);
-    s.recognizer=recognizer;
+    const recognizer=window.LUMIRA_SOURCE.recognizer(SDK,speech,s.target,s.source,s.audio,{plain:s.azurePlain});
+    s.recognizer=recognizer;s.voicedSinceResult=0;
     const captureStart=s.local?.position || 0;
     const current=()=>generation===s.generation && active() && s.provider==='azure' && s.recognizer===recognizer;
     const seen=new Set();
     if(recognizer.lumiraTranscriptOnly){s.textQueue?.stop();s.textQueue=new window.LUMIRA_TEXT.TextQueue({id:s.sessionId,target:s.target,
-      onResult:entry=>{if(current()){s.entries.push(entry);drawText();}},
-      onError:(e,entry)=>{if(current()){if(['login_required','live_limit','session_expired','maintenance','free_text_limit','text_translation_slow'].includes(e.featureCode)){stop(e.featureCode,true);return;}if(entry)s.entries.push({...entry,translated:F.text('translation_pending')});status(e.featureCode||'text_translation_unavailable',true);drawText();}}
+      onResult:entry=>{if(current()){applyTranslation(entry,entry.translated);drawText();}},
+      onError:(e,entry)=>{if(current()){if(['login_required','live_limit','session_expired','maintenance'].includes(e.featureCode)){stop(e.featureCode,true);return;}if(entry)applyTranslation(entry,F.text('translation_pending'));status(e.featureCode||'text_translation_unavailable',true);drawText();}}
     });}
     function result(event,final){
       if(!current())return;
@@ -409,7 +439,7 @@
       if(s.source!=='auto'&&FLAGS[observed]&&observed!==s.source)return;
       // NoMatch/empty events are not proof of a working transcription. They
       // must not keep resetting the silent-service watchdog indefinitely.
-      s.lastResult=performance.now();s.awaitingSince=0;
+      s.lastResult=performance.now();s.azureResultAt=s.lastResult;s.awaitingSince=0;s.voicedSinceResult=0;
       const code=s.source==='auto'?observed:s.source;
       if(s.source!=='auto'||final){if(FLAGS[code])s.detected=code;}
       let translated='';try{translated=r.translations.get(s.target)||'';}catch(e){}
@@ -421,7 +451,8 @@
         const key=Number.isFinite(r.offset)?[r.resultId,r.offset,r.duration].join(':'):null;
         if(key && seen.has(key))return;
         if(key){seen.add(key);if(seen.size>512)seen.delete(seen.values().next().value);}
-        if(recognizer.lumiraTranscriptOnly&&FLAGS[code])s.textQueue.add({...entry,language:code});else s.entries.push(entry);s.draft=null;s.restartAttempt=0;s.authRetries=0;s.azureFailures=0;
+        // Show the recognized sentence at once; its translation fills in later.
+        if(recognizer.lumiraTranscriptOnly&&FLAGS[code]){const row={original:entry.original,translated:''};s.entries.push(row);s.textQueue.add({original:entry.original,language:code,row});}else s.entries.push(entry);s.draft=null;s.restartAttempt=0;s.authRetries=0;s.azureFailures=0;
         if(Number.isFinite(r.offset) && Number.isFinite(r.duration))s.local?.markCommitted(captureStart+(r.offset+r.duration)/10000000);
       }else s.draft=entry;
       drawText();
@@ -429,8 +460,16 @@
     recognizer.recognizing=(_,e)=>result(e,false);
     recognizer.recognized=(_,e)=>result(e,true);
     recognizer.speechStartDetected=()=>{if(current()&&!s.awaitingSince)s.awaitingSince=performance.now();};
-    recognizer.canceled=(_,event)=>{if(current()){const raw=String(event?.errorDetails||'').toLowerCase(),kind=/auth|401|403|subscription/.test(raw)?'authentication':/quota|429|limit/.test(raw)?'quota':/timeout/.test(raw)?'timeout':/websocket|connect|network|dns/.test(raw)?'connection':'service';window.PWA?.logError?.({message:'Live Azure canceled: '+String(event?.errorCode??event?.reason??'unknown')+' ('+kind+')',stack:''});s.failed.add('azure');s.cancelStart?.();if(!s.switching)fallback(generation);}};
-    recognizer.sessionStopped=()=>{if(current())reconnect(generation);};
+    recognizer.canceled=(_,event)=>{if(current()){const raw=String(event?.errorDetails||'').toLowerCase(),code=Number(event?.errorCode),kind=/auth|401|403|subscription/.test(raw)?'authentication':/quota|429|limit/.test(raw)?'quota':/timeout/.test(raw)?'timeout':/websocket|connect|network|dns/.test(raw)?'connection':'service';window.PWA?.logError?.({message:'Live Azure canceled: '+String(event?.errorCode??event?.reason??'unknown')+' ('+kind+')'+(s.azurePlain?' plain':''),stack:''});
+      recognizer.lumiraCanceled=true;
+      // 2 = BadRequestParameters (socket 1007): the service rejected a request
+      // setting. Retry Azure once with service defaults before falling back.
+      if(code===2&&!s.azurePlain){s.azurePlain=true;s.azureRetryPlain=true;try{localStorage.setItem('lumira_live_azure_plain_v1','1');}catch{}}
+      // A dropped connection after Azure already produced text is a network
+      // blip, not a broken provider: reconnect instead of switching engines.
+      else if((code===4||code===5||kind==='connection')&&s.azureResultAt>s.azureStartedAt&&!s.switching){s.cancelStart?.();reconnect(generation);return;}
+      s.failed.add('azure');s.cancelStart?.();if(!s.switching)fallback(generation);}};
+    recognizer.sessionStopped=()=>{if(current()&&!recognizer.lumiraCanceled)reconnect(generation);};
     await new Promise((resolve,reject)=>{
       let settled=false;
       const finish=e=>{
@@ -449,7 +488,7 @@
     if(bad){s.lastFailure={code:String(message||'speech_unavailable').replace(/[^a-z_]/gi,'').slice(0,80),provider:s.provider,phase:s.phase,at:Date.now()};window.PWA?.logError?.({message:'Live stopped ('+(s.provider||'starting')+'): '+s.lastFailure.code,stack:''});}
     const id=s.sessionId;
     ++s.generation;s.browser?.stop();s.browser=null;s.textQueue?.stop();s.textQueue=null;s.cloudEpoch++;s.cloud?.stop();s.cloud=null;s.sessionId=null;s.phase='idle';s.renewPending=false;s.draft=null;
-    clearInterval(s.timer);clearInterval(s.tick);clearTimeout(s.deadlineTimer);clearTimeout(s.restartTimer);
+    clearInterval(s.timer);clearInterval(s.tick);clearTimeout(s.deadlineTimer);clearTimeout(s.restartTimer);clearTimeout(s.renewRetry);
     s.restartTimer=null;s.restartPending=false;s.restartAttempt=0;s.authRetries=0;s.speech=null;s.azureFailures=0;s.provider='';s.switching=null;
     s.local?.stop();s.local=null;s.localArm=null;
     if(s.pendingAudio){s.pendingAudio.close().catch(()=>{});s.pendingAudio=null;}
@@ -469,7 +508,8 @@
     if(active())return;
     if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia){status('browser_unsupported',true);return;}
     const generation=++s.generation,id=F.id();
-    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;s.lastFailure=null;
+    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;s.lastFailure=null;s.azureResultAt=0;s.voicedSinceResult=0;s.azureRetryPlain=false;
+    try{s.azurePlain=localStorage.getItem('lumira_live_azure_plain_v1')==='1';}catch{s.azurePlain=false;}
     s.failed=new Set();s.providers=[];s.provider='';s.phase='starting';s.sessionId=id;s.draft=null;s.detected='';s.localProgress=null;s.localError=false;s.lastResult=performance.now();s.awaitingSince=0;status('starting');drawText();
     window.VOICE_stop?.();
     try{if(navigator.audioSession){s.previousAudioSession=navigator.audioSession.type;navigator.audioSession.type='play-and-record';}}catch{}

@@ -8,7 +8,7 @@
  async function translate(text,source,target,{id,signal,server=true}={}){
   if(!allowed(text)||!languages.includes(source)||!languages.includes(target))throw fail('invalid_input');if(source===target)return text;
   if(signal?.aborted)throw fail('recognizer_replaced');
-  if(server&&id)try{const result=await root.LUMIRA_FEATURES.api('liveText',{id,text,source,target},{signal,timeoutMs:7500});if(allowed(result.translated))return result.translated;}catch(error){if(['login_required','live_limit','session_expired','maintenance','usage_unavailable'].includes(error.featureCode)||signal?.aborted)throw error;}
+  if(server&&id)try{const result=await root.LUMIRA_FEATURES.api('liveText',{id,text,source,target},{signal,timeoutMs:9000});if(allowed(result.translated))return result.translated;}catch(error){if(['login_required','live_limit','session_expired','maintenance','usage_unavailable'].includes(error.featureCode)||signal?.aborted)throw error;}
   const result=[];
   for(const part of segments(text)){
    const controller=new AbortController(),stop=()=>controller.abort();signal?.addEventListener('abort',stop,{once:true});if(signal?.aborted)controller.abort();const timer=setTimeout(stop,12000);
@@ -21,7 +21,12 @@
  }
  class TextQueue{
   constructor({id,target,onResult,onError,server=true}){Object.assign(this,{id,target,onResult,onError,server});this.items=[];this.abort=new AbortController();}
-  add(entry){if(this.closed)return;if(this.items.length>=12){this.onError?.(fail('text_translation_slow'),entry);this.stop();return;}this.items.push(entry);this.pump();}
+  // Fast speech is batched instead of ending the lesson: queued phrases of the
+  // same language share one request, and only a very old backlog is skipped.
+  add(entry){if(this.closed)return;const last=this.items.at(-1);
+   if(last&&last.language===entry.language&&(last.original+' '+entry.original).length<=1500){last.original+=' '+entry.original;if(entry.row)(last.rows||=last.row?[last.row]:[]).push(entry.row);return;}
+   if(this.items.length>=24)this.onError?.(fail('text_translation_slow'),this.items.shift());
+   this.items.push(entry);this.pump();}
   async pump(){if(this.running||this.closed)return;this.running=true;try{while(this.items.length&&!this.closed){const entry=this.items.shift();try{const translated=await translate(entry.original,entry.language,this.target,{id:this.id,signal:this.abort.signal,server:this.server});if(!this.closed)this.onResult?.({...entry,translated});}catch(error){if(!this.closed)this.onError?.(error,entry);}}}finally{this.running=false;}}
   stop(){this.closed=true;this.items=[];this.abort.abort();}
  }

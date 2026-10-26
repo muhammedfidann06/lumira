@@ -59,7 +59,8 @@ function open(reason,quota){
   const tier=window.LUMIRA_BADGES?.tiers.find(t=>t.amount===selected);
   if(!tier||!window.purchaseSupportTier){status.textContent=window.LUMIRA_PLAY?.text(3)||T('storeUnavailable');window.LUMIRA_PLAY?.checkoutStep?.('blocked',productFor(selected)?.sku,{featureCode:'checkout_module_unavailable'});window.PWA?.logError?.({message:'Play checkout: checkout_module_unavailable',stack:''});return;}
   purchasing=true;update();
-  try{await window.purchaseSupportTier(tier);}catch(error){window.LUMIRA_PLAY?.checkoutStep?.('client_failed',tier.sku,error);window.PWA?.logError?.({message:'Play client: '+window.LUMIRA_PLAY.reason(error),stack:''});if(active===state)status.textContent=window.LUMIRA_PLAY.text(7);}finally{purchasing=false;if(active===state)update();}
+  // A store sheet that never settles must not leave every card disabled.
+  try{await Promise.race([window.purchaseSupportTier(tier),new Promise(resolve=>setTimeout(resolve,120000))]);}catch(error){window.LUMIRA_PLAY?.checkoutStep?.('client_failed',tier.sku,error);window.PWA?.logError?.({message:'Play client: '+window.LUMIRA_PLAY.reason(error),stack:''});if(active===state)status.textContent=window.LUMIRA_PLAY.text(7);}finally{purchasing=false;if(active===state)update();}
  };
  const dismiss=create('button','la-dismiss',T('dismiss'));dismiss.type='button';dismiss.onclick=close;panel.append(buy,dismiss);
  panel.insertBefore(retry,dismiss);
@@ -70,8 +71,10 @@ function open(reason,quota){
  }
  if(current&&window.PWA?.openProfile){const manage=create('button','la-dismiss',window.LUMIRA_BILLING.text(22));manage.type='button';manage.onclick=()=>{close();window.PWA.openProfile();};panel.append(manage);}
  function update(){
-  cards.forEach(card=>{const amount=Number(card.dataset.tier),chosen=amount===selected;card.classList.toggle('is-selected',chosen);card.setAttribute('aria-pressed',String(chosen));card.disabled=!detailFor(amount)||purchasing;});
-  const item=detailFor(selected);buy.disabled=selected===null||!item||purchasing||(!native&&storeItems?.checkoutReady===false);
+  // Native cards stay tappable while Play prices load or fail; the tap opens
+  // Google Play or reports the store's reason instead of being ignored.
+  cards.forEach(card=>{const amount=Number(card.dataset.tier),chosen=amount===selected;card.classList.toggle('is-selected',chosen);card.setAttribute('aria-pressed',String(chosen));card.disabled=purchasing||(!native&&!detailFor(amount));});
+  const item=detailFor(selected);buy.disabled=selected===null||purchasing||(!native&&(!item||storeItems?.checkoutReady===false));
   buy.textContent=purchasing?window.LUMIRA_BILLING.text(27):T('buy');choice.hidden=!item;terms.hidden=!item;
   if(item){choice.replaceChildren(create('span','',T('selection')),create('strong','',name(selected)),create('span','',priceFor(item)+' · '+window.LUMIRA_BILLING.text(lifetimeFor(selected)?3:4)));terms.textContent=T(lifetimeFor(selected)?'lifetimeTerms':'monthlyTerms');}
  }
