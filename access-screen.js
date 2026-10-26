@@ -96,6 +96,7 @@ function open(reason,quota){
    for(const card of cards)card.querySelector('[data-store-price]').textContent='—';update();
   }finally{retry.disabled=false;}
  };retry.onclick=()=>load(true);load(false);
+ state.refreshStore=()=>load(true);
 }
 async function requireFeature(feature){
  const F=window.LUMIRA_FEATURES;
@@ -112,4 +113,5 @@ async function requireFeature(feature){
 window.LUMIRA_ACCESS={open,close,require:requireFeature,tiers};
 window.addEventListener('lumira:featureauthchange',close);
 window.addEventListener('lumira:purchaseverified',close);
+window.addEventListener('lumira:playsetupready',()=>active?.refreshStore?.());
 })();

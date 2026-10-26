@@ -26,10 +26,7 @@ export class LocalSession {
     const Audio = window.AudioContext || window.webkitAudioContext;
     if (!Audio) throw failure('local_unsupported');
     if (audioContext) this.context = audioContext;
-    else {
-      try { this.context = new Audio({ sampleRate: SAMPLE_RATE }); }
-      catch { this.context = new Audio(); }
-    }
+    else this.context = new Audio();
     this.context.resume().catch(() => {});
   }
   get position() { return this.samples / SAMPLE_RATE; }
@@ -85,24 +82,49 @@ export class LocalSession {
     this.source = this.context.createMediaStreamSource(this.stream);
     this.mute = this.context.createGain(); this.mute.gain.value = 0;
     if (this.context.audioWorklet && window.AudioWorkletNode) {
+      let deadline;
       try {
-        await this.context.audioWorklet.addModule(new URL('./live-local-audio.mjs', import.meta.url));
+        // A blocked module request can stay pending without rejecting. Keep
+        // capture independent of that request and of any model download.
+        await Promise.race([
+          this.context.audioWorklet.addModule(new URL('./live-local-audio.mjs', import.meta.url)),
+          new Promise((_, reject) => { deadline=setTimeout(() => reject(failure('local_audio_error')),2500); })
+        ]);
         if (this.closed) throw failure('local_cancelled');
         this.capture = new AudioWorkletNode(this.context, 'lumira-capture', { channelCountMode:'max' });
+        this.captureMode = 'worklet';
         this.capture.port.onmessage = event => this.receive(event.data);
       } catch (error) {
         if (this.closed) throw failure('local_cancelled');
         // Older WebViews or a failed module request must not disable every
         // cloud provider. Keep the same microphone and AudioContext.
-      }
+      } finally { clearTimeout(deadline); }
     }
     if (!this.capture) {
-      this.capture = this.context.createScriptProcessor(4096, Math.min(2,this.stream.getAudioTracks?.()[0]?.getSettings?.().channelCount||1), 1);
-      const resampler = new Resampler(this.context.sampleRate, audio => this.receive(audio));
-      this.capture.onaudioprocess = event => {let best=event.inputBuffer.getChannelData(0),maximum=-1;for(let n=0;n<event.inputBuffer.numberOfChannels;n++){const channel=event.inputBuffer.getChannelData(n);let energy=0;for(const value of channel)energy+=value*value;if(energy>maximum){maximum=energy;best=channel;}}resampler.push(best);};
+      this.capture = this.scriptCapture();
+      this.captureMode = 'script';
     }
     this.source.connect(this.capture); this.capture.connect(this.mute); this.mute.connect(this.context.destination);
     await this.context.resume();
+  }
+  scriptCapture() {
+    const capture=this.context.createScriptProcessor(4096,Math.min(2,this.stream.getAudioTracks?.()[0]?.getSettings?.().channelCount||1),1);
+    const resampler=new Resampler(this.context.sampleRate,audio=>this.receive(audio));
+    capture.onaudioprocess=event=>{
+      if(this.closed||this.capture!==capture)return;
+      let best=event.inputBuffer.getChannelData(0),maximum=-1;
+      for(let n=0;n<event.inputBuffer.numberOfChannels;n++){const channel=event.inputBuffer.getChannelData(n);let energy=0;for(const value of channel)energy+=value*value;if(energy>maximum){maximum=energy;best=channel;}}
+      resampler.push(best);
+    };
+    return capture;
+  }
+  recoverCapture() {
+    if(this.closed||!this.source||!this.capture||!this.mute||this.captureMode!=='worklet')return false;
+    try{
+      const next=this.scriptCapture(),previous=this.capture;
+      this.source.disconnect();previous.disconnect();previous.port.onmessage=null;previous.port.close?.();
+      this.capture=next;this.captureMode='script';this.source.connect(next);next.connect(this.mute);this.resumeCapture();return true;
+    }catch{return false;}
   }
   receive(audio) {
     if (this.closed) return;

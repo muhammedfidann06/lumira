@@ -84,9 +84,12 @@
      identifiers remain accepted by the server for purchase restoration. */
   let purchaseInFlight=false;
   function purchaseTier(t) {
+    window.LUMIRA_PLAY.checkoutStep?.('selected',t.sku);
+    const blocked=code=>{window.LUMIRA_PLAY.checkoutStep?.('blocked',t.sku,{featureCode:code});window.PWA?.logError?.({message:'Play checkout blocked ('+t.sku+'): '+code,stack:''});};
     var purchaseUid = null;
     try { purchaseUid = window.firebase.auth().currentUser.uid; } catch (e) {}
     if (!purchaseUid) {
+      blocked('login_required');
       toast(window.LUMIRA_FEATURES ? window.LUMIRA_FEATURES.text('login_required') : 'Önce hesabına giriş yap.', { kind: 'bad' });
       return;
     }
@@ -99,13 +102,14 @@
     if (!window.LUMIRA_PLAY.isNative()) {
       return window.LUMIRA_BILLING?.purchase(t.amount);
     }
-    if(!window.PaymentRequest||typeof window.getDigitalGoodsService!=='function'){toast(window.LUMIRA_PLAY.text(5),{kind:'bad'});return;}
-    if(!window.LUMIRA_PLAY.canPurchase(t.sku)){toast(window.LUMIRA_PLAY.text(3),{kind:'bad'});window.LUMIRA_PLAY.catalog({refresh:true}).catch(()=>{});return;}
-    if(purchaseInFlight)return;
+    if(!window.PaymentRequest||typeof window.getDigitalGoodsService!=='function'){blocked('store_unsupported');toast(window.LUMIRA_PLAY.text(5),{kind:'bad'});return;}
+    if(!window.LUMIRA_PLAY.canPurchase(t.sku)){blocked('catalog_not_ready');toast(window.LUMIRA_PLAY.text(3),{kind:'bad'});window.LUMIRA_PLAY.catalog({refresh:true}).catch(()=>{});return;}
+    if(purchaseInFlight){blocked('checkout_in_progress');return;}
     if(revoked(t.amount)){toast(({tr:'Bu rozet hesabında yönetici tarafından kaldırıldı.',en:'An administrator has removed this badge from your account.',de:'Dieses Abzeichen wurde von einem Administrator aus deinem Konto entfernt.',ar:'أزال المسؤول هذه الشارة من حسابك.',fr:'Un administrateur a retiré ce badge de ton compte.',es:'Un administrador ha retirado esta insignia de tu cuenta.',ru:'Администратор удалил этот значок из твоего аккаунта.'})[window.NATIVE_LANG||'tr']||'An administrator has removed this badge from your account.',{kind:'bad'});return;}
     const policy=window.LUMIRA_FEATURES?.entitlement(),purchaseSku=window.LUMIRA_PLAY.purchaseSku?.(t.sku)||t.sku;
     const ownedPurchase=window.LUMIRA_PLAY.ownedPurchase?.(t.sku);
     if(ownedPurchase){
+      window.LUMIRA_PLAY.checkoutStep?.('restoring',purchaseSku);
       purchaseInFlight=true;
       return window.LUMIRA_FEATURES.verifyPurchase(purchaseSku,ownedPurchase.purchaseToken,purchaseUid).then(()=>{toast(window.LUMIRA_FEATURES.text('restored'),{kind:'good'});window.LUMIRA_FEATURES.api('status').catch(()=>{});}).catch(e=>toast(window.LUMIRA_FEATURES.text(e.featureCode||'purchase_verification_unavailable'),{kind:'bad'})).finally(()=>{purchaseInFlight=false;});
     }
@@ -113,20 +117,23 @@
     // Native subscription changes use Play's documented replacement fields.
     // A Paddle subscription must be managed through its own customer portal.
     if(renewing.some(source=>source.provider==='paddle')){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
-    const replacementFailure=window.LUMIRA_PLAY.replacementFailure?.();if(replacementFailure&&t.amount!==100){toast(window.LUMIRA_FEATURES.text(replacementFailure),{kind:'bad'});return;}
+    const replacementFailure=window.LUMIRA_PLAY.replacementFailure?.();if(replacementFailure&&t.amount!==100){blocked(replacementFailure);toast(window.LUMIRA_FEATURES.text(replacementFailure),{kind:'bad'});return;}
     const replace=t.amount===100?null:window.LUMIRA_PLAY.replacement?.();
     if(renewing.length&&(t.amount===100||!replace)){toast(window.LUMIRA_BILLING.text(22),{kind:'bad'});window.PWA.openProfile();return;}
 
-    const paymentData={sku:purchaseSku};if(replace){paymentData.oldSku=replace.itemId;paymentData.purchaseToken=replace.purchaseToken;paymentData.replacementMode='withTimeProration';}
+    const paymentData={sku:purchaseSku};if(replace){paymentData.oldSku=replace.itemId;paymentData.purchaseToken=replace.purchaseToken;paymentData.replacementMode='withTimeProration';paymentData.prorationMode='immediateWithTimeProration';}
     var methodData = [{ supportedMethods: 'https://play.google.com/billing', data: paymentData }];
-    var details = { total: { label: (window.t ? window.t('purchase_total_label') : 'Toplam'), amount: { currency: 'TRY', value: '0' } } };
+    const price=window.LUMIRA_PLAY.paymentAmount?.(t.sku);
+    if(!price){blocked('catalog_not_ready');toast(window.LUMIRA_PLAY.text(3),{kind:'bad'});return;}
+    var details = { total: { label: tierName(t), amount:price } };
     var request;
     try { request = new PaymentRequest(methodData, details); }
-    catch (e) { window.PWA?.logError?.({message:'Play request ('+t.sku+'): '+(e.name||'failed'),stack:''});toast(window.t?window.t('purchase_start_failed'):'Satın alma başlatılamadı.', { kind: 'bad' }); return; }
+    catch (e) { window.LUMIRA_PLAY.checkoutStep?.('request_failed',purchaseSku,e);window.PWA?.logError?.({message:'Play request ('+t.sku+'): '+(e.name||'failed'),stack:''});toast(window.t?window.t('purchase_start_failed'):'Satın alma başlatılamadı.', { kind: 'bad' }); return; }
 
     purchaseInFlight=true;
-    let shown;try{shown=request.show();}catch(e){purchaseInFlight=false;window.PWA?.logError?.({message:'Play show ('+t.sku+'): '+window.LUMIRA_PLAY.reason(e),stack:''});toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
+    let shown;try{window.LUMIRA_PLAY.checkoutStep?.('opening',purchaseSku);shown=request.show();}catch(e){purchaseInFlight=false;window.LUMIRA_PLAY.checkoutStep?.('show_failed',purchaseSku,e);window.PWA?.logError?.({message:'Play show ('+t.sku+'): '+window.LUMIRA_PLAY.reason(e),stack:''});toast(window.LUMIRA_PLAY.text(7),{kind:'bad'});return;}
     return shown.then(async function (response) {
+      window.LUMIRA_PLAY.checkoutStep?.('verifying',purchaseSku);
       let paymentDetails=response.details;try{if(typeof paymentDetails==='string')paymentDetails=JSON.parse(paymentDetails);}catch{paymentDetails=null;}
       const token=paymentDetails?.purchaseToken || paymentDetails?.token;
       try {
@@ -135,9 +142,11 @@
         try{await response.complete('success');}catch(ignore){}
         if(window.firebase.auth().currentUser?.uid!==purchaseUid)return;
         window.grantSupportTier(t.amount);
+        window.LUMIRA_PLAY.checkoutStep?.('completed',purchaseSku);
         window.dispatchEvent(new Event('lumira:purchaseverified'));
         window.LUMIRA_FEATURES.api('status').catch(()=>{});
       }catch(e){
+        window.LUMIRA_PLAY.checkoutStep?.('verification_failed',purchaseSku,e);
         window.PWA?.logError?.({message:'Play verify ('+t.sku+'): '+(e.featureCode||e.code||e.name||'failed'),stack:''});
         try{await response.complete('fail');}catch(ignore){}
         toast(window.LUMIRA_FEATURES?.text(e.featureCode||'purchase_verification_unavailable') || e.message,{kind:'bad',duration:8000});
@@ -147,6 +156,7 @@
       // diagnostic; never log the response details or purchase token.
       window.LUMIRA_PLAY.catalog({refresh:true}).catch(()=>{});
       const reason=window.LUMIRA_PLAY.reason(e);
+      window.LUMIRA_PLAY.checkoutStep?.(reason==='usercanceled'?'canceled':'show_failed',purchaseSku,e);
       window.PWA?.logError?.({message:'Play checkout ('+t.sku+' → '+purchaseSku+'): '+reason,stack:''});
       if(reason==='usercanceled')return;
       toast(reason==='itemunavailable'?window.LUMIRA_PLAY.text(2):window.LUMIRA_PLAY.text(7),{kind:'bad',duration:6000});
@@ -158,7 +168,7 @@
   function openSupport() {
     if(!window.LUMIRA_PLAY.isNative() && window.LUMIRA_ACCESS)return window.LUMIRA_ACCESS.open('shop');
     if (!(window.PWA && window.PWA.sheet)) return;
-    window.PWA.sheet(window.t?window.t('support_title'):'❤️ Lumira\'yı Destekle', '', function (b) {
+    window.PWA.sheet(window.t?window.t('support_title'):'❤️ Lumira\'yı Destekle', '', function (b,panel) {
       var grid = document.createElement('div');
       grid.className = 'sup-grid';
 
@@ -191,7 +201,9 @@
           for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));row.el.disabled=!detail||revoked(row.t.amount);}
           const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;setupRelevant=partial;
         }catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;setupRelevant=true;for(const row of storeCards){row.price.textContent='—';row.el.disabled=true;}}
-        finally{retry.disabled=false;setup.hidden=!admin||!setupRelevant;}};retry.onclick=()=>load(true);load(false);
+        finally{retry.disabled=false;setup.hidden=!admin||!setupRelevant;}};retry.onclick=()=>load(true);
+        const refresh=()=>{if(grid.isConnected)load(true);};window.addEventListener('lumira:playsetupready',refresh);
+        const close=panel.close;panel.close=()=>{window.removeEventListener('lumira:playsetupready',refresh);close();};load(false);
       }
       if (window.LUMIRA_FEATURES && typeof window.getDigitalGoodsService === 'function') {
         var restore = document.createElement('button');

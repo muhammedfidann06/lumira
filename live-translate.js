@@ -33,7 +33,7 @@
     if(generation!==s.generation||s.phase!=='listening'||!s.local||!s.providers.includes(s.provider)||!s.captureArmedAt)return;
     const now=performance.now();
     if(now-(s.lastAudioAt||s.captureArmedAt)<4000)return;
-    if(!s.captureRecoveryAt){s.captureRecoveryAt=now;s.local.resumeCapture();return;}
+    if(!s.captureRecoveryAt){s.captureRecoveryAt=now;if(!s.local.recoverCapture?.())s.local.resumeCapture();return;}
     if(now-s.captureRecoveryAt<2000)return;
     s.captureUnavailable=true;s.providers.forEach(provider=>s.failed.add(provider));
     window.PWA?.logError?.({message:'Live capture: no_pcm_frames',stack:''});
@@ -146,8 +146,8 @@
       s.pendingAudio=null;s.local=local;
       s.localArm=local.arm(s.stream);
       s.localArm.then(()=>{if(generation===s.generation&&s.local===local)s.captureArmedAt=performance.now();},()=>{});
-      s.localArm.catch(()=>{if(generation===s.generation){s.localError=true;drawControls();}});
-    }catch(e){s.localError=true;drawControls();}
+      s.localArm.catch(e=>{if(generation===s.generation){s.localError=true;window.PWA?.logError?.({message:'Live capture setup: '+String(e?.featureCode||e?.name||'failed').replace(/[^a-z_]/gi,'').slice(0,80),stack:''});drawControls();}});
+    }catch(e){s.localError=true;window.PWA?.logError?.({message:'Live capture setup: '+String(e?.featureCode||e?.name||'failed').replace(/[^a-z_]/gi,'').slice(0,80),stack:''});drawControls();}
   }
   function warmLocal(generation) {
     if(!s.local || !['local','local-preparing'].includes(s.provider))return;
@@ -471,7 +471,9 @@
     window.VOICE_stop?.();
     try{if(navigator.audioSession){s.previousAudioSession=navigator.audioSession.type;navigator.audioSession.type='play-and-record';}}catch{}
     const Audio=window.AudioContext || window.webkitAudioContext;
-    if(Audio){try{s.pendingAudio=new Audio({sampleRate:16000});}catch(e){try{s.pendingAudio=new Audio();}catch(e){}}s.pendingAudio?.resume().catch(()=>{});}
+    // Use the device rate; the shared resampler supplies provider 16 kHz PCM.
+    // Forcing a 16 kHz hardware graph can reject a desktop microphone input.
+    if(Audio){try{s.pendingAudio=new Audio();}catch(e){}s.pendingAudio?.resume().catch(()=>{});}
     s.sdkTask=sdk();s.sdkTask.catch(()=>{});
     let media;
     try{
@@ -562,5 +564,5 @@
   window.addEventListener('offline',()=>{if(active())stop('speech_unavailable',true);});
   window.addEventListener('lumira:featureauthchange',()=>{if(s.root){stop('login_required',true);s.entries=[];s.draft=null;drawText();}});
   window.LUMIRA_LIVE={mount,unmount,refreshLocale,isMounted:()=>!!s.root,isActive:active,stop,
-    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null})};
+    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null,captureMode:s.local?.captureMode||null,sampleRate:s.local?.context?.sampleRate||s.pendingAudio?.sampleRate||null})};
 })();
