@@ -55,7 +55,7 @@
     for(const id of['ltInputLevel','ltInputHint'])if(node(id))node(id).hidden=s.provider==='browser'&&active();
     if (clear) clear.disabled = active() || (!s.entries.length && !s.draft);
     const browserRetry=node('ltBrowserRetry');if(browserRetry){browserRetry.hidden=!window.LUMIRA_BROWSER?.BrowserSession.supported()||!(s.error||s.failed.size);browserRetry.textContent=browserRetryCopy[window.NATIVE_LANG]||browserRetryCopy.en;}
-    if (statusBox) { statusBox.textContent = F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
+    if (statusBox) { statusBox.textContent = s.autoFixed&&['listening','browser_listening'].includes(s.message)?(autoFixedCopy[window.NATIVE_LANG]||autoFixedCopy.en).replace('{language}',label(s.source)):F.text(s.message,{percent:s.localProgress?.percent || 0}); statusBox.className = 'lt-status' + (s.error ? ' is-error' : s.phase === 'listening' ? ' is-live' : ''); }
     const backup=node('ltBackup'), retry=node('ltBackupRetry'), backupBox=node('ltBackupBox');
     const showBackup=active() && (s.localError || (s.localProgress && !s.localProgress.ready));
     if(backupBox)backupBox.hidden=!showBackup;
@@ -79,6 +79,21 @@
     for(const row of s.entries){row.original=typeof row.original==='string'?row.original.slice(-30000):'';row.translated=typeof row.translated==='string'?row.translated.slice(-30000):'';}
     let characters=s.entries.reduce((n,row)=>n+row.original.length+row.translated.length,0);
     while(s.entries.length>250 || (characters>60000 && s.entries.length>1)){const row=s.entries.shift();characters-=row.original.length+row.translated.length;}
+  }
+  // Azure's continuous language identification ("auto") can be closed with
+  // 1007 while fixed-language translation on the same account works (it did
+  // on phones set to one language). Fall back to the most likely language.
+  const LID_FAILED='lumira_live_azure_lid_failed_v1';
+  const autoFixedCopy={tr:'Otomatik dil tespiti bu bağlantıda çalışmadı; konuşulan dil {language} olarak ayarlandı. Gerekirse yukarıdan değiştir.',en:'Automatic language detection did not work on this connection; the spoken language was set to {language}. Change it above if needed.',de:'Die automatische Spracherkennung funktionierte hier nicht; die gesprochene Sprache ist jetzt {language}. Ändere sie oben bei Bedarf.',ar:'لم يعمل اكتشاف اللغة التلقائي على هذا الاتصال؛ تم ضبط لغة الكلام على {language}. غيّرها من الأعلى عند الحاجة.',fr:'La détection automatique n’a pas fonctionné sur cette connexion ; la langue parlée est réglée sur {language}. Modifie-la ci-dessus si besoin.',es:'La detección automática no funcionó en esta conexión; el idioma hablado se fijó en {language}. Cámbialo arriba si hace falta.',ru:'Автоопределение языка не сработало в этом подключении; язык речи установлен: {language}. При необходимости измени его выше.'};
+  function lidFailedRecently(){try{return Date.now()-Number(localStorage.getItem(LID_FAILED)||0)<86400000;}catch{return false;}}
+  function useFixedSource(){
+    if(s.source!=='auto')return false;
+    const learning=typeof TARGET_LANG!=='undefined'?TARGET_LANG:'';
+    s.source=[s.detected,learning,'de','en'].find(code=>FLAGS[code]&&code!==s.target)||'de';s.detected=s.source;s.autoFixed=true;
+    const select=node('ltSource');if(select){select.value=s.source;window.LUMIRA_LANGUAGE?.sync(select);}
+    // Gemini Live needs automatic detection; Azure HTTPS needs a fixed language.
+    const list=s.providers.filter(provider=>provider!=='gemini'),at=list.indexOf('azure');if(at>=0&&!list.includes('azure-http'))list.splice(at+1,0,'azure-http');s.providers=list;
+    return true;
   }
   // A queued translation fills the sentence rows that are already visible.
   // Batched rows keep their own originals; the last one carries the text.
@@ -176,7 +191,7 @@
     if(generation!==s.generation || !active() || s.provider==='local')return;
     if(s.switching)return s.switching;
     if(s.provider && !s.provider.endsWith('preparing'))s.failed.add(s.provider);
-    if(s.azureRetryPlain){s.azureRetryPlain=false;s.failed.delete('azure');}
+    if(s.azureRetryPlain||s.azureRetryFixed){if(s.azureRetryFixed)useFixedSource();s.azureRetryPlain=s.azureRetryFixed=false;s.failed.delete('azure');}
     s.switching=(async()=>{
       const current=()=>generation===s.generation && active();
       s.cloudEpoch++;s.cloud?.stop();s.cloud=null;s.textQueue?.stop();s.textQueue=null;
@@ -249,7 +264,7 @@
           s.failed.add(provider);s.cloud?.stop();s.cloud=null;
           await releaseRecognizer(true);
           // A rejected Azure setting during startup gets the same single retry.
-          if(provider==='azure'&&s.azureRetryPlain&&current()){s.azureRetryPlain=false;s.failed.delete('azure');index--;}
+          if(provider==='azure'&&(s.azureRetryPlain||s.azureRetryFixed)&&current()){if(s.azureRetryFixed)useFixedSource();s.azureRetryPlain=s.azureRetryFixed=false;s.failed.delete('azure');index=s.providers.indexOf('azure')-1;}
         }
       }
       if(!current())return;
@@ -460,11 +475,17 @@
     recognizer.recognizing=(_,e)=>result(e,false);
     recognizer.recognized=(_,e)=>result(e,true);
     recognizer.speechStartDetected=()=>{if(current()&&!s.awaitingSince)s.awaitingSince=performance.now();};
-    recognizer.canceled=(_,event)=>{if(current()){const raw=String(event?.errorDetails||'').toLowerCase(),code=Number(event?.errorCode),kind=/auth|401|403|subscription/.test(raw)?'authentication':/quota|429|limit/.test(raw)?'quota':/timeout/.test(raw)?'timeout':/websocket|connect|network|dns/.test(raw)?'connection':'service';window.PWA?.logError?.({message:'Live Azure canceled: '+String(event?.errorCode??event?.reason??'unknown')+' ('+kind+')'+(s.azurePlain?' plain':''),stack:''});
+    recognizer.canceled=(_,event)=>{if(current()){const raw=String(event?.errorDetails||'').toLowerCase(),code=Number(event?.errorCode),kind=/auth|401|403|subscription/.test(raw)?'authentication':/quota|429|limit/.test(raw)?'quota':/timeout/.test(raw)?'timeout':/websocket|connect|network|dns/.test(raw)?'connection':'service';
+      // The service's own reason, without session IDs or URLs, so the next
+      // report shows why Azure closed instead of only "timeout".
+      const detail=String(event?.errorDetails||'').replace(/[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}/gi,'…').replace(/\b[0-9a-f]{20,}\b/gi,'…').replace(/(?:https?|wss?):\/\/\S+/gi,'…').replace(/\s+/g,' ').trim().slice(0,160);
+      window.PWA?.logError?.({message:'Live Azure canceled: '+String(event?.errorCode??event?.reason??'unknown')+' ('+kind+')'+(s.azurePlain?' plain':'')+(recognizer.lumiraTranscriptOnly?' auto':' fixed')+(detail?' · '+detail:''),stack:''});
       recognizer.lumiraCanceled=true;
       // 2 = BadRequestParameters (socket 1007): the service rejected a request
       // setting. Retry Azure once with service defaults before falling back.
       if(code===2&&!s.azurePlain){s.azurePlain=true;s.azureRetryPlain=true;try{localStorage.setItem('lumira_live_azure_plain_v1','1');}catch{}}
+      // Still rejected in automatic mode: retry fixed-language translation.
+      else if(code===2&&recognizer.lumiraTranscriptOnly&&s.source==='auto'&&!s.azureFixedTried){s.azureFixedTried=true;s.azureRetryFixed=true;try{localStorage.setItem(LID_FAILED,String(Date.now()));}catch{}}
       // A dropped connection after Azure already produced text is a network
       // blip, not a broken provider: reconnect instead of switching engines.
       else if((code===4||code===5||kind==='connection')&&s.azureResultAt>s.azureStartedAt&&!s.switching){s.cancelStart?.();reconnect(generation);return;}
@@ -508,7 +529,7 @@
     if(active())return;
     if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia){status('browser_unsupported',true);return;}
     const generation=++s.generation,id=F.id();
-    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;s.lastFailure=null;s.azureResultAt=0;s.voicedSinceResult=0;s.azureRetryPlain=false;
+    s.captureArmedAt=0;s.lastAudioAt=0;s.captureRecoveryAt=0;s.audioFrames=0;s.captureUnavailable=false;s.lastFailure=null;s.azureResultAt=0;s.voicedSinceResult=0;s.azureRetryPlain=false;s.azureRetryFixed=false;s.azureFixedTried=false;s.autoFixed=false;
     try{s.azurePlain=localStorage.getItem('lumira_live_azure_plain_v1')==='1';}catch{s.azurePlain=false;}
     s.failed=new Set();s.providers=[];s.provider='';s.phase='starting';s.sessionId=id;s.draft=null;s.detected='';s.localProgress=null;s.localError=false;s.lastResult=performance.now();s.awaitingSince=0;status('starting');drawText();
     window.VOICE_stop?.();
@@ -532,6 +553,9 @@
       const configured=await F.api('status');
       if(generation!==s.generation)return;
       s.providers=LOCAL_TEST||browserOnly?[]:(configured.providers || (configured.speechConfigured?['azure']:[])).flatMap(provider=>provider==='azure'?['azure',...(s.source==='auto'?[]:['azure-http'])]:provider==='gemini'?[...(s.source==='auto'?['gemini']:[]),'gemini-http']:[provider]);
+      // Automatic detection failed on this device within the last day: start
+      // directly with the fixed-language path instead of waiting for it again.
+      if(s.source==='auto'&&s.providers.includes('azure')&&lidFailedRecently())useFixedSource();
       const data=await F.api('liveStart',{id,provider:'local'});
       if(generation!==s.generation){F.api('liveStop',{id}).catch(()=>{});return;}
       applyLease(data,generation);heartbeat(generation,id);
@@ -608,5 +632,5 @@
   window.addEventListener('offline',()=>{if(active())stop('speech_unavailable',true);});
   window.addEventListener('lumira:featureauthchange',()=>{if(s.root){stop('login_required',true);s.entries=[];s.draft=null;drawText();}});
   window.LUMIRA_LIVE={mount,unmount,refreshLocale,isMounted:()=>!!s.root,isActive:active,stop,
-    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null,captureMode:s.local?.captureMode||null,sampleRate:s.local?.context?.sampleRate||s.pendingAudio?.sampleRate||null,lastFailure:s.lastFailure||null})};
+    debug:()=>({phase:s.phase,provider:s.provider,failed:[...s.failed],source:s.source,target:s.target,audioFrames:s.audioFrames||0,lastAudioMs:s.lastAudioAt?Math.round(performance.now()-s.lastAudioAt):null,audioContext:s.local?.context?.state||s.pendingAudio?.state||null,captureMode:s.local?.captureMode||null,sampleRate:s.local?.context?.sampleRate||s.pendingAudio?.sampleRate||null,lastFailure:s.lastFailure||null,azurePlain:!!s.azurePlain,autoFixed:!!s.autoFixed})};
 })();
