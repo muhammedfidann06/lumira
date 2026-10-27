@@ -9,17 +9,16 @@ const COPY={
  es:{title:'Retirar insignias',sub:'Retira las insignias seleccionadas de una persona o de todos los usuarios registrados.',type:'Tipo de insignia',support:'Insignias de apoyo',award:'Insignias de logros',all:'Todas las insignias',badge:'Insignia que se retirará',allKind:'Todas las insignias de este tipo',scope:'¿A quién se retirarán?',one:'Una persona',everyone:'Todos',search:'Buscar por nombre o ID de usuario',choose:'Seleccionar persona',loading:'Cargando usuarios…',empty:'No se encontraron usuarios.',remove:'Retirar las insignias seleccionadas',cancel:'Cancelar',note:'Terminan las ventajas adicionales de las insignias retiradas. Se conservan los XP y el progreso.',confirm:'Se retirará {badge} de {n} usuarios. ¿Continuar?',progress:'Procesando: {done} / {total}',done:'Insignias retiradas de {n} usuarios.',failed:'No se pudo completar la operación. Completados: {n}. Puedes reintentar.',denied:'Se requieren permisos de administrador.',missing:'Selecciona primero una persona.',count:'Usuarios registrados: {n}'},
  ru:{title:'Удалить значки',sub:'Удали выбранные значки у одного человека или всех зарегистрированных пользователей.',type:'Тип значка',support:'Значки поддержки',award:'Значки достижений',all:'Все значки',badge:'Какой значок удалить',allKind:'Все значки этого типа',scope:'У кого удалить?',one:'Один человек',everyone:'У всех',search:'Поиск по имени или ID пользователя',choose:'Выбрать человека',loading:'Загрузка пользователей…',empty:'Пользователи не найдены.',remove:'Удалить выбранные значки',cancel:'Отмена',note:'Дополнительные возможности удалённых значков отключаются. Опыт и прогресс сохраняются.',confirm:'{badge} будет удалён у {n} пользователей. Продолжить?',progress:'Обработка: {done} / {total}',done:'Значки удалены у {n} пользователей.',failed:'Операция не завершена. Завершено: {n}. Можно повторить.',denied:'Требуются права администратора.',missing:'Сначала выбери человека.',count:'Зарегистрировано пользователей: {n}'}
 };
-// "Remove" had no counterpart in the panel: a removed support badge stayed
-// locked (and unbuyable) until someone gifted it. These strings add the
-// lock-lifting action and a warning when the admin's own account is included.
+// A removal only touches people who actually hold the badge. Nobody sees a
+// "removed" label or a lock, so the panel has nothing left to unlock.
 for(const[code,values]of Object.entries({
- tr:{operation:'İşlem',opRevoke:'Rozet kaldır',opAllow:'Kilidi kaldır (yeniden satın alınabilir yap)',allowBtn:'Seçilen rozetlerin kilidini kaldır',allowNote:'Kilit kalkınca kişi bu destek rozetlerini yeniden satın alabilir. Rozet hediye edilmez; kişinin kendi gizlediği rozetler de yeniden görünür.',confirmAllow:'{badge} kilidi {n} kişide kaldırılacak. Devam edilsin mi?',allowDone:'{n} kişide rozet kilidi kaldırıldı.',selfWarn:'Dikkat: Bu işlem kendi hesabını da kapsıyor. Kaldırılan destek rozetlerini, kilidi kaldırana kadar sen de satın alamazsın.'},
- en:{operation:'Action',opRevoke:'Remove badges',opAllow:'Lift lock (allow buying again)',allowBtn:'Lift the lock on selected badges',allowNote:'After the lock is lifted the person can buy these support badges again. No badge is gifted; badges they hid themselves become visible again.',confirmAllow:'The lock on {badge} will be lifted for {n} users. Continue?',allowDone:'Badge lock lifted for {n} users.',selfWarn:'Warning: this includes your own account. You will not be able to buy the removed support badges until you lift the lock.'},
- de:{operation:'Aktion',opRevoke:'Abzeichen entfernen',opAllow:'Sperre aufheben (wieder kaufbar machen)',allowBtn:'Sperre der ausgewählten Abzeichen aufheben',allowNote:'Nach dem Aufheben kann die Person diese Unterstützerabzeichen wieder kaufen. Es wird nichts verschenkt; selbst ausgeblendete Abzeichen werden wieder sichtbar.',confirmAllow:'Die Sperre für {badge} wird bei {n} Nutzern aufgehoben. Fortfahren?',allowDone:'Sperre bei {n} Nutzern aufgehoben.',selfWarn:'Achtung: Dies betrifft auch dein eigenes Konto. Entfernte Unterstützerabzeichen kannst du erst nach Aufheben der Sperre wieder kaufen.'},
- ar:{operation:'الإجراء',opRevoke:'إزالة الشارات',opAllow:'رفع القفل (السماح بالشراء مجددًا)',allowBtn:'رفع القفل عن الشارات المحددة',allowNote:'بعد رفع القفل يمكن للشخص شراء شارات الدعم هذه مجددًا. لا تُهدى أي شارة؛ والشارات التي أخفاها بنفسه تظهر مجددًا.',confirmAllow:'سيُرفع القفل عن {badge} لدى {n} مستخدمين. هل تريد المتابعة؟',allowDone:'رُفع قفل الشارة لدى {n} مستخدمين.',selfWarn:'تنبيه: يشمل هذا حسابك أيضًا. لن تتمكن من شراء شارات الدعم المزالة حتى ترفع القفل.'},
- fr:{operation:'Action',opRevoke:'Retirer des badges',opAllow:'Lever le verrou (autoriser un nouvel achat)',allowBtn:'Lever le verrou des badges sélectionnés',allowNote:'Une fois le verrou levé, la personne peut racheter ces badges de soutien. Aucun badge n’est offert ; les badges masqués par la personne réapparaissent.',confirmAllow:'Le verrou de {badge} sera levé pour {n} utilisateurs. Continuer ?',allowDone:'Verrou levé pour {n} utilisateurs.',selfWarn:'Attention : cela inclut ton propre compte. Tu ne pourras pas acheter les badges de soutien retirés avant d’avoir levé le verrou.'},
- es:{operation:'Acción',opRevoke:'Retirar insignias',opAllow:'Quitar bloqueo (permitir comprar de nuevo)',allowBtn:'Quitar el bloqueo de las insignias seleccionadas',allowNote:'Tras quitar el bloqueo, la persona puede volver a comprar estas insignias de apoyo. No se regala ninguna; las que ocultó vuelven a verse.',confirmAllow:'Se quitará el bloqueo de {badge} a {n} usuarios. ¿Continuar?',allowDone:'Bloqueo quitado a {n} usuarios.',selfWarn:'Atención: esto incluye tu propia cuenta. No podrás comprar las insignias de apoyo retiradas hasta quitar el bloqueo.'},
- ru:{operation:'Действие',opRevoke:'Удалить значки',opAllow:'Снять блокировку (разрешить покупку)',allowBtn:'Снять блокировку выбранных значков',allowNote:'После снятия блокировки человек снова может купить эти значки поддержки. Значки не дарятся; скрытые им самим значки снова появятся.',confirmAllow:'Блокировка {badge} будет снята у {n} пользователей. Продолжить?',allowDone:'Блокировка снята у {n} пользователей.',selfWarn:'Внимание: это затрагивает и твой аккаунт. Удалённые значки поддержки нельзя будет купить, пока не снимешь блокировку.'}
+ tr:{note:'Rozet yalnızca kişide varsa kaldırılır; rozeti olmayanlarda hiçbir şey değişmez. Karşı tarafta “kaldırıldı” yazmaz, kişi isterse rozeti yeniden alabilir. XP ve çalışma ilerlemesi korunur.',done:'{n} kişi kontrol edildi · {c} kişiden rozet kaldırıldı.',confirm:'{badge} · {n} kişi kontrol edilecek; rozet yalnızca sahip olanlardan kaldırılacak. Devam edilsin mi?'},
+ en:{note:'A badge is removed only from people who hold it; nothing changes for anyone else. They see no “removed” label and can get the badge again. XP and learning progress are preserved.',done:'{n} users checked · badge removed from {c}.',confirm:'{badge} · {n} users will be checked; the badge is removed only from those who hold it. Continue?'},
+ de:{note:'Ein Abzeichen wird nur bei Personen entfernt, die es besitzen; bei allen anderen ändert sich nichts. Es erscheint kein Hinweis „entfernt“, und das Abzeichen kann erneut erworben werden. XP und Lernfortschritt bleiben erhalten.',done:'{n} Nutzer geprüft · bei {c} entfernt.',confirm:'{badge} · {n} Nutzer werden geprüft; entfernt wird nur bei Besitzern. Fortfahren?'},
+ ar:{note:'تُزال الشارة فقط ممن يملكها؛ ولا يتغير شيء لدى الآخرين. لا تظهر عبارة „أُزيلت“، ويمكن الحصول على الشارة مجددًا. تبقى نقاط الخبرة والتقدم الدراسي محفوظة.',done:'تم فحص {n} مستخدمين · أُزيلت الشارة من {c}.',confirm:'{badge} · سيتم فحص {n} مستخدمين؛ تُزال الشارة فقط ممن يملكها. هل تريد المتابعة؟'},
+ fr:{note:'Un badge n’est retiré qu’aux personnes qui le possèdent ; rien ne change pour les autres. Aucune mention « retiré » n’apparaît et le badge peut être repris. Les XP et la progression sont conservés.',done:'{n} utilisateurs vérifiés · badge retiré à {c}.',confirm:'{badge} · {n} utilisateurs seront vérifiés ; le badge n’est retiré qu’à ceux qui le possèdent. Continuer ?'},
+ es:{note:'La insignia solo se retira a quien la tiene; para los demás no cambia nada. No aparece ningún aviso de «retirada» y se puede volver a obtener. Se conservan los XP y el progreso.',done:'{n} usuarios revisados · insignia retirada a {c}.',confirm:'{badge} · se revisarán {n} usuarios; solo se retira a quien la tiene. ¿Continuar?'},
+ ru:{note:'Значок удаляется только у тех, у кого он есть; у остальных ничего не меняется. Надпись «удалён» не появляется, значок можно получить снова. Опыт и прогресс сохраняются.',done:'Проверено пользователей: {n} · значок удалён у {c}.',confirm:'{badge} · будет проверено пользователей: {n}; значок удаляется только у владельцев. Продолжить?'}
 }))Object.assign(COPY[code],values);
 const AWARDS = {
     sampiyon: { tr:"Şampiyon", en:"Champion", de:"Champion", ar:"بطل", fr:"Champion", es:"Campeón", ru:"Чемпион" },
@@ -54,7 +53,6 @@ function open(){
   body.dir=lang()==='ar'?'rtl':'ltr';let users=[],busy=false;
   const form=node('div');form.dataset.adminBadges='';
   function field(label,control){const wrap=node('label','pwa-field');wrap.append(node('span','',text(label)),control);form.append(wrap);return control;}
-  const operation=field('operation',node('select','pwa-input'));operation.append(option('revoke',text('opRevoke')),option('allow',text('opAllow')));operation.dataset.adminBadgeOperation='';
   const kind=field('type',node('select','pwa-input'));for(const key of['support','award','all'])kind.append(option(key,text(key)));
   const badge=field('badge',node('select','pwa-input'));
   const scope=field('scope',node('select','pwa-input'));scope.append(option('one',text('one')),option('all',text('everyone')));
@@ -66,9 +64,6 @@ function open(){
   function badges(){badge.replaceChildren(option('all',kind.value==='all'?text('all'):text('allKind')));if(kind.value==='support'){for(const tier of window.LUMIRA_BADGES.tiers){const names=window.t?.('tier_names')||{};badge.append(option(String(tier.amount),tier.badge+' '+(names[tier.sku]||tier.name)));}}else if(kind.value==='award'){for(const[key,icon]of Object.entries(symbols))badge.append(option(key,icon+' '+(AWARDS[key]?.[lang()]||key)));}badge.disabled=kind.value==='all';}
   function people(){const selected=person.value,q=searchKey(search.value);person.replaceChildren(option('',text('choose')));for(const u of users.filter(u=>!q||searchKey(u.name+' '+u.uid).includes(q)).slice(0,100))person.append(option(u.uid,u.name));if([...person.options].some(o=>o.value===selected))person.value=selected;}
   kind.onchange=badges;search.oninput=people;scope.onchange=()=>{search.parentElement.hidden=person.parentElement.hidden=scope.value==='all';};badges();
-  // Lifting a lock applies to support badges only (achievements are not sold).
-  const paintOperation=()=>{const lift=operation.value==='allow';if(lift&&kind.value!=='support'){kind.value='support';badges();}kind.disabled=lift;remove.textContent=text(lift?'allowBtn':'remove');remove.style.background=lift?'#2f7a5c':'#a83d57';note.textContent=text(lift?'allowNote':'note');};
-  operation.onchange=paintOperation;
   const retry=node('button','pwa-btn ghost',RETRY[lang()]);retry.type='button';retry.hidden=true;body.insertBefore(retry,remove);
   async function load(){remove.disabled=true;retry.hidden=true;status.textContent=text('loading');const profiles={};
    try{const d=window.LB_getDb?.();if(d){Object.assign(profiles,(await d.ref('leaderboard').once('value')).val()||{});if(signal.aborted||!body.isConnected)return;users=Object.entries(profiles).map(([uid,p])=>({uid,name:p.name||uid}));people();}}catch{}
@@ -76,27 +71,17 @@ function open(){
   }retry.onclick=load;load();
   remove.onclick=async()=>{
    if(busy)return;const targets=scope.value==='all'?users.map(u=>u.uid):[person.value].filter(Boolean);if(!targets.length){PWA.toast(text('missing'),{kind:'bad'});return;}
-   const chosen=badge.selectedOptions[0]?.textContent||text('all'),lift=operation.value==='allow';
-   // Removing support badges from one's own account is what left the admin
-   // unable to buy them later; say so before it happens.
-   let me='';try{me=window.firebase?.auth?.().currentUser?.uid||'';}catch{}
-   const warning=!lift&&kind.value!=='award'&&me&&targets.includes(me)?' '+text('selfWarn'):'';
-   if(!window.confirm(text(lift?'confirmAllow':'confirm',{badge:chosen,n:targets.length})+warning))return;
+   const chosen=badge.selectedOptions[0]?.textContent||text('all');
+   if(!window.confirm(text('confirm',{badge:chosen,n:targets.length})))return;
    const selection={kind:kind.value,amount:kind.value==='award'?'all':badge.value==='all'?'all':Number(badge.value),badge:kind.value==='support'?'all':badge.value};
-   busy=true;[operation,kind,badge,scope,search,person,remove,cancel].forEach(n=>n.disabled=true);let completed=0;
+   busy=true;[kind,badge,scope,search,person,remove,cancel].forEach(n=>n.disabled=true);let completed=0,changed=0;
    try{
     const id=F.id();
-    if(lift){
-     // The server lifts one amount per request; "all" covers every support tier.
-     const amounts=selection.amount==='all'?window.LUMIRA_BADGES.tiers.map(tier=>tier.amount):[selection.amount],total=targets.length*amounts.length;
-     for(const amount of amounts)for(let offset=0;offset<targets.length;offset+=100){if(signal.aborted)return;await F.adminBadges('allow',{id:id+'_'+amount+'_'+offset,amount,uids:targets.slice(offset,offset+100)},{signal});completed+=Math.min(100,targets.length-offset);if(body.isConnected)status.textContent=text('progress',{done:completed,total});}
-     completed=targets.length;if(body.isConnected){status.textContent=text('allowDone',{n:completed});PWA.toast(text('allowDone',{n:completed}),{kind:'good'});}
-    }else{
-     for(let offset=0;offset<targets.length;offset+=100){if(signal.aborted)return;await F.adminBadges('revoke',{id:id+'_'+offset,...selection,uids:targets.slice(offset,offset+100)},{signal});completed+=Math.min(100,targets.length-offset);if(body.isConnected)status.textContent=text('progress',{done:completed,total:targets.length});}if(body.isConnected){status.textContent=text('done',{n:completed});PWA.toast(text('done',{n:completed}),{kind:'good'});}
-    }
+    for(let offset=0;offset<targets.length;offset+=100){if(signal.aborted)return;const result=await F.adminBadges('revoke',{id:id+'_'+offset,...selection,uids:targets.slice(offset,offset+100)},{signal});completed+=Math.min(100,targets.length-offset);changed+=Number.isFinite(result?.changed)?result.changed:Math.min(100,targets.length-offset);if(body.isConnected)status.textContent=text('progress',{done:completed,total:targets.length});}
+    if(body.isConnected){status.textContent=text('done',{n:completed,c:changed});PWA.toast(text('done',{n:completed,c:changed}),{kind:'good'});}
     await F.api('status').catch(()=>{});
    }catch(error){if(body.isConnected)status.textContent=error.featureCode==='admin_required'?text('denied'):text('failed',{n:completed});}
-   finally{busy=false;if(body.isConnected){[operation,kind,badge,scope,search,person,remove,cancel].forEach(n=>n.disabled=false);badge.disabled=kind.value==='all';kind.disabled=operation.value==='allow';}}
+   finally{busy=false;if(body.isConnected){[kind,badge,scope,search,person,remove,cancel].forEach(n=>n.disabled=false);badge.disabled=kind.value==='all';}}
   };
  });
 }

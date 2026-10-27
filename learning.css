@@ -23,5 +23,4 @@
 @media(max-width:350px){.app .practice-language-grid{gap:6px}}
 
 .practice-gloss.is-unavailable{border-style:dashed;background:transparent}.practice-gloss.is-unavailable span{font-size:11px;max-width:22ch;line-height:1.7}
-
-
+.practice-listen{margin:0 0 12px;min-height:40px}.practice-feedback .practice-listen{margin:0}

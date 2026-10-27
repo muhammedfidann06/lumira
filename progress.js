@@ -650,7 +650,7 @@
       }
       .pm-root .wp-original mark.wp-err{
         background:rgba(255,95,122,0.22);color:#ffd2d9;border-bottom:2px solid var(--pm-bad);
-        border-radius:3px;padding:0 2px;cursor:help;
+        border-radius:3px;padding:0 2px;cursor:pointer;
       }
       .pm-root .wp-corrected{
         font-family:Georgia,'Iowan Old Style',serif;font-size:15px;line-height:1.8;color:var(--pm-good);
@@ -666,8 +666,22 @@
       .pm-root .wp-issue-msg{font-size:11.5px;color:#8291b3;line-height:1.5;}
       .pm-root .wp-loading{text-align:center;padding:26px 10px;color:#8291b3;font-size:13px;}
       .pm-root .wp-error{text-align:center;padding:20px 10px;color:#ffd2d9;font-size:12.5px;background:rgba(255,95,122,0.1);border:1px solid rgba(255,95,122,0.35);border-radius:14px;margin-bottom:12px;}
-      .pm-root .wp-speak-row{display:flex;gap:8px;margin-bottom:14px;}
-      .pm-root .wp-speak-row button{flex:1;}
+      .pm-root .wp-speak-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+      .pm-root .wp-speak-row button{flex:1;min-width:120px;}
+      .pm-root .wp-tools{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px;}
+      .pm-root .wp-tools button{flex:1;min-width:120px;margin:0;}
+      .pm-root .wp-topic{font-size:13.5px;line-height:1.6;color:#dfe9ff;background:rgba(79,232,255,0.07);border:1px dashed rgba(79,232,255,0.45);border-radius:12px;padding:10px 12px;margin:0 0 10px;text-align:start;}
+      .pm-root .wp-topic b{display:block;color:var(--pm-accent);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;}
+      .pm-root .wp-summary{font-size:12.5px;color:#c2d0df;margin:0 0 10px;}
+      .pm-root .wp-cat{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 8px;border-radius:20px;margin-bottom:5px;background:rgba(79,232,255,0.12);color:#bfefff;}
+      .pm-root .wp-cat.spelling{background:rgba(255,95,122,0.16);color:#ffd2d9;}
+      .pm-root .wp-cat.grammar{background:rgba(255,190,90,0.16);color:#ffe2b8;}
+      .pm-root .wp-cat.punctuation,.pm-root .wp-cat.casing{background:rgba(180,185,238,0.18);color:#dcdfff;}
+      .pm-root .wp-cat.style{background:rgba(61,255,160,0.12);color:#c6ffe3;}
+      .pm-root .wp-alts{display:flex;gap:6px;flex-wrap:wrap;margin:7px 0 2px;}
+      .pm-root .wp-alt{font:inherit;font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid rgba(61,255,160,0.4);background:transparent;color:#c6ffe3;cursor:pointer;}
+      .pm-root .wp-alt[aria-pressed="true"]{background:rgba(61,255,160,0.16);border-color:var(--pm-good);color:var(--pm-good);font-weight:700;}
+      .pm-root .wp-issue.is-focus{border-color:var(--pm-accent);box-shadow:0 0 0 2px rgba(79,232,255,0.22);}
     `;
     document.head.appendChild(style);
   }
@@ -1750,6 +1764,60 @@
     return level === 'B1' || level === 'B2';
   }
 
+  /* Yazma ekranı yardımcıları: seviyeye uygun konu önerisi, cihazda saklanan
+     taslak, kelime sayacı, hata türü etiketi ve önerileri metne uygulama. */
+  const WP_EXTRA = {
+    tr:{words:'{n} kelime',topic:'💡 Konu öner',topicLabel:'Yazma konusu',clear:'Temizle',clearConfirm:'Metnin silinsin mi?',apply:'✔ Düzeltmeleri metnime uygula',applied:'Düzeltmeler metnine uygulandı. İstersen yeniden kontrol et.',copy:'📋 Kopyala',copied:'Kopyalandı',summary:'{words} kelime · {errors} öneri',alternatives:'Seçenekler:',shortcut:'Ctrl + Enter ile de kontrol edebilirsin',draft:'Taslağın bu cihazda saklanır.',
+      cats:{spelling:'Yazım',grammar:'Dilbilgisi',punctuation:'Noktalama',casing:'Büyük/küçük harf',style:'Üslup',other:'Öneri'},
+      prompts:{A1:['Kendini tanıt: adın, yaşın ve nerede yaşadığın.','Aileni anlat: kaç kişisiniz, ne iş yapıyorlar?','Bugün ne yedin ve içtin? Kısa cümlelerle yaz.','Odanı veya evini anlat: içinde neler var?'],A2:['Geçen hafta sonu ne yaptın? Geçmiş zamanla anlat.','En sevdiğin yemeğin tarifini adım adım yaz.','Bir arkadaşını doğum gününe davet eden kısa bir mesaj yaz.','Şehrindeki en sevdiğin yeri anlat ve nedenini açıkla.'],B1:['Unutamadığın bir yolculuğu anlat: nereye gittin, ne oldu?','Bir otele şikâyet e-postası yaz: sorun neydi, ne istiyorsun?','Sosyal medyanın günlük hayata etkisi hakkındaki düşüncelerini yaz.','Gelecekte nerede yaşamak isterdin? Nedenleriyle anlat.'],B2:['Evden çalışmanın avantajlarını ve dezavantajlarını karşılaştır.','Okullarda yabancı dil öğretimi nasıl daha iyi olabilir? Önerilerini savun.','Yapay zekâ meslekleri nasıl değiştirecek? Görüşünü örneklerle açıkla.','Yaşadığın yerdeki bir sorunu belediye başkanına resmî bir mektupla anlat.']}},
+    en:{words:'{n} words',topic:'💡 Suggest a topic',topicLabel:'Writing topic',clear:'Clear',clearConfirm:'Delete your text?',apply:'✔ Apply corrections to my text',applied:'Corrections applied to your text. Check again if you like.',copy:'📋 Copy',copied:'Copied',summary:'{words} words · {errors} suggestions',alternatives:'Options:',shortcut:'You can also check with Ctrl + Enter',draft:'Your draft is kept on this device.',
+      cats:{spelling:'Spelling',grammar:'Grammar',punctuation:'Punctuation',casing:'Capitalisation',style:'Style',other:'Suggestion'},
+      prompts:{A1:['Introduce yourself: your name, age and where you live.','Describe your family: how many of you are there, and what do they do?','What did you eat and drink today? Write short sentences.','Describe your room or home: what is in it?'],A2:['What did you do last weekend? Use the past tense.','Write the recipe for your favourite dish step by step.','Write a short message inviting a friend to your birthday.','Describe your favourite place in your town and say why.'],B1:['Describe a trip you will never forget: where did you go and what happened?','Write a complaint email to a hotel: what was the problem and what do you want?','Write your thoughts on how social media affects daily life.','Where would you like to live in the future? Explain why.'],B2:['Compare the advantages and disadvantages of working from home.','How could foreign languages be taught better at school? Argue for your ideas.','How will artificial intelligence change our jobs? Explain with examples.','Write a formal letter to your mayor about a local problem.']}},
+    de:{words:'{n} Wörter',topic:'💡 Thema vorschlagen',topicLabel:'Schreibthema',clear:'Leeren',clearConfirm:'Text löschen?',apply:'✔ Korrekturen in meinen Text übernehmen',applied:'Korrekturen übernommen. Prüfe den Text gern noch einmal.',copy:'📋 Kopieren',copied:'Kopiert',summary:'{words} Wörter · {errors} Hinweise',alternatives:'Möglichkeiten:',shortcut:'Prüfen geht auch mit Strg + Enter',draft:'Dein Entwurf bleibt auf diesem Gerät gespeichert.',
+      cats:{spelling:'Rechtschreibung',grammar:'Grammatik',punctuation:'Zeichensetzung',casing:'Groß-/Kleinschreibung',style:'Stil',other:'Hinweis'},
+      prompts:{A1:['Stell dich vor: Name, Alter und Wohnort.','Beschreib deine Familie: Wie viele seid ihr, und was machen sie?','Was hast du heute gegessen und getrunken? Schreib kurze Sätze.','Beschreib dein Zimmer oder deine Wohnung: Was gibt es dort?'],A2:['Was hast du letztes Wochenende gemacht? Erzähl in der Vergangenheit.','Schreib das Rezept deines Lieblingsgerichts Schritt für Schritt.','Schreib eine kurze Einladung zu deinem Geburtstag an einen Freund.','Beschreib deinen Lieblingsort in deiner Stadt und sag, warum.'],B1:['Erzähl von einer unvergesslichen Reise: Wohin ging es, und was ist passiert?','Schreib eine Beschwerde-E-Mail an ein Hotel: Was war das Problem, was möchtest du?','Schreib deine Meinung dazu, wie soziale Medien den Alltag beeinflussen.','Wo möchtest du in Zukunft leben? Begründe deine Antwort.'],B2:['Vergleiche Vor- und Nachteile der Arbeit im Homeoffice.','Wie könnte man Fremdsprachen in der Schule besser unterrichten? Begründe deine Vorschläge.','Wie wird künstliche Intelligenz unsere Berufe verändern? Erkläre mit Beispielen.','Schreib einen formellen Brief an die Bürgermeisterin über ein Problem vor Ort.']}},
+    ar:{words:'{n} كلمة',topic:'💡 اقترح موضوعًا',topicLabel:'موضوع الكتابة',clear:'مسح',clearConfirm:'هل تريد حذف النص؟',apply:'✔ طبّق التصحيحات على نصي',applied:'طُبّقت التصحيحات على نصك. يمكنك التدقيق مجددًا.',copy:'📋 نسخ',copied:'تم النسخ',summary:'{words} كلمة · {errors} اقتراحات',alternatives:'خيارات:',shortcut:'يمكنك التدقيق أيضًا بـ Ctrl + Enter',draft:'تُحفظ مسودتك على هذا الجهاز.',
+      cats:{spelling:'إملاء',grammar:'نحو',punctuation:'ترقيم',casing:'حالة الأحرف',style:'أسلوب',other:'اقتراح'},
+      prompts:{A1:['عرّف بنفسك: اسمك وعمرك وأين تسكن.','صف عائلتك: كم عددكم وماذا يعملون؟','ماذا أكلت وشربت اليوم؟ اكتب جملًا قصيرة.','صف غرفتك أو بيتك: ماذا يوجد فيه؟'],A2:['ماذا فعلت في عطلة نهاية الأسبوع الماضية؟ استخدم الماضي.','اكتب وصفة طبقك المفضل خطوة بخطوة.','اكتب رسالة قصيرة تدعو فيها صديقًا إلى عيد ميلادك.','صف مكانك المفضل في مدينتك وقل لماذا.'],B1:['احكِ عن رحلة لا تنساها: إلى أين ذهبت وماذا حدث؟','اكتب بريد شكوى إلى فندق: ما المشكلة وماذا تطلب؟','اكتب رأيك في تأثير وسائل التواصل الاجتماعي على الحياة اليومية.','أين تحب أن تعيش في المستقبل؟ اشرح الأسباب.'],B2:['قارن بين مزايا العمل من المنزل وعيوبه.','كيف يمكن تحسين تعليم اللغات الأجنبية في المدارس؟ دافع عن اقتراحاتك.','كيف سيغيّر الذكاء الاصطناعي الوظائف؟ اشرح رأيك بأمثلة.','اكتب رسالة رسمية إلى رئيس البلدية عن مشكلة في منطقتك.']}},
+    fr:{words:'{n} mots',topic:'💡 Proposer un sujet',topicLabel:'Sujet d’écriture',clear:'Effacer',clearConfirm:'Effacer ton texte ?',apply:'✔ Appliquer les corrections à mon texte',applied:'Corrections appliquées. Vérifie à nouveau si tu veux.',copy:'📋 Copier',copied:'Copié',summary:'{words} mots · {errors} suggestions',alternatives:'Options :',shortcut:'Tu peux aussi vérifier avec Ctrl + Entrée',draft:'Ton brouillon reste enregistré sur cet appareil.',
+      cats:{spelling:'Orthographe',grammar:'Grammaire',punctuation:'Ponctuation',casing:'Majuscules',style:'Style',other:'Suggestion'},
+      prompts:{A1:['Présente-toi : ton nom, ton âge et où tu habites.','Décris ta famille : vous êtes combien et que font-ils ?','Qu’as-tu mangé et bu aujourd’hui ? Écris des phrases courtes.','Décris ta chambre ou ton logement : qu’y a-t-il ?'],A2:['Qu’as-tu fait le week-end dernier ? Utilise le passé.','Écris la recette de ton plat préféré étape par étape.','Écris un court message pour inviter un ami à ton anniversaire.','Décris ton endroit préféré dans ta ville et explique pourquoi.'],B1:['Raconte un voyage inoubliable : où es-tu allé et que s’est-il passé ?','Écris un e-mail de réclamation à un hôtel : quel était le problème, que veux-tu ?','Donne ton avis sur l’influence des réseaux sociaux au quotidien.','Où aimerais-tu vivre plus tard ? Explique pourquoi.'],B2:['Compare les avantages et les inconvénients du télétravail.','Comment mieux enseigner les langues étrangères à l’école ? Défends tes idées.','Comment l’intelligence artificielle va-t-elle changer nos métiers ? Donne des exemples.','Écris une lettre formelle au maire au sujet d’un problème local.']}},
+    es:{words:'{n} palabras',topic:'💡 Sugerir un tema',topicLabel:'Tema de escritura',clear:'Borrar',clearConfirm:'¿Borrar tu texto?',apply:'✔ Aplicar correcciones a mi texto',applied:'Correcciones aplicadas. Revísalo otra vez si quieres.',copy:'📋 Copiar',copied:'Copiado',summary:'{words} palabras · {errors} sugerencias',alternatives:'Opciones:',shortcut:'También puedes revisar con Ctrl + Enter',draft:'Tu borrador se guarda en este dispositivo.',
+      cats:{spelling:'Ortografía',grammar:'Gramática',punctuation:'Puntuación',casing:'Mayúsculas',style:'Estilo',other:'Sugerencia'},
+      prompts:{A1:['Preséntate: tu nombre, tu edad y dónde vives.','Describe a tu familia: ¿cuántos sois y a qué se dedican?','¿Qué has comido y bebido hoy? Escribe frases cortas.','Describe tu habitación o tu casa: ¿qué hay en ella?'],A2:['¿Qué hiciste el fin de semana pasado? Usa el pasado.','Escribe la receta de tu plato favorito paso a paso.','Escribe un mensaje corto para invitar a un amigo a tu cumpleaños.','Describe tu lugar favorito de tu ciudad y explica por qué.'],B1:['Cuenta un viaje que nunca olvidarás: ¿adónde fuiste y qué pasó?','Escribe un correo de queja a un hotel: ¿cuál fue el problema y qué pides?','Da tu opinión sobre cómo influyen las redes sociales en la vida diaria.','¿Dónde te gustaría vivir en el futuro? Explica por qué.'],B2:['Compara las ventajas y desventajas del teletrabajo.','¿Cómo podrían enseñarse mejor los idiomas en la escuela? Defiende tus ideas.','¿Cómo cambiará la inteligencia artificial nuestros trabajos? Explícalo con ejemplos.','Escribe una carta formal a tu alcalde sobre un problema local.']}},
+    ru:{words:'{n} слов',topic:'💡 Предложить тему',topicLabel:'Тема для письма',clear:'Очистить',clearConfirm:'Удалить текст?',apply:'✔ Применить исправления к тексту',applied:'Исправления применены. При желании проверь ещё раз.',copy:'📋 Копировать',copied:'Скопировано',summary:'Слов: {words} · подсказок: {errors}',alternatives:'Варианты:',shortcut:'Проверить можно и через Ctrl + Enter',draft:'Черновик сохраняется на этом устройстве.',
+      cats:{spelling:'Орфография',grammar:'Грамматика',punctuation:'Пунктуация',casing:'Регистр',style:'Стиль',other:'Подсказка'},
+      prompts:{A1:['Представься: имя, возраст и где ты живёшь.','Опиши свою семью: сколько вас и чем они занимаются?','Что ты сегодня ел и пил? Пиши короткими предложениями.','Опиши свою комнату или квартиру: что в ней есть?'],A2:['Что ты делал в прошлые выходные? Используй прошедшее время.','Напиши рецепт любимого блюда шаг за шагом.','Напиши другу короткое приглашение на свой день рождения.','Опиши любимое место в своём городе и объясни почему.'],B1:['Расскажи о незабываемой поездке: куда ты ездил и что случилось?','Напиши жалобу в отель: в чём была проблема и чего ты хочешь?','Напиши своё мнение о том, как соцсети влияют на повседневную жизнь.','Где бы ты хотел жить в будущем? Объясни почему.'],B2:['Сравни плюсы и минусы удалённой работы.','Как лучше преподавать иностранные языки в школе? Обоснуй свои идеи.','Как искусственный интеллект изменит профессии? Объясни на примерах.','Напиши официальное письмо мэру о местной проблеме.']}}
+  };
+  function wpX(key, values){
+    let value = (WP_EXTRA[window.NATIVE_LANG] || WP_EXTRA.en)[key];
+    if(typeof value === 'string') Object.keys(values || {}).forEach(k => { value = value.replaceAll('{'+k+'}', String(values[k])); });
+    return value;
+  }
+  function wpWordCount(text){ return (String(text).match(/[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*/gu) || []).length; }
+  function wpCounterText(text){ return wpX('words', {n: wpWordCount(text)}) + ' · ' + text.length + ' / 4000'; }
+  function wpCategory(m){
+    const id = String(m.rule && m.rule.category && m.rule.category.id || '').toUpperCase(), type = String(m.rule && m.rule.issueType || '').toLowerCase();
+    if(id === 'TYPOS' || type === 'misspelling') return 'spelling';
+    if(id === 'CASING') return 'casing';
+    if(id === 'PUNCTUATION' || id === 'TYPOGRAPHY' || type === 'typographical') return 'punctuation';
+    if(id === 'STYLE' || id === 'REDUNDANCY' || id === 'COLLOQUIALISMS' || type === 'style' || type === 'register') return 'style';
+    if(id === 'GRAMMAR' || id === 'CONFUSED_WORDS' || type === 'grammar') return 'grammar';
+    return 'other';
+  }
+  // Drafts are a per-device convenience: an unavailable storage only means
+  // the text is not restored next time.
+  function wpDraftKey(){ let uid = ''; try{ uid = window.firebase.auth().currentUser.uid || ''; }catch(e){} return 'lumira_wp_draft_v1_' + (uid || 'guest') + '_' + wpLang; }
+  function wpReadDraft(){ try{ return localStorage.getItem(wpDraftKey()) || ''; }catch(e){ return ''; } }
+  function wpSaveDraft(text){ try{ if(window.LUMIRA_CLEARING_DATA) return; if(text.trim()) localStorage.setItem(wpDraftKey(), text.slice(0, 4000)); else localStorage.removeItem(wpDraftKey()); }catch(e){} }
+  let wpTopicIndex = -1, wpDraftTimer = null;
+  function wpPaintTopic(){
+    const box = document.getElementById('wpTopic'), list = (wpX('prompts') || {})[wpLevel] || [];
+    if(!box) return;
+    if(wpTopicIndex < 0 || !list[wpTopicIndex]){ box.hidden = true; box.innerHTML = ''; return; }
+    box.hidden = false; box.innerHTML = '<b>' + escapeHtml(wpX('topicLabel')) + '</b>' + escapeHtml(list[wpTopicIndex]);
+  }
+
   /* ---- 1. adım: dil seçimi ---- */
   function renderWritingLangSelect(){
     pmInWritingFlow = true;
@@ -1794,7 +1862,7 @@
     root.innerHTML = html;
     window.LUMIRA_FEATURES.mountWriting(root.querySelector('[data-writing-quota]'));
     root.querySelectorAll('.pm-lang-card').forEach(el=>{
-      el.onclick = () => { wpLevel = el.getAttribute('data-lvl'); wpLastResult = null; renderWritingPractice(); };
+      el.onclick = () => { wpLevel = el.getAttribute('data-lvl'); wpLastResult = null; wpTopicIndex = -1; renderWritingPractice(); };
     });
     document.getElementById('wpBackLangBtn').onclick = renderWritingLangSelect;
   }
@@ -1845,25 +1913,34 @@
   }
 
   function wpBuildViews(text, matches){
-    const sorted = matches.slice().sort((a,b)=> a.offset - b.offset);
+    const sorted = matches.slice().sort((a,b)=> a.offset - b.offset), items = [];
     let cursor = 0, origHtml = '', corrected = '', issuesHtml = '', count = 0;
     sorted.forEach(m=>{
       if(m.offset < cursor || m.offset > text.length) return; /* üst üste binenleri atla */
       const errText = text.slice(m.offset, m.offset + m.length);
-      const repl = (m.replacements && m.replacements[0] && m.replacements[0].value != null) ? m.replacements[0].value : null;
+      const options = (m.replacements || []).map(r => r && r.value).filter(v => v != null).slice(0, 4);
+      /* Öğrencinin seçtiği öneri (_choice) düzeltilmiş metne girer; yoksa ilki. */
+      const repl = m._choice != null ? m._choice : (options.length ? options[0] : null);
       origHtml += escapeHtml(text.slice(cursor, m.offset));
-      origHtml += '<mark class="wp-err" title="'+escapeHtml(wpMessage(m))+'">'+escapeHtml(errText)+'</mark>';
+      origHtml += '<mark class="wp-err" data-wp-ref="'+(count+1)+'" title="'+escapeHtml(wpMessage(m))+'">'+escapeHtml(errText)+'</mark>';
       corrected += text.slice(cursor, m.offset);
       corrected += (repl !== null) ? repl : errText;
+      items.push(m);
       count++;
-      issuesHtml += '<div class="wp-issue"><div class="wp-issue-num">'+count+'</div><div class="wp-issue-body">'+
+      const cat = wpCategory(m);
+      let alts = '';
+      if(options.length > 1){
+        alts = '<div class="wp-alts" role="group" aria-label="'+escapeHtml(wpX('alternatives'))+'">'+options.map((value,i)=>'<button type="button" class="wp-alt" data-wp-fix="'+(count-1)+'" data-wp-alt="'+i+'" aria-pressed="'+String(value===repl)+'">'+escapeHtml(value || '∅')+'</button>').join('')+'</div>';
+      }
+      issuesHtml += '<div class="wp-issue" data-wp-issue="'+count+'"><div class="wp-issue-num">'+count+'</div><div class="wp-issue-body">'+
+        '<span class="wp-cat '+cat+'">'+escapeHtml((wpX('cats') || {})[cat] || cat)+'</span>'+
         '<div class="wp-issue-orig">❌ '+escapeHtml(errText)+(repl!==null ? ' → <b>'+escapeHtml(repl)+'</b>' : '')+'</div>'+
-        '<div class="wp-issue-msg">'+escapeHtml(wpMessage(m))+'</div></div></div>';
+        '<div class="wp-issue-msg">'+escapeHtml(wpMessage(m))+'</div>'+alts+'</div></div>';
       cursor = m.offset + m.length;
     });
     origHtml += escapeHtml(text.slice(cursor));
     corrected += text.slice(cursor);
-    return { origHtml, corrected, issuesHtml, count };
+    return { origHtml, corrected, issuesHtml, count, items, matches };
   }
 
   /* Sonucu ayrı bir render adımında tutuyoruz. Native arayüz dili
@@ -1878,14 +1955,52 @@
     } else {
       resultBox.innerHTML =
         '<div class="wp-section-label">'+(window.t?window.t('wp_errors_found')(views.count):('Bulunan Hatalar ('+views.count+')'))+'</div>'+
+        '<p class="wp-summary">'+escapeHtml(wpX('summary',{words:wpWordCount(text),errors:views.count}))+'</p>'+
         '<div class="wp-original">'+views.origHtml+'</div>'+
         '<div class="wp-section-label">'+(window.t?window.t('wp_explanations'):'Açıklamalar')+'</div>'+views.issuesHtml+
         '<div class="wp-section-label">'+(window.t?window.t('wp_corrected_text'):'Düzeltilmiş Metin')+'</div>'+
         '<div class="wp-corrected">'+escapeHtml(views.corrected)+'</div>'+
-        '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">'+(window.t?window.t('wp_listen'):'🔊 Dinle')+'</button></div>';
+        '<div class="wp-speak-row"><button class="pm-btn small" id="wpListenBtn">'+(window.t?window.t('wp_listen'):'🔊 Dinle')+'</button>'+
+        '<button class="pm-btn small" id="wpCopyBtn">'+escapeHtml(wpX('copy'))+'</button></div>'+
+        '<button class="pm-btn primary" id="wpApplyBtn">'+escapeHtml(wpX('apply'))+'</button>';
     }
     const listenBtn = document.getElementById('wpListenBtn');
     if(listenBtn) listenBtn.onclick = () => { speak(views.count ? views.corrected : text, lang.tts); };
+    const copyBtn = document.getElementById('wpCopyBtn');
+    if(copyBtn) copyBtn.onclick = () => {
+      Promise.resolve().then(() => navigator.clipboard.writeText(views.corrected)).then(() => { copyBtn.textContent = wpX('copied'); setTimeout(() => { if(copyBtn.isConnected) copyBtn.textContent = wpX('copy'); }, 1800); }).catch(() => {});
+    };
+    const applyBtn = document.getElementById('wpApplyBtn');
+    if(applyBtn) applyBtn.onclick = () => {
+      const ta = document.getElementById('wpInput');
+      if(!ta) return;
+      ta.value = views.corrected;
+      ta.dispatchEvent(new Event('input'));
+      ta.focus();
+      if(window.PWA && window.PWA.toast) window.PWA.toast(wpX('applied'), {kind:'good'});
+    };
+    /* Bir seçenek seçilince yalnızca düzeltilmiş metin ve vurgu yenilenir. */
+    resultBox.querySelectorAll('[data-wp-fix]').forEach(button => {
+      button.onclick = () => {
+        const m = views.items[Number(button.dataset.wpFix)], options = (m && m.replacements || []).map(r => r && r.value).filter(v => v != null);
+        if(!m || options[Number(button.dataset.wpAlt)] == null) return;
+        m._choice = options[Number(button.dataset.wpAlt)];
+        const next = wpBuildViews(text, views.matches);
+        if(wpLastResult && wpLastResult.text === text) wpLastResult.views = next;
+        wpRenderResult(resultBox, text, lang, next);
+        const issue = resultBox.querySelector('[data-wp-issue="'+(Number(button.dataset.wpFix)+1)+'"]');
+        if(issue) issue.scrollIntoView({block:'nearest'});
+      };
+    });
+    resultBox.querySelectorAll('mark[data-wp-ref]').forEach(mark => {
+      mark.onclick = () => {
+        const issue = resultBox.querySelector('[data-wp-issue="'+mark.dataset.wpRef+'"]');
+        if(!issue) return;
+        resultBox.querySelectorAll('.wp-issue.is-focus').forEach(e => e.classList.remove('is-focus'));
+        issue.classList.add('is-focus');
+        issue.scrollIntoView({block:'center', behavior:'smooth'});
+      };
+    });
   }
 
   const WP_ERRORS = {
@@ -1982,9 +2097,11 @@
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-title">'+(window.t?window.t('nb_writing_practice'):'✍️ Yazma Pratiği')+'</div>'+
       '<div class="pm-sub">'+(window.t?window.t('wp_lang_level_sub')(lang.flag+' '+lang.label,wpLevel):(lang.flag+' '+lang.label+' · Seviye '+wpLevel))+'</div></div>';
     html += '<div class="feature-quota" data-writing-quota></div>';
-    html += '<textarea class="wp-textarea" id="wpInput" maxlength="4000" placeholder="'+(window.t?window.t('wp_placeholder')(lang.label):('Buraya '+lang.label+' bir metin yaz...'))+'"></textarea>';
-    html += '<div class="wp-counter" id="wpCounter">0 / 4000</div>';
-    html += '<button class="pm-btn primary" id="wpCheckBtn">'+(window.t?window.t('wp_check_btn'):'Kontrol Et')+'</button>';
+    html += '<div class="wp-topic" id="wpTopic" hidden></div>';
+    html += '<textarea class="wp-textarea" id="wpInput" maxlength="4000" lang="'+lang.code+'" dir="'+(lang.code==='ar'?'rtl':'ltr')+'" placeholder="'+(window.t?window.t('wp_placeholder')(lang.label):('Buraya '+lang.label+' bir metin yaz...'))+'"></textarea>';
+    html += '<div class="wp-counter" id="wpCounter" title="'+escapeHtml(wpX('draft'))+'">'+escapeHtml(wpCounterText(''))+'</div>';
+    html += '<div class="wp-tools"><button class="pm-btn small" id="wpTopicBtn" type="button">'+escapeHtml(wpX('topic'))+'</button><button class="pm-btn small" id="wpClearBtn" type="button">'+escapeHtml(wpX('clear'))+'</button></div>';
+    html += '<button class="pm-btn primary" id="wpCheckBtn" title="'+escapeHtml(wpX('shortcut'))+'">'+(window.t?window.t('wp_check_btn'):'Kontrol Et')+'</button>';
     html += '<div id="wpResult"></div>';
     html += '<button class="pm-btn small" id="wpBackLevelBtn">'+(window.t?window.t('wp_back_level'):'← Seviye Değiştir')+'</button>';
     html += '<button class="pm-btn primary" id="wpBackHomeBtn">'+(window.t?window.t('wp_back_to_notebook'):'📒 Notlarım\'a Dön')+'</button></div>';
@@ -2002,8 +2119,37 @@
     const ta = document.getElementById('wpInput');
     const counter = document.getElementById('wpCounter');
     if(ta && counter){
-      ta.addEventListener('input', ()=>{ counter.textContent = ta.value.length + ' / 4000'; });
+      ta.value = wpReadDraft();
+      counter.textContent = wpCounterText(ta.value);
+      ta.addEventListener('input', ()=>{
+        counter.textContent = wpCounterText(ta.value);
+        clearTimeout(wpDraftTimer);
+        const key = wpDraftKey(), value = ta.value;
+        wpDraftTimer = setTimeout(()=>{ if(key === wpDraftKey()) wpSaveDraft(value); }, 400);
+      });
+      ta.addEventListener('keydown', e=>{ if(e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !e.isComposing){ e.preventDefault(); wpRunCheck(); } });
     }
+    wpPaintTopic();
+    document.getElementById('wpTopicBtn').onclick = () => {
+      const list = (wpX('prompts') || {})[wpLevel] || [];
+      if(!list.length) return;
+      let next = Math.floor(Math.random() * list.length);
+      if(list.length > 1 && next === wpTopicIndex) next = (next + 1) % list.length;
+      wpTopicIndex = next;
+      wpPaintTopic();
+    };
+    document.getElementById('wpClearBtn').onclick = () => {
+      if(!ta) return;
+      if(ta.value.trim().length > 40 && !window.confirm(wpX('clearConfirm'))) return;
+      clearTimeout(wpDraftTimer);
+      ta.value = '';
+      wpSaveDraft('');
+      if(counter) counter.textContent = wpCounterText('');
+      wpLastResult = null;
+      const resultBox = document.getElementById('wpResult');
+      if(resultBox) resultBox.innerHTML = '';
+      ta.focus();
+    };
   }
 
   let openRun=0;
@@ -2074,7 +2220,7 @@
         if(nextInput){
           nextInput.value = oldValue;
           const counter = document.getElementById('wpCounter');
-          if(counter) counter.textContent = oldValue.length + ' / 4000';
+          if(counter) counter.textContent = wpCounterText(oldValue);
         }
         const nextResult = document.getElementById('wpResult');
         const freshLang = wpFindLang(wpLang);

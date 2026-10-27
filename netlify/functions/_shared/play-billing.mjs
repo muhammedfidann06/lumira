@@ -47,18 +47,19 @@ export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
  }
  async function verify(ctx,sku,token){
   if(typeof sku!=='string'||!/^[a-z0-9][a-z0-9_.]{0,149}$/.test(sku)||typeof token!=='string'||token.length<10||token.length>4096)throw fault('invalid_purchase',422);
-  const product=await productFor(sku);
-  if((await ctx.db.ref('serverFeatureEntitlements/'+ctx.uid+'/'+product.amount).get()).val()===false)throw fault('purchase_revoked',403);
+  const product=await productFor(sku),entitlement=ctx.db.ref('serverFeatureEntitlements/'+ctx.uid+'/'+product.amount);
   // A token never seen before is a new purchase. Background re-verification
-  // of known tokens must not undo a badge the buyer chose to hide.
+  // of known tokens must not undo a badge the buyer chose to hide, nor one an
+  // administrator removed; a new purchase always opens the badge again.
   const fresh=!(await ctx.db.ref('serverFeaturePurchases/'+hash(token)).get()).val();
+  if(!fresh&&(await entitlement.get()).val()===false)throw fault('purchase_revoked',403);
   const observed=clock(),encoded=encodeURIComponent(token);
   if(product.lifetime){
    const path='/purchases/products/'+encodeURIComponent(sku)+'/tokens/'+encoded,data=await api.call(path);
    if(data.purchaseState!==0)throw fault('purchase_not_completed',422);
    await bind(ctx,token,sku);
    if(data.acknowledgementState===0)await api.call(path+':acknowledge',{method:'POST',body:{}});
-   await atomic(ctx.db.ref('serverFeatureEntitlements/'+ctx.uid+'/'+product.amount),old=>{if(old===false)throw fault('purchase_revoked',403);return true;});
+   await atomic(entitlement,old=>{if(old===false&&!fresh)throw fault('purchase_revoked',403);return true;});
   }else{
    const data=await api.call('/purchases/subscriptionsv2/tokens/'+encoded),value=playMembership(data,sku,token,observed,product);
    if(value.status!=='active')throw fault('purchase_not_completed',422);
@@ -75,7 +76,7 @@ export function createPlayBilling({api=createPlayApi(),clock=Date.now}={}){
   }
   // Buying a badge the buyer had hidden in My Profile shows it again; without
   // this the paid badge stayed invisible behind the earlier opt-out.
-  if(fresh){const optOut=ctx.db.ref('serverBadgeOptOut/'+ctx.uid+'/'+product.amount);if((await optOut.get()).val()===true)await optOut.set(null);}
+  if(fresh){const optOut=ctx.db.ref('serverBadgeOptOut/'+ctx.uid+'/'+product.amount);if((await optOut.get()).val()===true)await optOut.set(null);if(!product.lifetime&&(await entitlement.get()).val()===false)await entitlement.set(null);}
   return product.amount;
  }
  async function owned(ctx,id){if(!idOK(id))throw fault('invalid_input');const value=(await ctx.db.ref('serverPlayAccounts/'+ctx.uid+'/subscriptions/'+id).get()).val();if(!value?.purchaseToken)throw fault('billing_not_owned',403);if((await productFor(value.sku)).lifetime)throw fault('billing_not_owned',403);return value;}

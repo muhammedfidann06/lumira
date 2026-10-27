@@ -53,7 +53,6 @@
     return (store(KEY+'_'+uid)||[]).filter(b=>!TIERS.some(t=>t.badge===b && revoked.includes(t.amount)));
   }
   function saveBadges(list){const uid=account();if(uid)store(KEY+'_'+uid,list);}
-  function revoked(amount){return !!window.LUMIRA_FEATURES?.entitlement()?.revokedSupport?.includes(amount);}
 
   function hasBadge(b) { return myBadges().indexOf(b) > -1; }
   function hasAnyPdfBadge() { return PDF_BADGES.some(hasBadge); }
@@ -71,7 +70,9 @@
   window.grantSupportTier = function (amount) {
     var t = null;
     for (var i = 0; i < TIERS.length; i++) if (TIERS[i].amount === amount) t = TIERS[i];
-    if (!t || revoked(amount)) return false;
+    // The server has already verified the purchase; a stale "hidden" flag in
+    // the cached policy must not swallow the thank-you toast and XP.
+    if (!t) return false;
     var list = myBadges();
     if (list.indexOf(t.badge) === -1) { list.push(t.badge); saveBadges(list); }
     try { if (typeof window.PR_addXp === 'function') window.PR_addXp(t.xp, tierName(t)); } catch (e) {}
@@ -116,17 +117,10 @@
     // A sheet that never settled must not block every later tap silently.
     if(purchaseInFlight&&Date.now()-purchaseStartedAt<120000){blocked('checkout_in_progress');say(window.LUMIRA_BILLING.text(27),'good');return;}
     purchaseInFlight=false;
-    const F=window.LUMIRA_FEATURES,policy=F?.entitlement(),row=policy?.memberships?.find(item=>item?.amount===t.amount),purchaseSku=window.LUMIRA_PLAY.purchaseSku?.(t.sku)||t.sku;
-    // Only an administrative lock stops Checkout, because the server refuses
-    // to activate that purchase. A badge the buyer hid in My Profile can be
-    // bought again: the verified purchase shows it again.
-    if(revoked(t.amount)&&!(row?.removed&&!row?.revoked)){
-      blocked('badge_revoked');
-      const reopened=()=>F.api('status').catch(()=>{}).then(()=>{window.PR_refreshBadges?.();window.dispatchEvent(new Event('lumira:playsetupready'));say(N('allowed'),'good');});
-      if(options.isAdmin?.())say(N('revoked')+' '+N('adminHint'),'bad',{action:N('allow'),duration:12000,onAction:()=>F.adminBadges('allow',{uids:[purchaseUid],amount:t.amount,id:F.id()}).then(reopened).catch(error=>say(F.errorText(error),'bad'))});
-      else say(N('revoked'),'bad');
-      return;
-    }
+    const policy=window.LUMIRA_FEATURES?.entitlement(),purchaseSku=window.LUMIRA_PLAY.purchaseSku?.(t.sku)||t.sku;
+    // Nothing locks a badge any more: one removed by an administrator, or
+    // hidden by the buyer, is simply bought again and the verified purchase
+    // opens it.
     const ownedPurchase=window.LUMIRA_PLAY.ownedPurchase?.(t.sku);
     if(ownedPurchase){
       window.LUMIRA_PLAY.checkoutStep?.('restoring',purchaseSku);
@@ -204,7 +198,7 @@
       grid.className = 'sup-grid';
 
       const native=window.LUMIRA_PLAY.isNative();
-      const storeCards=[];let report=null,adminViewer=false;
+      const storeCards=[];let report=null;
       TIERS.forEach(function (t) {
         var owned = hasBadge(t.badge);
         var el = document.createElement('button');
@@ -219,7 +213,7 @@
         // badges: a disabled card swallowed the tap without any explanation.
         el.disabled=false;
         if(native){const price=document.createElement('span');price.className='sup-store-price';price.style.cssText='display:block;font-size:14px;line-height:1.6;margin:6px 0;color:#b9f4df';price.textContent=window.LUMIRA_BILLING.text(24);el.append(price);storeCards.push({t,el,price});}
-        el.onclick = function () { purchaseTier(t,{report:function(text){if(report)report(text);},isAdmin:function(){return adminViewer;}}); };
+        el.onclick = function () { purchaseTier(t,{report:function(text){if(report)report(text);}}); };
         grid.appendChild(el);
       });
       b.appendChild(grid);
@@ -230,12 +224,12 @@
         // The latest checkout step stays visible under the cards.
         report=text=>{if(grid.isConnected)status.textContent=text;};
         const account=window.firebase?.auth?.().currentUser?.uid;
-        try{const ref=window.LB_getDb?.()?.ref('admins/'+account);ref?.once('value').then(snapshot=>{if(grid.isConnected&&window.firebase.auth().currentUser?.uid===account){admin=snapshot.val()===true;adminViewer=admin;setup.hidden=!admin||!setupRelevant;}},()=>{});}catch{}
+        try{const ref=window.LB_getDb?.()?.ref('admins/'+account);ref?.once('value').then(snapshot=>{if(grid.isConnected&&window.firebase.auth().currentUser?.uid===account){admin=snapshot.val()===true;setup.hidden=!admin||!setupRelevant;}},()=>{});}catch{}
         const load=async refresh=>{retry.disabled=true;setupRelevant=false;setup.hidden=true;status.textContent=window.LUMIRA_PLAY.text(0);try{
           const items=await window.LUMIRA_PLAY.catalog({refresh});if(!grid.isConnected)return;
-          for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=(detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku)))+(revoked(row.t.amount)?' · '+window.LUMIRA_PLAY.notice('locked'):'');}
+          for(const row of storeCards){const detail=items.get(row.t.sku);row.price.textContent=detail?.price||window.LUMIRA_PLAY.errorText(items.errors?.get(row.t.sku));}
           const partial=items.size<storeCards.length;status.textContent=partial?window.LUMIRA_PLAY.text(1):'';retry.hidden=!partial;setupRelevant=partial;
-        }catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;setupRelevant=true;for(const row of storeCards){row.price.textContent='—'+(revoked(row.t.amount)?' · '+window.LUMIRA_PLAY.notice('locked'):'');}}
+        }catch(error){if(!grid.isConnected)return;status.textContent=window.LUMIRA_PLAY.errorText(error);retry.hidden=false;setupRelevant=true;for(const row of storeCards){row.price.textContent='—';}}
         finally{retry.disabled=false;setup.hidden=!admin||!setupRelevant;}};retry.onclick=()=>load(true);
         const refresh=()=>{if(grid.isConnected)load(true);};window.addEventListener('lumira:playsetupready',refresh);
         const close=panel.close;panel.close=()=>{window.removeEventListener('lumira:playsetupready',refresh);close();};load(false);

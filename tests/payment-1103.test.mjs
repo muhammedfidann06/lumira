@@ -73,8 +73,10 @@ for(const amount of amounts){
   if(paid.subscription_id)await applyPaddleEvent(f.db,newEvent('subscription.updated',f.subscription(paid.subscription_id),f.advance()),catalog);
   assert.equal(f.tier().amount,0);assert.equal((await f.call({action:'restore',amount})).http,403);
  });
- test(`revocation between checkout and payment remains authoritative for ${amount}`,async()=>{
-  const f=fixture(amount,'admin',true),checkout=await f.checkout();await f.revoke();await f.complete(checkout);assert.equal(f.tier().amount,0);
+ test(`a removal sent before payment changes nothing for a buyer who did not hold ${amount} yet`,async()=>{
+  const f=fixture(amount,'admin',true),checkout=await f.checkout(),before=structuredClone(f.get('serverBadgePolicyVersions/alice'));
+  assert.equal((await f.revoke()).changed,0);assert.deepEqual(f.get('serverBadgePolicyVersions/alice'),before);
+  await f.complete(checkout);assert.equal(f.tier().amount,amount);
  });
  test(`own removal and restore of newly paid ${amount} preserve administrative decisions`,async()=>{
   const f=fixture(amount,'both',true),checkout=await f.checkout(),paid=await f.complete(checkout);assert.equal(f.tier().amount,amount);

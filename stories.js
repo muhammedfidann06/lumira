@@ -15,7 +15,13 @@
  function stop(){speechRun++;if(root.VOICE_stop)root.VOICE_stop();else root.speechSynthesis?.cancel();if(state){state.playing=false;state.host.querySelectorAll('.is-speaking').forEach(e=>e.classList.remove('is-speaking'));const play=state.host.querySelector('[data-story-play]');if(play){play.textContent='▶ '+t('listen');play.setAttribute('aria-pressed','false');}}}
  function unmount(){stop();observer?.disconnect();state?.lookupController?.abort();state?.controller.abort();state?.popup?.remove();state?.shell?.classList.remove('is-story-open');document.body.classList.remove('story-focus');state=null;}
  const canRead=()=>root.VOICE_canRead?root.VOICE_canRead():!!(root.speechSynthesis&&root.SpeechSynthesisUtterance);
- function speak(text,options,end,error,cancel){const profile={natural:[.92,1],warm:[.86,.92],calm:[.76,.96],bright:[1.02,1.1]}[options.voice]||[.92,1];if(root.VOICE_read){root.VOICE_read(text,{language:options.language,rate:profile[0],pitch:profile[1],onEnd:end,onError:error,onCancel:cancel});return;}error?.();}
+ // Text size and reading speed are per-device preferences; without storage the
+ // defaults simply apply.
+ const SCALES=[.9,1,1.15,1.3],RATES=[.8,1,1.2];
+ const pref=(key,fallback,count)=>{try{const raw=localStorage.getItem(key),value=Number(raw);return raw!==null&&Number.isInteger(value)&&value>=0&&value<count?value:fallback;}catch{return fallback;}};
+ const savePref=(key,value)=>{try{localStorage.setItem(key,String(value));}catch{}};
+ let scaleIndex=pref('lumira_story_scale_v1',1,SCALES.length),rateIndex=pref('lumira_story_rate_v1',1,RATES.length);
+ function speak(text,options,end,error,cancel){const profile={natural:[.92,1],warm:[.86,.92],calm:[.76,.96],bright:[1.02,1.1]}[options.voice]||[.92,1];if(root.VOICE_read){root.VOICE_read(text,{language:options.language,rate:profile[0]*RATES[rateIndex],pitch:profile[1],onEnd:end,onError:error,onCancel:cancel});return;}error?.();}
  function alertAt(s,text){const status=s.host.querySelector('[data-story-status]');if(status){status.hidden=false;status.textContent=text;}}
  function listen(s,index=0,one=false){if(!valid(s))return;stop();s.playing=true;const run=speechRun,button=s.host.querySelector('[data-story-play]');if(button){button.textContent='■ '+t('stop');button.setAttribute('aria-pressed','true');}
   const next=i=>{if(!valid(s)||run!==speechRun)return;if(i>=s.story.sentences.length){stop();return;}s.host.querySelectorAll('.is-speaking').forEach(e=>e.classList.remove('is-speaking'));const row=s.host.querySelector('[data-sentence="'+i+'"]');row?.classList.add('is-speaking');if(i>index)row?.scrollIntoView({block:'nearest'});speak(s.story.sentences[i].text,s.story.options,()=>{if(run!==speechRun)return;if(one)stop();else next(i+1);},()=>{if(run===speechRun){stop();alertAt(s,t('noVoice'));}},()=>{if(run===speechRun)stop();});};next(index);
@@ -52,7 +58,7 @@
  function meaningCache(){if(meaningStore)return meaningStore;meaningStore=new Map();try{const rows=JSON.parse(localStorage.getItem(MEANINGS)||'[]');if(Array.isArray(rows))for(const row of rows.slice(-300))if(Array.isArray(row)&&typeof row[0]==='string'&&typeof row[1]==='string'&&row[1].length<=140)meaningStore.set(row[0],{meaning:row[1],contextual:true});}catch{}return meaningStore;}
  function rememberMeaning(key,value){if(!value.contextual||root.LUMIRA_CLEARING_DATA)return;const store=meaningCache();store.delete(key);store.set(key,value);while(store.size>300)store.delete(store.keys().next().value);try{localStorage.setItem(MEANINGS,JSON.stringify([...store].map(([id,row])=>[id,row.meaning])));}catch{}}
  let textLoader;
- function textEngine(){if(root.LUMIRA_TEXT)return Promise.resolve(root.LUMIRA_TEXT);if(textLoader)return textLoader;textLoader=new Promise((resolve,reject)=>{const script=n('script');script.src=new URL('live-text.js?v=1.11.13',document.baseURI).href;script.onload=()=>root.LUMIRA_TEXT?resolve(root.LUMIRA_TEXT):reject(Error());script.onerror=()=>{textLoader=null;reject(Error());};document.head.append(script);});return textLoader;}
+ function textEngine(){if(root.LUMIRA_TEXT)return Promise.resolve(root.LUMIRA_TEXT);if(textLoader)return textLoader;textLoader=new Promise((resolve,reject)=>{const script=n('script');script.src=new URL('live-text.js?v=1.11.14',document.baseURI).href;script.onload=()=>root.LUMIRA_TEXT?resolve(root.LUMIRA_TEXT):reject(Error());script.onerror=()=>{textLoader=null;reject(Error());};document.head.append(script);});return textLoader;}
  function wordDefinition(s,word,index){
   const language=s.story.options.language,native=s.story.options.native,key=fold(word,language),bare=value=>String(value).replace(language==='de'?/^(?:der|die|das)\s+/iu:language==='fr'?/^(?:le|la|les)\s+/iu:language==='es'?/^(?:el|la|los|las)\s+/iu:/$^/u,'');
   const clean=entry=>entry&&entry.meaning&&lex(bare(entry.w),language).length===1&&lex(entry.meaning,native).length<=12&&entry.meaning.length<=140&&!(lex(s.story.sentences[index].translation,native).length>2&&fold(entry.meaning,native)===fold(s.story.sentences[index].translation,native));
@@ -99,12 +105,27 @@
 
  async function loadHistory(s){try{const result=await api('list',{}, {signal:s.controller.signal});if(valid(s))s.history=result.stories||[];}catch(e){if(valid(s))s.historyError=message(e);}}
  function history(s,page){const block=n('section','story-history');block.append(n('h2','',t('history')));const grid=n('div','story-history-grid');for(const story of s.history.filter(row=>row.options.native===root.NATIVE_LANG)){const b=btn('','',async()=>{b.disabled=true;try{const result=await api('get',{id:story.id},{signal:s.controller.signal});if(valid(s)){s.story=result.story;reader(s);}}catch(e){if(valid(s))alertAt(s,message(e));}finally{b.disabled=false;}});b.append(n('span','',icons[genres.indexOf(story.options.genre)]),n('strong','',story.title||t('myStory')),n('small','',t('languages')[story.options.language]+' · '+t('words',{n:story.wordCount})));grid.append(b);}if(grid.children.length)block.append(grid);else block.append(n('p','story-help',s.historyError||t('empty')));page.append(block);}
+ // Correct answers earn XP once per story and account. Without storage there is
+ // no way to tell a retake apart, so nothing is awarded.
+ function quizReward(s,score){
+  if(score<1||typeof root.PR_addXp!=='function')return 0;const key='lumira_story_quiz_xp_v1_'+s.uid;
+  try{const done=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(done)||done.includes(s.story.id))return 0;localStorage.setItem(key,JSON.stringify([...done,s.story.id].slice(-300)));}catch{return 0;}
+  return root.PR_addXp(score*5,t('quizTitle'))>0?score*5:0;
+ }
+ // A learned word's chip scrolls to its first use in the story and opens it.
+ function locate(s,lemma){
+  const rows=s.wordEntries||[];
+  for(let i=0;i<rows.length;i++)for(let p=0;p<rows[i].length;p++)if(rows[i][p]?.lemma===lemma){
+   const word=s.host.querySelectorAll('[data-sentence="'+i+'"] .story-word')[p];if(!word)return;
+   word.scrollIntoView({block:'center'});word.classList.add('is-flash');setTimeout(()=>word.classList.remove('is-flash'),1600);word.click();return;
+  }
+ }
  function comprehension(s,page){
   const questions=s.story.questions;if(!Array.isArray(questions)||questions.length!==3){page.append(n('p','story-help',t('legacy')));return;}
   if(s.quiz?.id!==s.story.id)s.quiz={id:s.story.id,index:0,answers:[]};const quiz=s.quiz,box=n('section','story-quiz');box.setAttribute('aria-label',t('quizTitle'));page.append(box);
   const paint=()=>{
    box.replaceChildren(n('span','story-eyebrow',t('quizTitle')));
-   if(quiz.index===3){const score=quiz.answers.filter((value,i)=>value===questions[i].answer).length;box.append(n('h2','',t('result',{n:score})),n('p','story-help',t('quizIntro')),btn(t('tryQuiz'),'story-primary',()=>{quiz.index=0;quiz.answers=[];paint();}));return;}
+   if(quiz.index===3){const score=quiz.answers.filter((value,i)=>value===questions[i].answer).length;if(quiz.xp===undefined)quiz.xp=quizReward(s,score);box.append(n('h2','',t('result',{n:score})));if(quiz.xp>0)box.append(n('p','story-quiz-xp',t('xpEarned',{n:quiz.xp})));box.append(n('p','story-help',t('quizIntro')),btn(t('tryQuiz'),'story-primary',()=>{quiz.index=0;quiz.answers=[];quiz.xp=0;paint();}));return;}
    const index=quiz.index,q=questions[index],answered=quiz.answers[index]!==undefined;
    box.append(n('p','story-quiz-progress',t('questionCount',{n:index+1})),n('h2','',q.question));
    const quote=n('blockquote','story-quiz-quote',q.quote||s.story.sentences[q.evidence].text);quote.lang=s.story.options.language;quote.dir=quote.lang==='ar'?'rtl':'ltr';
@@ -121,8 +142,14 @@
   info.append(n('span','story-eyebrow',t('languages')[o.language]),title,n('p','story-meta',t('genres')[genres.indexOf(o.genre)]+' · '+t('levels')[o.level]+' · '+t('words',{n:story.wordCount})),n('span',story.method?'story-method':'',story.method?t(story.method==='reviewed'?'prepared':'ai'):''));head.append(art(o,story.coverId||story.themeId),info);page.append(head);
   const status=n('p','story-alert');status.dataset.storyStatus='';status.hidden=true;status.setAttribute('role','status');page.append(status);
   const toolbar=n('div','story-toolbar'),play=btn('▶ '+t('listen'),'story-primary',()=>s.playing?stop():listen(s));play.dataset.storyPlay='';play.setAttribute('aria-pressed','false');play.disabled=!canRead();
-  const all=btn(t('allTranslation'),'story-secondary',()=>{const show=all.getAttribute('aria-expanded')!=='true';all.setAttribute('aria-expanded',String(show));all.textContent=t(show?'hideAllTranslation':'allTranslation');page.querySelectorAll('.story-translation').forEach(row=>row.hidden=!show);page.querySelectorAll('[data-story-translation]').forEach(button=>{button.setAttribute('aria-expanded',String(show));button.textContent=t(show?'hide':'translate')+' · '+t('languages')[o.native];});});all.setAttribute('aria-expanded','false');toolbar.append(play,all);page.append(toolbar,n('p','story-help',t('legend')));if(play.disabled)page.append(n('p','story-help',t('noVoice')));
-  const focus=n('div','story-focus-words');focus.append(n('span','story-help',t('learnedCount',{n:story.focus?.length||story.pool?.length||0})));for(const entry of story.focus||[])focus.append(n('span','story-focus-chip',entry.word));page.append(focus);
+  const all=btn(t('allTranslation'),'story-secondary',()=>{const show=all.getAttribute('aria-expanded')!=='true';all.setAttribute('aria-expanded',String(show));all.textContent=t(show?'hideAllTranslation':'allTranslation');page.querySelectorAll('.story-translation').forEach(row=>row.hidden=!show);page.querySelectorAll('[data-story-translation]').forEach(button=>{button.setAttribute('aria-expanded',String(show));button.textContent=t(show?'hide':'translate')+' · '+t('languages')[o.native];});});all.setAttribute('aria-expanded','false');toolbar.append(play,all);page.append(toolbar);
+  const tools=n('div','story-reader-tools'),size=n('div','story-tool-group');size.setAttribute('role','group');size.setAttribute('aria-label',t('textSize'));
+  const smaller=btn('A−','story-tool',()=>scale(scaleIndex-1)),larger=btn('A+','story-tool',()=>scale(scaleIndex+1));smaller.setAttribute('aria-label',t('smaller'));larger.setAttribute('aria-label',t('larger'));
+  const scale=index=>{scaleIndex=Math.max(0,Math.min(SCALES.length-1,index));savePref('lumira_story_scale_v1',scaleIndex);page.style.setProperty('--story-scale',String(SCALES[scaleIndex]));smaller.disabled=scaleIndex===0;larger.disabled=scaleIndex===SCALES.length-1;};
+  size.append(n('span','story-tool-label',t('textSize')),smaller,larger);tools.append(size);scale(scaleIndex);
+  if(!play.disabled){const speed=n('div','story-tool-group');speed.setAttribute('role','group');speed.setAttribute('aria-label',t('speed'));speed.append(n('span','story-tool-label',t('speed')));const rates=RATES.map((rate,i)=>{const b=btn(rate.toLocaleString(page.lang)+'×','story-tool',()=>{rateIndex=i;savePref('lumira_story_rate_v1',i);rates.forEach((e,j)=>e.setAttribute('aria-pressed',String(j===i)));});b.setAttribute('aria-pressed',String(i===rateIndex));return b;});speed.append(...rates);tools.append(speed);}
+  page.append(tools,n('p','story-help',t('legend')));if(play.disabled)page.append(n('p','story-help',t('noVoice')));
+  const focus=n('div','story-focus-words');focus.append(n('span','story-help',t('learnedCount',{n:story.focus?.length||story.pool?.length||0})));for(const entry of story.focus||[])focus.append(btn(entry.word,'story-focus-chip',()=>locate(s,entry.word)));if(story.focus?.length)focus.append(n('span','story-help story-focus-hint',t('focusHint')));page.append(focus);
   const content=n('article','story-reader');content.lang=o.language;content.dir=o.language==='ar'?'rtl':'ltr';
   s.glosses=story.sentences.map(row=>root.LUMIRA_GLOSS?.breakdown(row.text,o.language,o.native)||[]);
   indexWords(s);
