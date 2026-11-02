@@ -1,0 +1,529 @@
+{
+ "id": "A2-02",
+ "level": "A2",
+ "title": "Modelltest 2",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen in einer Zeitung diesen Text. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Mit dem Fahrrad zur Schule",
+     "body": "Die Grundschule am Lindenberg macht seit Mai bei der Aktion „Fit zur Schule“ mit. Die Idee: Die Kinder sollen nicht mit dem Auto, sondern zu Fuß oder mit dem Fahrrad zur Schule kommen. Jeden Tag, an dem ein Kind ohne Auto kommt, bekommt die Klasse einen Punkt.\n\n„Am Anfang waren viele Eltern skeptisch“, sagt Schulleiter Peter Hahn. „Sie hatten Angst wegen des Verkehrs.“ Deshalb gibt es jetzt sogenannte „Laufbusse“: Eine Mutter oder ein Vater geht morgens mit einer Gruppe von Kindern zur Schule und holt die Kinder an festen Treffpunkten ab.\n\nNach drei Monaten sind die Ergebnisse sehr gut: Vor der Schule gibt es morgens viel weniger Autos, und die Lehrer sagen, dass die Kinder im Unterricht wacher sind. Die Klasse mit den meisten Punkten bekommt am Ende des Schuljahres einen Ausflug in den Kletterpark."
+    }
+   ],
+   "items": [
+    {
+     "q": "Bei der Aktion sollen die Kinder …",
+     "options": [
+      "mit dem Bus fahren.",
+      "mehr Sport machen.",
+      "ohne Auto zur Schule kommen."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Viele Eltern waren am Anfang …",
+     "options": [
+      "begeistert.",
+      "unsicher.",
+      "nicht informiert."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Ein „Laufbus“ ist …",
+     "options": [
+      "ein kleiner Schulbus.",
+      "eine Gruppe von Kindern mit einem Erwachsenen.",
+      "ein Bus nur für Lehrer."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Die Lehrer sagen, dass die Kinder …",
+     "options": [
+      "im Unterricht aufmerksamer sind.",
+      "öfter krank sind.",
+      "später kommen."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Die beste Klasse …",
+     "options": [
+      "bekommt neue Fahrräder.",
+      "bekommt keine Hausaufgaben.",
+      "macht einen Ausflug."
+     ],
+     "a": 2
+    }
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie sind im Bürgerbüro Ihrer Stadt. Lesen Sie die Informationstafel und die Aufgaben 6–10. Wohin gehen Sie? Wählen Sie a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Bürgerzentrum – Information",
+     "body": "3. Stock: Ausländerbehörde (Zimmer 301–315) · Standesamt (Hochzeiten, Geburten)\n2. Stock: Kfz-Zulassung (Autos anmelden) · Führerscheinstelle · Fundbüro\n1. Stock: Einwohnermeldeamt (Wohnung anmelden, Ausweis, Reisepass) · Wohngeld\nErdgeschoss: Information · Kasse · Stadtbibliothek · Café\nUntergeschoss: Parkplätze · Fahrradgarage"
+    }
+   ],
+   "items": [
+    {
+     "q": "Sie sind in eine neue Wohnung gezogen und müssen sich anmelden.",
+     "options": [
+      "1. Stock",
+      "2. Stock",
+      "anderer Stock"
+     ],
+     "a": 0
+    },
+    {
+     "q": "Sie möchten heiraten und brauchen einen Termin.",
+     "options": [
+      "3. Stock",
+      "2. Stock",
+      "Erdgeschoss"
+     ],
+     "a": 0
+    },
+    {
+     "q": "Sie möchten Ihr neues Auto anmelden.",
+     "options": [
+      "1. Stock",
+      "anderer Stock",
+      "3. Stock"
+     ],
+     "a": 1
+    },
+    {
+     "q": "Sie müssen eine Gebühr bezahlen.",
+     "options": [
+      "1. Stock",
+      "2. Stock",
+      "Erdgeschoss"
+     ],
+     "a": 2
+    },
+    {
+     "q": "Sie brauchen einen neuen Reisepass.",
+     "options": [
+      "3. Stock",
+      "1. Stock",
+      "Erdgeschoss"
+     ],
+     "a": 1
+    }
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie lesen eine E-Mail. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "E-Mail",
+     "body": "Hallo Anja,\n\nwie geht es dir und deiner Familie? Ich habe tolle Neuigkeiten: Ich habe die Stelle als Erzieherin im Kindergarten „Sonnenschein“ bekommen! Ab dem 1. September arbeite ich dort. Ich bin so froh, denn ich habe lange gesucht.\n\nDer Kindergarten ist leider ziemlich weit weg von meiner Wohnung. Mit dem Bus brauche ich fast eine Stunde. Deshalb überlege ich, ob ich umziehe. In der Nähe vom Kindergarten gibt es eine schöne Zwei-Zimmer-Wohnung, die nur ein bisschen teurer ist als meine jetzige.\n\nAm Samstag möchte ich meine neue Stelle feiern. Ich mache ein kleines Fest in meinem Garten, so ab 16 Uhr. Kommst du mit Tom und den Kindern? Du musst nichts mitbringen, ich koche für alle. Nur eine Bitte: Kannst du mir deine Biergarnitur leihen? Ich habe nicht genug Stühle.\n\nBis bald!\nMiriam"
+    }
+   ],
+   "items": [
+    {
+     "q": "Miriam …",
+     "options": [
+      "hat eine neue Arbeit gefunden.",
+      "hat ihre Arbeit verloren.",
+      "macht eine Ausbildung."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Zum Kindergarten fährt Miriam …",
+     "options": [
+      "fast eine Stunde mit dem Bus.",
+      "mit dem Fahrrad.",
+      "nur zehn Minuten."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Die neue Wohnung …",
+     "options": [
+      "ist viel teurer.",
+      "ist kleiner.",
+      "kostet etwas mehr."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Das Fest ist …",
+     "options": [
+      "am Samstagabend im Restaurant.",
+      "am Samstagnachmittag im Garten.",
+      "am Sonntag im Kindergarten."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Anja soll …",
+     "options": [
+      "Stühle und Tische leihen.",
+      "Essen mitbringen.",
+      "beim Kochen helfen."
+     ],
+     "a": 0
+    }
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sechs Personen suchen im Internet nach Angeboten. Lesen Sie die Aufgaben 16–20 und die Anzeigen a–f. Welche Anzeige passt zu welcher Person? Eine Anzeige brauchen Sie nicht.",
+   "type": "match",
+   "choices": [
+    {
+     "key": "a",
+     "text": "Möbelhaus Wohnfreude: Großer Räumungsverkauf – alle Sofas und Betten bis 50 % billiger. Lieferung gegen Aufpreis."
+    },
+    {
+     "key": "b",
+     "text": "Umzugsfirma Schnell & Sicher: Wir packen, tragen und fahren – auch kurzfristig. Kostenloses Angebot unter 0800 12 34 56."
+    },
+    {
+     "key": "c",
+     "text": "Repair-Café im Stadtteilzentrum: Jeden Samstag reparieren Freiwillige kostenlos Lampen, Toaster und Fahrräder."
+    },
+    {
+     "key": "d",
+     "text": "Sprachtandem gesucht: Ich (Spanierin, 28) suche eine Deutsche oder einen Deutschen zum gemeinsamen Üben. Treffen im Café."
+    },
+    {
+     "key": "e",
+     "text": "Gartenhilfe Grün: Wir mähen Ihren Rasen und schneiden Ihre Hecke – zuverlässig und günstig."
+    },
+    {
+     "key": "f",
+     "text": "Yoga im Park: Sanftes Yoga für Anfänger, jeden Mittwoch um 18 Uhr, bei Regen in der Turnhalle. 5 € pro Stunde."
+    }
+   ],
+   "items": [
+    {
+     "q": "Herr Berg ist 80 Jahre alt und kann sich nicht mehr selbst um seinen Garten kümmern.",
+     "a": "e"
+    },
+    {
+     "q": "Ines möchte mit wenig Geld etwas für ihre Gesundheit tun.",
+     "a": "f"
+    },
+    {
+     "q": "Familie Nowak zieht nächste Woche in eine andere Stadt.",
+     "a": "b"
+    },
+    {
+     "q": "Paul möchte seine Spanischkenntnisse verbessern.",
+     "a": "d"
+    },
+    {
+     "q": "Sevgis Toaster funktioniert nicht mehr. Sie möchte keinen neuen kaufen.",
+     "a": "c"
+    }
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {
+     "audio": "Hallo Felix, hier ist Tante Rosi. Wir kommen nicht am Freitag, sondern schon am Donnerstagabend. Kannst du uns um neunzehn Uhr am Bahnhof abholen? Danke!",
+     "q": "Wann kommt Tante Rosi?",
+     "options": [
+      "Am Freitag um 19 Uhr",
+      "Am Donnerstag um 9 Uhr",
+      "Am Donnerstag um 19 Uhr"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Hier ist Radio Stadtwelle mit einem Tipp für das Wochenende: Im Stadtpark findet am Sonntag das große Drachenfest statt. Bringen Sie Ihren Drachen mit! Für Kinder gibt es einen Bastelstand.",
+     "q": "Was können Kinder beim Fest machen?",
+     "options": [
+      "Basteln",
+      "Malen",
+      "Reiten"
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Guten Tag, hier ist die Firma Elektro-Huber. Der Techniker für Ihre Waschmaschine kommt nicht wie geplant am Dienstag, sondern am Mittwochvormittag. Wir bitten um Ihr Verständnis.",
+     "q": "Was soll repariert werden?",
+     "options": [
+      "Der Kühlschrank",
+      "Der Herd",
+      "Die Waschmaschine"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Liebe Kunden, heute ist unser Jubiläumstag! Jeder Kunde bekommt an der Kasse ein kleines Geschenk. Außerdem gibt es im Café im ersten Stock Kaffee und Kuchen gratis.",
+     "q": "Was gibt es heute im Café?",
+     "options": [
+      "Frühstück zum halben Preis",
+      "Kaffee und Kuchen umsonst",
+      "Eine Tasse als Geschenk"
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Hallo Sara, hier ist Katja. Ich habe deine Nachricht bekommen. Leider kann ich am Sonntag nicht mit zum Wandern. Meine Schwester hat Geburtstag. Vielleicht nächste Woche?",
+     "q": "Warum kann Katja nicht wandern gehen?",
+     "options": [
+      "Sie ist krank.",
+      "Ihre Schwester hat Geburtstag.",
+      "Sie muss arbeiten."
+     ],
+     "a": 1
+    }
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Gespräch. Sie hören den Text einmal. Wer bringt was zum Picknick mit? Wählen Sie für die Aufgaben 6–10 einen passenden Buchstaben a–h.",
+   "type": "match",
+   "plays": 1,
+   "audio": "Nina: So, am Samstag ist unser Picknick am See. Wir müssen noch klären, wer was mitbringt. Ben, was bringst du mit?\nBen: Ich kann Grillwürstchen mitbringen. Ich kaufe sie beim Metzger.\nNina: Super. Und Lara?\nLara: Ich mache einen großen Nudelsalat. Den macht meine Oma immer so lecker, ich habe ihr Rezept.\nNina: Lecker! Ich bringe dann Getränke mit, Wasser und Saft. Was ist mit Ahmet?\nBen: Ahmet hat gesagt, er bringt seine Gitarre mit. Dann können wir singen.\nNina: Und Essen bringt er nichts mit?\nBen: Doch, Obst. Er hat einen Garten mit Kirschen.\nNina: Und Sophie? Die backt doch so gern.\nLara: Ja, Sophie bringt einen Schokoladenkuchen mit. Und Teller und Becher habe ich auch noch zu Hause, die bringe ich mit.\nNina: Perfekt, dann haben wir alles.",
+   "choices": [
+    {
+     "key": "a",
+     "text": "Kuchen"
+    },
+    {
+     "key": "b",
+     "text": "Nudelsalat"
+    },
+    {
+     "key": "c",
+     "text": "Käse"
+    },
+    {
+     "key": "d",
+     "text": "Brot"
+    },
+    {
+     "key": "e",
+     "text": "Kirschen"
+    },
+    {
+     "key": "f",
+     "text": "Getränke"
+    },
+    {
+     "key": "g",
+     "text": "Würstchen"
+    },
+    {
+     "key": "h",
+     "text": "eine Decke"
+    }
+   ],
+   "items": [
+    {
+     "q": "Ben",
+     "a": "g"
+    },
+    {
+     "q": "Lara",
+     "a": "b"
+    },
+    {
+     "q": "Nina",
+     "a": "f"
+    },
+    {
+     "q": "Ahmet",
+     "a": "e"
+    },
+    {
+     "q": "Sophie",
+     "a": "a"
+    }
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "plays": 1,
+   "items": [
+    {
+     "audio": "Mann: Ich hätte gern eine Monatskarte für den Bus.\nFrau: Für Erwachsene kostet sie neunundfünfzig Euro. Sind Sie Student?\nMann: Ja, hier ist mein Ausweis.\nFrau: Dann kostet sie nur neununddreißig Euro.",
+     "q": "Wie viel kostet die Monatskarte für den Mann?",
+     "options": [
+      "59 €",
+      "49 €",
+      "39 €"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Frau: Was ist denn mit deinem Arm passiert?\nMann: Ich bin beim Skifahren gestürzt. Jetzt muss ich sechs Wochen einen Gips tragen.\nFrau: Oh nein, du Armer!",
+     "q": "Was ist dem Mann passiert?",
+     "options": [
+      "Er ist beim Skifahren gestürzt.",
+      "Er hatte einen Autounfall.",
+      "Er ist vom Fahrrad gefallen."
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Mann: Wollen wir heute Abend kochen oder essen gehen?\nFrau: Lass uns kochen. Der Kühlschrank ist voll, und das Restaurant ist so teuer.\nMann: Okay, dann mache ich Gemüsesuppe.",
+     "q": "Was machen die beiden heute Abend?",
+     "options": [
+      "Sie kochen zu Hause.",
+      "Sie gehen ins Restaurant.",
+      "Sie bestellen Pizza."
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Frau: Fährst du in den Ferien wieder nach Italien?\nMann: Nein, dieses Jahr bleiben wir in Deutschland. Wir fahren an die Nordsee, nach Sylt.\nFrau: Oh, da war ich auch schon mal. Sehr schön!",
+     "q": "Wohin fährt der Mann in den Ferien?",
+     "options": [
+      "Nach Italien",
+      "An die Nordsee",
+      "An die Ostsee"
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Mann: Entschuldigung, ist das hier der Zug nach Dortmund?\nFrau: Nein, der fährt nach Bremen. Der Zug nach Dortmund steht auf Gleis acht.\nMann: Vielen Dank!",
+     "q": "Wohin fährt der Zug, in den der Mann einsteigen wollte?",
+     "options": [
+      "Nach Dortmund",
+      "Nach Hamburg",
+      "Nach Bremen"
+     ],
+     "a": 2
+    }
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie für die Aufgaben 16–20: Ja oder Nein?",
+   "type": "yn",
+   "plays": 2,
+   "audio": "Moderator: Bei uns im Studio ist heute Frau Lindner. Frau Lindner, Sie haben vor einem Jahr einen Unverpackt-Laden eröffnet. Was ist das genau?\nFrau Lindner: In meinem Laden gibt es Lebensmittel ohne Plastikverpackung. Die Kunden bringen ihre eigenen Gläser und Dosen mit und füllen Nudeln, Reis oder Müsli selbst ab.\nModerator: Wie sind Sie auf diese Idee gekommen?\nFrau Lindner: Ich war mit meiner Familie im Urlaub am Meer. Am Strand lag so viel Plastik! Da habe ich gedacht: Ich muss etwas tun.\nModerator: Und wie läuft das Geschäft?\nFrau Lindner: Am Anfang war es schwer. Viele Leute kannten das Konzept nicht. Aber jetzt habe ich viele Stammkunden, auch ältere Menschen. Die sagen oft: „So haben wir früher auch eingekauft.“\nModerator: Sind Ihre Produkte teurer als im Supermarkt?\nFrau Lindner: Manche ja, manche nein. Aber man kauft nur so viel, wie man braucht. Man wirft also weniger weg.\nModerator: Haben Sie Pläne für die Zukunft?\nFrau Lindner: Ja, im Herbst möchte ich einen zweiten Laden in der Nachbarstadt eröffnen.",
+   "items": [
+    {
+     "q": "In Frau Lindners Laden gibt es Lebensmittel ohne Plastik.",
+     "a": true
+    },
+    {
+     "q": "Die Kunden bekommen im Laden kostenlose Gläser.",
+     "a": false
+    },
+    {
+     "q": "Frau Lindner hatte die Idee im Urlaub.",
+     "a": true
+    },
+    {
+     "q": "Ältere Menschen kaufen nicht in ihrem Laden ein.",
+     "a": false
+    },
+    {
+     "q": "Frau Lindner möchte einen weiteren Laden eröffnen.",
+     "a": true
+    }
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1",
+   "task": "Ihre Freundin Eva hat am Samstag eine Feier. Sie haben eine Frage. Schreiben Sie Eva eine SMS.",
+   "prompt": "Schreiben Sie circa 20–30 Wörter zu allen drei Punkten.",
+   "points": [
+    "Danken Sie für die Einladung.",
+    "Fragen Sie, ob Sie Ihren Bruder mitbringen dürfen.",
+    "Fragen Sie, was Sie mitbringen sollen."
+   ],
+   "words": 25,
+   "sample": "Liebe Eva, danke für die Einladung! Ich komme gern. Mein Bruder ist am Wochenende bei mir. Darf ich ihn mitbringen? Und soll ich etwas zum Essen mitbringen? LG Aylin"
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie haben einen Termin bei Ihrem Arzt, Dr. Fischer, aber Sie können nicht kommen. Schreiben Sie eine E-Mail an die Praxis.",
+   "prompt": "Schreiben Sie circa 30–40 Wörter zu allen drei Punkten. Vergessen Sie nicht Anrede und Gruß.",
+   "points": [
+    "Sagen Sie, warum Sie schreiben.",
+    "Erklären Sie, warum Sie nicht kommen können.",
+    "Bitten Sie um einen neuen Termin."
+   ],
+   "words": 35,
+   "sample": "Sehr geehrte Damen und Herren,\n\nich habe am Montag um 9 Uhr einen Termin bei Dr. Fischer. Leider kann ich nicht kommen, weil ich eine wichtige Besprechung bei der Arbeit habe. Können Sie mir bitte einen neuen Termin am Nachmittag geben?\n\nMit freundlichen Grüßen\nGoran Petrović"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Fragen zur Person",
+   "task": "Stellen Sie Ihrer Partnerin oder Ihrem Partner Fragen zu den Wörtern auf den Karten und beantworten Sie ihre oder seine Fragen.",
+   "cards": [
+    "Wohnung?",
+    "Arbeit / Schule?",
+    "Freizeit?",
+    "Lieblingsjahreszeit?",
+    "Kinder?",
+    "Deutsch lernen – warum?",
+    "Sport?",
+    "Morgens?"
+   ],
+   "phrases": [
+    "Wie wohnst du?",
+    "Was machst du in deiner Freizeit?",
+    "Welche Jahreszeit magst du am liebsten?",
+    "Warum lernst du Deutsch?"
+   ],
+   "sample": "Wie wohnst du? – Ich wohne in einer kleinen Wohnung im Zentrum.\nWelche Jahreszeit magst du am liebsten? – Ich mag den Frühling, weil alles grün wird.\nWarum lernst du Deutsch? – Ich möchte in Deutschland studieren."
+  },
+  {
+   "title": "Teil 2 – Über sich sprechen",
+   "task": "Erzählen Sie etwas über Ihr Leben. Thema: „Wie feiern Sie Ihren Geburtstag?“ Die Fragen auf der Karte helfen Ihnen.",
+   "cards": [
+    "Wo?",
+    "Mit wem?",
+    "Essen?",
+    "Geschenke?"
+   ],
+   "phrases": [
+    "Meinen Geburtstag feiere ich …",
+    "Meistens lade ich … ein.",
+    "Es gibt immer …",
+    "Am schönsten finde ich …"
+   ],
+   "sample": "Meinen Geburtstag feiere ich meistens zu Hause mit meiner Familie und ein paar Freunden. Meine Mutter backt immer einen großen Kuchen. Wir essen zusammen und hören Musik. Geschenke bekomme ich nicht so viele, aber das ist mir egal. Am schönsten finde ich, wenn alle zusammen sind."
+  },
+  {
+   "title": "Teil 3 – Gemeinsam etwas planen",
+   "task": "Sie möchten mit Ihrer Partnerin oder Ihrem Partner am Sonntag zusammen für eine Prüfung lernen. Finden Sie einen Termin. Hier ist Ihr Terminkalender.",
+   "cards": [
+    "9–11 Uhr: Joggen mit Ana",
+    "11–13 Uhr: frei",
+    "13–15 Uhr: Mittagessen bei Oma",
+    "15–17 Uhr: frei",
+    "ab 19 Uhr: Kino"
+   ],
+   "phrases": [
+    "Wann hast du am Sonntag Zeit?",
+    "Um … Uhr geht es bei mir nicht, weil …",
+    "Passt dir … Uhr?",
+    "Wo wollen wir lernen?",
+    "Einverstanden!"
+   ],
+   "sample": "A: Wann hast du am Sonntag Zeit zum Lernen?\nB: Am Vormittag gehe ich joggen. Passt dir elf Uhr?\nA: Um elf geht es bei mir nicht, da bin ich noch beim Frühstück mit meiner Familie. Wie wäre es um drei?\nB: Um drei ist gut. Wo wollen wir lernen?\nA: In der Bibliothek? – B: Einverstanden!"
+  }
+ ]
+}

@@ -1,0 +1,67 @@
+{
+ "id":"A1-02","level":"A1","title":"Modelltest 2",
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören sechs kurze Gespräche. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–6 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Mann: Guten Abend, ich habe ein Zimmer reserviert. Mein Name ist Krüger.\nFrau: Herzlich willkommen, Herr Krüger. Sie haben Zimmer 214 im zweiten Stock. Das Frühstück gibt es von sieben bis zehn Uhr.","q":"In welchem Stock ist das Zimmer?","options":["Im ersten Stock","Im zweiten Stock","Im vierten Stock"],"a":1},
+   {"audio":"Frau: Ich möchte bitte zwei Fahrkarten nach München.\nMann: Hin und zurück?\nFrau: Nein, nur hin. Was kostet das?\nMann: Zusammen achtundfünfzig Euro.","q":"Was kosten die Fahrkarten?","options":["28 €","48 €","58 €"],"a":2},
+   {"audio":"Mann: Wie ist das Wetter morgen?\nFrau: Im Radio sagen sie, es regnet den ganzen Tag. Nimm lieber einen Regenschirm mit.","q":"Wie ist das Wetter morgen?","options":["Es regnet.","Es schneit.","Die Sonne scheint."],"a":0},
+   {"audio":"Frau: Was machst du am Sonntag?\nMann: Ich besuche meine Großeltern. Sie wohnen auf dem Land. Wir essen dort zusammen zu Mittag.","q":"Wen besucht der Mann am Sonntag?","options":["Seine Eltern","Seine Großeltern","Seinen Bruder"],"a":1},
+   {"audio":"Mann: Entschuldigung, wo finde ich die Milch?\nFrau: Die Milch steht ganz hinten, neben dem Käse. Gehen Sie hier rechts und dann bis zum Ende.","q":"Wo ist die Milch?","options":["Neben dem Brot","Neben dem Obst","Neben dem Käse"],"a":2},
+   {"audio":"Frau: Wann fängt dein Kurs an?\nMann: Der Kurs fängt am zehnten März an. Er ist immer montags und mittwochs.","q":"Wann beginnt der Kurs?","options":["Am 10. März","Am 3. Oktober","Am 13. März"],"a":0}
+  ]},
+  {"title":"Teil 2","task":"Sie hören vier Durchsagen. Sie hören jeden Text einmal. Sind die Aussagen 7–10 richtig oder falsch?","type":"rf","plays":1,"items":[
+   {"audio":"Liebe Fahrgäste, wegen Bauarbeiten fährt die Linie fünf heute nicht bis zum Hauptbahnhof. Bitte steigen Sie am Rathaus in den Bus um.","q":"Die Linie 5 fährt heute nicht bis zum Hauptbahnhof.","a":true},
+   {"audio":"Sehr geehrte Kunden, unser Geschäft schließt in fünfzehn Minuten. Bitte gehen Sie jetzt zur Kasse. Vielen Dank für Ihren Einkauf.","q":"Das Geschäft schließt in fünfzig Minuten.","a":false},
+   {"audio":"Achtung, eine Durchsage für die Familie Özdemir. Ihr Sohn Can wartet an der Kasse drei im Erdgeschoss.","q":"Can wartet im ersten Stock.","a":false},
+   {"audio":"Willkommen im Stadtmuseum. Heute ist der Eintritt für Kinder bis zwölf Jahre frei. Die Führung beginnt um vierzehn Uhr am Eingang.","q":"Kinder bis 12 Jahre müssen heute nichts bezahlen.","a":true}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf Ansagen am Telefon. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Petra, hier ist Klaus. Ich kann heute leider nicht zum Sport kommen. Ich habe Kopfschmerzen. Gehen wir am Freitag zusammen?","q":"Warum kommt Klaus nicht zum Sport?","options":["Er muss arbeiten.","Er hat Kopfschmerzen.","Er hat keine Zeit."],"a":1},
+   {"audio":"Guten Tag, hier ist das Reisebüro Sonnenschein. Ihre Tickets nach Rom sind da. Sie können sie ab morgen bei uns abholen. Wir haben von neun bis achtzehn Uhr geöffnet.","q":"Wohin reist die Person?","options":["Nach Rom","Nach Madrid","Nach Paris"],"a":0},
+   {"audio":"Hallo Lena, hier ist Mama. Kannst du bitte auf dem Weg nach Hause noch Brot und sechs Eier kaufen? Danke, bis später!","q":"Was soll Lena kaufen?","options":["Brot und Milch","Eier und Käse","Brot und Eier"],"a":2},
+   {"audio":"Hier ist die Autowerkstatt Meier. Ihr Auto ist leider noch nicht fertig. Wir brauchen noch ein Teil. Sie können das Auto am Mittwoch abholen.","q":"Wann ist das Auto fertig?","options":["Am Montag","Am Mittwoch","Am Freitag"],"a":1},
+   {"audio":"Hallo Ali, hier ist Jan. Wir treffen uns heute nicht im Café, sondern bei mir zu Hause. Meine Adresse ist Lindenweg sieben. Bis gleich!","q":"Wo treffen sich Ali und Jan?","options":["Im Café","Bei Ali","Bei Jan zu Hause"],"a":2}
+  ]}
+ ],
+ "lesen":[
+  {"title":"Teil 1","task":"Lesen Sie die zwei Texte. Sind die Aussagen 1–5 richtig oder falsch?","type":"rf","texts":[
+   {"title":"Einladung","body":"Hallo zusammen,\n\nam Samstag, den 14. Juni, feiere ich meinen 30. Geburtstag! Die Party beginnt um 19 Uhr in meinem Garten. Es gibt Grillwürstchen, Salate und Musik. Bitte bringt etwas zu trinken mit.\n\nWenn es regnet, feiern wir im Gemeinschaftsraum im Keller.\n\nBis Samstag!\nMarco"},
+   {"title":"Nachricht","body":"Liebe Frau Schulz,\n\nich bin diese Woche krank und kann nicht zum Kurs kommen. Mein Arzt sagt, ich muss bis Freitag zu Hause bleiben. Können Sie mir bitte die Hausaufgaben per E-Mail schicken?\n\nVielen Dank\nYuki Tanaka"}
+  ],"items":[
+   {"q":"Marco feiert seinen Geburtstag am Samstagabend.","a":true},
+   {"q":"Die Gäste sollen Salate mitbringen.","a":false},
+   {"q":"Bei Regen ist die Party im Keller.","a":true},
+   {"q":"Yuki ist die Kursleiterin.","a":false},
+   {"q":"Yuki möchte die Hausaufgaben per E-Mail bekommen.","a":true}
+  ]},
+  {"title":"Teil 2","task":"Lesen Sie die Texte und die Aufgaben 6–10. Wo finden Sie Informationen? Wählen Sie a oder b.","type":"ab","items":[
+   {"q":"Sie möchten am Montagabend italienisch essen.","options":["Pizzeria Bella Napoli – täglich 17–23 Uhr, auch montags. Tischreservierung: 030 45 67 89","Trattoria Roma – Dienstag bis Sonntag 12–22 Uhr, montags Ruhetag."],"a":0},
+   {"q":"Sie suchen eine Arbeit am Wochenende.","options":["Bäckerei sucht Verkäuferin/Verkäufer für Samstag und Sonntag, 6–12 Uhr.","Büro sucht Sekretärin/Sekretär, Montag bis Freitag, 8–16 Uhr."],"a":0},
+   {"q":"Sie möchten mit dem Bus zum Flughafen fahren.","options":["Taxi-Zentrale: rund um die Uhr, Fahrt zum Flughafen ab 35 €.","Flughafenbus X9: alle 20 Minuten ab Hauptbahnhof, Fahrpreis 4,50 €."],"a":1},
+   {"q":"Sie möchten am Wochenende tanzen lernen.","options":["Tanzschule Salsa & Co.: Anfängerkurs samstags 15–17 Uhr.","Musikschule: Gitarre und Klavier für Kinder, Montag bis Freitag."],"a":0},
+   {"q":"Sie möchten ein Zimmer für eine Nacht in Hamburg.","options":["Ferienwohnung an der Ostsee, nur wochenweise zu vermieten.","Hotel am Hafen, Hamburg – Einzelzimmer ab 69 € pro Nacht."],"a":1}
+  ]},
+  {"title":"Teil 3","task":"Lesen Sie die Texte. Sind die Aussagen 11–15 richtig oder falsch?","type":"rf","items":[
+   {"text":"Schwimmbad\nHeute wegen Reinigung geschlossen.\nMorgen ab 8 Uhr wieder geöffnet.","q":"Man kann heute nicht schwimmen.","a":true},
+   {"text":"Apotheke am Markt\nNotdienst heute: Apotheke im Bahnhof,\nBahnhofstraße 2","q":"Die Apotheke am Markt hat heute Notdienst.","a":false},
+   {"text":"Liebe Gäste!\nFrühstück heute im Wintergarten,\nnicht im Restaurant.","q":"Das Frühstück ist heute an einem anderen Ort.","a":true},
+   {"text":"Kein Trinkwasser!\nBitte nicht trinken.","q":"Man darf das Wasser trinken.","a":false},
+   {"text":"Fundbüro – 1. Stock, Zimmer 108\nMo–Do 9–15 Uhr, Fr 9–12 Uhr","q":"Das Fundbüro ist am Freitagnachmittag geöffnet.","a":false}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Ihre Freundin Hana Park ist in einem Hotel angekommen. Sie füllt das Anmeldeformular aus. Helfen Sie ihr und schreiben Sie fünf Informationen.","situation":"Hana Park kommt aus Südkorea. Sie ist mit ihrem Mann im Hotel. Sie bleiben drei Nächte, vom 5. bis zum 8. Mai. Sie möchten ein Doppelzimmer. Hana bezahlt mit Kreditkarte.","form":[
+   {"label":"Vorname","a":"Hana"},
+   {"label":"Herkunftsland","a":"Südkorea","alt":["Korea","Suedkorea"]},
+   {"label":"Anzahl der Personen","a":"2","alt":["zwei"]},
+   {"label":"Zimmer (Einzelzimmer / Doppelzimmer)","a":"Doppelzimmer"},
+   {"label":"Zahlung (bar / Kreditkarte)","a":"Kreditkarte","alt":["mit Kreditkarte"]}
+  ]},
+  {"title":"Teil 2","task":"Sie sind krank und können morgen nicht zur Arbeit kommen. Schreiben Sie Ihrer Chefin, Frau Berger, eine kurze E-Mail.","prompt":"Schreiben Sie zu jedem Punkt ein bis zwei Sätze (circa 30 Wörter). Schreiben Sie auch eine Anrede und einen Gruß.","points":["Warum kommen Sie nicht?","Wie lange bleiben Sie zu Hause?","Bitten Sie um etwas (z. B. einen Termin verschieben)."],"words":30,"sample":"Liebe Frau Berger,\n\nleider bin ich krank und kann morgen nicht zur Arbeit kommen. Ich habe Fieber und muss zum Arzt. Ich bleibe bis Mittwoch zu Hause. Können Sie bitte den Termin mit Herrn Lang auf Donnerstag verschieben?\n\nViele Grüße\nAhmet Demir"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Sich vorstellen","task":"Stellen Sie sich vor. Die Wörter auf den Karten helfen Ihnen. Danach buchstabieren Sie Ihren Familiennamen und sagen Ihre Postleitzahl.","cards":["Name","Alter","Land","Wohnort","Sprachen","Beruf","Hobby"],"phrases":["Mein Name ist …","Ich komme aus …","Ich lebe seit … in …","Ich arbeite als …","In meiner Freizeit …"],"sample":"Mein Name ist Lukas Novák. Ich bin fünfundzwanzig Jahre alt und komme aus Tschechien. Seit einem Jahr wohne ich in Dresden. Ich spreche Tschechisch, Englisch und Deutsch. Ich bin Student, ich studiere Informatik. In meiner Freizeit spiele ich gern Basketball."},
+  {"title":"Teil 2 – Um Informationen bitten und Informationen geben","task":"Thema: Reisen. Ziehen Sie eine Karte und stellen Sie eine Frage mit dem Wort. Antworten Sie auch auf die Frage Ihres Partners.","cards":["Urlaub","Hotel","Zug","Sommer","Koffer","Meer"],"phrases":["Wohin fährst du im …?","Fährst du gern mit dem …?","Wie lange …?","Ich fahre gern …"],"sample":"Frage: Wohin fährst du im Urlaub? – Antwort: Im Urlaub fahre ich nach Spanien ans Meer.\nFrage: Fährst du gern mit dem Zug? – Antwort: Ja, mit dem Zug kann ich lesen und schlafen."},
+  {"title":"Teil 3 – Bitten formulieren und darauf reagieren","task":"Formulieren Sie zu jeder Karte eine Bitte. Ihre Partnerin oder Ihr Partner reagiert.","cards":["Tür (Sie tragen viele Taschen)","Licht (es ist dunkel)","Zucker (für den Kaffee)","Taxi (Sie müssen zum Bahnhof)"],"phrases":["Können Sie bitte die Tür aufmachen?","Mach bitte das Licht an!","Gibst du mir bitte …?","Ja, sofort.","Kein Problem."],"sample":"Können Sie bitte die Tür aufmachen? Ich habe so viele Taschen. – Ja, natürlich, einen Moment.\nMachst du bitte das Licht an? Es ist so dunkel. – Klar, sofort.\nKannst du mir bitte ein Taxi rufen? Ich muss zum Bahnhof. – Kein Problem."}
+ ]
+}

@@ -1,0 +1,67 @@
+{
+ "id":"A1-06","level":"A1","title":"Modelltest 6",
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören sechs kurze Gespräche. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–6 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Frau: Spielst du gern Tennis?\nMann: Nicht so gern. Ich spiele lieber Volleyball, am liebsten am Strand.","q":"Was spielt der Mann am liebsten?","options":["Tennis","Fußball","Volleyball"],"a":2},
+   {"audio":"Mann: Von welchem Gleis fährt der Zug nach Köln?\nFrau: Von Gleis neun. Aber Sie müssen sich beeilen, er fährt in drei Minuten.","q":"Von welchem Gleis fährt der Zug?","options":["Gleis 9","Gleis 3","Gleis 6"],"a":0},
+   {"audio":"Frau: Was hast du am Wochenende gemacht?\nMann: Am Samstag war ich im Kino und am Sonntag habe ich meine Schwester besucht.","q":"Was hat der Mann am Sonntag gemacht?","options":["Er war im Kino.","Er hat seine Schwester besucht.","Er hat gearbeitet."],"a":1},
+   {"audio":"Mann: Ich möchte bitte ein Kilo Äpfel und ein halbes Kilo Bananen.\nFrau: Gern. Sonst noch etwas?\nMann: Nein, danke. Das ist alles.","q":"Was kauft der Mann?","options":["Äpfel und Orangen","Bananen und Birnen","Äpfel und Bananen"],"a":2},
+   {"audio":"Frau: Wie lange lernst du schon Deutsch?\nMann: Seit acht Monaten. Am Anfang war es sehr schwer, aber jetzt geht es besser.","q":"Wie lange lernt der Mann schon Deutsch?","options":["Seit acht Monaten","Seit acht Wochen","Seit einem Jahr"],"a":0},
+   {"audio":"Mann: Wo treffen wir uns morgen?\nFrau: Vor dem Rathaus. Dort ist es leicht zu finden. Sagen wir um neun Uhr?","q":"Wo treffen sich die beiden?","options":["Vor dem Bahnhof","Vor dem Rathaus","Vor dem Museum"],"a":1}
+  ]},
+  {"title":"Teil 2","task":"Sie hören vier Durchsagen. Sie hören jeden Text einmal. Sind die Aussagen 7–10 richtig oder falsch?","type":"rf","plays":1,"items":[
+   {"audio":"Liebe Fahrgäste, aufgrund einer Störung hält dieser Zug heute nicht in Bonn. Reisende nach Bonn steigen bitte in Köln um.","q":"Der Zug hält heute in Bonn.","a":false},
+   {"audio":"Willkommen im Freizeitpark! Die Achterbahn ist heute wegen Wartungsarbeiten geschlossen. Alle anderen Attraktionen sind geöffnet.","q":"Man kann heute nicht mit der Achterbahn fahren.","a":true},
+   {"audio":"Sehr geehrte Kundschaft, an unserer Fleischtheke gibt es heute frische Hähnchen zum Sonderpreis von vier Euro neunundneunzig pro Kilo.","q":"Das Hähnchen kostet heute 4,99 € pro Kilo.","a":true},
+   {"audio":"Achtung, wichtige Information für alle Schüler: Morgen beginnt der Unterricht wegen einer Konferenz erst um zehn Uhr.","q":"Der Unterricht beginnt morgen früher.","a":false}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf Ansagen am Telefon. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Mia, hier ist Lukas. Das Volleyballspiel ist heute nicht in der Sporthalle, sondern draußen im Park. Bring bitte Wasser mit!","q":"Wo ist das Spiel?","options":["In der Sporthalle","Im Park","Im Schwimmbad"],"a":1},
+   {"audio":"Guten Morgen, hier ist die Arztpraxis Dr. Hoffmann. Ihre Blutwerte sind gut. Sie müssen nicht noch einmal kommen. Einen schönen Tag!","q":"Was sagt die Praxis?","options":["Die Person muss wiederkommen.","Die Werte sind gut.","Der Termin ist morgen."],"a":1},
+   {"audio":"Hallo Herr Schmitt, hier ist Ihre Nachbarin, Frau Kurz. Ich habe ein Paket für Sie angenommen. Ich bin heute ab sechzehn Uhr zu Hause.","q":"Ab wann ist Frau Kurz zu Hause?","options":["Ab 14 Uhr","Ab 18 Uhr","Ab 16 Uhr"],"a":2},
+   {"audio":"Hi Selin, hier ist Paula. Ich habe zwei Kinokarten für heute Abend gewonnen! Der Film beginnt um Viertel vor neun. Hast du Lust?","q":"Wann beginnt der Film?","options":["Um 20:45 Uhr","Um 21:15 Uhr","Um 19:45 Uhr"],"a":0},
+   {"audio":"Hallo, hier ist der Gemüsehof Bauer. Ihre Kiste mit Bio-Gemüse kommt diese Woche nicht am Freitag, sondern schon am Donnerstag.","q":"Wann kommt die Gemüsekiste?","options":["Am Freitag","Am Mittwoch","Am Donnerstag"],"a":2}
+  ]}
+ ],
+ "lesen":[
+  {"title":"Teil 1","task":"Lesen Sie die zwei Texte. Sind die Aussagen 1–5 richtig oder falsch?","type":"rf","texts":[
+   {"title":"E-Mail","body":"Liebe Jana,\n\nseit zwei Monaten spiele ich jetzt Basketball in einem Verein. Wir trainieren zweimal pro Woche, am Montag und am Donnerstag. Am Samstag haben wir unser erstes Spiel. Kommst du und siehst zu? Das Spiel beginnt um 15 Uhr in der Sporthalle an der Schillerstraße.\n\nNach dem Spiel gehen wir alle zusammen Eis essen.\n\nLiebe Grüße\nTarik"},
+   {"title":"Zettel an der Tür","body":"Lieber Paketbote,\n\nich bin bis 14 Uhr bei der Arbeit. Bitte geben Sie mein Paket bei meinem Nachbarn ab: Herr Jung, Erdgeschoss links.\n\nVielen Dank!\nR. Kaiser, 2. Stock"}
+  ],"items":[
+   {"q":"Tarik trainiert dreimal pro Woche.","a":false},
+   {"q":"Das erste Spiel ist am Samstagnachmittag.","a":true},
+   {"q":"Nach dem Spiel gehen alle ins Restaurant.","a":false},
+   {"q":"Herr Kaiser ist am Vormittag nicht zu Hause.","a":true},
+   {"q":"Das Paket soll zum Nachbarn im Erdgeschoss.","a":true}
+  ]},
+  {"title":"Teil 2","task":"Lesen Sie die Texte und die Aufgaben 6–10. Wo finden Sie Informationen? Wählen Sie a oder b.","type":"ab","items":[
+   {"q":"Sie möchten am Abend joggen und suchen eine Gruppe.","options":["Lauftreff Stadtpark: jeden Dienstag und Freitag um 19 Uhr, für alle kostenlos.","Fitnessstudio Power: Krafttraining und Kurse, Monatsbeitrag 29 €."],"a":0},
+   {"q":"Sie möchten eine Zugfahrkarte im Internet kaufen.","options":["Reisezentrum im Hauptbahnhof: persönliche Beratung Mo–Fr 8–20 Uhr.","www.bahn-tickets.de: Fahrkarten online kaufen und sofort ausdrucken."],"a":1},
+   {"q":"Sie suchen einen Platz im Kindergarten für Ihre Tochter.","options":["Kita Regenbogen: freie Plätze für Kinder von 3 bis 6 Jahren. Tel. 0201 88 77 66","Grundschule am Hang: Anmeldung für die erste Klasse im Januar."],"a":0},
+   {"q":"Sie möchten am Sonntag frühstücken gehen.","options":["Café Morgenrot: großes Frühstücksbuffet, samstags und sonntags 9–13 Uhr.","Bistro Mittag: Mittagstisch Montag bis Freitag 11:30–14:30 Uhr."],"a":0},
+   {"q":"Sie brauchen neue Schuhe für Ihren Sohn.","options":["Schuhhaus Fuß: Kinderschuhe in allen Größen, diese Woche 15 % billiger.","Sportladen Ball: Fußbälle, Trikots und Tennisschläger."],"a":0}
+  ]},
+  {"title":"Teil 3","task":"Lesen Sie die Texte. Sind die Aussagen 11–15 richtig oder falsch?","type":"rf","items":[
+   {"text":"Sporthalle\nBitte nur mit Hallenschuhen betreten!","q":"In der Halle darf man Straßenschuhe tragen.","a":false},
+   {"text":"Bus 12\nFährt ab 1. Juni alle 10 Minuten.","q":"Der Bus fährt ab Juni öfter.","a":true},
+   {"text":"Café geöffnet\nKuchen heute 1,50 € pro Stück","q":"Ein Stück Kuchen kostet heute 1,50 €.","a":true},
+   {"text":"Toiletten im 1. Stock\nIm Erdgeschoss: Reparatur","q":"Die Toiletten im Erdgeschoss kann man benutzen.","a":false},
+   {"text":"Fahrkarten nur am Automaten.\nKein Verkauf beim Fahrer!","q":"Man kann beim Busfahrer eine Fahrkarte kaufen.","a":false}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Ihre Freundin Lucia Rossi möchte eine Jahreskarte für das Schwimmbad. Füllen Sie das Formular für sie aus. Schreiben Sie fünf Informationen.","situation":"Lucia Rossi kommt aus Italien. Sie wohnt in Mainz, Kirchgasse 5. Sie ist Lehrerin von Beruf. Sie möchte die Karte für Erwachsene. Sie bezahlt bar.","form":[
+   {"label":"Name","a":"Rossi","alt":["Lucia Rossi"]},
+   {"label":"Wohnort","a":"Mainz"},
+   {"label":"Beruf","a":"Lehrerin"},
+   {"label":"Karte (Kinder / Erwachsene)","a":"Erwachsene"},
+   {"label":"Bezahlung (bar / Karte)","a":"bar"}
+  ]},
+  {"title":"Teil 2","task":"Sie möchten am Wochenende mit Ihrem Kollegen Stefan Fahrrad fahren. Schreiben Sie Stefan eine Nachricht.","prompt":"Schreiben Sie zu jedem Punkt ein bis zwei Sätze (circa 30 Wörter). Schreiben Sie auch eine Anrede und einen Gruß.","points":["Was möchten Sie machen?","Wann und wohin fahren Sie?","Was soll Stefan mitbringen?"],"words":30,"sample":"Hallo Stefan,\n\nhast du am Sonntag Lust, mit mir Fahrrad zu fahren? Wir können um zehn Uhr losfahren und an den See fahren. Dort können wir auch schwimmen. Bring bitte etwas zu essen und deine Badehose mit.\n\nBis Sonntag!\nIgor"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Sich vorstellen","task":"Stellen Sie sich vor. Die Wörter auf den Karten helfen Ihnen. Danach buchstabieren Sie Ihren Namen und sagen, wie alt Sie sind.","cards":["Name","Alter","Land","Wohnort","Sprachen","Beruf","Hobby"],"phrases":["Hallo, ich bin …","Ich komme aus …","Ich wohne seit … in …","Ich spreche …","Ich spiele gern …"],"sample":"Hallo, ich bin Omar Ali. Ich bin achtzehn Jahre alt und komme aus Somalia. Ich wohne seit zwei Jahren in Bielefeld. Ich spreche Somali, Arabisch und Deutsch. Ich gehe noch zur Schule. Ich spiele gern Fußball."},
+  {"title":"Teil 2 – Um Informationen bitten und Informationen geben","task":"Thema: Freizeit. Ziehen Sie eine Karte und stellen Sie eine Frage mit dem Wort. Antworten Sie auch auf die Frage Ihres Partners.","cards":["Sport","Musik","Abend","Kino","Fernsehen","Lesen"],"phrases":["Machst du gern …?","Was hörst du gern?","Was machst du am …?","Ich höre gern …"],"sample":"Frage: Welche Musik hörst du gern? – Antwort: Ich höre gern Popmusik und manchmal Jazz.\nFrage: Was machst du am Abend? – Antwort: Am Abend koche ich und sehe ein bisschen fern."},
+  {"title":"Teil 3 – Bitten formulieren und darauf reagieren","task":"Formulieren Sie zu jeder Karte eine Bitte. Ihre Partnerin oder Ihr Partner reagiert.","cards":["Kuli (Sie wollen schreiben)","Platz (Sie möchten sich setzen)","Uhrzeit (Sie haben keine Uhr)","Tasche (sie ist schwer)"],"phrases":["Hast du einen Kuli für mich?","Ist der Platz hier frei?","Wie spät ist es, bitte?","Ja, bitte.","Tut mir leid, …"],"sample":"Entschuldigung, ist der Platz hier frei? – Ja, bitte, setzen Sie sich.\nWie spät ist es, bitte? – Es ist halb drei.\nKannst du bitte meine Tasche tragen? Sie ist so schwer. – Klar, gib her."}
+ ]
+}

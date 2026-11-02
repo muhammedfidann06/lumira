@@ -1,0 +1,186 @@
+{
+ "id": "C1-03",
+ "level": "C1",
+ "title": "Modelltest 3",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen einen Zeitungsartikel, in dem einige Wörter fehlen. Wählen Sie für jede Lücke 1–9 das passende Wort a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Die Wiederentdeckung des Gehens",
+     "body": "Lange galt das Gehen als die unscheinbarste aller Fortbewegungsarten. Wer es sich leisten konnte, fuhr, und Fußgänger wurden in der Stadtplanung jahrzehntelang eher [1] behandelt. Breite Straßen für Autos hatten Vorrang, Gehwege wurden schmaler, Ampelphasen für Fußgänger kürzer.\n\nInzwischen [2] sich ein Umdenken ab. Immer mehr Städte erkennen, dass Menschen, die zu Fuß unterwegs sind, nicht nur die Umwelt [3], sondern auch die Innenstädte beleben. Wer geht, bleibt vor Schaufenstern stehen, trifft Bekannte und kehrt in Cafés ein. Studien zeigen, dass Geschäfte in Fußgängerzonen [4] den Befürchtungen vieler Händler sogar höhere Umsätze erzielen.\n\nAuch aus medizinischer Sicht spricht vieles für das Gehen. Bereits eine halbe Stunde zügiges Gehen am Tag [5] das Risiko für Herz-Kreislauf-Erkrankungen deutlich. Zudem hilft Bewegung an der frischen Luft, Stress [6] und den Kopf freizubekommen. Nicht ohne Grund kamen vielen Denkern die besten Ideen beim Spazierengehen.\n\nDamit mehr Menschen ihre Wege zu Fuß [7], müssen diese allerdings sicher und attraktiv sein. Dazu gehören breite Gehwege, Sitzgelegenheiten, Schatten spendende Bäume und Ampeln, die nicht nach wenigen Sekunden wieder auf Rot [8]. Manche Städte haben inzwischen sogar eigene Fußverkehrsbeauftragte ernannt, die sich für die [9] der Fußgänger einsetzen."
+    }
+   ],
+   "items": [
+    {"q": "Lücke 1", "options": ["großzügig", "stiefmütterlich", "bevorzugt"], "a": 1},
+    {"q": "Lücke 2", "options": ["zeichnet", "hebt", "spielt"], "a": 0},
+    {"q": "Lücke 3", "options": ["verschonen", "schaden", "schonen"], "a": 2},
+    {"q": "Lücke 4", "options": ["gegenüber", "entgegen", "zuwider"], "a": 1},
+    {"q": "Lücke 5", "options": ["sinkt", "versenkt", "senkt"], "a": 2},
+    {"q": "Lücke 6", "options": ["abzubauen", "auszubauen", "aufzubauen"], "a": 0},
+    {"q": "Lücke 7", "options": ["hinlegen", "zurücklegen", "zulegen"], "a": 1},
+    {"q": "Lücke 8", "options": ["laufen", "fallen", "springen"], "a": 2},
+    {"q": "Lücke 9", "options": ["Bestände", "Belange", "Beiträge"], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie lesen in einer Wissenschaftszeitschrift einen Artikel darüber, warum Menschen Geschichten lieben. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Das Gehirn als Geschichtenerzähler",
+     "body": "Seit Menschen sprechen können, erzählen sie sich Geschichten – am Lagerfeuer, in Märchen, in Romanen und heute in Serien, die Millionen Zuschauer weltweit verfolgen. Warum aber fesseln uns erfundene Erzählungen so sehr? Die Forschung hat darauf inzwischen einige Antworten gefunden.\n\nEine Erklärung lautet, dass Geschichten eine Art Simulation sind. Wenn wir lesen, wie eine Figur durch eine dunkle Gasse läuft, werden in unserem Gehirn teilweise dieselben Regionen aktiv, als würden wir die Situation selbst erleben. Wir können so gefahrlos Erfahrungen sammeln, ohne die Risiken tragen zu müssen. Der Literaturwissenschaftler Dr. Jonas Feld spricht von einem „Flugsimulator für das soziale Leben“.\n\nTatsächlich deuten mehrere Studien darauf hin, dass regelmäßiges Lesen von Romanen das Einfühlungsvermögen stärken kann. Wer sich häufig in fremde Figuren hineinversetzt, dem fällt es offenbar leichter, die Gefühle und Absichten realer Menschen einzuschätzen. Allerdings betonen die Forscher, dass dieser Effekt vor allem bei literarisch anspruchsvollen Texten auftritt, in denen Figuren vielschichtig und widersprüchlich dargestellt werden. Bei sehr schematischen Handlungen sei er kaum nachweisbar.\n\nGeschichten helfen uns außerdem, uns Dinge zu merken. Fakten, die in eine Erzählung eingebettet sind, behalten wir deutlich besser als eine bloße Aufzählung. Diese Erkenntnis machen sich längst nicht mehr nur Lehrkräfte zunutze. Auch Unternehmen setzen gezielt auf „Storytelling“, um ihre Produkte mit Emotionen zu verbinden.\n\nGerade darin liegt aber auch eine Gefahr. „Eine gute Geschichte kann stärker überzeugen als jedes Argument“, warnt Feld. Wer eine bewegende Erzählung hört, prüft die darin enthaltenen Behauptungen weniger kritisch. Das nutzen nicht nur Werbetreibende, sondern auch die Verbreiter von Falschinformationen. Feld plädiert deshalb dafür, schon in der Schule zu üben, wie Geschichten aufgebaut sind und welche Wirkung sie entfalten. „Wer die Mechanismen kennt, ist ihnen weniger ausgeliefert.“"
+    }
+   ],
+   "items": [
+    {"q": "Laut Text werden beim Lesen einer Geschichte im Gehirn …", "options": ["keine besonderen Regionen aktiv.", "ähnliche Bereiche aktiv wie beim eigenen Erleben.", "vor allem die Sprachzentren angeregt."], "a": 1},
+    {"q": "Mit dem Vergleich „Flugsimulator“ meint Dr. Feld, dass Geschichten …", "options": ["vor allem unterhalten sollen.", "schwer zu verstehen sind.", "gefahrlose Erfahrungen ermöglichen."], "a": 2},
+    {"q": "Das Einfühlungsvermögen wird laut Studien vor allem gestärkt durch …", "options": ["anspruchsvolle Literatur mit vielschichtigen Figuren.", "Serien mit vielen Folgen.", "Bücher mit einfacher Handlung."], "a": 0},
+    {"q": "Fakten in einer Erzählung …", "options": ["wirken weniger glaubwürdig.", "bleiben besser im Gedächtnis.", "lenken vom Wesentlichen ab."], "a": 1},
+    {"q": "Unternehmen nutzen Geschichten, um …", "options": ["Kosten zu senken.", "Mitarbeitende zu schulen.", "Produkte emotional aufzuladen."], "a": 2},
+    {"q": "Dr. Feld warnt davor, dass Geschichten …", "options": ["das kritische Prüfen schwächen können.", "immer länger werden.", "in Schulen zu selten gelesen werden."], "a": 0},
+    {"q": "Feld schlägt vor, …", "options": ["Werbung mit Geschichten zu verbieten.", "in der Schule die Wirkung von Geschichten zu behandeln.", "weniger Romane zu lesen."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Lesen Sie den Text. Welcher Satz a–h passt in welche Lücke 1–6? Zwei Sätze passen nicht.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Gemeinsam bauen, gemeinsam wohnen",
+     "body": "Steigende Mieten und knapper Wohnraum treiben in vielen Großstädten die Menschen um. Eine Wohnform, die dabei wieder stärker in den Blick rückt, ist die Wohnungsgenossenschaft. [1] Die Idee ist über hundertfünfzig Jahre alt und entstand, als Arbeiterfamilien in den wachsenden Industriestädten kaum bezahlbare Unterkünfte fanden.\n\nDas Prinzip: Mehrere Menschen schließen sich zusammen, um gemeinsam Wohnungen zu bauen oder zu kaufen. [2] Im Gegenzug erhalten sie ein lebenslanges Wohnrecht und zahlen eine monatliche Nutzungsgebühr, die meist deutlich unter der ortsüblichen Miete liegt.\n\nWeil die Genossenschaft keinen Gewinn an Investoren ausschütten muss, bleiben die Kosten dauerhaft niedrig. [3] Zudem haben die Mitglieder ein Mitspracherecht: In der Generalversammlung entscheiden sie über Sanierungen, Neubauprojekte und die Verwendung von Überschüssen.\n\nViele jüngere Genossenschaften legen besonderen Wert auf Gemeinschaft. [4] So gibt es Gemeinschaftsküchen, Werkstätten oder Gästezimmer, die alle Bewohnerinnen und Bewohner nutzen können. Manche Projekte bringen bewusst verschiedene Generationen unter einem Dach zusammen.\n\nDer Haken: Wer in eine Genossenschaft aufgenommen werden möchte, braucht oft Geduld. [5] In einigen Städten liegen die Wartezeiten bei mehreren Jahren, und manche Genossenschaften nehmen gar keine neuen Mitglieder mehr auf.\n\nStadtplaner sehen daher die Kommunen in der Pflicht. [6] Nur so könne die Wohnform einen spürbaren Beitrag zur Entlastung des Wohnungsmarktes leisten."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Neben den eigenen Wohnungen planen sie deshalb gemeinsam genutzte Räume ein."},
+    {"key": "b", "text": "Sie sollten Grundstücke bevorzugt an Genossenschaften vergeben, statt sie an den Meistbietenden zu verkaufen."},
+    {"key": "c", "text": "Aus diesem Grund sind Genossenschaftswohnungen vor allem bei Investoren beliebt."},
+    {"key": "d", "text": "Bei dieser Form des Wohnens gehören die Häuser nicht einem Vermieter, sondern allen Bewohnern gemeinsam."},
+    {"key": "e", "text": "Mieterhöhungen fallen deshalb in der Regel wesentlich moderater aus als auf dem freien Markt."},
+    {"key": "f", "text": "Die Mitglieder müssen ihre Wohnungen deshalb nach fünf Jahren wieder räumen."},
+    {"key": "g", "text": "Jedes Mitglied erwirbt dafür Anteile, deren Höhe je nach Genossenschaft sehr unterschiedlich sein kann."},
+    {"key": "h", "text": "Die Nachfrage übersteigt das Angebot vielerorts bei Weitem."}
+   ],
+   "items": [
+    {"q": "Lücke 1", "a": "d"},
+    {"q": "Lücke 2", "a": "g"},
+    {"q": "Lücke 3", "a": "e"},
+    {"q": "Lücke 4", "a": "a"},
+    {"q": "Lücke 5", "a": "h"},
+    {"q": "Lücke 6", "a": "b"}
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie lesen in einer Regionalzeitung Stellungnahmen zur Frage, ob Geschäfte auch sonntags öffnen dürfen sollten. Lesen Sie die Texte a–d und die Aussagen 1–8. Wer äußert sich wie? Die Personen können mehrmals gewählt werden.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Niklas, 31, Krankenpfleger: Ich arbeite im Schichtdienst, oft auch am Wochenende. Für Menschen wie mich wäre es eine echte Erleichterung, sonntags einkaufen zu können, wenn ich frei habe. Unter der Woche haben die Geschäfte meistens schon geschlossen, wenn meine Spätschicht endet. Ich verstehe nicht, warum man Erwachsenen vorschreibt, wann sie einkaufen dürfen. Wer am Sonntag lieber in den Gottesdienst oder in den Wald geht, kann das doch weiterhin tun."},
+    {"key": "b", "text": "Renate, 57, Verkäuferin: Ich stehe seit dreißig Jahren im Einzelhandel, und der Sonntag ist oft der einzige Tag, an dem meine ganze Familie zusammen ist. Wenn die Geschäfte öffnen, trifft es wieder einmal diejenigen, die ohnehin schlecht bezahlt werden. Freiwilligkeit gibt es da in der Praxis nicht: Wer nicht mitmacht, bekommt beim nächsten Dienstplan die Quittung."},
+    {"key": "c", "text": "Dr. Henrik Lassen, 45, Stadtsoziologe: Die Diskussion wird oft zu schwarz-weiß geführt. Ein gemeinsamer Ruhetag hat eine wichtige gesellschaftliche Funktion, weil er Zeit für Familie, Vereine und Ehrenamt schafft. Gleichzeitig verlieren die Innenstädte gegenüber dem Onlinehandel, der rund um die Uhr geöffnet hat. Ein vernünftiger Kompromiss wären einige zusätzliche verkaufsoffene Sonntage im Jahr, verbunden mit Festen oder Märkten, die die Innenstädte beleben."},
+    {"key": "d", "text": "Ali, 39, Inhaber eines kleinen Lebensmittelgeschäfts: Für kleine Läden wie meinen wäre eine allgemeine Sonntagsöffnung eher ein Nachteil. Die großen Ketten haben genug Personal, ich dagegen müsste selbst im Laden stehen – sieben Tage die Woche. Die Kunden würden sich dann einfach auf mehr Tage verteilen, aber kaum mehr kaufen. Am Ende profitieren die Großen, und wir Kleinen gehen kaputt."}
+   ],
+   "items": [
+    {"q": "Wer würde von einer Sonntagsöffnung persönlich profitieren?", "a": "a"},
+    {"q": "Wer befürchtet, dass vor allem große Unternehmen von einer Sonntagsöffnung profitieren würden?", "a": "d"},
+    {"q": "Wer zweifelt daran, dass Beschäftigte wirklich freiwillig sonntags arbeiten würden?", "a": "b"},
+    {"q": "Wer erwähnt die Konkurrenz durch den Internethandel?", "a": "c"},
+    {"q": "Wer müsste dann an allen Tagen der Woche selbst im Geschäft stehen?", "a": "d"},
+    {"q": "Wer betont den Wert des Sonntags für das eigene Familienleben?", "a": "b"},
+    {"q": "Wer schlägt eine begrenzte Zahl geöffneter Sonntage vor?", "a": "c"},
+    {"q": "Wer lehnt staatliche Vorschriften zu Einkaufszeiten ab?", "a": "a"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text einmal. Zu jedem Text lösen Sie zwei Aufgaben. Wählen Sie bei jeder Aufgabe die richtige Lösung.",
+   "type": "rf",
+   "plays": 1,
+   "items": [
+    {"audio": "Achtung, eine Durchsage für alle Passagiere des Fluges LH 2047 nach Lissabon: Aufgrund eines technischen Problems wird Ihr Flug nicht wie geplant von Gate B12, sondern von Gate D4 abfliegen. Bitte beachten Sie, dass Sie für den Weg zu den D-Gates erneut durch die Passkontrolle gehen müssen. Wir empfehlen Ihnen, sich umgehend auf den Weg zu machen. Die voraussichtliche Abflugzeit verschiebt sich um vierzig Minuten auf elf Uhr fünfzig. Das Boarding beginnt um elf Uhr fünfzehn.", "q": "Der Flug nach Lissabon startet von einem anderen Gate als geplant.", "a": true},
+    {"type": "abc", "q": "Was müssen die Passagiere beachten?", "options": ["Sie müssen noch einmal durch die Passkontrolle.", "Sie müssen ihr Gepäck erneut aufgeben.", "Sie müssen ihre Bordkarte umtauschen."], "a": 0},
+    {"audio": "Guten Tag, Frau Yilmaz, hier ist die Praxis Dr. Brandt. Ihre Blutwerte sind inzwischen da. Es ist nichts Beunruhigendes dabei, aber Ihr Vitamin-D-Wert ist recht niedrig. Dr. Brandt möchte das gern kurz mit Ihnen besprechen und Ihnen ein Präparat verschreiben. Ein gesonderter Termin ist dafür nicht nötig; Sie können einfach in unsere offene Sprechstunde kommen, montags bis freitags von acht bis zehn Uhr. Bitte bringen Sie Ihre Versichertenkarte mit, da das neue Quartal begonnen hat.", "q": "Frau Yilmaz muss einen neuen Termin vereinbaren.", "a": false},
+    {"type": "abc", "q": "Warum soll Frau Yilmaz ihre Versichertenkarte mitbringen?", "options": ["Weil ihre alte Karte abgelaufen ist.", "Weil ein neues Quartal angefangen hat.", "Weil sie das Medikament selbst bezahlen muss."], "a": 1},
+    {"audio": "Der Wolf breitet sich in Deutschland weiter aus. Nach Angaben des Bundesamts für Naturschutz leben inzwischen mehr als zweihundert Rudel im Land, vor allem im Nordosten. Während Naturschützer die Rückkehr der Tiere als Erfolg feiern, klagen Schäfer über zunehmende Angriffe auf ihre Herden. Die Bundesländer fördern deshalb den Bau von Elektrozäunen und die Anschaffung von Herdenschutzhunden. Für Menschen geht von Wölfen nach Einschätzung der Experten nur eine sehr geringe Gefahr aus.", "q": "Laut Experten sind Wölfe für Menschen sehr gefährlich.", "a": false},
+    {"type": "abc", "q": "Wie werden Schäfer unterstützt?", "options": ["Sie dürfen Wölfe jederzeit jagen.", "Sie bekommen Geld für Schutzmaßnahmen.", "Sie erhalten neue Weideflächen."], "a": 1},
+    {"audio": "Ihnen fällt zu Hause die Decke auf den Kopf, aber ein eigenes Büro ist zu teuer? Dann kommen Sie ins Coworking-Haus „Werkbank“ direkt am Hauptbahnhof. Bei uns mieten Sie einen Schreibtisch für einen Tag, eine Woche oder einen ganzen Monat. Schnelles Internet, Drucker und Kaffee sind immer inklusive, Besprechungsräume können Sie stundenweise dazubuchen. Und jeden Donnerstagabend laden wir zu einem Treffen ein, bei dem Sie andere Selbstständige kennenlernen können. Den ersten Tag können Sie kostenlos testen.", "q": "Man kann das Coworking-Haus einen Tag gratis ausprobieren.", "a": true},
+    {"type": "abc", "q": "Was findet jeden Donnerstag statt?", "options": ["Ein Treffen zum Kennenlernen.", "Ein Kurs für Gründer.", "Eine kostenlose Beratung."], "a": 0},
+    {"audio": "Viele denken, dass Übersetzen bald komplett von Maschinen übernommen wird. Ich sehe das gelassener. Natürlich nutze ich selbst Übersetzungsprogramme, vor allem für technische Texte – sie sparen mir viel Zeit. Aber bei Literatur, Werbung oder juristischen Verträgen kommt es auf Nuancen an, die Programme oft übersehen. Ein falsch übersetztes Wort in einem Vertrag kann ein Unternehmen viel Geld kosten. Mein Beruf verändert sich also, aber er verschwindet nicht: Ich korrigiere heute häufiger maschinelle Übersetzungen als früher.", "q": "Die Sprecherin verwendet selbst Übersetzungsprogramme.", "a": true},
+    {"type": "abc", "q": "Wie hat sich ihre Arbeit verändert?", "options": ["Sie übersetzt nur noch Literatur.", "Sie arbeitet weniger als früher.", "Sie überarbeitet öfter maschinelle Übersetzungen."], "a": 2}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Ein Moderator spricht mit der Stadtplanerin Prof. Hanna Lindqvist über die Idee der „15-Minuten-Stadt“.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Moderator: Frau Professor Lindqvist, die „15-Minuten-Stadt“ ist in aller Munde. Was genau steckt hinter dem Begriff?\nLindqvist: Die Grundidee ist ganz einfach: Alles, was man im Alltag braucht – Lebensmittelgeschäfte, Schulen, Ärzte, Parks, auch Arbeitsplätze –, soll innerhalb von etwa fünfzehn Minuten zu Fuß oder mit dem Fahrrad erreichbar sein. Eigentlich ist das gar nichts Neues. So waren europäische Städte über Jahrhunderte organisiert, bevor das Auto die Planung bestimmt hat.\nModerator: Was hat sich durch das Auto verändert?\nLindqvist: Man hat die Stadt nach Funktionen getrennt: Hier wird gewohnt, dort gearbeitet, woanders eingekauft. Das schien damals modern und vernünftig. Die Folge ist aber, dass viele Menschen heute für jeden Weg ins Auto steigen müssen. Das kostet Zeit, verursacht Lärm und Abgase und nimmt enorm viel Platz weg.\nModerator: Kritiker sagen, die 15-Minuten-Stadt schränke die Freiheit ein. Man wolle die Menschen in ihren Vierteln festhalten.\nLindqvist: Das ist ein Missverständnis, das sich leider hartnäckig hält. Niemand soll daran gehindert werden, in einen anderen Stadtteil zu fahren. Es geht darum, dass man es nicht muss, um seinen Alltag zu bewältigen. Für mich bedeutet das sogar mehr Freiheit, nämlich die Freiheit, auf ein Auto verzichten zu können.\nModerator: Lässt sich das Konzept auch in bestehenden Städten umsetzen, oder geht das nur bei Neubauten?\nLindqvist: Es geht in beiden Fällen, aber in bestehenden Vierteln braucht es andere Mittel. Man kann zum Beispiel Erdgeschosse für kleine Geschäfte und Praxen öffnen, Schulhöfe nachmittags als Spielplätze freigeben oder Parkplätze in Grünflächen umwandeln. Paris hat in den letzten Jahren viele solcher Maßnahmen umgesetzt.\nModerator: Gibt es auch Risiken?\nLindqvist: Ja, und die sollte man ernst nehmen. Wenn ein Viertel attraktiver wird, steigen oft die Mieten. Dann können sich die ursprünglichen Bewohner die Wohnungen nicht mehr leisten. Deshalb muss eine solche Planung immer mit Maßnahmen für bezahlbaren Wohnraum verbunden werden.\nModerator: Und auf dem Land?\nLindqvist: Dort lässt sich das Modell nicht eins zu eins übertragen. Aber der Grundgedanke, wichtige Angebote nah an die Menschen zu bringen, gilt auch dort – etwa durch mobile Arztpraxen oder Dorfläden, die von den Bewohnern selbst betrieben werden.",
+   "items": [
+    {"q": "Laut Prof. Lindqvist ist die Idee der 15-Minuten-Stadt …", "options": ["eine völlig neue Erfindung.", "eine Rückkehr zu früheren Strukturen.", "nur für Großstädte gedacht."], "a": 1},
+    {"q": "Die Trennung der Stadt nach Funktionen führte dazu, dass …", "options": ["die Menschen mehr zu Fuß gingen.", "die Mieten sanken.", "viele Wege mit dem Auto zurückgelegt werden."], "a": 2},
+    {"q": "Den Vorwurf, das Konzept schränke die Freiheit ein, hält sie für …", "options": ["ein Missverständnis.", "teilweise berechtigt.", "eine bewusste Lüge."], "a": 0},
+    {"q": "In bestehenden Vierteln kann man das Konzept umsetzen, indem man …", "options": ["ganze Straßen neu baut.", "vorhandene Flächen und Räume anders nutzt.", "Autos vollständig verbietet."], "a": 1},
+    {"q": "Als Risiko nennt sie, dass …", "options": ["die Mieten steigen können.", "Geschäfte schließen müssen.", "der Verkehr zunimmt."], "a": 0},
+    {"q": "Gegen dieses Risiko hilft laut Prof. Lindqvist …", "options": ["ein Verzicht auf Grünflächen.", "der Bau neuer Parkplätze.", "die Förderung bezahlbaren Wohnraums."], "a": 2},
+    {"q": "Auf dem Land kann man den Grundgedanken umsetzen, zum Beispiel durch …", "options": ["neue Schnellstraßen.", "mobile Arztpraxen.", "größere Einkaufszentren."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören einen Vortrag. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Ein Medienwissenschaftler spricht darüber, warum sich Falschinformationen so schnell verbreiten.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Guten Tag, meine Damen und Herren. Vor einigen Jahren untersuchten Forscher mehr als hunderttausend Meldungen, die über einen Kurznachrichtendienst verbreitet worden waren. Ihr Ergebnis war ernüchternd: Falsche Nachrichten verbreiteten sich deutlich schneller und erreichten mehr Menschen als wahre. Heute möchte ich mit Ihnen darüber sprechen, woran das liegt und was wir dagegen tun können.\nEin häufiges Missverständnis ist, dass vor allem automatische Programme, sogenannte Bots, für die Verbreitung verantwortlich seien. Bots spielen zwar eine Rolle, aber die Studie zeigte: Den entscheidenden Anteil haben ganz normale Menschen, die Inhalte teilen.\nWarum tun sie das? Falschmeldungen sind häufig überraschender als die Wirklichkeit, und sie lösen starke Gefühle aus – Empörung, Angst oder Abscheu. Genau solche Inhalte teilen wir besonders gern, weil wir anderen etwas Neues mitteilen oder unsere Haltung zeigen möchten. Die Wahrheit ist dagegen oft kompliziert und weniger spektakulär.\nHinzu kommt, dass wir Informationen bevorzugt glauben, die zu unseren bisherigen Überzeugungen passen. Psychologen sprechen vom Bestätigungsfehler. Eine Meldung, die unser Weltbild stützt, prüfen wir kaum, während wir bei widersprechenden Informationen sehr kritisch werden.\nAuch die Gestaltung der Plattformen trägt dazu bei. Ihre Algorithmen belohnen Inhalte, die viele Reaktionen hervorrufen, und zeigen sie noch mehr Menschen. Ob ein Beitrag stimmt, spielt für diese Berechnung keine Rolle.\nWas können wir tun? Faktenchecks sind wichtig, kommen aber oft zu spät, weil sich die Falschmeldung bereits verbreitet hat. Vielversprechender ist ein Ansatz, den man als Vorbeugen bezeichnen könnte. Dabei lernen Menschen vorab die typischen Tricks von Falschinformationen kennen, etwa gefälschte Experten oder aus dem Zusammenhang gerissene Zitate. In Experimenten erkannten Teilnehmende nach einem kurzen Training manipulative Inhalte deutlich besser.\nUnd schließlich hilft eine ganz einfache Gewohnheit: Bevor Sie etwas teilen, halten Sie kurz inne und fragen Sie sich, woher die Information stammt. Schon dieser Moment des Nachdenkens senkt nachweislich die Bereitschaft, Falsches weiterzuverbreiten. Ich danke Ihnen.",
+   "items": [
+    {"q": "Die erwähnte Studie ergab, dass falsche Nachrichten …", "options": ["sich schneller verbreiteten als wahre.", "seltener geteilt wurden.", "vor allem ältere Menschen erreichten."], "a": 0},
+    {"q": "Für die Verbreitung von Falschmeldungen sind laut der Studie vor allem … verantwortlich.", "options": ["automatische Programme", "ganz normale Nutzerinnen und Nutzer", "Journalistinnen und Journalisten"], "a": 1},
+    {"q": "Falschmeldungen werden gern geteilt, weil sie …", "options": ["leichter zu finden sind.", "meist von Freunden stammen.", "starke Gefühle auslösen."], "a": 2},
+    {"q": "Der Bestätigungsfehler bedeutet, dass wir …", "options": ["Informationen, die zu unserer Meinung passen, weniger prüfen.", "allen Informationen misstrauen.", "eigene Fehler gern zugeben."], "a": 0},
+    {"q": "Die Algorithmen der Plattformen …", "options": ["prüfen den Wahrheitsgehalt von Beiträgen.", "zeigen Beiträge mit vielen Reaktionen noch mehr Menschen.", "bevorzugen Beiträge neuer Nutzer."], "a": 1},
+    {"q": "An Faktenchecks kritisiert der Redner, dass sie …", "options": ["oft fehlerhaft sind.", "zu teuer sind.", "häufig zu spät kommen."], "a": 2},
+    {"q": "Beim Vorbeugen lernen Menschen …", "options": ["typische Tricks von Falschinformationen kennen.", "eigene Nachrichten zu schreiben.", "soziale Plattformen zu meiden."], "a": 0},
+    {"q": "Der Redner empfiehlt, vor dem Teilen …", "options": ["den Beitrag zu kommentieren.", "die Herkunft der Information zu hinterfragen.", "Freunde um Rat zu fragen."], "a": 1}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1 – Forumsbeitrag",
+   "task": "Auf der Website einer Hochschulzeitung haben Sie den Artikel „Zurück zu Stift und Papier? Hochschulen reagieren auf künstliche Intelligenz“ gelesen. Darin wird berichtet, dass immer mehr Universitäten Hausarbeiten durch handschriftliche Prüfungen ersetzen. Sie schreiben einen Beitrag für das Forum der Zeitung.",
+   "prompt": "Schreiben Sie einen Forumsbeitrag (circa 230 Wörter). Gehen Sie dabei auf alle folgenden Punkte ein. Achten Sie auf eine klare Gliederung, eine passende Einleitung und einen passenden Schluss.",
+   "points": ["Chancen künstlicher Intelligenz für das Studium", "Gründe für und gegen Prüfungen ohne digitale Hilfsmittel", "alternative Prüfungsformen", "Ihre eigene Position mit Begründung"],
+   "words": 230,
+   "sample": "Der Artikel über die Rückkehr zu handschriftlichen Prüfungen hat in meinem Studiengang eine lebhafte Diskussion ausgelöst. Ich halte diese Entwicklung für verständlich, aber nicht für die richtige Antwort auf die Herausforderungen durch künstliche Intelligenz.\n\nZunächst sollte man die Chancen nicht übersehen. Programme, die Texte zusammenfassen oder Fragen beantworten, können das Lernen erheblich erleichtern, etwa wenn man sich in ein neues Fachgebiet einarbeitet. Wer sie kritisch nutzt, spart Zeit, die er für eigenes Nachdenken verwenden kann.\n\nSelbstverständlich müssen Hochschulen sicherstellen, dass Prüfungsleistungen tatsächlich von den Studierenden stammen. Insofern ist es nachvollziehbar, dass manche Lehrende auf Klausuren ohne Hilfsmittel zurückgreifen. Allerdings prüfen solche Klausuren vor allem auswendig gelerntes Wissen und die Fähigkeit, unter Zeitdruck zu schreiben – Kompetenzen, die im späteren Berufsleben kaum noch gefragt sind.\n\nSinnvoller fände ich Prüfungsformen, bei denen der Umgang mit neuen Werkzeugen ausdrücklich Teil der Aufgabe ist. Denkbar wären mündliche Prüfungen, in denen Studierende ihre Hausarbeit verteidigen, oder Projekte, in denen sie dokumentieren, wie sie digitale Hilfsmittel eingesetzt und deren Ergebnisse überprüft haben.\n\nMeiner Ansicht nach sollten Hochschulen künstliche Intelligenz daher nicht verbannen, sondern einen verantwortungsvollen Umgang damit lehren. Schließlich werden die Absolventinnen und Absolventen von heute in einer Arbeitswelt bestehen müssen, in der diese Programme selbstverständlich sind. Eine Rückkehr zu Stift und Papier wäre deshalb ein Schritt in die falsche Richtung."
+  },
+  {
+   "title": "Teil 2 – Formelle Anfrage",
+   "task": "Sie sind Mitglied eines internationalen Chors, der im Frühjahr ein Benefizkonzert veranstalten möchte. Sie schreiben an Frau Albrecht vom Kulturamt Ihrer Stadt, um einen Saal im Bürgerhaus zu mieten.",
+   "prompt": "Schreiben Sie eine formelle E-Mail (circa 120 Wörter). Gehen Sie auf alle folgenden Punkte ein und achten Sie auf eine passende Anrede und einen passenden Schluss.",
+   "points": ["Vorstellung Ihres Chors und Anlass", "gewünschter Termin und Raumbedarf", "Frage nach Kosten und technischer Ausstattung", "Bitte um Unterstützung bei der Werbung"],
+   "words": 120,
+   "sample": "Sehr geehrte Frau Albrecht,\n\nich wende mich im Namen des internationalen Chors „Klangbrücke“ an Sie. Unser Chor besteht aus rund vierzig Sängerinnen und Sängern aus fünfzehn Ländern. Im Frühjahr möchten wir ein Benefizkonzert zugunsten der örtlichen Tafel veranstalten.\n\nFür das Konzert würden wir gern am Samstag, dem 12. April, den großen Saal im Bürgerhaus mieten. Wir rechnen mit etwa zweihundert Gästen und benötigen den Saal ab 15 Uhr für die Probe.\n\nKönnten Sie mir mitteilen, welche Kosten für gemeinnützige Vereine anfallen und ob eine Tonanlage sowie ein Klavier vorhanden sind?\n\nDarüber hinaus wären wir Ihnen sehr dankbar, wenn das Kulturamt unser Konzert in seinem Veranstaltungskalender ankündigen könnte.\n\nÜber eine baldige Antwort würde ich mich freuen.\n\nMit freundlichen Grüßen\nTomasz Nowak"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Vortrag halten",
+   "task": "Sie sollen in einem Seminar einen Vortrag (circa 3–4 Minuten) halten. Wählen Sie eines der beiden Themen: A) „Sollten Großveranstaltungen wie Olympische Spiele noch stattfinden?“ oder B) „Ist Mehrsprachigkeit im Beruf heute unverzichtbar?“ Stellen Sie das Thema vor, beschreiben Sie verschiedene Positionen mit ihren Vor- und Nachteilen, nehmen Sie begründet Stellung und schließen Sie mit einem Fazit.",
+   "cards": ["Einleitung mit einem Beispiel oder einer Frage", "Bedeutung des Themas", "Argumente dafür und dagegen", "Situation in Ihrem Heimatland", "persönliche Stellungnahme und Schluss"],
+   "phrases": ["Stellen Sie sich einmal vor, …", "Dieses Thema ist deshalb so aktuell, weil …", "Auf der einen Seite …, auf der anderen Seite …", "In meinem Heimatland hat sich gezeigt, dass …", "Ich komme daher zu dem Schluss, dass …"],
+   "sample": "Stellen Sie sich einmal vor, Sie bewerben sich auf eine Stelle und erfahren im Gespräch, dass ein Teil der Besprechungen auf Englisch und ein anderer auf Spanisch stattfindet. Für viele Beschäftigte ist das längst Alltag. In meinem Vortrag geht es deshalb um die Frage, ob Mehrsprachigkeit im Beruf heute unverzichtbar ist.\n\nDieses Thema ist so aktuell, weil Unternehmen immer stärker international verflochten sind. Selbst kleine Betriebe haben Kunden oder Lieferanten im Ausland, und viele Teams arbeiten über Ländergrenzen hinweg zusammen.\n\nAuf der einen Seite bringt Mehrsprachigkeit klare Vorteile. Wer die Sprache seiner Geschäftspartner spricht, baut leichter Vertrauen auf und versteht kulturelle Feinheiten besser. Zudem verbessern Sprachkenntnisse nachweislich die Chancen auf dem Arbeitsmarkt.\n\nAuf der anderen Seite gibt es viele Berufe, in denen man mit einer Sprache gut zurechtkommt, etwa im Handwerk oder in der öffentlichen Verwaltung. Außerdem werden Übersetzungsprogramme immer besser, sodass einfache Kommunikation auch ohne Fremdsprachenkenntnisse möglich ist.\n\nIn meinem Heimatland hat sich gezeigt, dass vor allem im Tourismus und in der Industrie gute Englischkenntnisse vorausgesetzt werden. Wer zusätzlich eine weitere Sprache beherrscht, hat oft einen entscheidenden Vorsprung.\n\nIch komme daher zu dem Schluss, dass Mehrsprachigkeit nicht für jeden Beruf unverzichtbar ist, aber in sehr vielen Bereichen zu einer Schlüsselkompetenz geworden ist. Gerade weil Maschinen beim Übersetzen helfen, gewinnt das echte Verständnis für andere Kulturen an Bedeutung. Vielen Dank für Ihre Aufmerksamkeit."
+  },
+  {
+   "title": "Teil 2 – Diskussion führen",
+   "task": "Diskutieren Sie mit Ihrem Gesprächspartner über die Frage: „Sollte der öffentliche Nahverkehr kostenlos sein?“ Tauschen Sie Argumente aus, gehen Sie auf die Äußerungen Ihres Gesprächspartners ein und versuchen Sie am Ende, zu einem gemeinsamen Ergebnis zu kommen.",
+   "cards": ["Finanzierung", "Umwelt und Klima", "soziale Gerechtigkeit", "Qualität und Ausbau des Angebots", "Erfahrungen aus anderen Städten"],
+   "phrases": ["Ich bin fest davon überzeugt, dass …", "Darf ich an dieser Stelle einhaken?", "Das sehe ich grundsätzlich auch so, nur …", "Was halten Sie davon, wenn …?", "Dann sind wir uns also einig, dass …"],
+   "sample": "A: Ich bin fest davon überzeugt, dass ein kostenloser Nahverkehr viele Menschen zum Umsteigen bewegen würde. Das wäre gut für das Klima und für die Luft in den Städten.\nB: Darf ich an dieser Stelle einhaken? Ich bezweifle, dass der Preis das Hauptproblem ist. Viele fahren Auto, weil Busse auf dem Land nur zweimal am Tag fahren.\nA: Das sehe ich grundsätzlich auch so, nur betrifft das vor allem ländliche Regionen. In der Stadt wäre der Preis für viele ein wichtiger Faktor, besonders für Menschen mit wenig Geld.\nB: Aber wer soll das bezahlen? Die Verkehrsbetriebe sind schon jetzt auf die Ticketeinnahmen angewiesen.\nA: Man könnte zum Beispiel die Parkgebühren erhöhen und die Einnahmen in den Nahverkehr stecken.\nB: Ich fürchte trotzdem, dass das Geld dann für den Ausbau fehlt. Kostenlos nützt wenig, wenn die Busse überfüllt und unpünktlich sind.\nA: Was halten Sie davon, wenn man zunächst ein sehr günstiges Ticket einführt und gleichzeitig das Angebot ausbaut?\nB: Das klingt vernünftig. Dann sind wir uns also einig, dass ein günstiger Preis sinnvoll ist, der Ausbau aber Vorrang haben muss.\nA: Ja, darauf können wir uns einigen."
+  }
+ ]
+}

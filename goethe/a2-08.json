@@ -1,0 +1,88 @@
+{
+ "id":"A2-08","level":"A2","title":"Modelltest 8",
+ "lesen":[
+  {"title":"Teil 1","task":"Sie lesen in einer Zeitung diesen Text. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.","type":"abc","texts":[{"title":"Ein Bus wird zum Café","body":"Wo früher Fahrgäste saßen, stehen heute kleine Tische und bequeme Sessel: Die Studentinnen Lina und Marie haben einen alten Stadtbus gekauft und daraus ein Café gemacht. Der rote Bus steht jeden Tag an einem anderen Ort – montags vor der Universität, mittwochs auf dem Marktplatz und am Wochenende am See.\n\n„Wir wollten ein Café eröffnen, aber die Mieten in der Stadt sind viel zu hoch“, erklärt Lina. Den Bus haben sie für 4.000 Euro von den Stadtwerken gekauft. Ein halbes Jahr lang haben sie ihn mit Freunden umgebaut. Der Fahrersitz ist geblieben – dort steht jetzt die Kaffeemaschine.\n\nIm „Café Linie 7“ gibt es Kaffee, Kuchen und belegte Brötchen. Alles ist bio, und die Kuchen backen die beiden selbst. Wer möchte, kann sich auf der Internetseite informieren, wo der Bus gerade steht. Im Winter, wenn es kalt ist, steht das Café in einer großen Halle in der Altstadt."}],"items":[
+   {"q":"Lina und Marie haben …","options":["einen neuen Bus gekauft.","ein Café in einem alten Bus eröffnet.","eine Busfirma gegründet."],"a":1},
+   {"q":"Das Café …","options":["steht immer am gleichen Platz.","steht an verschiedenen Orten.","fährt Fahrgäste durch die Stadt."],"a":1},
+   {"q":"Die beiden haben einen Bus gekauft, weil …","options":["die Mieten zu teuer sind.","sie gern Auto fahren.","der Bus sehr billig war."],"a":0},
+   {"q":"Den Bus …","options":["haben Lina und Marie mit Freunden umgebaut.","hat eine Firma umgebaut.","haben sie nicht verändert."],"a":0},
+   {"q":"Im Winter …","options":["ist das Café geschlossen.","steht das Café in einer Halle.","fährt der Bus in den Süden."],"a":1}
+  ]},
+  {"title":"Teil 2","task":"Sie sind in einem Einkaufszentrum. Lesen Sie die Informationstafel und die Aufgaben 6–10. Wohin gehen Sie? Wählen Sie a, b oder c.","type":"abc","texts":[{"title":"City-Galerie – Shopfinder","body":"2. Obergeschoss: Kino · Fitnessstudio · Restaurants und Food-Court\n1. Obergeschoss: Mode und Schuhe · Sportgeschäft · Optiker · Friseur\nErdgeschoss: Buchhandlung · Elektronikmarkt · Apotheke · Information\nUntergeschoss: Supermarkt · Drogerie · Bäckerei · Postfiliale\nParkdeck: Parkplätze · Fahrradstellplätze · E-Ladestationen"}],"items":[
+   {"q":"Sie möchten einen Brief abschicken.","options":["Untergeschoss","Erdgeschoss","anderer Stock"],"a":0},
+   {"q":"Sie brauchen eine neue Brille.","options":["Erdgeschoss","2. Obergeschoss","1. Obergeschoss"],"a":2},
+   {"q":"Sie möchten Ihr Elektroauto laden.","options":["Untergeschoss","Erdgeschoss","anderer Stock"],"a":2},
+   {"q":"Sie möchten nach dem Einkaufen einen Film sehen.","options":["2. Obergeschoss","1. Obergeschoss","Erdgeschoss"],"a":0},
+   {"q":"Sie suchen einen Reiseführer über Spanien.","options":["1. Obergeschoss","Erdgeschoss","Untergeschoss"],"a":1}
+  ]},
+  {"title":"Teil 3","task":"Sie lesen eine E-Mail. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","texts":[{"title":"E-Mail","body":"Liebe Kolleginnen und Kollegen,\n\nwie Sie wissen, gehe ich Ende Juni nach 25 Jahren in der Firma in Rente. Ich möchte mich gern von Ihnen verabschieden und lade Sie alle herzlich zu einer kleinen Feier ein.\n\nDie Feier findet am Freitag, dem 27. Juni, ab 16 Uhr in der Kantine statt. Es gibt ein kleines Buffet mit Salaten und Fingerfood, und für die Getränke ist auch gesorgt. Meine Frau backt ihren berühmten Käsekuchen!\n\nBitte sagen Sie mir bis zum 20. Juni Bescheid, ob Sie kommen, damit ich genug Essen bestellen kann.\n\nGeschenke brauche ich wirklich nicht. Wenn Sie trotzdem etwas geben möchten, freue ich mich über eine kleine Spende für den Kindergarten in unserer Straße. Dort möchte man einen neuen Spielplatz bauen.\n\nIch freue mich auf Sie!\n\nHerzliche Grüße\nWerner Dietrich"}],"items":[
+   {"q":"Herr Dietrich …","options":["geht in Rente.","hat eine neue Stelle.","hat Geburtstag."],"a":0},
+   {"q":"Die Feier ist …","options":["in der Kantine.","in einem Restaurant.","bei Herrn Dietrich zu Hause."],"a":0},
+   {"q":"Den Kuchen …","options":["bringen die Kollegen mit.","kauft Herr Dietrich.","backt Herrn Dietrichs Frau."],"a":2},
+   {"q":"Die Kollegen sollen bis zum 20. Juni …","options":["Geld sammeln.","sagen, ob sie kommen.","ein Geschenk kaufen."],"a":1},
+   {"q":"Herr Dietrich wünscht sich …","options":["eine Spende für einen Kindergarten.","ein großes Geschenk.","Blumen."],"a":0}
+  ]},
+  {"title":"Teil 4","task":"Sechs Personen suchen im Internet nach Angeboten. Lesen Sie die Aufgaben 16–20 und die Anzeigen a–f. Welche Anzeige passt zu welcher Person? Eine Anzeige brauchen Sie nicht.","type":"match","choices":[
+   {"key":"a","text":"Reitstall Sonnenhof: Reitstunden für Kinder ab 8 Jahren, Ferienkurse im Sommer mit Übernachtung."},
+   {"key":"b","text":"Gebrauchte Babysachen: Kinderwagen, Babybett und Kleidung (0–12 Monate) günstig abzugeben. Tel. 0152 66 77 88"},
+   {"key":"c","text":"Selbsthilfegruppe „Endlich rauchfrei“: Gemeinsam mit dem Rauchen aufhören. Jeden Montag 19 Uhr im Gesundheitsamt."},
+   {"key":"d","text":"Fahrradtour für Senioren: Gemütliche Touren (20–30 km) jeden Donnerstag, auch mit E-Bike. Treffpunkt Rathaus."},
+   {"key":"e","text":"Brettspiel-Abend im Spielecafé: Jeden Mittwoch 18–23 Uhr, über 300 Spiele, Neulinge willkommen!"},
+   {"key":"f","text":"Gartenparzelle zu vermieten: Kleingarten mit Hütte, 300 m², nahe der Stadtmitte, 250 € im Jahr."}
+  ],"items":[
+   {"q":"Herr und Frau Zimmermann (beide 68) fahren gern Fahrrad und möchten nicht allein fahren.","a":"d"},
+   {"q":"Oliver möchte schon lange aufhören zu rauchen.","a":"c"},
+   {"q":"Familie Sharif erwartet im Frühling ein Baby und hat wenig Geld.","a":"b"},
+   {"q":"Frau Novak wohnt in einer Wohnung ohne Balkon und möchte gern Gemüse anbauen.","a":"f"},
+   {"q":"Ida (10) liebt Pferde und möchte in den Sommerferien etwas mit Tieren machen.","a":"a"}
+  ]}
+ ],
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Simone, hier ist Achim. Ich bin heute später zu Hause, ich muss noch zum Friseur. Kannst du bitte die Kinder um vier von der Schule abholen?","q":"Was soll Simone machen?","options":["Zum Friseur gehen","Einkaufen","Die Kinder abholen"],"a":2},
+   {"audio":"Das Wetter: Heute bleibt es trocken, aber windig. Die Temperaturen liegen bei acht Grad. Morgen kommt Schnee, vor allem in den Bergen.","q":"Wie ist das Wetter heute?","options":["Es schneit.","Trocken und windig","Warm und sonnig"],"a":1},
+   {"audio":"Hier ist die Firma Möbel-Express. Ihr Schrank wird am Donnerstag zwischen acht und zwölf Uhr geliefert. Bitte sorgen Sie dafür, dass jemand zu Hause ist.","q":"Wann wird der Schrank geliefert?","options":["Am Dienstag","Am Donnerstagnachmittag","Am Donnerstagvormittag"],"a":2},
+   {"audio":"Liebe Kundinnen und Kunden, wegen eines technischen Problems können Sie heute an den Kassen eins bis drei nur bar bezahlen. An Kasse vier ist Kartenzahlung möglich.","q":"Wo kann man mit Karte bezahlen?","options":["An Kasse 1","An Kasse 3","An Kasse 4"],"a":2},
+   {"audio":"Hallo Tamara, hier ist dein Kursleiter, Herr Engel. Die Prüfung ist nicht am zehnten, sondern schon am achten Juni. Bitte sag es auch den anderen.","q":"Wann ist die Prüfung?","options":["Am 10. Juni","Am 18. Juni","Am 8. Juni"],"a":2}
+  ]},
+  {"title":"Teil 2","task":"Sie hören ein Gespräch. Sie hören den Text einmal. Welches Hobby hat welche Person? Wählen Sie für die Aufgaben 6–10 einen passenden Buchstaben a–h.","type":"match","plays":1,"audio":"Interviewer: Hallo, wir machen eine Umfrage für die Schülerzeitung. Was macht ihr in eurer Freizeit? Fangen wir mit dir an, Leon.\nLeon: Ich spiele in einer Band Schlagzeug. Wir proben jeden Freitag.\nInterviewer: Cool! Und du, Aylin?\nAylin: Ich zeichne gern, am liebsten Comics. Ich möchte später Grafikdesignerin werden.\nInterviewer: Und du, Finn?\nFinn: Ich gehe dreimal pro Woche schwimmen. Ich trainiere für einen Wettkampf.\nInterviewer: Wow. Und was ist mit dir, Sara?\nSara: Ich koche gern. Am Wochenende probiere ich neue Rezepte aus, meistens aus Asien.\nInterviewer: Lecker. Und zum Schluss Jonas.\nJonas: Ich bin im Schachverein. Nächsten Monat habe ich mein erstes Turnier.","choices":[
+   {"key":"a","text":"Schach spielen"},
+   {"key":"b","text":"Fußball spielen"},
+   {"key":"c","text":"kochen"},
+   {"key":"d","text":"Schlagzeug spielen"},
+   {"key":"e","text":"tanzen"},
+   {"key":"f","text":"schwimmen"},
+   {"key":"g","text":"zeichnen"},
+   {"key":"h","text":"lesen"}
+  ],"items":[
+   {"q":"Leon","a":"d"},
+   {"q":"Aylin","a":"g"},
+   {"q":"Finn","a":"f"},
+   {"q":"Sara","a":"c"},
+   {"q":"Jonas","a":"a"}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":1,"items":[
+   {"audio":"Frau: Ich würde gern einen Termin für mein Auto machen. Die Bremsen quietschen.\nMann: Am Montag ist alles voll. Geht es am Dienstag um acht?\nFrau: Ja, das passt.","q":"Wann ist der Termin?","options":["Dienstag, 8 Uhr","Montag, 8 Uhr","Dienstag, 18 Uhr"],"a":0},
+   {"audio":"Mann: Was möchtest du trinken?\nFrau: Ich hätte gern einen Tee. Für Kaffee ist es schon zu spät, sonst kann ich nicht schlafen.\nMann: Gut, dann nehme ich auch einen.","q":"Warum trinkt die Frau keinen Kaffee?","options":["Sie mag keinen Kaffee.","Der Kaffee ist alle.","Es ist schon spät."],"a":2},
+   {"audio":"Frau: Hast du die Wohnung in der Goethestraße bekommen?\nMann: Ja! Ich ziehe am ersten März ein. Sie ist ein bisschen klein, aber sehr hell.\nFrau: Glückwunsch!","q":"Wann zieht der Mann ein?","options":["Am 1. Mai","Am 1. März","Am 10. März"],"a":1},
+   {"audio":"Mann: Was hat dir der Arzt gesagt?\nFrau: Ich soll viel trinken und drei Tage im Bett bleiben. Es ist nur eine Erkältung.\nMann: Dann gute Besserung!","q":"Was soll die Frau machen?","options":["Im Bett bleiben","Medikamente nehmen","Ins Krankenhaus gehen"],"a":0},
+   {"audio":"Frau: Wie findest du den neuen Chef?\nMann: Er ist sehr freundlich und hört gut zu. Aber er macht viel zu lange Besprechungen.\nFrau: Das stimmt!","q":"Was gefällt dem Mann am Chef nicht?","options":["Er ist unfreundlich.","Die Besprechungen sind zu lang.","Er hört nicht zu."],"a":1}
+  ]},
+  {"title":"Teil 4","task":"Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie für die Aufgaben 16–20: Ja oder Nein?","type":"yn","plays":2,"audio":"Moderator: Heute sprechen wir mit Frau Becker. Sie hat mit 55 Jahren angefangen, Deutsch als Fremdsprache zu unterrichten. Frau Becker, wie kam es dazu?\nFrau Becker: Ich war dreißig Jahre Sekretärin. Als meine Firma geschlossen hat, wollte ich etwas ganz Neues machen. Eine Freundin hat ehrenamtlich Deutsch für Geflüchtete unterrichtet, und ich habe sie einmal begleitet.\nModerator: Und dann?\nFrau Becker: Dann habe ich eine Weiterbildung gemacht. Sie hat ein Jahr gedauert. Seit drei Jahren unterrichte ich jetzt an einer Sprachschule, vor allem Erwachsene.\nModerator: Was macht Ihnen besonders Spaß?\nFrau Becker: Die Menschen! In meinen Kursen sitzen Leute aus zwanzig Ländern. Ich lerne jeden Tag etwas über andere Kulturen.\nModerator: Gibt es auch Schwierigkeiten?\nFrau Becker: Manchmal ist es schwer, wenn die Teilnehmer sehr verschiedene Niveaus haben. Und am Anfang war ich vor jeder Stunde sehr nervös.\nModerator: Was würden Sie anderen in Ihrem Alter raten?\nFrau Becker: Man ist nie zu alt, um etwas Neues anzufangen!","items":[
+   {"q":"Frau Becker war früher Sekretärin.","a":true},
+   {"q":"Sie hat ihre Weiterbildung in drei Monaten gemacht.","a":false},
+   {"q":"Frau Becker unterrichtet vor allem Kinder.","a":false},
+   {"q":"In ihren Kursen sind Menschen aus vielen Ländern.","a":true},
+   {"q":"Am Anfang war Frau Becker oft nervös.","a":true}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Sie haben bei Ihrer Freundin Sabine ein Buch geliehen. Sie können es nicht wie versprochen zurückbringen. Schreiben Sie Sabine eine SMS.","prompt":"Schreiben Sie circa 20–30 Wörter zu allen drei Punkten.","points":["Entschuldigen Sie sich.","Sagen Sie, warum Sie das Buch noch brauchen.","Sagen Sie, wann Sie es zurückbringen."],"words":25,"sample":"Liebe Sabine, entschuldige bitte! Ich habe das Buch noch nicht fertig gelesen, weil ich so viel arbeiten musste. Darf ich es dir am Mittwoch zurückbringen? Liebe Grüße, Zeynep"},
+  {"title":"Teil 2","task":"Sie haben eine Reise bei einem Reisebüro gebucht. Jetzt möchten Sie etwas ändern. Schreiben Sie eine E-Mail an das Reisebüro.","prompt":"Schreiben Sie circa 30–40 Wörter zu allen drei Punkten. Vergessen Sie nicht Anrede und Gruß.","points":["Welche Reise haben Sie gebucht?","Was möchten Sie ändern?","Fragen Sie, ob die Änderung etwas kostet."],"words":35,"sample":"Sehr geehrte Damen und Herren,\n\nich habe bei Ihnen eine Reise nach Mallorca vom 3. bis 10. August gebucht. Leider muss ich das Datum ändern. Ist die Reise auch vom 10. bis 17. August möglich? Kostet die Änderung etwas?\n\nMit freundlichen Grüßen\nRavi Patel"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Fragen zur Person","task":"Stellen Sie Ihrer Partnerin oder Ihrem Partner Fragen zu den Wörtern auf den Karten und beantworten Sie ihre oder seine Fragen.","cards":["Alter?","Lieblingsfilm?","Haustier?","Frühstück?","Hobbys?","Stadt oder Land?","Geschwister?","Schule?"],"phrases":["Wohnst du lieber in der Stadt oder auf dem Land?","Was ist dein Lieblingsfilm?","Was frühstückst du?","Hast du Hobbys?"],"sample":"Wohnst du lieber in der Stadt oder auf dem Land? – Lieber in der Stadt, da gibt es mehr Geschäfte und Kinos.\nWas frühstückst du? – Meistens Müsli mit Joghurt.\nWas ist dein Lieblingsfilm? – Ich mag „Titanic“ sehr gern."},
+  {"title":"Teil 2 – Über sich sprechen","task":"Erzählen Sie etwas über Ihr Leben. Thema: „Ihre Freunde“. Die Fragen auf der Karte helfen Ihnen.","cards":["Wer?","Woher kennen Sie sie?","Was machen Sie zusammen?","Wie oft?"],"phrases":["Meine beste Freundin heißt …","Wir kennen uns aus …","Zusammen … wir oft …","Wir sehen uns …"],"sample":"Meine beste Freundin heißt Mariam. Wir kennen uns aus dem Deutschkurs. Zusammen gehen wir oft ins Kino oder kochen. Wir sehen uns fast jedes Wochenende. Wenn ich ein Problem habe, kann ich sie immer anrufen."},
+  {"title":"Teil 3 – Gemeinsam etwas planen","task":"Sie möchten mit Ihrer Partnerin oder Ihrem Partner am Montag zusammen zum Bürgeramt gehen und danach Kaffee trinken. Finden Sie einen Termin. Hier ist Ihr Terminkalender.","cards":["8–10 Uhr: frei","10–11 Uhr: Arzttermin","11–13 Uhr: frei","13–16 Uhr: Arbeit","ab 16 Uhr: Kinder"],"phrases":["Wann gehen wir zum Bürgeramt?","Das Bürgeramt öffnet um …","Um … habe ich einen Termin.","Geht es um …?","Danach können wir …"],"sample":"A: Wann gehen wir am Montag zum Bürgeramt?\nB: Um zehn habe ich einen Arzttermin. Geht es um acht?\nA: Um acht ist schlecht, da bringe ich meine Tochter zur Schule. Wie wäre es um elf?\nB: Um elf passt mir gut. Danach können wir im Café am Markt einen Kaffee trinken.\nA: Prima!"}
+ ]
+}

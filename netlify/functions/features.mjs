@@ -1,13 +1,14 @@
 import { changeUsage, summary, fault } from './_shared/feature-core.mjs';
 import { identity, liveIdentity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from './_shared/feature-services.mjs';
-import { configuredProviders, connectProvider, translateText } from './_shared/live-providers.mjs';
+import { configuredProviders, connectProvider, translateText, CONVERSATION_LANGUAGES } from './_shared/live-providers.mjs';
+import { scoreGoethe, LEVELS as GOETHE_LEVELS } from './_shared/goethe-ai.mjs';
 import { withCors } from './_shared/cors.mjs';
 import {welcomeGift} from './_shared/welcome-gift.mjs';
 import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 import {playCatalog} from './_shared/play-catalog.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.15' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.18' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
@@ -22,14 +23,14 @@ export function createHandler(services = { identity, liveIdentity, speechToken, 
       let body;
       try { body = JSON.parse(raw); } catch { throw fault('invalid_input'); }
       if (!body || typeof body !== 'object') throw fault('invalid_input');
-      if (!['status', 'playCatalog', 'playStatus', 'check', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'liveText', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
+      if (!['status', 'playCatalog', 'playStatus', 'check', 'goetheScore', 'liveStart', 'liveRenew', 'liveStop', 'liveConnect', 'liveText', 'pdfBegin', 'pdfCommit', 'pdfCancel', 'verifyPurchase','welcome','welcomeAck'].includes(body.action)) throw fault('invalid_action');
       // Frequent in-lesson requests reuse a recently computed badge tier; a
       // new lesson (liveStart) and every other action recompute it.
       const frequent = ['liveRenew', 'liveConnect', 'liveText', 'liveStop'].includes(body.action);
       ctx = await (frequent && services.liveIdentity ? services.liveIdentity : services.identity)(request);
       if(body.action==='playCatalog')return reply(await(services.playCatalog||playCatalog).load({refresh:body.refresh===true}));
       if(body.action==='playStatus'){if((await ctx.db.ref('admins/'+ctx.uid).get()).val()!==true)throw fault('admin_required',403);return reply(await(services.playCatalog||playCatalog).report());}
-      if(body.action==='check')await(services.assertAvailable||assertAvailable)(ctx,'writing');
+      if(body.action==='check'||body.action==='goetheScore')await(services.assertAvailable||assertAvailable)(ctx,'writing');
       if(['liveStart','liveConnect','liveRenew','liveText'].includes(body.action))await(services.assertAvailable||assertAvailable)(ctx,'live');
       if(['welcome','welcomeAck'].includes(body.action))return reply({welcome:await (services.welcomeGift||welcomeGift)(ctx,{ack:body.action==='welcomeAck'})});
       ref = ctx.db.ref(`serverFeatureUsage/${ctx.uid}`);
@@ -68,7 +69,7 @@ export function createHandler(services = { identity, liveIdentity, speechToken, 
       }
       if (!operationId(body.id)) throw fault('invalid_operation');
       if(body.action==='liveText'){
-        if(typeof body.text!=='string'||!body.text.trim()||body.text.length>4000||!['tr','de','en','ar','fr','es','ru'].includes(body.source)||!['tr','de','en','ar','fr','es','ru'].includes(body.target))throw fault('invalid_input',422);
+        if(typeof body.text!=='string'||!body.text.trim()||body.text.length>4000||!CONVERSATION_LANGUAGES.includes(body.source)||!CONVERSATION_LANGUAGES.includes(body.target))throw fault('invalid_input',422);
         await mutate('liveText',{id:body.id});
         return reply(await(services.translateText||translateText)(body.text,body.source,body.target));
       }
@@ -89,6 +90,23 @@ export function createHandler(services = { identity, liveIdentity, speechToken, 
           const matches = await services.checkWriting(body.text.trim(), body.language, uiLanguage);
           const value = await mutate('writingCommit', params);
           return reply({ matches, quota: quota(value) });
+        } catch (error) {
+          try { await mutate('writingCancel', params); } catch { /* Pending reservation expires after 60 seconds. */ }
+          throw error;
+        }
+      }
+      // A Goethe practice assessment spends one writing check, exactly like the
+      // writing checker: reserved first, refunded when no provider answers.
+      if (body.action === 'goetheScore') {
+        const task = typeof body.task === 'string' ? body.task.trim() : '', text = typeof body.text === 'string' ? body.text.trim() : '';
+        if (!GOETHE_LEVELS.includes(body.level) || !['schreiben','sprechen'].includes(body.module) || !task || task.length > 3000 || !text || text.length > 4000) throw fault('invalid_input', 422);
+        const params = { id: body.id, hash: services.sha256('goethe\n' + body.level + '\n' + body.module + '\n' + task + '\n' + text) };
+        await mutate('writingBegin', params);
+        try {
+          const uiLanguage = ['tr','en','de','ar','fr','es','ru'].includes(body.uiLanguage) ? body.uiLanguage : 'tr';
+          const assessment = await (services.scoreGoethe || scoreGoethe)({ level: body.level, module: body.module, task, text, uiLanguage });
+          const value = await mutate('writingCommit', params);
+          return reply({ assessment, quota: quota(value) });
         } catch (error) {
           try { await mutate('writingCancel', params); } catch { /* Pending reservation expires after 60 seconds. */ }
           throw error;

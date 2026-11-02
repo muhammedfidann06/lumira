@@ -1,0 +1,529 @@
+{
+ "id": "A2-04",
+ "level": "A2",
+ "title": "Modelltest 4",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen in einer Zeitung diesen Text. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Ein Garten auf dem Dach",
+     "body": "Auf dem Dach eines Supermarkts in Hannover wachsen seit diesem Sommer Tomaten, Salat und Kräuter. Der Gemüsegarten gehört allen Nachbarn: Jeder, der möchte, kann hier ein kleines Beet bekommen und selbst Gemüse anbauen. Die Idee hatte der Verein „Grüne Stadt“.\n\n„In der Stadt haben viele Menschen keinen eigenen Garten“, sagt Vereinsmitglied Julia Krämer. „Hier können sie draußen arbeiten und lernen, wie Gemüse wächst.“ Besonders Familien mit Kindern machen gern mit. Jeden Freitagnachmittag gibt es einen Gartenkurs für Kinder.\n\nDer Supermarkt freut sich auch über das Projekt: Das Gemüse, das die Nachbarn nicht selbst essen, verkauft der Markt unten im Laden. Das Geld bekommt der Verein. Im nächsten Jahr soll es auf dem Dach auch Bienen geben – dann gibt es bald Honig aus der Nachbarschaft."
+    }
+   ],
+   "items": [
+    {
+     "q": "Den Garten auf dem Dach …",
+     "options": [
+      "können alle Nachbarn benutzen.",
+      "hat der Supermarkt für seine Mitarbeiter gebaut.",
+      "gibt es schon viele Jahre."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Julia Krämer sagt, dass …",
+     "options": [
+      "Gärtnern teuer ist.",
+      "viele Stadtbewohner keinen Garten haben.",
+      "Kinder nicht im Garten helfen."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Jeden Freitag …",
+     "options": [
+      "gibt es Gemüse umsonst.",
+      "ist der Garten geschlossen.",
+      "lernen Kinder etwas über den Garten."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Gemüse, das übrig bleibt, …",
+     "options": [
+      "wird im Supermarkt verkauft.",
+      "wirft man weg.",
+      "bekommt eine Schule."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Im nächsten Jahr …",
+     "options": [
+      "schließt der Garten.",
+      "soll es Bienen auf dem Dach geben.",
+      "baut man ein Café."
+     ],
+     "a": 1
+    }
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie sind in einem Freizeitzentrum. Lesen Sie die Informationstafel und die Aufgaben 6–10. Wohin gehen Sie? Wählen Sie a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Freizeitzentrum Am Fluss – Übersicht",
+     "body": "3. Stock: Tanzsaal · Yoga- und Gymnastikraum · Musikproberäume\n2. Stock: Kletterhalle · Tischtennis · Billard\n1. Stock: Kino · Bowlingbahn · Spielhalle für Kinder\nErdgeschoss: Empfang und Kasse · Garderobe · Restaurant „Flussblick“\nUntergeschoss: Sauna · Schwimmbad · Umkleiden"
+    }
+   ],
+   "items": [
+    {
+     "q": "Sie möchten mit Freunden kegeln bzw. bowlen.",
+     "options": [
+      "2. Stock",
+      "1. Stock",
+      "anderer Stock"
+     ],
+     "a": 1
+    },
+    {
+     "q": "Sie möchten Ihren Mantel abgeben.",
+     "options": [
+      "Untergeschoss",
+      "Erdgeschoss",
+      "1. Stock"
+     ],
+     "a": 1
+    },
+    {
+     "q": "Sie spielen in einer Band und brauchen einen Raum zum Üben.",
+     "options": [
+      "anderer Stock",
+      "2. Stock",
+      "1. Stock"
+     ],
+     "a": 0
+    },
+    {
+     "q": "Sie möchten nach dem Sport schwimmen gehen.",
+     "options": [
+      "3. Stock",
+      "Untergeschoss",
+      "Erdgeschoss"
+     ],
+     "a": 1
+    },
+    {
+     "q": "Ihre Tochter möchte klettern.",
+     "options": [
+      "3. Stock",
+      "anderer Stock",
+      "2. Stock"
+     ],
+     "a": 2
+    }
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie lesen eine E-Mail. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "E-Mail",
+     "body": "Hi Lukas,\n\nentschuldige, dass ich so lange nicht geschrieben habe. Die letzten Wochen waren total stressig: Ich hatte meine Abschlussprüfungen an der Berufsschule. Aber jetzt ist alles vorbei, und ich habe bestanden! Ab Juli bin ich offiziell Mechatroniker.\n\nMein Ausbildungsbetrieb möchte mich übernehmen, das heißt, ich kann dort bleiben und bekomme einen festen Vertrag. Darüber freue ich mich sehr, denn die Kollegen sind super.\n\nBevor ich richtig anfange, habe ich drei Wochen Urlaub. Ich möchte mit dem Zug durch Skandinavien reisen – Dänemark, Schweden und Norwegen. Hast du nicht Lust mitzukommen? Du hast doch im August Semesterferien. Wir könnten in Jugendherbergen schlafen, das ist nicht so teuer.\n\nRuf mich doch mal an, dann können wir alles besprechen.\n\nViele Grüße\nJannik"
+    }
+   ],
+   "items": [
+    {
+     "q": "Jannik hat nicht geschrieben, weil …",
+     "options": [
+      "er krank war.",
+      "er umgezogen ist.",
+      "er Prüfungen hatte."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Nach der Ausbildung …",
+     "options": [
+      "sucht Jannik eine neue Firma.",
+      "studiert Jannik.",
+      "bleibt Jannik in seinem Betrieb."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Jannik möchte …",
+     "options": [
+      "mit dem Zug durch Skandinavien reisen.",
+      "mit dem Auto nach Italien fahren.",
+      "nach Norwegen fliegen."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Lukas ist wahrscheinlich …",
+     "options": [
+      "Mechatroniker.",
+      "Student.",
+      "Lehrer."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Die beiden könnten …",
+     "options": [
+      "in Jugendherbergen schlafen.",
+      "im Hotel übernachten.",
+      "zelten."
+     ],
+     "a": 0
+    }
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sechs Personen suchen im Internet nach Angeboten. Lesen Sie die Aufgaben 16–20 und die Anzeigen a–f. Welche Anzeige passt zu welcher Person? Eine Anzeige brauchen Sie nicht.",
+   "type": "match",
+   "choices": [
+    {
+     "key": "a",
+     "text": "Kinderbetreuung im Sportverein: Während Sie trainieren, spielen Ihre Kinder bei uns. Montag bis Freitag 9–12 Uhr."
+    },
+    {
+     "key": "b",
+     "text": "Gebrauchte Lehrbücher für Deutschkurse A1–B2 zu verkaufen, wie neu, je 8 €. Abholung in der Nordstadt."
+    },
+    {
+     "key": "c",
+     "text": "Kochabend „Länder der Welt“: Jeden Monat kochen Menschen aus verschiedenen Ländern zusammen. Teilnahme kostenlos."
+    },
+    {
+     "key": "d",
+     "text": "Mitfahrgelegenheit: Fahre jeden Freitag von Köln nach Hamburg und am Sonntag zurück. Noch 2 Plätze frei, 25 € pro Fahrt."
+    },
+    {
+     "key": "e",
+     "text": "Nähkurs für Anfänger: In vier Abenden nähen Sie Ihre erste Tasche. Nähmaschinen sind vorhanden."
+    },
+    {
+     "key": "f",
+     "text": "Stadtführung für Neubürger: Lernen Sie Ihre neue Stadt kennen – Rathaus, Behörden und die schönsten Plätze. Jeden ersten Samstag."
+    }
+   ],
+   "items": [
+    {
+     "q": "Familie Rossi ist gerade in die Stadt gezogen und möchte sie besser kennenlernen.",
+     "a": "f"
+    },
+    {
+     "q": "Frau Okoye möchte morgens Sport machen, aber sie hat zwei kleine Kinder.",
+     "a": "a"
+    },
+    {
+     "q": "Herr Lindgren möchte Leute treffen und gern neue Gerichte probieren.",
+     "a": "c"
+    },
+    {
+     "q": "Marta besucht ab September einen Deutschkurs B1 und hat wenig Geld.",
+     "a": "b"
+    },
+    {
+     "q": "Tobias möchte am Wochenende seine Freundin in Hamburg besuchen, hat aber kein Auto.",
+     "a": "d"
+    }
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {
+     "audio": "Guten Tag, hier ist das Hotel Seeblick. Leider ist das Restaurant am Abend Ihrer Ankunft wegen einer Hochzeit geschlossen. Gegenüber gibt es aber eine sehr gute Pizzeria.",
+     "q": "Warum ist das Restaurant geschlossen?",
+     "options": [
+      "Wegen Renovierung",
+      "Wegen Urlaub",
+      "Wegen einer Hochzeit"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Hallo Inga, hier ist Mira. Ich wollte dir nur sagen: Der Yogakurs ist ab nächster Woche nicht mehr am Dienstag, sondern am Mittwoch. Die Uhrzeit ist gleich, achtzehn Uhr.",
+     "q": "Wann ist der Yogakurs ab nächster Woche?",
+     "options": [
+      "Dienstag, 18 Uhr",
+      "Mittwoch, 19 Uhr",
+      "Mittwoch, 18 Uhr"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Radio Mitte, die Nachrichten: Die Stadtbibliothek bekommt ein neues Gebäude. Ab März können Besucher dort nicht nur Bücher ausleihen, sondern auch Computer benutzen und in einem Café sitzen.",
+     "q": "Was ist im neuen Gebäude neu?",
+     "options": [
+      "Ein Café",
+      "Ein Kino",
+      "Ein Schwimmbad"
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Hallo Herr Wagner, hier ist die Werkstatt. Wir haben die Bremsen an Ihrem Auto repariert. Das Auto ist fertig. Die Rechnung beträgt zweihundertvierzig Euro.",
+     "q": "Wie viel kostet die Reparatur?",
+     "options": [
+      "140 €",
+      "240 €",
+      "204 €"
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Achtung, eine Information für alle Hausbewohner: Am Samstag ist von zehn bis vierzehn Uhr Hoffest im Innenhof. Alle sind herzlich eingeladen. Bitte bringen Sie einen Salat oder Kuchen mit.",
+     "q": "Was sollen die Bewohner mitbringen?",
+     "options": [
+      "Salat oder Kuchen",
+      "Getränke",
+      "Stühle"
+     ],
+     "a": 0
+    }
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Gespräch. Sie hören den Text einmal. Welches Geschenk bekommt welche Person? Wählen Sie für die Aufgaben 6–10 einen passenden Buchstaben a–h.",
+   "type": "match",
+   "plays": 1,
+   "audio": "Mann: Weihnachten ist bald. Wir müssen noch die Geschenke planen. Was kaufen wir für deine Mutter?\nFrau: Mama wünscht sich schon lange einen schönen Schal. Den kaufen wir.\nMann: Gut. Und für meinen Vater? Der hat doch schon alles.\nFrau: Er liest so gern. Wie wäre es mit einem Krimi?\nMann: Ja, das ist gut. Und für Lena? Sie ist jetzt fünfzehn.\nFrau: Lena möchte unbedingt Kopfhörer. Ihre alten sind kaputt.\nMann: Okay. Und dein Bruder Erik?\nFrau: Erik kocht doch gern. Ich habe ein tolles Kochbuch gesehen.\nMann: Perfekt. Und was bekommt Oma?\nFrau: Für Oma machen wir ein Fotoalbum mit Bildern von den Kindern. Darüber freut sie sich bestimmt.",
+   "choices": [
+    {
+     "key": "a",
+     "text": "Kochbuch"
+    },
+    {
+     "key": "b",
+     "text": "Kinogutschein"
+    },
+    {
+     "key": "c",
+     "text": "Kopfhörer"
+    },
+    {
+     "key": "d",
+     "text": "Schal"
+    },
+    {
+     "key": "e",
+     "text": "Fotoalbum"
+    },
+    {
+     "key": "f",
+     "text": "Pflanze"
+    },
+    {
+     "key": "g",
+     "text": "Krimi"
+    },
+    {
+     "key": "h",
+     "text": "Parfüm"
+    }
+   ],
+   "items": [
+    {
+     "q": "Mutter",
+     "a": "d"
+    },
+    {
+     "q": "Vater",
+     "a": "g"
+    },
+    {
+     "q": "Lena",
+     "a": "c"
+    },
+    {
+     "q": "Erik",
+     "a": "a"
+    },
+    {
+     "q": "Oma",
+     "a": "e"
+    }
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "plays": 1,
+   "items": [
+    {
+     "audio": "Mann: Guten Tag, ich möchte ein Konto eröffnen.\nFrau: Gern. Dafür brauche ich Ihren Pass und eine Meldebescheinigung.\nMann: Oh, die Meldebescheinigung habe ich nicht dabei.\nFrau: Dann kommen Sie bitte morgen wieder.",
+     "q": "Was fehlt dem Mann?",
+     "options": [
+      "Der Pass",
+      "Ein Foto",
+      "Die Meldebescheinigung"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Frau: Wie war das Vorstellungsgespräch?\nMann: Ich glaube, gut! Sie haben gesagt, dass sie sich bis Freitag bei mir melden.\nFrau: Ich drücke dir die Daumen!",
+     "q": "Wann bekommt der Mann eine Antwort?",
+     "options": [
+      "Heute",
+      "Nächsten Monat",
+      "Bis Freitag"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Mann: Wo warst du denn gestern?\nFrau: Ich war im Krankenhaus, meine Freundin besuchen. Sie hat sich beim Volleyball das Bein gebrochen.\nMann: Oh je, gute Besserung für sie!",
+     "q": "Wen hat die Frau besucht?",
+     "options": [
+      "Ihre Mutter",
+      "Ihre Freundin",
+      "Ihren Bruder"
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Frau: Ich brauche einen neuen Laptop für das Studium.\nMann: Dieser hier ist im Angebot, nur vierhundertfünfzig Euro.\nFrau: Der ist mir zu schwer. Haben Sie einen leichteren?\nMann: Ja, der hier wiegt nur ein Kilo, kostet aber sechshundert Euro.",
+     "q": "Warum gefällt der Frau der erste Laptop nicht?",
+     "options": [
+      "Er ist zu schwer.",
+      "Er ist zu teuer.",
+      "Er ist zu langsam."
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Mann: Wollen wir am Wochenende zelten gehen?\nFrau: Lieber nicht, es soll stark regnen. Wie wäre es mit einem Museumsbesuch?\nMann: Okay, dann gehen wir ins Naturkundemuseum.",
+     "q": "Was machen die beiden am Wochenende?",
+     "options": [
+      "Sie gehen ins Museum.",
+      "Sie gehen zelten.",
+      "Sie bleiben zu Hause."
+     ],
+     "a": 0
+    }
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie für die Aufgaben 16–20: Ja oder Nein?",
+   "type": "yn",
+   "plays": 2,
+   "audio": "Moderator: Heute ist Frau Albrecht bei uns. Sie ist Försterin. Frau Albrecht, was macht eine Försterin eigentlich?\nFrau Albrecht: Ich kümmere mich um den Wald. Ich entscheide, welche Bäume gefällt werden und wo neue Bäume gepflanzt werden. Und ich kontrolliere, ob es den Tieren gut geht.\nModerator: Sind Sie den ganzen Tag draußen?\nFrau Albrecht: Leider nicht. Ich sitze auch viel im Büro und schreibe Berichte. Aber an den meisten Tagen bin ich mindestens vier Stunden im Wald, auch bei Regen und Schnee.\nModerator: Was ist das größte Problem für den Wald heute?\nFrau Albrecht: Die heißen und trockenen Sommer. Viele Bäume, besonders Fichten, werden krank. Deshalb pflanzen wir jetzt mehr verschiedene Baumarten, zum Beispiel Eichen.\nModerator: Arbeiten Sie auch mit Kindern?\nFrau Albrecht: Ja, sehr gern. Einmal im Monat kommen Schulklassen zu mir in den Wald. Die Kinder bauen dann zum Beispiel Nistkästen für Vögel.\nModerator: Ist Försterin Ihr Traumberuf?\nFrau Albrecht: Absolut! Ich habe schon als Kind mit meinem Opa im Wald gespielt.",
+   "items": [
+    {
+     "q": "Frau Albrecht entscheidet, wo neue Bäume gepflanzt werden.",
+     "a": true
+    },
+    {
+     "q": "Sie arbeitet nur im Wald und nie im Büro.",
+     "a": false
+    },
+    {
+     "q": "Heiße Sommer sind ein Problem für den Wald.",
+     "a": true
+    },
+    {
+     "q": "Frau Albrecht pflanzt jetzt nur noch Fichten.",
+     "a": false
+    },
+    {
+     "q": "Schulklassen besuchen sie einmal im Monat.",
+     "a": true
+    }
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1",
+   "task": "Sie sind mit Ihrem Nachbarn Herrn Becker verabredet: Sie wollten ihm beim Tragen eines Schranks helfen. Sie werden aber krank. Schreiben Sie Herrn Becker eine SMS.",
+   "prompt": "Schreiben Sie circa 20–30 Wörter zu allen drei Punkten.",
+   "points": [
+    "Sagen Sie, dass Sie nicht helfen können.",
+    "Erklären Sie warum.",
+    "Bieten Sie eine andere Hilfe oder einen anderen Termin an."
+   ],
+   "words": 25,
+   "sample": "Lieber Herr Becker, leider kann ich heute nicht helfen. Ich habe Fieber und muss im Bett bleiben. Geht es nächsten Samstag? Dann helfe ich Ihnen gern. Viele Grüße, Samir"
+  },
+  {
+   "title": "Teil 2",
+   "task": "Ihre Kursleiterin, Frau Hoffmann, organisiert einen Ausflug für den Deutschkurs. Schreiben Sie ihr eine E-Mail.",
+   "prompt": "Schreiben Sie circa 30–40 Wörter zu allen drei Punkten. Vergessen Sie nicht Anrede und Gruß.",
+   "points": [
+    "Bedanken Sie sich für die Organisation.",
+    "Sagen Sie, dass Sie gern mitkommen.",
+    "Fragen Sie, ob Ihr Kind mitkommen darf."
+   ],
+   "words": 35,
+   "sample": "Liebe Frau Hoffmann,\n\nvielen Dank, dass Sie den Ausflug nach Heidelberg organisieren. Ich komme sehr gern mit, denn ich war noch nie dort. Darf ich meinen Sohn mitbringen? Er ist zehn Jahre alt und sehr ruhig.\n\nViele Grüße\nNgoc Anh Tran"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Fragen zur Person",
+   "task": "Stellen Sie Ihrer Partnerin oder Ihrem Partner Fragen zu den Wörtern auf den Karten und beantworten Sie ihre oder seine Fragen.",
+   "cards": [
+    "Beruf?",
+    "Kochen?",
+    "Fernsehen?",
+    "Lieblingsort?",
+    "Geschwister?",
+    "Sport?",
+    "Kleidung?",
+    "Abend?"
+   ],
+   "phrases": [
+    "Was bist du von Beruf?",
+    "Kochst du gern?",
+    "Was siehst du gern im Fernsehen?",
+    "Wo bist du am liebsten?"
+   ],
+   "sample": "Was bist du von Beruf? – Ich bin Altenpflegerin.\nKochst du gern? – Ja, besonders am Wochenende koche ich für meine Familie.\nWo bist du am liebsten? – Am liebsten bin ich am Meer."
+  },
+  {
+   "title": "Teil 2 – Über sich sprechen",
+   "task": "Erzählen Sie etwas über Ihr Leben. Thema: „Einkaufen“. Die Fragen auf der Karte helfen Ihnen.",
+   "cards": [
+    "Wo?",
+    "Wann?",
+    "Was kaufen Sie gern?",
+    "Online oder im Geschäft?"
+   ],
+   "phrases": [
+    "Ich kaufe meistens … ein.",
+    "Lebensmittel kaufe ich …",
+    "Kleidung kaufe ich lieber …",
+    "Online kaufe ich …, weil …"
+   ],
+   "sample": "Ich kaufe meistens am Samstag im Supermarkt ein. Obst und Gemüse kaufe ich lieber auf dem Markt, weil es frischer ist. Kleidung kaufe ich nicht so gern, das ist mir zu stressig. Bücher und Elektronik bestelle ich oft online, weil es bequem ist."
+  },
+  {
+   "title": "Teil 3 – Gemeinsam etwas planen",
+   "task": "Sie möchten mit Ihrer Partnerin oder Ihrem Partner am Samstag zusammen ins Schwimmbad gehen. Finden Sie einen Termin. Hier ist Ihr Terminkalender.",
+   "cards": [
+    "8–9 Uhr: frei",
+    "9–11 Uhr: Auto in die Werkstatt bringen",
+    "11–14 Uhr: frei",
+    "14–17 Uhr: Babysitten bei Nachbarn",
+    "ab 17 Uhr: frei"
+   ],
+   "phrases": [
+    "Wann können wir schwimmen gehen?",
+    "Am Vormittag habe ich leider …",
+    "Was hältst du von … Uhr?",
+    "Das ist eine gute Zeit.",
+    "Treffen wir uns am Eingang?"
+   ],
+   "sample": "A: Wann können wir am Samstag schwimmen gehen?\nB: Von neun bis elf muss ich mein Auto in die Werkstatt bringen. Was hältst du von zwölf Uhr?\nA: Um zwölf passt es mir gut.\nB: Treffen wir uns am Eingang?\nA: Ja, um zwölf am Eingang."
+  }
+ ]
+}

@@ -1,0 +1,88 @@
+{
+ "id":"A2-06","level":"A2","title":"Modelltest 6",
+ "lesen":[
+  {"title":"Teil 1","task":"Sie lesen in einer Zeitung diesen Text. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.","type":"abc","texts":[{"title":"Schüler reparieren Fahrräder für Flüchtlinge","body":"In der Gesamtschule Nord in Bochum gibt es seit einem Jahr eine besondere Arbeitsgemeinschaft: Jeden Mittwochnachmittag reparieren zwölf Schülerinnen und Schüler alte Fahrräder. Die Fahrräder bekommen sie als Spende von Menschen aus der Stadt. Wenn die Räder wieder fahren, schenken die Jugendlichen sie Familien, die vor Kurzem nach Deutschland gekommen sind.\n\nGeleitet wird die AG vom Technik-Lehrer Herrn Ahrens. „Am Anfang konnten viele Schüler nicht einmal einen Reifen wechseln“, erzählt er. „Jetzt sind sie richtige Profis.“ Bisher haben die Jugendlichen schon über achtzig Fahrräder repariert.\n\nFür die neuen Besitzer sind die Fahrräder sehr wichtig. „Mit dem Fahrrad kann ich zum Deutschkurs und zur Arbeit fahren. Ein Busticket ist für uns teuer“, sagt Samira, die mit ihrer Familie aus Syrien gekommen ist. Die Schule sucht jetzt einen größeren Raum, denn es kommen immer mehr Fahrradspenden."}],"items":[
+   {"q":"Die Schülerinnen und Schüler …","options":["verkaufen alte Fahrräder.","reparieren gespendete Fahrräder.","bauen neue Fahrräder."],"a":1},
+   {"q":"Die reparierten Fahrräder …","options":["bleiben in der Schule.","bekommt die Stadt.","bekommen neu angekommene Familien."],"a":2},
+   {"q":"Am Anfang …","options":["konnten viele Schüler wenig reparieren.","hatten die Schüler schon viel Erfahrung.","gab es keine Fahrräder."],"a":0},
+   {"q":"Für Samira ist das Fahrrad wichtig, weil …","options":["sie gern Sport macht.","Busfahren für sie teuer ist.","sie keinen Führerschein hat."],"a":1},
+   {"q":"Die Schule sucht …","options":["einen größeren Raum.","mehr Fahrräder.","einen neuen Lehrer."],"a":0}
+  ]},
+  {"title":"Teil 2","task":"Sie sind in einem Baumarkt. Lesen Sie die Informationstafel und die Aufgaben 6–10. Wohin gehen Sie? Wählen Sie a, b oder c.","type":"abc","texts":[{"title":"Baumarkt Werkzeugkiste – Abteilungen","body":"Halle A: Farben und Tapeten · Pinsel und Rollen · Bilderrahmen\nHalle B: Werkzeug · Schrauben und Nägel · Bohrmaschinen\nHalle C: Garten · Pflanzen · Blumenerde · Gartenmöbel · Grill\nHalle D: Badezimmer · Fliesen · Lampen und Elektro\nEingangsbereich: Kasse · Kundenservice · Schlüsseldienst · Imbiss"}],"items":[
+   {"q":"Sie möchten Ihre Küche neu streichen.","options":["Halle B","Halle A","andere Halle"],"a":1},
+   {"q":"Sie brauchen einen zweiten Wohnungsschlüssel.","options":["Halle B","andere Halle","Eingangsbereich"],"a":2},
+   {"q":"Sie möchten einen Grill für den Balkon kaufen.","options":["Halle C","Halle D","Eingangsbereich"],"a":0},
+   {"q":"Eine Glühbirne im Flur ist kaputt.","options":["Halle A","andere Halle","Halle B"],"a":1},
+   {"q":"Sie möchten ein Regal an die Wand hängen und brauchen Schrauben.","options":["Halle B","Halle D","Halle C"],"a":0}
+  ]},
+  {"title":"Teil 3","task":"Sie lesen eine E-Mail. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","texts":[{"title":"E-Mail","body":"Liebe Clara,\n\nich muss dir unbedingt erzählen, was letztes Wochenende passiert ist! Ich war mit meiner Schwester in Wien. Wir wollten das Schloss Schönbrunn besichtigen. Am Bahnhof habe ich dann bemerkt: Meine Tasche mit dem Geldbeutel und dem Handy war weg!\n\nIch war total verzweifelt. Meine Schwester hat sofort die Polizei angerufen. Und stell dir vor: Eine Stunde später hat ein älterer Herr meine Tasche bei der Polizei abgegeben. Er hatte sie im Zug gefunden. Es war alles noch da – sogar das Geld!\n\nIch habe mich natürlich bei dem Herrn bedankt und ihn zu einem Kaffee eingeladen. Er heißt Herr Gruber und war früher Lehrer. Wir haben uns sehr nett unterhalten, und am Ende hat er uns noch ein paar Tipps für Wien gegeben.\n\nDas Schloss haben wir am nächsten Tag besichtigt. Es war wunderschön!\n\nViele Grüße\nIngrid"}],"items":[
+   {"q":"Ingrid war in Wien mit …","options":["ihrer Freundin.","ihrer Mutter.","ihrer Schwester."],"a":2},
+   {"q":"Ingrid hat ihre Tasche …","options":["im Hotel vergessen.","im Schloss liegen lassen.","im Zug verloren."],"a":2},
+   {"q":"Die Tasche hat …","options":["ein älterer Mann gefunden.","die Polizei gefunden.","Ingrids Schwester gefunden."],"a":0},
+   {"q":"In der Tasche …","options":["war noch alles.","fehlte das Geld.","fehlte das Handy."],"a":0},
+   {"q":"Das Schloss …","options":["haben sie am nächsten Tag besichtigt.","haben sie nicht gesehen.","war geschlossen."],"a":0}
+  ]},
+  {"title":"Teil 4","task":"Sechs Personen suchen im Internet nach Angeboten. Lesen Sie die Aufgaben 16–20 und die Anzeigen a–f. Welche Anzeige passt zu welcher Person? Eine Anzeige brauchen Sie nicht.","type":"match","choices":[
+   {"key":"a","text":"Ferienjob im Freizeitpark: Für Juli und August suchen wir Helferinnen und Helfer ab 16 Jahren. Gute Bezahlung."},
+   {"key":"b","text":"Wohnungstausch: Biete helle 2-Zimmer-Wohnung im Zentrum, suche 3-Zimmer-Wohnung am Stadtrand mit Garten."},
+   {"key":"c","text":"Deutschkurs mit Kinderbetreuung: Lernen Sie Deutsch am Vormittag, Ihre Kinder spielen im Nebenraum."},
+   {"key":"d","text":"Tierheim sucht Gassigeher: Wer hat Zeit, mit unseren Hunden spazieren zu gehen? Ehrenamtlich."},
+   {"key":"e","text":"Klavier zu verschenken! Altes Klavier, muss selbst abgeholt werden (3. Stock, kein Aufzug)."},
+   {"key":"f","text":"Gitarrengruppe für Senioren: Gemeinsam spielen und singen, jeden Dienstag im Seniorentreff."}
+  ],"items":[
+   {"q":"Familie Hoxha bekommt ein drittes Kind. Die Wohnung ist zu klein.","a":"b"},
+   {"q":"Frau Diallo möchte Deutsch lernen, hat aber zwei kleine Kinder zu Hause.","a":"c"},
+   {"q":"Herr Peters (70) hat früher Gitarre gespielt und möchte wieder anfangen.","a":"f"},
+   {"q":"Melis (17) möchte in den Sommerferien Geld verdienen.","a":"a"},
+   {"q":"Jonas liebt Tiere, darf aber in seiner Wohnung keinen Hund haben.","a":"d"}
+  ]}
+ ],
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Herr Neumann, hier ist das Autohaus Krause. Ihr neues Auto ist früher da als geplant. Sie können es schon am Dienstag abholen, nicht erst am Freitag.","q":"Wann kann Herr Neumann sein Auto abholen?","options":["Am Montag","Am Dienstag","Am Freitag"],"a":1},
+   {"audio":"Und jetzt die Verkehrsmeldungen: Die Brücke über den Main ist ab heute bis Ende Oktober für Autos gesperrt. Fußgänger und Radfahrer können die Brücke weiter benutzen.","q":"Wer darf die Brücke benutzen?","options":["Fußgänger und Radfahrer","Nur Autos","Niemand"],"a":0},
+   {"audio":"Hi Jasmin, hier ist Emre. Ich habe zwei Karten für das Fußballspiel am Samstag bekommen. Mein Bruder kann nicht mit. Willst du mitkommen? Das Spiel beginnt um halb vier.","q":"Wann beginnt das Spiel?","options":["Um 15:30 Uhr","Um 14:30 Uhr","Um 16:30 Uhr"],"a":0},
+   {"audio":"Liebe Gäste, wir begrüßen Sie im Thermalbad Sonnental. Bitte beachten Sie: Die Sauna ist heute nur für Frauen geöffnet. Morgen ist wieder gemischte Sauna.","q":"Für wen ist die Sauna heute geöffnet?","options":["Für alle","Für Männer","Für Frauen"],"a":2},
+   {"audio":"Hallo Familie Berger, hier ist die Kita Löwenzahn. Morgen ist unser Sommerfest. Wir brauchen noch Hilfe beim Aufbau. Können Sie um acht Uhr kommen und Tische tragen?","q":"Wobei soll die Familie helfen?","options":["Beim Kochen","Beim Aufräumen","Beim Aufbau"],"a":2}
+  ]},
+  {"title":"Teil 2","task":"Sie hören ein Gespräch. Sie hören den Text einmal. Welche Aufgabe hat welche Person bei der Feier? Wählen Sie für die Aufgaben 6–10 einen passenden Buchstaben a–h.","type":"match","plays":1,"audio":"Chefin: Also, nächste Woche ist unser Firmenjubiläum. Wir müssen die Aufgaben verteilen. Herr Lang, Sie kennen sich doch mit Technik aus.\nHerr Lang: Ja, ich kümmere mich um die Musik und die Lautsprecher.\nChefin: Sehr gut. Frau Öztürk, können Sie die Einladungen schreiben?\nFrau Öztürk: Gern, die schicke ich morgen per E-Mail an alle Kunden.\nChefin: Und das Essen? Herr Brandt, Sie wollten doch einen Caterer suchen.\nHerr Brandt: Das habe ich schon gemacht. Ich bestelle das Buffet.\nChefin: Prima. Frau Kim, Sie fotografieren doch so gern.\nFrau Kim: Ja, ich mache die Fotos. Das macht mir Spaß.\nChefin: Und ich halte die Rede. Was ist mit der Dekoration? Herr Schulz?\nHerr Schulz: Die übernehme ich. Ich kaufe Blumen und Luftballons.","choices":[
+   {"key":"a","text":"Fotos machen"},
+   {"key":"b","text":"die Rede halten"},
+   {"key":"c","text":"Musik und Technik"},
+   {"key":"d","text":"Getränke kaufen"},
+   {"key":"e","text":"Dekoration"},
+   {"key":"f","text":"Einladungen schreiben"},
+   {"key":"g","text":"aufräumen"},
+   {"key":"h","text":"das Buffet bestellen"}
+  ],"items":[
+   {"q":"Herr Lang","a":"c"},
+   {"q":"Frau Öztürk","a":"f"},
+   {"q":"Herr Brandt","a":"h"},
+   {"q":"Frau Kim","a":"a"},
+   {"q":"Herr Schulz","a":"e"}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":1,"items":[
+   {"audio":"Mann: Ich hätte gern zwei Karten für das Theaterstück heute Abend.\nFrau: Tut mir leid, heute ist alles ausverkauft. Morgen gibt es noch Plätze.\nMann: Dann nehme ich zwei Karten für morgen.","q":"Für wann kauft der Mann die Karten?","options":["Für heute","Für nächste Woche","Für morgen"],"a":2},
+   {"audio":"Frau: Fährst du am Wochenende zu deinen Eltern?\nMann: Nein, meine Eltern kommen zu mir. Sie wollen meine neue Wohnung sehen.\nFrau: Dann musst du ja noch aufräumen!","q":"Was passiert am Wochenende?","options":["Der Mann besucht seine Eltern.","Die Eltern besuchen den Mann.","Der Mann zieht um."],"a":1},
+   {"audio":"Mann: Wie lange dauert die Fahrt nach München?\nFrau: Mit dem ICE ungefähr vier Stunden. Mit dem Auto braucht man mindestens fünf Stunden.\nMann: Dann nehme ich lieber den Zug.","q":"Wie fährt der Mann nach München?","options":["Mit dem Auto","Mit dem Zug","Mit dem Flugzeug"],"a":1},
+   {"audio":"Frau: Haben Sie diese Schuhe auch in Größe neununddreißig?\nMann: In Schwarz leider nicht mehr, nur noch in Braun.\nFrau: Braun ist auch schön. Die probiere ich mal an.","q":"Welche Schuhe probiert die Frau an?","options":["Schwarze in Größe 38","Schwarze in Größe 39","Braune in Größe 39"],"a":2},
+   {"audio":"Mann: Was machst du denn mit so vielen Kartons?\nFrau: Ich verkaufe am Sonntag Sachen auf dem Flohmarkt. Meine alten Bücher und Kleider.\nMann: Ich komme vorbei!","q":"Was macht die Frau am Sonntag?","options":["Sie zieht um.","Sie verkauft Sachen auf dem Flohmarkt.","Sie bringt Kleider zur Altkleidersammlung."],"a":1}
+  ]},
+  {"title":"Teil 4","task":"Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie für die Aufgaben 16–20: Ja oder Nein?","type":"yn","plays":2,"audio":"Moderator: Heute ist Frau Nguyen bei uns. Sie ist seit fünf Jahren Krankenpflegerin. Frau Nguyen, warum haben Sie diesen Beruf gewählt?\nFrau Nguyen: Meine Großmutter war lange krank, und ich habe sie gepflegt. Da habe ich gemerkt, dass ich gern Menschen helfe.\nModerator: Wie sind Ihre Arbeitszeiten?\nFrau Nguyen: Ich arbeite im Schichtdienst: Frühdienst, Spätdienst und manchmal Nachtdienst. Das ist anstrengend, besonders für meine Familie. Aber dafür habe ich auch mal unter der Woche frei.\nModerator: Was ist das Schönste an Ihrem Beruf?\nFrau Nguyen: Wenn Patienten wieder gesund nach Hause gehen. Manche schreiben uns danach sogar eine Karte. Das freut mich immer sehr.\nModerator: Und was ist schwierig?\nFrau Nguyen: Wir haben zu wenig Personal. Oft habe ich nicht genug Zeit, um mit den Patienten zu sprechen. Das finde ich schade.\nModerator: Würden Sie den Beruf wieder wählen?\nFrau Nguyen: Ja, auf jeden Fall. Ich mache gerade eine Weiterbildung und möchte später auf der Kinderstation arbeiten.","items":[
+   {"q":"Frau Nguyen hat früher ihre Großmutter gepflegt.","a":true},
+   {"q":"Sie arbeitet nur am Vormittag.","a":false},
+   {"q":"Manche Patienten schreiben nach ihrer Entlassung eine Karte.","a":true},
+   {"q":"Im Krankenhaus gibt es genug Personal.","a":false},
+   {"q":"Frau Nguyen möchte später mit Kindern arbeiten.","a":true}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Sie haben Ihrem Freund Mario versprochen, ihm Ihr Auto zu leihen. Jetzt brauchen Sie es selbst. Schreiben Sie Mario eine SMS.","prompt":"Schreiben Sie circa 20–30 Wörter zu allen drei Punkten.","points":["Entschuldigen Sie sich.","Sagen Sie, warum Sie das Auto brauchen.","Machen Sie einen Vorschlag."],"words":25,"sample":"Hallo Mario, tut mir sehr leid! Ich brauche mein Auto am Samstag doch selbst, weil ich meine Mutter ins Krankenhaus bringen muss. Kannst du es am Sonntag nehmen? Gruß, Pavel"},
+  {"title":"Teil 2","task":"Sie möchten in einem Sportverein Tennis spielen. Schreiben Sie eine E-Mail an den Verein.","prompt":"Schreiben Sie circa 30–40 Wörter zu allen drei Punkten. Vergessen Sie nicht Anrede und Gruß.","points":["Stellen Sie sich kurz vor.","Fragen Sie nach Trainingszeiten für Anfänger.","Fragen Sie nach den Kosten."],"words":35,"sample":"Sehr geehrte Damen und Herren,\n\nmein Name ist Kateryna Shevchenko und ich bin 31 Jahre alt. Ich möchte gern in Ihrem Verein Tennis spielen lernen. Wann gibt es Training für Anfänger? Und wie viel kostet die Mitgliedschaft pro Jahr?\n\nMit freundlichen Grüßen\nKateryna Shevchenko"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Fragen zur Person","task":"Stellen Sie Ihrer Partnerin oder Ihrem Partner Fragen zu den Wörtern auf den Karten und beantworten Sie ihre oder seine Fragen.","cards":["Wohnort?","Lieblingsessen?","Urlaub?","Haustiere?","Schule?","Sprachen?","Wochenende?","Fahrrad?"],"phrases":["Wo wohnst du?","Was isst du am liebsten?","Wo hast du deinen letzten Urlaub gemacht?","Fährst du gern Fahrrad?"],"sample":"Wo hast du deinen letzten Urlaub gemacht? – Ich war in Kroatien am Meer.\nFährst du gern Fahrrad? – Ja, ich fahre jeden Tag mit dem Fahrrad zur Arbeit.\nWelche Sprachen sprichst du? – Ich spreche Polnisch, Englisch und Deutsch."},
+  {"title":"Teil 2 – Über sich sprechen","task":"Erzählen Sie etwas über Ihr Leben. Thema: „Ihr Tagesablauf“. Die Fragen auf der Karte helfen Ihnen.","cards":["Morgens?","Mittags?","Abends?","Lieblingszeit?"],"phrases":["Ich stehe um … auf.","Danach …","Am Nachmittag …","Am liebsten mag ich …"],"sample":"Ich stehe jeden Tag um sechs Uhr auf und trinke zuerst einen Kaffee. Um sieben fahre ich zur Arbeit. Mittags esse ich mit meinen Kollegen in der Kantine. Am Abend koche ich und spiele mit meinen Kindern. Am liebsten mag ich den Abend, weil die ganze Familie zusammen ist."},
+  {"title":"Teil 3 – Gemeinsam etwas planen","task":"Sie möchten mit Ihrer Partnerin oder Ihrem Partner am Mittwoch zusammen einen Kollegen zum Geburtstag besuchen. Finden Sie einen Termin. Hier ist Ihr Terminkalender.","cards":["8–13 Uhr: Arbeit","13–14 Uhr: frei","14–15 Uhr: Elterngespräch in der Schule","15–18 Uhr: frei","18–20 Uhr: Volleyball"],"phrases":["Wann wollen wir ihn besuchen?","Um … kann ich nicht, weil …","Geht es bei dir um …?","Was schenken wir ihm?","Super, so machen wir es."],"sample":"A: Wann wollen wir Markus am Mittwoch besuchen?\nB: Bis eins arbeite ich, und um zwei habe ich ein Elterngespräch. Geht es bei dir um vier?\nA: Ja, um vier passt mir gut.\nB: Was schenken wir ihm?\nA: Vielleicht einen Gutschein für ein Restaurant? – B: Super, so machen wir es."}
+ ]
+}

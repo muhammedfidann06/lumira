@@ -834,6 +834,20 @@ html.lite .support-btn{-webkit-backdrop-filter:none; backdrop-filter:none;}
   text-align:center;
 }
 @media (max-width:340px){ .sup-grid{grid-template-columns:repeat(2, minmax(0,1fr));} }
+/* Google Play: one badge per row, with what it unlocks. */
+.sup-grid.sup-list{grid-template-columns:minmax(0,1fr); gap:10px;}
+.sup-list .sup-item{align-items:stretch; gap:8px; padding:14px 14px 12px; text-align:start;}
+.sup-list .sup-head{display:flex; align-items:center; gap:10px;}
+.sup-list .sup-badge{font-size:26px; flex:none;}
+.sup-list .sup-name{display:flex; flex-direction:column; flex:1; min-width:0;}
+.sup-list .sup-eur{margin-top:2px; font-size:11px;}
+.sup-list .sup-store-price{flex:none; max-width:45%; font-size:14px; font-weight:800; line-height:1.4; color:#b9f4df; text-align:end; overflow-wrap:anywhere;}
+.sup-benefits{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 12px; font-size:12px; line-height:1.5; color:#c9d7f5;}
+.sup-benefits span{display:flex; gap:6px; align-items:baseline;}
+.sup-benefits i{font-style:normal; color:#3dffa0; font-weight:800; flex:none;}
+.sup-foot{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+.sup-owned{font-size:11px; font-weight:800; color:#3dffa0; padding:2px 9px; border:1px solid rgba(61,255,160,.45); border-radius:999px;}
+@media (max-width:360px){ .sup-benefits{grid-template-columns:minmax(0,1fr);} }
 
 /* --- kilit uyarısı --- */
 .lock-msg{

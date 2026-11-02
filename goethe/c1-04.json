@@ -1,0 +1,186 @@
+{
+ "id": "C1-04",
+ "level": "C1",
+ "title": "Modelltest 4",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen einen Zeitungsartikel, in dem einige Wörter fehlen. Wählen Sie für jede Lücke 1–9 das passende Wort a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Wem gehört die Stille?",
+     "body": "Ein Presslufthammer am frühen Morgen, der Laubbläser des Nachbarn, das Dröhnen der Durchgangsstraße: Lärm gehört für viele Stadtbewohner zum Alltag. Was zunächst nur als [1] empfunden wird, kann auf Dauer jedoch ernsthafte gesundheitliche Folgen haben. Die Weltgesundheitsorganisation [2] Verkehrslärm inzwischen zu den größten umweltbedingten Gesundheitsrisiken in Europa.\n\nBesonders [3] ist Lärm in der Nacht. Auch wenn wir nicht aufwachen, reagiert der Körper mit Stress: Der Puls steigt, und der Schlaf wird weniger erholsam. Wer über Jahre hinweg an einer stark befahrenen Straße wohnt, hat ein [4] Risiko für Bluthochdruck.\n\nDabei trifft der Lärm die Menschen sehr ungleich. Wohnungen an lauten Hauptstraßen sind meist günstiger und werden deshalb häufig von Familien mit geringem Einkommen [5]. Ruhe wird so zunehmend zu einem Luxusgut.\n\nDie Städte versuchen, dem Problem mit verschiedenen Maßnahmen zu [6]: Tempo 30 auf Hauptstraßen, lärmarmer Asphalt und Schallschutzfenster gehören dazu. Einige Kommunen haben zudem sogenannte ruhige Gebiete ausgewiesen, in denen der Lärmpegel nicht weiter [7] darf.\n\nExperten fordern darüber hinaus, das Thema schon bei der Planung neuer Wohngebiete stärker zu [8]. Denn was beim Bau versäumt wurde, lässt sich später nur mit großem Aufwand [9]."
+    }
+   ],
+   "items": [
+    {"q": "Lücke 1", "options": ["Bereicherung", "Belästigung", "Begegnung"], "a": 1},
+    {"q": "Lücke 2", "options": ["zählt", "sieht", "hält"], "a": 0},
+    {"q": "Lücke 3", "options": ["tüchtig", "tauglich", "tückisch"], "a": 2},
+    {"q": "Lücke 4", "options": ["erhöhtes", "erhabenes", "gehobenes"], "a": 0},
+    {"q": "Lücke 5", "options": ["gewohnt", "bewohnt", "bewährt"], "a": 1},
+    {"q": "Lücke 6", "options": ["entgegnen", "begehen", "begegnen"], "a": 2},
+    {"q": "Lücke 7", "options": ["ansteigen", "einsteigen", "aufsteigen"], "a": 0},
+    {"q": "Lücke 8", "options": ["besichtigen", "berücksichtigen", "beabsichtigen"], "a": 1},
+    {"q": "Lücke 9", "options": ["überholen", "abholen", "nachholen"], "a": 2}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie lesen in einem Magazin einen Artikel über die sogenannte Ökonomie des Teilens. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Nutzen statt besitzen?",
+     "body": "Eine Bohrmaschine wird im Durchschnitt nur wenige Minuten in ihrem gesamten Leben benutzt, ein Privatauto steht mehr als dreiundzwanzig Stunden am Tag ungenutzt herum. Solche Zahlen gelten als Argument für eine Idee, die vor rund fünfzehn Jahren als große Zukunftshoffnung gefeiert wurde: die Ökonomie des Teilens. Statt Dinge zu besitzen, sollten wir sie gemeinsam nutzen – vermittelt über Plattformen im Internet.\n\nDie Bilanz fällt heute gemischt aus. Einige Angebote haben sich fest etabliert. Carsharing etwa ist in vielen Großstädten selbstverständlich geworden, und Studien zeigen, dass ein geteiltes Auto mehrere private Fahrzeuge ersetzen kann. Auch Leihräder und Werkzeugverleihe in Nachbarschaften erfreuen sich wachsender Beliebtheit.\n\nAndere Entwicklungen haben mit der ursprünglichen Idee wenig zu tun. Die Wirtschaftswissenschaftlerin Prof. Laura Engel verweist auf Vermittlungsplattformen für Ferienwohnungen: „Anfangs ging es darum, ein freies Zimmer gelegentlich an Reisende zu vermieten. Inzwischen werden in beliebten Städten ganze Häuser gezielt aufgekauft, um sie dauerhaft an Touristen zu vermieten.“ Mit Teilen im eigentlichen Sinn habe das nichts mehr zu tun, eher mit einem lukrativen Geschäftsmodell, das den Wohnungsmarkt zusätzlich belaste.\n\nKritisch sieht Engel auch die Arbeitsbedingungen bei manchen Plattformen. Fahrerinnen und Fahrer oder Lieferkräfte gelten oft als Selbstständige, tragen also alle Risiken selbst und sind weder gegen Krankheit noch gegen Arbeitslosigkeit abgesichert. „Die Plattformen profitieren von der Flexibilität, während die Beschäftigten die Unsicherheit tragen.“\n\nOb das Teilen der Umwelt tatsächlich nützt, hängt laut Engel stark vom Einzelfall ab. Wenn Menschen dank Carsharing auf ein eigenes Auto verzichten, sei der Effekt positiv. Ersetzt ein geteiltes Auto jedoch vor allem Fahrten mit Bus und Bahn, könne die Bilanz sogar negativ ausfallen. Ähnliches gelte für Leihroller, die häufig kurze Fußwege ersetzen.\n\nTrotz aller Einschränkungen hält Engel die Grundidee für zukunftsfähig. Entscheidend sei, die Regeln so zu gestalten, dass das Teilen dem Gemeinwohl dient – etwa durch Obergrenzen für Ferienwohnungen und klare Rechte für Beschäftigte."
+    }
+   ],
+   "items": [
+    {"q": "Die Zahlen zur Bohrmaschine und zum Auto sollen zeigen, dass …", "options": ["viele Dinge kaum genutzt werden.", "Werkzeuge zu teuer sind.", "Autos zu viel Platz brauchen."], "a": 0},
+    {"q": "Über Carsharing sagt der Text, dass es …", "options": ["sich kaum durchgesetzt hat.", "nur auf dem Land funktioniert.", "private Autos ersetzen kann."], "a": 2},
+    {"q": "Prof. Engel kritisiert an Plattformen für Ferienwohnungen, dass …", "options": ["die Preise für Reisende gestiegen sind.", "dem Wohnungsmarkt Wohnraum verloren geht.", "Zimmer nur selten vermietet werden."], "a": 1},
+    {"q": "Beschäftigte mancher Plattformen …", "options": ["sind oft sozial schlecht abgesichert.", "verdienen mehr als Angestellte.", "arbeiten nur in Teilzeit."], "a": 0},
+    {"q": "Carsharing schadet laut Engel der Umwelt, wenn es …", "options": ["mit Elektroautos betrieben wird.", "Fahrten mit öffentlichen Verkehrsmitteln ersetzt.", "nur am Wochenende genutzt wird."], "a": 1},
+    {"q": "Leihroller ersetzen laut Text häufig …", "options": ["Autofahrten.", "lange Busfahrten.", "kurze Wege zu Fuß."], "a": 2},
+    {"q": "Engels Gesamturteil über die Ökonomie des Teilens ist …", "options": ["grundsätzlich positiv, wenn es klare Regeln gibt.", "durchweg negativ.", "nicht erkennbar."], "a": 0}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Lesen Sie den Text. Welcher Satz a–h passt in welche Lücke 1–6? Zwei Sätze passen nicht.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Baumeister mit Nebenwirkungen",
+     "body": "Vor gut hundert Jahren war der Biber in weiten Teilen Mitteleuropas ausgerottet. Man jagte ihn wegen seines dichten Fells und seines Fleisches. [1] Seit den sechziger Jahren wurden die Tiere jedoch an vielen Flüssen gezielt wieder angesiedelt – mit großem Erfolg. Heute leben in Deutschland wieder mehrere zehntausend Biber.\n\nFür die Natur ist das ein Gewinn. Mit seinen Dämmen staut der Biber Bäche auf und schafft so neue Feuchtgebiete. [2] Fachleute bezeichnen ihn deshalb als „Ökosystemingenieur“.\n\nAuch für den Menschen können die Bauwerke nützlich sein. [3] In trockenen Sommern wiederum halten die gestauten Flächen das Wasser länger in der Landschaft, was angesichts zunehmender Dürreperioden immer wichtiger wird.\n\nDoch nicht alle freuen sich über den Rückkehrer. [4] Landwirte beklagen überflutete Felder, und an manchen Stellen untergraben Biber mit ihren Bauten Uferwege oder sogar Deiche.\n\nUm Konflikte zu entschärfen, setzen viele Bundesländer inzwischen sogenannte Biberberater ein. [5] Oft genügen einfache Maßnahmen: Drahtmanschetten schützen wertvolle Bäume, und Rohre im Damm regulieren den Wasserstand, ohne das Bauwerk zu zerstören.\n\nWo alle Versuche scheitern, dürfen einzelne Tiere in Ausnahmefällen umgesiedelt oder getötet werden. [6] Naturschützer betonen aber, dass ein friedliches Zusammenleben in den allermeisten Fällen möglich ist."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Bei Hochwasser bremsen die Dämme den Abfluss und können so Überschwemmungen flussabwärts abmildern."},
+    {"key": "b", "text": "Sie vermitteln zwischen Behörden, Naturschutz und Betroffenen und suchen nach Lösungen vor Ort."},
+    {"key": "c", "text": "Zudem galt ein Sekret aus seinen Drüsen als Heilmittel, das teuer verkauft wurde."},
+    {"key": "d", "text": "Inzwischen ist der Biber deshalb wieder vom Aussterben bedroht."},
+    {"key": "e", "text": "Solche Eingriffe sind allerdings umstritten und müssen von den Behörden genehmigt werden."},
+    {"key": "f", "text": "Davon profitieren zahlreiche andere Arten, von Libellen über Amphibien bis zu seltenen Vögeln."},
+    {"key": "g", "text": "Auch in Großstädten wie Berlin oder Wien sind die Tiere inzwischen heimisch geworden."},
+    {"key": "h", "text": "Wo Biber Obstbäume fällen oder Entwässerungsgräben aufstauen, entstehen erhebliche Schäden."}
+   ],
+   "items": [
+    {"q": "Lücke 1", "a": "c"},
+    {"q": "Lücke 2", "a": "f"},
+    {"q": "Lücke 3", "a": "a"},
+    {"q": "Lücke 4", "a": "h"},
+    {"q": "Lücke 5", "a": "b"},
+    {"q": "Lücke 6", "a": "e"}
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie lesen in einem Ratgeberforum Beiträge zur Frage, ob Haustiere in Mietwohnungen grundsätzlich erlaubt sein sollten. Lesen Sie die Texte a–d und die Aussagen 1–8. Wer äußert sich wie? Die Personen können mehrmals gewählt werden.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Corinna, 41, Vermieterin von sechs Wohnungen: Ich habe grundsätzlich nichts gegen Tiere, aber ich habe schon schlechte Erfahrungen gemacht. Ein Mieter hatte zwei große Hunde, die die Türen zerkratzt und den Parkettboden ruiniert haben. Die Renovierung hat mich mehrere tausend Euro gekostet, und die Kaution reichte bei Weitem nicht. Ich möchte deshalb selbst entscheiden können, wer bei mir ein Tier halten darf – nach einem persönlichen Gespräch."},
+    {"key": "b", "text": "Jakob, 26, Student: Für mich gehört meine Katze zur Familie. Als ich eine Wohnung gesucht habe, wurde ich bei fast jeder Besichtigung gefragt, ob ich Haustiere habe – und danach hörte ich nie wieder etwas. Ich finde, man sollte Tierhalter nicht pauschal benachteiligen. Wer Schäden verursacht, muss natürlich dafür aufkommen, egal ob durch ein Tier oder durch eine Party."},
+    {"key": "c", "text": "Dr. Miriam Holt, 50, Fachanwältin für Mietrecht: Rechtlich ist die Lage differenzierter, als viele glauben. Kleintiere wie Hamster oder Fische darf jeder Mieter ohne Erlaubnis halten. Bei Hunden und Katzen muss im Einzelfall abgewogen werden, ob die Interessen des Vermieters oder der Nachbarn beeinträchtigt sind. Ein generelles Verbot im Mietvertrag ist unwirksam. Ich rate beiden Seiten, Absprachen schriftlich festzuhalten, um späteren Streit zu vermeiden."},
+    {"key": "d", "text": "Waltraud, 68, Rentnerin: Seit dem Tod meines Mannes ist mein kleiner Hund mein wichtigster Begleiter. Er sorgt dafür, dass ich jeden Tag rausgehe und mit anderen Menschen ins Gespräch komme. Ich habe mit meinem Vermieter vereinbart, dass ich mich um die Treppenhausreinigung kümmere, wenn der Hund sie schmutzig macht. Mit etwas gutem Willen findet man immer eine Lösung."}
+   ],
+   "items": [
+    {"q": "Wer berichtet von einem finanziellen Schaden durch Tiere?", "a": "a"},
+    {"q": "Wer erklärt, welche Tiere ohne Zustimmung erlaubt sind?", "a": "c"},
+    {"q": "Wer fühlt sich bei der Wohnungssuche wegen eines Tieres benachteiligt?", "a": "b"},
+    {"q": "Wer hebt den sozialen Nutzen eines Haustiers hervor?", "a": "d"},
+    {"q": "Wer empfiehlt, Vereinbarungen schriftlich zu treffen?", "a": "c"},
+    {"q": "Wer möchte nach einem persönlichen Kennenlernen entscheiden?", "a": "a"},
+    {"q": "Wer hat mit dem Vermieter eine Gegenleistung vereinbart?", "a": "d"},
+    {"q": "Wer vergleicht Schäden durch Tiere mit anderen Schäden?", "a": "b"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text einmal. Zu jedem Text lösen Sie zwei Aufgaben. Wählen Sie bei jeder Aufgabe die richtige Lösung.",
+   "type": "rf",
+   "plays": 1,
+   "items": [
+    {"audio": "Liebe Besucherinnen und Besucher der Bildungsmesse, wir möchten Sie auf eine Programmänderung hinweisen. Die Podiumsdiskussion „Schule der Zukunft“ beginnt heute nicht um sechzehn, sondern bereits um fünfzehn Uhr dreißig in Halle drei. Wegen des großen Andrangs bitten wir Sie, rechtzeitig zu kommen, da die Zahl der Sitzplätze begrenzt ist. Die Diskussion wird außerdem live auf den Bildschirmen im Foyer übertragen. Kostenlose Kopfhörer für die Simultanübersetzung ins Englische erhalten Sie am Infostand gegen Vorlage eines Ausweises.", "q": "Die Podiumsdiskussion beginnt früher als geplant.", "a": true},
+    {"type": "abc", "q": "Was bekommt man am Infostand?", "options": ["Einen Sitzplatz in Halle drei.", "Kopfhörer für eine Übersetzung.", "Eine Aufzeichnung der Diskussion."], "a": 1},
+    {"audio": "Hallo, Herr Novak, hier ist die Werkstatt vom Autohaus Becker. Wir haben Ihren Wagen durchgesehen. Die Bremsbeläge vorne sind stark abgenutzt und sollten unbedingt erneuert werden – das würde etwa zweihundertachtzig Euro kosten. Den Ölwechsel und die Inspektion haben wir wie besprochen erledigt. Wenn Sie mit der Reparatur der Bremsen einverstanden sind, rufen Sie uns bitte bis heute um vierzehn Uhr an, dann ist das Auto morgen früh fertig. Andernfalls können Sie es heute ab sechzehn Uhr abholen, wir raten Ihnen aber dringend davon ab, so weiterzufahren.", "q": "Die Werkstatt hat die Bremsen bereits erneuert.", "a": false},
+    {"type": "abc", "q": "Was passiert, wenn Herr Novak bis vierzehn Uhr anruft?", "options": ["Das Auto wird bis morgen früh repariert.", "Er kann das Auto sofort abholen.", "Er bekommt einen Rabatt."], "a": 0},
+    {"audio": "Lesen auf Papier oder am Bildschirm – macht das einen Unterschied? Eine internationale Auswertung von mehr als fünfzig Studien kommt zu dem Ergebnis: Ja, zumindest bei längeren Sachtexten. Wer solche Texte auf Papier las, verstand sie im Durchschnitt etwas besser als Leserinnen und Leser am Bildschirm. Bei kurzen Texten und Erzählungen fanden die Forscher dagegen kaum Unterschiede. Überraschend war: Gerade junge Menschen, die mit digitalen Medien aufgewachsen sind, überschätzten ihr Verständnis am Bildschirm besonders häufig.", "q": "Bei Erzählungen zeigte sich ein großer Unterschied zwischen Papier und Bildschirm.", "a": false},
+    {"type": "abc", "q": "Was überraschte die Forscher?", "options": ["Dass ältere Menschen lieber am Bildschirm lesen.", "Dass Papier bei kurzen Texten besser abschneidet.", "Dass junge Menschen ihr Verständnis am Bildschirm überschätzen."], "a": 2},
+    {"audio": "Liebe Theaterfreundinnen und Theaterfreunde, ab sofort können Sie Ihr Abonnement für die neue Spielzeit buchen. Mit dem Wahl-Abo suchen Sie sich sechs Vorstellungen aus unserem gesamten Programm selbst aus und sparen dabei bis zu dreißig Prozent gegenüber dem Einzelkauf. Neu in diesem Jahr: Wer unter siebenundzwanzig ist, erhält das Abo zum halben Preis. Und falls Sie einmal verhindert sind, können Sie Ihre Karte bis zu zwei Tage vor der Vorstellung kostenlos umtauschen. Beratung und Buchung an der Theaterkasse oder auf unserer Website.", "q": "Beim Wahl-Abo bestimmen die Kunden selbst, welche Vorstellungen sie besuchen.", "a": true},
+    {"type": "abc", "q": "Was gilt, wenn man eine Vorstellung nicht besuchen kann?", "options": ["Man kann die Karte bis kurz vorher umtauschen.", "Man bekommt das Geld zurück.", "Man erhält ein zusätzliches Abo."], "a": 0},
+    {"audio": "Viele wundern sich, wenn ich erzähle, dass meine Bienen auf einem Dach mitten in Frankfurt leben. Aber in der Stadt finden Bienen oft mehr Nahrung als auf dem Land. Auf dem Land gibt es riesige Felder mit nur einer Pflanzenart, und nach der Blüte ist dort wochenlang nichts mehr zu holen. In der Stadt dagegen blüht in Parks, Gärten und auf Balkonen fast das ganze Jahr über etwas. Allerdings warne ich davor, jetzt überall Bienenstöcke aufzustellen. Zu viele Honigbienen nehmen den Wildbienen das Futter weg, und die brauchen unseren Schutz viel dringender.", "q": "Laut der Imkerin finden Bienen in der Stadt oft mehr Nahrung als auf dem Land.", "a": true},
+    {"type": "abc", "q": "Wovor warnt die Imkerin?", "options": ["Vor Honig aus dem Supermarkt.", "Vor zu vielen Honigbienen in der Stadt.", "Vor Pflanzen auf Balkonen."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Eine Moderatorin spricht mit dem Synchronsprecher Leon Hartmann über seinen Beruf.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Moderatorin: Herr Hartmann, Ihre Stimme kennen Millionen Menschen, Ihr Gesicht kaum jemand. Stört Sie das?\nHartmann: Überhaupt nicht, im Gegenteil. Ich kann ganz normal einkaufen gehen. Manchmal erkennt mich jemand an der Stimme, wenn ich an der Kasse etwas sage – das sind dann lustige Momente. Aber im Mittelpunkt stehen bei uns die Schauspieler auf der Leinwand, und so soll es auch sein.\nModeratorin: Wie läuft eine Synchronaufnahme ab?\nHartmann: Viele stellen sich vor, dass wir einen ganzen Film am Stück einsprechen. In Wirklichkeit wird der Film in kurze Abschnitte von wenigen Sekunden zerlegt, sogenannte Takes. Ich sehe den Ausschnitt mehrmals im Original, höre die Stimme des Schauspielers und spreche dann den deutschen Text so, dass er möglichst genau zu den Lippenbewegungen passt. Meistens stehe ich dabei allein im Studio, auch wenn die Szene ein Dialog ist.\nModeratorin: Allein? Das stelle ich mir schwierig vor.\nHartmann: Das ist es anfangs auch. Man muss auf einen Partner reagieren, der gar nicht da ist. Deshalb ist die Arbeit mit der Regie so wichtig. Die Synchronregisseurin erklärt mir, was in der Szene passiert und wie sich die Figur gerade fühlt. Oft sehe ich den Film vorher nicht komplett, sondern nur meine Szenen.\nModeratorin: Wer schreibt eigentlich die deutschen Texte?\nHartmann: Das machen spezialisierte Autorinnen und Autoren, und das ist eine Kunst für sich. Sie müssen nicht nur gut übersetzen, sondern Sätze finden, die zur Länge und zu den Mundbewegungen passen. Wenn der Schauspieler im Original bei einem Wort die Lippen schließt, sollte im Deutschen an dieser Stelle möglichst auch ein Laut wie b, m oder p stehen.\nModeratorin: Gibt es Rollen, die Ihnen besonders schwerfallen?\nHartmann: Ehrlich gesagt die lauten. Eine Kampfszene mit viel Schreien kann die Stimme an einem Tag stärker belasten als eine ganze Woche mit normalen Dialogen. Solche Szenen legen wir deshalb ans Ende eines Aufnahmetages.\nModeratorin: Macht Ihnen künstliche Intelligenz Sorgen? Es gibt ja schon Programme, die Stimmen nachahmen.\nHartmann: Sorgen wäre zu viel gesagt, aber wir beobachten das genau. Für einfache Dokumentationen werden solche Stimmen sicher bald eingesetzt. Bei Spielfilmen kommt es aber auf feine Nuancen an – Zögern, Ironie, ein unterdrücktes Lachen. Das schafft eine Maschine bisher nicht überzeugend. Wichtig ist uns außerdem, dass niemand unsere Stimmen ohne Zustimmung für solche Programme verwenden darf.",
+   "items": [
+    {"q": "Dass ihn kaum jemand erkennt, findet Herr Hartmann …", "options": ["angenehm.", "schade.", "ungerecht."], "a": 0},
+    {"q": "Bei einer Synchronaufnahme …", "options": ["spricht man den ganzen Film am Stück.", "wird der Film in kurze Abschnitte geteilt.", "stehen alle Sprecher gemeinsam im Studio."], "a": 1},
+    {"q": "Die Synchronregisseurin …", "options": ["schreibt die deutschen Texte.", "spricht die Gegenrollen.", "erklärt die Situation und die Gefühle der Figur."], "a": 2},
+    {"q": "Die Autorinnen und Autoren der deutschen Texte müssen vor allem darauf achten, dass …", "options": ["die Sätze zu den Mundbewegungen passen.", "der Text möglichst wörtlich übersetzt ist.", "die Dialoge kürzer werden."], "a": 0},
+    {"q": "Laute Szenen …", "options": ["spricht er am liebsten.", "werden am Ende eines Aufnahmetages aufgenommen.", "werden von anderen Sprechern übernommen."], "a": 1},
+    {"q": "Über Programme, die Stimmen nachahmen, sagt Herr Hartmann, dass sie …", "options": ["schon heute Spielfilme synchronisieren.", "keine Rolle spielen werden.", "feine Nuancen bisher nicht überzeugend wiedergeben."], "a": 2},
+    {"q": "Den Synchronsprechern ist wichtig, dass …", "options": ["ihre Stimmen nur mit Zustimmung verwendet werden.", "sie öfter im Fernsehen auftreten.", "Dokumentationen nicht mehr synchronisiert werden."], "a": 0}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören einen Vortrag. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Eine Klimaforscherin spricht über Hitze in Städten.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Meine Damen und Herren, der vergangene Sommer hat vielen von uns gezeigt, wie belastend Hitze in der Stadt sein kann. An manchen Tagen war es in den Innenstädten bis zu zehn Grad wärmer als im Umland. Man spricht vom städtischen Wärmeinseleffekt. Heute möchte ich erklären, wie er entsteht und was Städte dagegen tun können.\nDie Ursachen sind vielfältig. Asphalt, Beton und dunkle Dächer speichern tagsüber die Sonnenwärme und geben sie nachts wieder ab. Deshalb kühlen Städte in der Nacht kaum ab – und gerade diese warmen Nächte sind für die Gesundheit besonders problematisch, weil der Körper sich nicht erholen kann. Hinzu kommt, dass dichte Bebauung den Luftaustausch behindert und Klimaanlagen, Autos und Fabriken zusätzliche Wärme erzeugen.\nBetroffen sind nicht alle gleichermaßen. Besonders gefährdet sind ältere Menschen, chronisch Kranke und kleine Kinder, aber auch Menschen, die im Freien arbeiten. Und häufig sind es die dicht bebauten Viertel mit wenig Grün und kleinen Wohnungen, in denen es am heißesten wird.\nWas hilft? Das wirksamste Mittel ist Grün. Ein großer Stadtbaum spendet nicht nur Schatten, sondern verdunstet an heißen Tagen mehrere hundert Liter Wasser und kühlt dadurch seine Umgebung wie eine natürliche Klimaanlage. Auch begrünte Dächer und Fassaden senken die Temperatur spürbar. Allerdings brauchen Bäume Zeit zum Wachsen, und in trockenen Sommern müssen sie gewässert werden. Städte sollten deshalb Regenwasser sammeln, statt es schnell in die Kanalisation abzuleiten. Man spricht hier vom Prinzip der Schwammstadt.\nWasser selbst ist ein zweiter wichtiger Baustein. Brunnen, offene Wasserläufe oder Wasserspielplätze schaffen kühle Orte. Und schließlich spielen helle Oberflächen eine Rolle: Ein heller Belag auf Plätzen und Dächern reflektiert mehr Sonnenlicht und heizt sich weniger auf.\nNeben baulichen Maßnahmen braucht es aber auch Hitzeschutzpläne. Einige Städte informieren bei Hitzewarnungen gezielt ältere Menschen, öffnen kühle Räume in öffentlichen Gebäuden oder verteilen kostenlos Trinkwasser. Solche Maßnahmen kosten wenig, können aber Leben retten. Ich danke Ihnen.",
+   "items": [
+    {"q": "Der städtische Wärmeinseleffekt bedeutet, dass …", "options": ["Städte wärmer sind als ihr Umland.", "es im Umland heißer ist.", "Städte nachts schneller abkühlen."], "a": 0},
+    {"q": "Warme Nächte sind besonders problematisch, weil …", "options": ["mehr Strom verbraucht wird.", "der Körper sich nicht erholen kann.", "die Luftverschmutzung steigt."], "a": 1},
+    {"q": "Besonders heiß wird es oft in …", "options": ["Vierteln mit großen Gärten.", "Gebieten am Stadtrand.", "dicht bebauten Vierteln mit wenig Grün."], "a": 2},
+    {"q": "Ein großer Stadtbaum kühlt seine Umgebung vor allem, indem er …", "options": ["Wasser verdunstet.", "Wind erzeugt.", "Wärme speichert."], "a": 0},
+    {"q": "Das Prinzip der Schwammstadt bedeutet, dass Regenwasser …", "options": ["möglichst schnell abgeleitet wird.", "gesammelt und genutzt wird.", "in Flüsse gepumpt wird."], "a": 1},
+    {"q": "Helle Oberflächen sind sinnvoll, weil sie …", "options": ["leichter zu reinigen sind.", "billiger sind als Asphalt.", "sich weniger stark aufheizen."], "a": 2},
+    {"q": "Zu den Hitzeschutzplänen gehört zum Beispiel, …", "options": ["kühle Räume in öffentlichen Gebäuden zu öffnen.", "Schulen im Sommer zu schließen.", "Klimaanlagen zu verschenken."], "a": 0},
+    {"q": "Über solche Hitzeschutzpläne sagt die Rednerin, dass sie …", "options": ["sehr teuer sind.", "mit wenig Geld viel bewirken können.", "nur in Großstädten möglich sind."], "a": 1}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1 – Forumsbeitrag",
+   "task": "In einer Tageszeitung haben Sie einen Artikel mit dem Titel „Länger arbeiten – freiwillig?“ gelesen. Darin wird diskutiert, ob Menschen stärker dazu ermutigt werden sollten, über das gesetzliche Rentenalter hinaus zu arbeiten. Im Onlineforum der Zeitung möchten Sie Ihre Meinung äußern.",
+   "prompt": "Schreiben Sie einen Forumsbeitrag (circa 230 Wörter). Gehen Sie dabei auf alle folgenden Punkte ein. Achten Sie auf eine klare Gliederung, eine passende Einleitung und einen passenden Schluss.",
+   "points": ["Gründe, warum Menschen im Rentenalter weiterarbeiten", "Folgen für den Arbeitsmarkt und jüngere Generationen", "Voraussetzungen in Unternehmen", "Ihre persönliche Einschätzung"],
+   "words": 230,
+   "sample": "Der Artikel „Länger arbeiten – freiwillig?“ behandelt eine Frage, die angesichts des demografischen Wandels immer dringlicher wird. Im Folgenden möchte ich erläutern, warum ich eine freiwillige Verlängerung des Berufslebens grundsätzlich begrüße.\n\nDie Gründe, warum Menschen im Rentenalter weiterarbeiten, sind vielfältig. Für manche ist es eine finanzielle Notwendigkeit, weil die Rente nicht ausreicht. Viele andere arbeiten jedoch weiter, weil ihnen ihr Beruf Freude bereitet, sie den Kontakt zu Kolleginnen und Kollegen schätzen oder sich schlicht noch nicht alt fühlen.\n\nHäufig wird befürchtet, ältere Beschäftigte nähmen Jüngeren die Arbeitsplätze weg. Diese Sorge halte ich für unbegründet. In vielen Branchen fehlen schon heute Fachkräfte, und erfahrene Mitarbeitende können ihr Wissen an Berufseinsteiger weitergeben. Davon profitieren beide Seiten.\n\nDamit das gelingt, müssen Unternehmen allerdings die Voraussetzungen schaffen. Dazu gehören flexible Arbeitszeitmodelle, ergonomische Arbeitsplätze und Weiterbildungsangebote auch für Ältere. Wer körperlich schwer arbeitet, sollte zudem die Möglichkeit haben, in eine weniger belastende Tätigkeit zu wechseln.\n\nEntscheidend ist für mich jedoch die Freiwilligkeit. Ein höheres Rentenalter für alle lehne ich ab, weil es Menschen mit anstrengenden Berufen benachteiligen würde. Wer dagegen gesund ist und weiterarbeiten möchte, sollte dabei unterstützt werden, etwa durch steuerliche Anreize.\n\nInsgesamt bin ich überzeugt, dass ein flexibler Übergang in den Ruhestand sowohl der Gesellschaft als auch den Betroffenen selbst nützt."
+  },
+  {
+   "title": "Teil 2 – Formelle Anfrage",
+   "task": "Sie haben in Ihrem Heimatland vier Semester Betriebswirtschaft studiert und möchten Ihr Studium an einer deutschen Universität fortsetzen. Sie schreiben an Herrn Dr. Kaiser vom Prüfungsamt, um sich nach der Anerkennung Ihrer bisherigen Studienleistungen zu erkundigen.",
+   "prompt": "Schreiben Sie eine formelle E-Mail (circa 120 Wörter). Gehen Sie auf alle folgenden Punkte ein und achten Sie auf eine passende Anrede und einen passenden Schluss.",
+   "points": ["Vorstellung und Anliegen", "Ihre bisherigen Studienleistungen", "Frage nach den benötigten Unterlagen", "Frage nach Fristen und Dauer des Verfahrens"],
+   "words": 120,
+   "sample": "Sehr geehrter Herr Dr. Kaiser,\n\nmein Name ist Ana Ribeiro. Ich habe an der Universität Porto vier Semester Betriebswirtschaftslehre studiert und möchte mein Studium zum kommenden Wintersemester an Ihrer Universität fortsetzen.\n\nIn dieser Zeit habe ich unter anderem Module in Rechnungswesen, Mikroökonomie und Statistik erfolgreich abgeschlossen und insgesamt 120 Leistungspunkte erworben.\n\nIch möchte mich daher erkundigen, welche Unterlagen ich für die Anerkennung dieser Leistungen einreichen muss. Genügen beglaubigte Kopien meiner Zeugnisse, oder benötigen Sie zusätzlich Modulbeschreibungen in deutscher Übersetzung?\n\nAußerdem wäre ich Ihnen dankbar für eine Auskunft darüber, bis wann der Antrag gestellt werden muss und wie lange das Verfahren in der Regel dauert.\n\nVielen Dank im Voraus für Ihre Unterstützung.\n\nMit freundlichen Grüßen\nAna Ribeiro"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Vortrag halten",
+   "task": "Sie sollen in einem Seminar einen Vortrag (circa 3–4 Minuten) halten. Wählen Sie eines der beiden Themen: A) „Sollten Kinder schon in der Grundschule programmieren lernen?“ oder B) „Bringt die Digitalisierung mehr Freizeit oder mehr Stress?“ Stellen Sie das Thema vor, beschreiben Sie verschiedene Positionen mit ihren Vor- und Nachteilen, nehmen Sie begründet Stellung und schließen Sie mit einem Fazit.",
+   "cards": ["Einleitung: Thema und Aufbau", "Ausgangslage und Beispiele", "Chancen und Risiken", "Vergleich mit Ihrem Heimatland", "Schlussfolgerung"],
+   "phrases": ["In meinem Vortrag möchte ich der Frage nachgehen, ob …", "Um das Thema einzuordnen, …", "Einerseits …, andererseits …", "Im Vergleich zu Deutschland …", "Daraus ergibt sich für mich, dass …"],
+   "sample": "In meinem Vortrag möchte ich der Frage nachgehen, ob Kinder schon in der Grundschule programmieren lernen sollten. Zunächst beschreibe ich kurz die Ausgangslage, dann gehe ich auf Chancen und Risiken ein, vergleiche die Situation mit meinem Heimatland und ziehe abschließend ein Fazit.\n\nUm das Thema einzuordnen: Digitale Technik bestimmt heute fast alle Lebensbereiche. Einige Länder haben deshalb Informatik bereits in den Lehrplan der Grundschule aufgenommen. Die Kinder lernen dort spielerisch, kleine Roboter zu steuern oder einfache Abläufe zu planen.\n\nEinerseits bietet das große Chancen. Beim Programmieren lernen Kinder, Probleme in kleine Schritte zu zerlegen und logisch zu denken – Fähigkeiten, die auch in anderen Fächern nützlich sind. Außerdem verstehen sie besser, wie die Geräte funktionieren, die sie täglich nutzen, und werden nicht nur zu Konsumenten.\n\nAndererseits gibt es berechtigte Bedenken. Grundschulkinder verbringen ohnehin schon viel Zeit vor Bildschirmen, und es fehlt an Lehrkräften, die für dieses Fach ausgebildet sind. Manche befürchten auch, dass Lesen, Schreiben und Rechnen zu kurz kommen könnten.\n\nIm Vergleich zu Deutschland ist man in meinem Heimatland schon weiter: Dort gibt es ab der dritten Klasse eine Stunde Informatik pro Woche, oft ganz ohne Computer, zum Beispiel mit Karten und Bewegungsspielen.\n\nDaraus ergibt sich für mich, dass Programmieren in der Grundschule sinnvoll ist, wenn es spielerisch geschieht und nicht auf Kosten der Grundfertigkeiten geht. Vielen Dank für Ihre Aufmerksamkeit."
+  },
+  {
+   "title": "Teil 2 – Diskussion führen",
+   "task": "Diskutieren Sie mit Ihrem Gesprächspartner über die Frage: „Sollten Autos aus den Innenstädten verbannt werden?“ Tauschen Sie Argumente aus, gehen Sie auf die Äußerungen Ihres Gesprächspartners ein und versuchen Sie am Ende, zu einem gemeinsamen Ergebnis zu kommen.",
+   "cards": ["Luftqualität und Lärm", "Erreichbarkeit für ältere und behinderte Menschen", "Einzelhandel und Lieferverkehr", "Aufenthaltsqualität", "Alternativen wie Bus, Bahn und Fahrrad"],
+   "phrases": ["Aus meiner Sicht spricht vieles dafür, dass …", "Ich verstehe Ihr Argument, trotzdem …", "Haben Sie dabei auch bedacht, dass …?", "Da stimme ich Ihnen voll und ganz zu.", "Als Kompromiss könnten wir …"],
+   "sample": "A: Aus meiner Sicht spricht vieles dafür, Autos aus den Innenstädten zu verbannen. Die Luft wäre sauberer, es wäre leiser, und auf den Straßen hätte man Platz für Bäume und Cafés.\nB: Ich verstehe Ihr Argument, trotzdem mache ich mir Sorgen um den Einzelhandel. Viele Kunden kommen mit dem Auto, gerade wenn sie größere Einkäufe machen.\nA: Studien zeigen aber, dass Fußgänger und Radfahrer häufiger kommen und insgesamt oft mehr Geld ausgeben.\nB: Haben Sie dabei auch bedacht, dass ältere oder gehbehinderte Menschen auf das Auto angewiesen sein können?\nA: Da stimme ich Ihnen voll und ganz zu. Für sie, für Taxis und für den Lieferverkehr müsste es natürlich Ausnahmen geben.\nB: Und die Busse und Bahnen müssten deutlich häufiger fahren, sonst funktioniert das nicht.\nA: Genau. Als Kompromiss könnten wir vorschlagen, die Innenstadt schrittweise autofrei zu machen und gleichzeitig den Nahverkehr auszubauen.\nB: Mit Ausnahmen für Menschen mit Behinderung und für Lieferungen am Vormittag – damit wäre ich einverstanden."
+  }
+ ]
+}

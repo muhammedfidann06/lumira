@@ -1,0 +1,67 @@
+{
+ "id":"A1-04","level":"A1","title":"Modelltest 4",
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören sechs kurze Gespräche. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–6 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Frau: Ich suche eine Jacke in Größe achtunddreißig.\nMann: Hier haben wir eine schwarze und eine grüne.\nFrau: Die grüne gefällt mir. Ich nehme sie.","q":"Welche Jacke kauft die Frau?","options":["Die schwarze","Die grüne","Die blaue"],"a":1},
+   {"audio":"Mann: Wie alt ist deine Tochter jetzt?\nFrau: Sie ist im April sieben geworden. Sie geht jetzt in die erste Klasse.","q":"Wie alt ist die Tochter?","options":["Sechs Jahre","Acht Jahre","Sieben Jahre"],"a":2},
+   {"audio":"Frau: Kommst du mit ins Schwimmbad?\nMann: Heute nicht. Ich muss mein Zimmer aufräumen und dann Wäsche waschen.","q":"Was macht der Mann heute?","options":["Er räumt auf.","Er geht schwimmen.","Er kauft ein."],"a":0},
+   {"audio":"Mann: Entschuldigung, wann fährt der nächste Bus zum Krankenhaus?\nFrau: Um zehn Uhr fünfzehn. Der Bus um zehn Uhr ist schon weg.","q":"Wann fährt der nächste Bus?","options":["Um 10:00 Uhr","Um 10:15 Uhr","Um 10:50 Uhr"],"a":1},
+   {"audio":"Frau: Was möchtest du zum Geburtstag haben?\nMann: Ein Buch wäre schön. Ich lese gerade so gern Krimis.","q":"Was wünscht sich der Mann?","options":["Ein Buch","Eine Uhr","Ein Spiel"],"a":0},
+   {"audio":"Mann: Wo wohnst du jetzt?\nFrau: In der Bergstraße, Nummer dreiundzwanzig. Die Wohnung ist im Erdgeschoss, mit einem kleinen Garten.","q":"Welche Hausnummer hat die Frau?","options":["32","13","23"],"a":2}
+  ]},
+  {"title":"Teil 2","task":"Sie hören vier Durchsagen. Sie hören jeden Text einmal. Sind die Aussagen 7–10 richtig oder falsch?","type":"rf","plays":1,"items":[
+   {"audio":"Liebe Kundinnen und Kunden, in unserer Kinderabteilung im dritten Stock gibt es diese Woche alle Spielsachen zehn Prozent billiger.","q":"Die Spielsachen sind diese Woche billiger.","a":true},
+   {"audio":"Achtung bitte: Der Flug nach Istanbul hat Verspätung. Die neue Abflugzeit ist sechzehn Uhr dreißig.","q":"Der Flug nach Istanbul startet um 16 Uhr.","a":false},
+   {"audio":"Hier spricht der Hausmeister. Morgen von acht bis zwölf Uhr gibt es im ganzen Haus kein Wasser. Bitte denken Sie daran.","q":"Morgen Nachmittag gibt es kein Wasser.","a":false},
+   {"audio":"Sehr geehrte Besucher, der Zoo schließt heute um achtzehn Uhr. Die Fütterung der Pinguine ist um fünfzehn Uhr.","q":"Die Pinguine bekommen um 15 Uhr ihr Essen.","a":true}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf Ansagen am Telefon. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Svenja, hier ist Oma. Danke für die schönen Blumen! Kommst du am Sonntag zum Kaffee? Ich backe einen Apfelkuchen.","q":"Was backt die Oma?","options":["Einen Apfelkuchen","Eine Torte","Brot"],"a":0},
+   {"audio":"Guten Tag, hier ist das Bürgeramt. Ihr neuer Ausweis ist fertig. Bitte bringen Sie Ihren alten Ausweis mit, wenn Sie den neuen abholen.","q":"Was soll die Person mitbringen?","options":["Ein Foto","Den alten Ausweis","Geld"],"a":1},
+   {"audio":"Hallo Benni, hier ist Marie. Ich bin krank und kann heute nicht zum Fußballtraining kommen. Kannst du bitte dem Trainer Bescheid sagen?","q":"Was soll Benni machen?","options":["Marie besuchen","Mit dem Trainer sprechen","Medikamente kaufen"],"a":1},
+   {"audio":"Hier ist die Tanzschule Rhythmus. Ihr Kurs beginnt nicht am Montag, sondern erst am Donnerstag, den zwölften. Die Uhrzeit bleibt gleich: neunzehn Uhr.","q":"Wann beginnt der Kurs?","options":["Am Montag um 19 Uhr","Am Donnerstag um 18 Uhr","Am Donnerstag um 19 Uhr"],"a":2},
+   {"audio":"Hallo Karin, hier ist Udo. Wir fahren morgen um sieben Uhr los. Bitte bring Wanderschuhe und eine Regenjacke mit. Das Essen kaufe ich.","q":"Was soll Karin mitbringen?","options":["Essen","Wanderschuhe","Getränke"],"a":1}
+  ]}
+ ],
+ "lesen":[
+  {"title":"Teil 1","task":"Lesen Sie die zwei Texte. Sind die Aussagen 1–5 richtig oder falsch?","type":"rf","texts":[
+   {"title":"E-Mail","body":"Liebe Sophie,\n\nwie geht es dir? Wir sind jetzt in unserem Urlaub in Österreich. Das Hotel liegt direkt an einem See. Jeden Morgen schwimmen die Kinder, und am Nachmittag machen wir eine Wanderung in den Bergen. Das Wetter ist super: 28 Grad und viel Sonne.\n\nAm Freitag fahren wir zurück nach Hause.\n\nHerzliche Grüße\nAnke"},
+   {"title":"Nachricht","body":"Hallo Herr Wagner,\n\nich bin Ihre neue Nachbarin aus dem 3. Stock. Am Samstag ziehe ich ein. Es wird vielleicht etwas laut. Entschuldigung! Am Sonntag lade ich alle Nachbarn um 16 Uhr zu Kaffee und Kuchen ein.\n\nViele Grüße\nPia Lorenz"}
+  ],"items":[
+   {"q":"Ankes Hotel ist in den Bergen, weit weg vom See.","a":false},
+   {"q":"Die Kinder schwimmen am Morgen.","a":true},
+   {"q":"Die Familie fährt am Freitag nach Hause.","a":true},
+   {"q":"Pia Lorenz wohnt schon lange im Haus.","a":false},
+   {"q":"Pia lädt die Nachbarn am Sonntag ein.","a":true}
+  ]},
+  {"title":"Teil 2","task":"Lesen Sie die Texte und die Aufgaben 6–10. Wo finden Sie Informationen? Wählen Sie a oder b.","type":"ab","items":[
+   {"q":"Sie möchten Ihr Kind in einen Schwimmkurs schicken.","options":["Schwimmkurse für Kinder von 5 bis 10 Jahren – Hallenbad Süd, Anmeldung: 0621 45 99 12","Aqua-Fitness für Erwachsene – dienstags 19 Uhr, Hallenbad Süd."],"a":0},
+   {"q":"Sie brauchen am Sonntag Brötchen.","options":["Bäckerei Hansen – Mo–Sa 6–18 Uhr, Sonntag geschlossen.","Bäckerei am Bahnhof – täglich, auch sonntags, 6–20 Uhr."],"a":1},
+   {"q":"Sie möchten Spanisch lernen.","options":["Volkshochschule: Neue Sprachkurse in Spanisch, Italienisch und Französisch ab Oktober.","Volkshochschule: Kochkurse – spanische und italienische Küche, freitags 18 Uhr."],"a":0},
+   {"q":"Sie suchen eine Wohnung für Ihre Familie mit drei Kindern.","options":["4-Zimmer-Wohnung, 95 m², ruhig, Garten, Schule in der Nähe. 1.150 € warm.","Schönes Zimmer in WG, 18 m², nur für Studierende, 380 € warm."],"a":0},
+   {"q":"Ihr Fernseher ist kaputt. Sie möchten einen neuen kaufen.","options":["Reparatur-Café: Wir helfen Ihnen kostenlos, alte Geräte zu reparieren. Jeden 1. Samstag im Monat.","Media Welt: Fernseher, Handys und Computer – diese Woche 20 % Rabatt auf alle Fernseher."],"a":1}
+  ]},
+  {"title":"Teil 3","task":"Lesen Sie die Texte. Sind die Aussagen 11–15 richtig oder falsch?","type":"rf","items":[
+   {"text":"Kinderarztpraxis\nDonnerstag geschlossen.\nIn Notfällen: Tel. 116 117","q":"Die Praxis ist am Donnerstag geöffnet.","a":false},
+   {"text":"Fahrradparkplatz\nNur für Mitarbeiter","q":"Alle Besucher dürfen hier ihr Fahrrad parken.","a":false},
+   {"text":"Englischkurs fällt heute aus!\nNächster Termin: Montag, 18 Uhr","q":"Der Englischkurs findet heute nicht statt.","a":true},
+   {"text":"Briefkasten-Leerung\nMo–Fr: 17:30 Uhr\nSa: 12:00 Uhr","q":"Am Samstag wird der Briefkasten mittags geleert.","a":true},
+   {"text":"Eingang Rathaus\nBitte Eingang B in der Schulstraße benutzen.","q":"Man soll einen anderen Eingang nehmen.","a":true}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Ihre Bekannte Amira Haddad möchte eine Karte für die Stadtbibliothek. Füllen Sie das Formular für sie aus. Schreiben Sie fünf Informationen.","situation":"Amira Haddad kommt aus Syrien. Sie ist am 12. 3. 1994 geboren und wohnt in Kassel, Rosenweg 8. Sie ist Studentin. Sie möchte gern Bücher und DVDs ausleihen.","form":[
+   {"label":"Vorname","a":"Amira"},
+   {"label":"Geburtsdatum","a":"12.3.1994","alt":["12. 3. 1994","12.03.1994","12. März 1994"]},
+   {"label":"Wohnort","a":"Kassel"},
+   {"label":"Beruf","a":"Studentin"},
+   {"label":"Interesse (Bücher / DVDs / Spiele)","a":"Bücher und DVDs","alt":["Bücher, DVDs","DVDs und Bücher"]}
+  ]},
+  {"title":"Teil 2","task":"Sie möchten am Samstag umziehen und brauchen Hilfe. Schreiben Sie Ihrem Freund Felix eine E-Mail.","prompt":"Schreiben Sie zu jedem Punkt ein bis zwei Sätze (circa 30 Wörter). Schreiben Sie auch eine Anrede und einen Gruß.","points":["Was machen Sie am Samstag?","Bitten Sie Felix um Hilfe.","Wann und wo treffen Sie sich?"],"words":30,"sample":"Lieber Felix,\n\nam Samstag ziehe ich in meine neue Wohnung. Ich habe viele Kisten und Möbel. Kannst du mir bitte helfen? Treffen wir uns um neun Uhr vor meinem alten Haus in der Parkstraße? Danach essen wir zusammen Pizza.\n\nViele Grüße\nNadia"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Sich vorstellen","task":"Stellen Sie sich vor. Die Wörter auf den Karten helfen Ihnen. Danach buchstabieren Sie Ihren Vornamen und sagen Ihr Geburtsjahr.","cards":["Name","Alter","Land","Wohnort","Sprachen","Beruf","Hobby"],"phrases":["Ich bin … Ich komme aus …","Ich wohne in …","Ich kann … sprechen.","Von Beruf bin ich …","Ich mag …"],"sample":"Ich bin Carlos Mendes und komme aus Brasilien. Ich bin neunundzwanzig Jahre alt und wohne jetzt in Stuttgart. Ich spreche Portugiesisch, Spanisch und Deutsch. Von Beruf bin ich Mechaniker. Ich mag Musik und spiele Gitarre."},
+  {"title":"Teil 2 – Um Informationen bitten und Informationen geben","task":"Thema: Familie und Freunde. Ziehen Sie eine Karte und stellen Sie eine Frage mit dem Wort. Antworten Sie auch auf die Frage Ihres Partners.","cards":["Geschwister","Kinder","Geburtstag","Eltern","Freunde","Wochenende"],"phrases":["Hast du …?","Wann hast du …?","Was machst du mit …?","Ich habe einen Bruder und …"],"sample":"Frage: Hast du Geschwister? – Antwort: Ja, ich habe eine Schwester. Sie ist zwanzig.\nFrage: Wann hast du Geburtstag? – Antwort: Mein Geburtstag ist am dritten Juli."},
+  {"title":"Teil 3 – Bitten formulieren und darauf reagieren","task":"Formulieren Sie zu jeder Karte eine Bitte. Ihre Partnerin oder Ihr Partner reagiert.","cards":["Foto (Sie möchten ein Foto)","Weg (Sie suchen den Bahnhof)","Salz (beim Essen)","Fernseher (zu laut)"],"phrases":["Können Sie bitte ein Foto von uns machen?","Wie komme ich zum …?","Gib mir bitte …","Gern.","Moment, bitte."],"sample":"Entschuldigung, können Sie bitte ein Foto von uns machen? – Ja, gern. Lächeln, bitte!\nWie komme ich bitte zum Bahnhof? – Gehen Sie geradeaus und dann links.\nGibst du mir bitte das Salz? – Hier, bitte."}
+ ]
+}

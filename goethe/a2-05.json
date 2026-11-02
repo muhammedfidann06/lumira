@@ -1,0 +1,88 @@
+{
+ "id":"A2-05","level":"A2","title":"Modelltest 5",
+ "lesen":[
+  {"title":"Teil 1","task":"Sie lesen in einer Zeitung diesen Text. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.","type":"abc","texts":[{"title":"Oma kocht – und alle kommen","body":"Jeden Donnerstag ist das kleine Restaurant „Bei Hilde“ in Bamberg voll. Der Grund: Hier kochen nicht professionelle Köche, sondern Großmütter aus verschiedenen Ländern. Diese Woche macht die 74-jährige Ayşe aus der Türkei gefüllte Paprika, nächste Woche kocht Maria aus Portugal einen Fischeintopf.\n\nDie Besitzerin Hilde Maurer hatte die Idee nach dem Tod ihrer eigenen Mutter. „Ich habe ihr Essen so vermisst“, erzählt sie. „Und ich dachte: Viele ältere Frauen kochen wunderbar, aber niemand isst ihr Essen mehr, weil die Kinder weit weg wohnen.“\n\nDie Großmütter bekommen für ihre Arbeit Geld, aber das ist für viele nicht das Wichtigste. „Ich freue mich, wenn die Gäste mein Essen loben“, sagt Ayşe. Weil das Restaurant so beliebt ist, muss man jetzt mindestens zwei Wochen vorher einen Tisch reservieren. Im Frühling soll es außerdem ein Kochbuch mit den Lieblingsrezepten der Großmütter geben."}],"items":[
+   {"q":"Im Restaurant „Bei Hilde“ kochen …","options":["junge Köche aus Bamberg.","ältere Frauen aus verschiedenen Ländern.","nur Frauen aus der Türkei."],"a":1},
+   {"q":"Hilde Maurer hatte die Idee, weil …","options":["sie selbst nicht kochen kann.","sie das Essen ihrer Mutter vermisste.","ihre Kinder weit weg wohnen."],"a":1},
+   {"q":"Für Ayşe ist besonders wichtig, dass …","options":["die Gäste ihr Essen gut finden.","sie viel Geld verdient.","sie neue Rezepte lernt."],"a":0},
+   {"q":"Wer im Restaurant essen möchte, …","options":["kann einfach vorbeikommen.","muss früh reservieren.","muss am Donnerstag anrufen."],"a":1},
+   {"q":"Im Frühling …","options":["öffnet ein zweites Restaurant.","kommt ein Kochbuch heraus.","gibt es einen Kochkurs."],"a":1}
+  ]},
+  {"title":"Teil 2","task":"Sie sind in einer Universität. Lesen Sie die Informationstafel und die Aufgaben 6–10. Wohin gehen Sie? Wählen Sie a, b oder c.","type":"abc","texts":[{"title":"Hauptgebäude – Wegweiser","body":"4. Etage: Internationales Büro · Beratung für ausländische Studierende · Sprachenzentrum\n3. Etage: Prüfungsamt · Fakultät Wirtschaft\n2. Etage: Bibliothek · Lesesaal · Computerraum\n1. Etage: Studierendensekretariat (Einschreibung, Studienausweis) · Studienberatung\nErdgeschoss: Mensa · Copyshop · Buchhandlung · Information"}],"items":[
+   {"q":"Sie haben Ihren Studienausweis verloren und brauchen einen neuen.","options":["4. Etage","anderer Stock","1. Etage"],"a":2},
+   {"q":"Sie möchten einen Spanischkurs an der Uni besuchen.","options":["3. Etage","Erdgeschoss","4. Etage"],"a":2},
+   {"q":"Sie müssen Ihr Skript kopieren.","options":["2. Etage","Erdgeschoss","anderer Stock"],"a":1},
+   {"q":"Sie möchten sich für eine Prüfung anmelden.","options":["1. Etage","2. Etage","anderer Stock"],"a":2},
+   {"q":"Sie möchten in Ruhe lesen und lernen.","options":["Erdgeschoss","2. Etage","4. Etage"],"a":1}
+  ]},
+  {"title":"Teil 3","task":"Sie lesen eine E-Mail. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","texts":[{"title":"E-Mail","body":"Liebe Frau Engel,\n\nich schreibe Ihnen, weil ich ein Problem mit meiner Wohnung habe. Seit zwei Wochen funktioniert die Heizung im Badezimmer nicht. Am Anfang war das nicht so schlimm, aber jetzt ist es draußen sehr kalt, und im Bad sind es nur noch zwölf Grad.\n\nIch habe schon zweimal beim Hausmeister angerufen. Er hat versprochen zu kommen, aber er ist leider nicht gekommen. Meine Tochter ist drei Jahre alt, und ich kann sie in dem kalten Bad nicht baden.\n\nKönnen Sie bitte so schnell wie möglich einen Handwerker schicken? Ich bin jeden Tag ab 15 Uhr zu Hause. Am Vormittag arbeite ich, aber meine Nachbarin, Frau Seidel, hat einen Schlüssel und kann die Tür aufmachen.\n\nVielen Dank für Ihre Hilfe.\n\nMit freundlichen Grüßen\nNadia Hamdan"}],"items":[
+   {"q":"Frau Hamdan schreibt, weil …","options":["sie umziehen möchte.","die Miete zu hoch ist.","die Heizung kaputt ist."],"a":2},
+   {"q":"Der Hausmeister …","options":["hat die Heizung schon repariert.","hat einen Handwerker geschickt.","ist nicht gekommen."],"a":2},
+   {"q":"Frau Hamdan macht sich Sorgen um …","options":["ihre Nachbarin.","ihre Mutter.","ihre Tochter."],"a":2},
+   {"q":"Am Nachmittag …","options":["arbeitet Frau Hamdan.","ist niemand zu Hause.","ist Frau Hamdan zu Hause."],"a":2},
+   {"q":"Frau Seidel …","options":["ist die Vermieterin.","repariert die Heizung.","hat einen Wohnungsschlüssel."],"a":2}
+  ]},
+  {"title":"Teil 4","task":"Sechs Personen suchen im Internet nach Angeboten. Lesen Sie die Aufgaben 16–20 und die Anzeigen a–f. Welche Anzeige passt zu welcher Person? Eine Anzeige brauchen Sie nicht.","type":"match","choices":[
+   {"key":"a","text":"Malkurs am See: Aquarellmalen in der Natur, Wochenendkurs für Erwachsene, Material inklusive, 120 €."},
+   {"key":"b","text":"Fahrradwerkstatt für Frauen: Lernen Sie, Ihr Fahrrad selbst zu reparieren. Donnerstags 18–20 Uhr, kostenlos."},
+   {"key":"c","text":"Spielgruppe für Kleinkinder (1–3 Jahre) mit Eltern: Singen, Spielen, Basteln – dienstags 10 Uhr im Familienzentrum."},
+   {"key":"d","text":"Lauftraining für Anfänger: In 10 Wochen von 0 auf 5 Kilometer. Treffpunkt Stadtpark, Montag und Mittwoch 18:30 Uhr."},
+   {"key":"e","text":"Theatergruppe sucht Mitspielerinnen und Mitspieler jeden Alters. Keine Erfahrung nötig. Proben am Freitagabend."},
+   {"key":"f","text":"Bewerbungstraining für Migrantinnen und Migranten: Lebenslauf schreiben, Gespräche üben – kostenlos im Jobcenter."}
+  ],"items":[
+   {"q":"Rana sucht eine Arbeit und möchte lernen, wie man sich gut bewirbt.","a":"f"},
+   {"q":"Herr Schulz möchte fitter werden und mit dem Joggen anfangen.","a":"d"},
+   {"q":"Anna hat einen Sohn (2) und möchte andere Eltern kennenlernen.","a":"c"},
+   {"q":"Frau Weber malt gern und möchte am Wochenende draußen sein.","a":"a"},
+   {"q":"Lisa (17) möchte gern auf der Bühne stehen.","a":"e"}
+  ]}
+ ],
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Stefan, hier ist Mama. Dein Paket ist heute bei uns angekommen. Ich bringe es dir am Sonntag mit, wenn wir zum Mittagessen kommen.","q":"Wann bekommt Stefan sein Paket?","options":["Am Sonntag","Heute","Am Samstag"],"a":0},
+   {"audio":"Liebe Hörerinnen und Hörer, der Weihnachtsmarkt auf dem Domplatz öffnet in diesem Jahr am achtundzwanzigsten November. Er ist täglich von elf bis einundzwanzig Uhr geöffnet.","q":"Bis wann ist der Weihnachtsmarkt geöffnet?","options":["Bis 21 Uhr","Bis 20 Uhr","Bis 23 Uhr"],"a":0},
+   {"audio":"Guten Tag, hier ist das Reisebüro Fernweh. Ihr Flug nach Lissabon am Freitag startet nicht um acht, sondern schon um sieben Uhr fünfzehn. Bitte seien Sie zwei Stunden vorher am Flughafen.","q":"Was hat sich geändert?","options":["Das Reiseziel","Die Abflugzeit","Der Flughafen"],"a":1},
+   {"audio":"Hallo Kerstin, hier ist Hanna. Ich habe heute im Supermarkt deinen Mann getroffen. Er hat gesagt, dass du krank bist. Brauchst du etwas? Ich kann für dich einkaufen.","q":"Was möchte Hanna für Kerstin tun?","options":["Für sie einkaufen","Sie besuchen","Sie zum Arzt fahren"],"a":0},
+   {"audio":"Information der Stadtwerke: Wegen Bauarbeiten fährt die Straßenbahn Linie zwei vom zehnten bis zum zwanzigsten Juli nicht. Bitte benutzen Sie die Ersatzbusse.","q":"Was sollen die Fahrgäste benutzen?","options":["Ersatzbusse","Die Linie 3","Taxis"],"a":0}
+  ]},
+  {"title":"Teil 2","task":"Sie hören ein Gespräch. Sie hören den Text einmal. Was macht Familie Bauer an welchem Urlaubstag? Wählen Sie für die Aufgaben 6–10 einen passenden Buchstaben a–h.","type":"match","plays":1,"audio":"Frau: So, wir haben fünf Tage in Berlin. Lass uns planen, was wir machen. Am ersten Tag sind wir sicher müde von der Fahrt.\nMann: Dann machen wir am ersten Tag nur eine Bootsfahrt auf der Spree. Das ist entspannend.\nFrau: Gute Idee. Am zweiten Tag möchte ich unbedingt ins Museum, ins Pergamonmuseum.\nMann: Einverstanden. Und am dritten Tag gehen wir in den Zoo, das wünschen sich die Kinder.\nFrau: Am vierten Tag soll es regnen. Da könnten wir ins Kino gehen. Es gibt einen neuen Kinderfilm.\nMann: Okay. Und am letzten Tag? Da müssen wir ja nachmittags zurückfahren.\nFrau: Am Vormittag gehen wir noch einkaufen, ich möchte Geschenke für meine Eltern kaufen.","choices":[
+   {"key":"a","text":"ins Kino gehen"},
+   {"key":"b","text":"Fahrrad fahren"},
+   {"key":"c","text":"eine Bootsfahrt machen"},
+   {"key":"d","text":"in den Zoo gehen"},
+   {"key":"e","text":"einkaufen gehen"},
+   {"key":"f","text":"ins Museum gehen"},
+   {"key":"g","text":"ins Theater gehen"},
+   {"key":"h","text":"schwimmen gehen"}
+  ],"items":[
+   {"q":"1. Tag","a":"c"},
+   {"q":"2. Tag","a":"f"},
+   {"q":"3. Tag","a":"d"},
+   {"q":"4. Tag","a":"a"},
+   {"q":"5. Tag","a":"e"}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":1,"items":[
+   {"audio":"Frau: Ich möchte einen Termin zum Haareschneiden.\nMann: Am Donnerstag um sechzehn Uhr wäre noch etwas frei.\nFrau: Da arbeite ich noch. Geht es auch am Samstag?\nMann: Ja, am Samstag um zehn.\nFrau: Perfekt.","q":"Wann ist der Termin?","options":["Donnerstag, 16 Uhr","Samstag, 10 Uhr","Samstag, 16 Uhr"],"a":1},
+   {"audio":"Mann: Warum lernst du eigentlich Italienisch?\nFrau: Mein Freund kommt aus Neapel. Ich möchte mit seiner Familie sprechen können.\nMann: Das ist ein guter Grund!","q":"Warum lernt die Frau Italienisch?","options":["Für die Familie ihres Freundes","Für ihre Arbeit","Für eine Reise"],"a":0},
+   {"audio":"Frau: Hast du die neue Wohnung genommen?\nMann: Nein, sie war zwar schön, aber die Küche war sehr alt. Und der Vermieter wollte keine neue einbauen.\nFrau: Schade.","q":"Warum hat der Mann die Wohnung nicht genommen?","options":["Die Küche war alt.","Sie war zu teuer.","Sie war zu klein."],"a":0},
+   {"audio":"Mann: Entschuldigen Sie, wo finde ich Batterien?\nFrau: Batterien haben wir an der Kasse, gleich neben den Kaugummis.\nMann: Ah, danke!","q":"Wo sind die Batterien?","options":["An der Kasse","Bei den Lampen","Am Eingang"],"a":0},
+   {"audio":"Frau: Kommt Thomas heute auch zum Training?\nMann: Nein, er hat sich gestern beim Fußball den Fuß verletzt. Er muss eine Woche Pause machen.\nFrau: Oh, hoffentlich ist es nicht schlimm.","q":"Was ist mit Thomas?","options":["Er hat den Fuß verletzt.","Er ist krank.","Er hat keine Lust."],"a":0}
+  ]},
+  {"title":"Teil 4","task":"Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie für die Aufgaben 16–20: Ja oder Nein?","type":"yn","plays":2,"audio":"Moderatorin: Heute begrüßen wir Herrn Fuchs. Er ist Fahrradkurier in Frankfurt. Herr Fuchs, was transportieren Sie?\nHerr Fuchs: Alles, was eilig ist: Briefe, Dokumente für Anwälte, manchmal auch Medikamente für Apotheken. Pakete über zehn Kilo nehme ich aber nicht.\nModeratorin: Wie viele Kilometer fahren Sie am Tag?\nHerr Fuchs: Ungefähr achtzig Kilometer. Am Anfang war ich abends total kaputt, aber jetzt bin ich das gewöhnt.\nModeratorin: Und bei schlechtem Wetter?\nHerr Fuchs: Ich fahre bei jedem Wetter. Nur bei Glatteis bleibe ich zu Hause, das ist zu gefährlich. Gute Regenkleidung ist das Wichtigste.\nModeratorin: Warum haben Sie diesen Beruf gewählt?\nHerr Fuchs: Ich habe früher im Büro gearbeitet und den ganzen Tag gesessen. Das hat mir nicht gefallen. Jetzt bin ich immer draußen und habe keinen Chef, der neben mir sitzt.\nModeratorin: Verdient man als Kurier gut?\nHerr Fuchs: Ehrlich gesagt: nicht besonders. Aber ich brauche kein Fitnessstudio!","items":[
+   {"q":"Herr Fuchs transportiert auch sehr schwere Pakete.","a":false},
+   {"q":"Er fährt etwa 80 Kilometer pro Tag.","a":true},
+   {"q":"Bei Glatteis arbeitet Herr Fuchs nicht.","a":true},
+   {"q":"Früher hatte Herr Fuchs einen Bürojob.","a":true},
+   {"q":"Herr Fuchs verdient sehr viel Geld.","a":false}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Sie haben morgen Geburtstag und machen eine kleine Feier. Ihre Kollegin Jana weiß noch nichts davon. Schreiben Sie Jana eine SMS.","prompt":"Schreiben Sie circa 20–30 Wörter zu allen drei Punkten.","points":["Laden Sie Jana ein.","Nennen Sie Ort und Uhrzeit.","Bitten Sie Jana, etwas mitzubringen."],"words":25,"sample":"Hallo Jana, morgen habe ich Geburtstag! Ich mache um 19 Uhr eine kleine Feier bei mir zu Hause. Kommst du? Kannst du vielleicht deine Musikbox mitbringen? Liebe Grüße, Sinem"},
+  {"title":"Teil 2","task":"Sie haben in der Zeitung eine Anzeige für ein gebrauchtes Fahrrad gelesen. Schreiben Sie dem Verkäufer, Herrn Roth, eine E-Mail.","prompt":"Schreiben Sie circa 30–40 Wörter zu allen drei Punkten. Vergessen Sie nicht Anrede und Gruß.","points":["Sagen Sie, warum Sie schreiben.","Fragen Sie nach dem Zustand des Fahrrads.","Fragen Sie, wann Sie es ansehen können."],"words":35,"sample":"Sehr geehrter Herr Roth,\n\nich habe Ihre Anzeige in der Zeitung gelesen und interessiere mich für Ihr Fahrrad. Ist es noch in gutem Zustand? Funktionieren die Bremsen und das Licht? Wann kann ich das Fahrrad ansehen? Am Samstag hätte ich Zeit.\n\nMit freundlichen Grüßen\nBashir Karimi"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Fragen zur Person","task":"Stellen Sie Ihrer Partnerin oder Ihrem Partner Fragen zu den Wörtern auf den Karten und beantworten Sie ihre oder seine Fragen.","cards":["Geburtsort?","Lieblingsbuch?","Arbeitsweg?","Freunde?","Sonntag?","Feste?","Internet?","Traumberuf?"],"phrases":["Wo bist du geboren?","Wie kommst du zur Arbeit?","Was machst du am Sonntag?","Was ist dein Traumberuf?"],"sample":"Wo bist du geboren? – Ich bin in Teheran geboren.\nWie kommst du zur Arbeit? – Ich fahre mit der U-Bahn, das dauert eine halbe Stunde.\nWas ist dein Traumberuf? – Ich möchte gern Tierärztin werden."},
+  {"title":"Teil 2 – Über sich sprechen","task":"Erzählen Sie etwas über Ihr Leben. Thema: „Ihr Lieblingsfest“. Die Fragen auf der Karte helfen Ihnen.","cards":["Welches Fest?","Wann?","Mit wem?","Was macht man?"],"phrases":["Mein Lieblingsfest ist …","Es ist im …","Wir feiern mit …","Man isst / macht …"],"sample":"Mein Lieblingsfest ist das Zuckerfest am Ende des Ramadan. Wir feiern drei Tage lang mit der ganzen Familie. Die Kinder bekommen Süßigkeiten und manchmal Geld. Wir besuchen unsere Verwandten und essen zusammen. Das Fest ist für mich etwas ganz Besonderes."},
+  {"title":"Teil 3 – Gemeinsam etwas planen","task":"Sie möchten mit Ihrer Partnerin oder Ihrem Partner am Donnerstag zusammen für ein Abschiedsfest im Kurs einkaufen. Finden Sie einen Termin. Hier ist Ihr Terminkalender.","cards":["8–12 Uhr: Deutschkurs","12–13 Uhr: Mittagessen","13–15 Uhr: frei","15–16:30 Uhr: Kinder vom Sport abholen","ab 17 Uhr: frei"],"phrases":["Wann hast du am Donnerstag Zeit?","Nach dem Kurs …","Passt es dir um …?","Was müssen wir kaufen?","Abgemacht!"],"sample":"A: Wann hast du am Donnerstag Zeit zum Einkaufen?\nB: Bis zwölf habe ich Kurs, dann esse ich zu Mittag. Passt es dir um eins?\nA: Um eins muss ich leider arbeiten. Wie wäre es um fünf?\nB: Um fünf ist gut. Was müssen wir kaufen?\nA: Getränke, Teller und einen Kuchen. – B: Abgemacht!"}
+ ]
+}

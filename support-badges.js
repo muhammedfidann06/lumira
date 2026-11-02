@@ -190,29 +190,55 @@
   window.purchaseSupportTier = purchaseTier;
 
   /* ============================================================ DESTEK OL */
+  /* Play ekranında her rozetin açtığı haklar kartın üzerinde yazar; metin
+     bağış değil abonelik olduğunu ve iptalin nasıl yapıldığını söyler. */
+  var SUPPORT_COPY = {
+    tr:'Rozetler aylık aboneliktir; Kral rozeti tek seferlik ve süresizdir. Ödeme ve iptal Google Play hesabından yapılır, iptal ettiğinde ödediğin dönemin sonuna kadar hakların devam eder. Kullanım hakları son 24 saate göre yenilenir.',
+    en:'Badges are monthly subscriptions; the Crown badge is a one-time, lifetime purchase. Payment and cancellation are handled in your Google Play account; after cancelling, your benefits last until the end of the paid period. Usage limits renew over the last 24 hours.',
+    de:'Abzeichen sind Monatsabos; die Krone ist ein einmaliger, dauerhafter Kauf. Zahlung und Kündigung laufen über dein Google-Play-Konto; nach der Kündigung bleiben die Vorteile bis zum Ende des bezahlten Zeitraums. Nutzungslimits erneuern sich über die letzten 24 Stunden.',
+    ar:'الشارات اشتراكات شهرية؛ وشارة التاج شراء لمرة واحدة ودائم. يتم الدفع والإلغاء من حساب Google Play، وبعد الإلغاء تبقى المزايا حتى نهاية الفترة المدفوعة. تتجدد حدود الاستخدام وفق آخر 24 ساعة.',
+    fr:'Les badges sont des abonnements mensuels ; la Couronne est un achat unique et à vie. Le paiement et la résiliation se font dans ton compte Google Play ; après résiliation, tes avantages restent jusqu’à la fin de la période payée. Les limites se renouvellent sur les dernières 24 heures.',
+    es:'Las insignias son suscripciones mensuales; la Corona es una compra única y de por vida. El pago y la cancelación se gestionan en tu cuenta de Google Play; tras cancelar, mantienes las ventajas hasta el final del periodo pagado. Los límites se renuevan según las últimas 24 horas.',
+    ru:'Значки — ежемесячные подписки; Корона — разовая бессрочная покупка. Оплата и отмена выполняются в аккаунте Google Play; после отмены преимущества действуют до конца оплаченного периода. Лимиты обновляются за последние 24 часа.'
+  };
+  function tierBenefits(t) {
+    var C = window.LUMIRA_ACCESS_COPY, row = window.LUMIRA_ACCESS && window.LUMIRA_ACCESS.tiers.find(function (x) { return x.amount === t.amount; });
+    if (!C || !row) return [];
+    return [C.text(row.minutes === null ? 'liveUnlimited' : 'live', { n: row.minutes }), C.text(row.count === null ? 'writingUnlimited' : 'writing', { n: row.count }), C.text(t.amount === 1 ? 'pdfTotal' : 'pdfUnlimited'), C.text('offline')];
+  }
   function openSupport() {
     if(!window.LUMIRA_PLAY.isNative() && window.LUMIRA_ACCESS)return window.LUMIRA_ACCESS.open('shop');
     if (!(window.PWA && window.PWA.sheet)) return;
-    window.PWA.sheet(window.t?window.t('support_title'):'❤️ Lumira\'yı Destekle', '', function (b,panel) {
+    const C=window.LUMIRA_ACCESS_COPY,shopTitle=C&&C.text('shopTitle');
+    window.PWA.sheet(shopTitle&&shopTitle!=='shopTitle'?shopTitle:(window.t?window.t('support_title'):'❤️ Lumira\'yı Destekle'), '', function (b,panel) {
       var grid = document.createElement('div');
-      grid.className = 'sup-grid';
-
       const native=window.LUMIRA_PLAY.isNative();
+      grid.className = 'sup-grid' + (native ? ' sup-list' : '');
+
       const storeCards=[];let report=null;
       TIERS.forEach(function (t) {
         var owned = hasBadge(t.badge);
         var el = document.createElement('button');
         el.type = 'button';
         el.className = 'sup-item' + (owned ? ' owned' : '');
-        el.innerHTML =
-          '<span class="sup-amount">' + tierName(t) + '</span>' +
-          '<span class="sup-eur">' + window.LUMIRA_BILLING.text(native?(t.amount===100?3:4):28) + '</span>' +
-          '<span class="sup-badge">' + t.badge + '</span>' +
-          '<span class="sup-xp">+' + t.xp + ' XP</span>';
+        if(native){
+          el.innerHTML =
+            '<span class="sup-head"><span class="sup-badge">' + t.badge + '</span>' +
+            '<span class="sup-name"><span class="sup-amount">' + esc(tierName(t)) + '</span><span class="sup-eur">' + esc(window.LUMIRA_BILLING.text(t.amount===100?3:4)) + '</span></span>' +
+            '<span class="sup-store-price">' + esc(window.LUMIRA_BILLING.text(24)) + '</span></span>' +
+            '<span class="sup-benefits">' + tierBenefits(t).map(function (line) { return '<span><i aria-hidden="true">✓</i>' + esc(line) + '</span>'; }).join('') + '</span>' +
+            '<span class="sup-foot"><span class="sup-xp">+' + t.xp + ' XP</span>' + (owned && C ? '<span class="sup-owned">' + esc(C.text('owned')) + '</span>' : '') + '</span>';
+        }else{
+          el.innerHTML =
+            '<span class="sup-amount">' + tierName(t) + '</span>' +
+            '<span class="sup-eur">' + window.LUMIRA_BILLING.text(28) + '</span>' +
+            '<span class="sup-badge">' + t.badge + '</span>' +
+            '<span class="sup-xp">+' + t.xp + ' XP</span>';
+        }
         // Cards stay tappable while prices load or fail, and also for removed
         // badges: a disabled card swallowed the tap without any explanation.
         el.disabled=false;
-        if(native){const price=document.createElement('span');price.className='sup-store-price';price.style.cssText='display:block;font-size:14px;line-height:1.6;margin:6px 0;color:#b9f4df';price.textContent=window.LUMIRA_BILLING.text(24);el.append(price);storeCards.push({t,el,price});}
+        if(native)storeCards.push({t,el,price:el.querySelector('.sup-store-price')});
         el.onclick = function () { purchaseTier(t,{report:function(text){if(report)report(text);}}); };
         grid.appendChild(el);
       });
@@ -258,7 +284,8 @@
           (window.t?window.t('your_badges')(mine.join(' ')):('Rozetlerin: ' + mine.join(' '))) + '</p>');
       }
 
-      b.insertAdjacentHTML('beforeend',
+      if(native)b.insertAdjacentHTML('beforeend','<p class="sup-desc">' + esc(SUPPORT_COPY[window.NATIVE_LANG] || SUPPORT_COPY.en) + '</p>');
+      else b.insertAdjacentHTML('beforeend',
         '<p class="sup-desc">' + (window.t ? window.t('support_desc') :
         'Lumira\'yı herkes için ücretsiz sunmaya devam etmek istiyoruz. ' +
         'Eğer uygulamayı faydalı bulduysanız, tamamen isteğe bağlı bir destekle yeni ' +

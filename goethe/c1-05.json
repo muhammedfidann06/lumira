@@ -1,0 +1,186 @@
+{
+ "id": "C1-05",
+ "level": "C1",
+ "title": "Modelltest 5",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen einen Zeitungsartikel, in dem einige Wörter fehlen. Wählen Sie für jede Lücke 1–9 das passende Wort a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Hat die Handschrift ausgedient?",
+     "body": "In vielen Klassenzimmern wird heute mehr getippt als geschrieben. Tablets ersetzen Hefte, und manche Bildungspolitiker [1] bereits die Frage, ob das Schreiben mit der Hand überhaupt noch zeitgemäß ist. Einige Länder haben die verbundene Schreibschrift aus dem Lehrplan [2] und unterrichten nur noch Druckbuchstaben.\n\nForscher [3] jedoch vor voreiligen Entscheidungen. Studien deuten darauf hin, dass beim Schreiben mit der Hand mehr Bereiche des Gehirns aktiv sind als beim Tippen. Wer einen Buchstaben formt, muss Bewegung, Sehen und Bedeutung [4] – ein Vorgang, der das Lernen offenbar unterstützt. Kinder, die Buchstaben von Hand üben, erkennen sie später schneller wieder als Kinder, die sie nur auf der Tastatur [5] haben.\n\nAuch bei Erwachsenen scheint die Handschrift Vorteile zu haben. In einem viel [6] Experiment schnitten Studierende, die in einer Vorlesung mit der Hand mitschrieben, bei Verständnisfragen besser ab als jene, die ihre Notizen in den Laptop tippten. Die Forscher erklärten das damit, dass man beim langsameren Schreiben gezwungen ist, das Gehörte zusammenzufassen, statt es Wort für Wort [7].\n\nEin Plädoyer gegen digitale Geräte ist das allerdings nicht. Vielmehr sprechen sich die meisten Fachleute dafür aus, beide Fähigkeiten zu [8]. Die Tastatur hat ihren Platz, wenn es um längere Texte und Geschwindigkeit geht. Die Handschrift aber sollte nicht [9] werden – schon gar nicht in den ersten Schuljahren."
+    }
+   ],
+   "items": [
+    {"q": "Lücke 1", "options": ["legen", "stellen", "setzen"], "a": 1},
+    {"q": "Lücke 2", "options": ["gestrichen", "entlassen", "entführt"], "a": 0},
+    {"q": "Lücke 3", "options": ["drohen", "mahnen", "warnen"], "a": 2},
+    {"q": "Lücke 4", "options": ["voneinander trennen", "miteinander verknüpfen", "aneinander vorbeiführen"], "a": 1},
+    {"q": "Lücke 5", "options": ["getippelt", "getüpfelt", "getippt"], "a": 2},
+    {"q": "Lücke 6", "options": ["beachteten", "betrachteten", "geachteten"], "a": 0},
+    {"q": "Lücke 7", "options": ["anzuhalten", "festzuhalten", "auszuhalten"], "a": 1},
+    {"q": "Lücke 8", "options": ["vermieten", "vermeiden", "vermitteln"], "a": 2},
+    {"q": "Lücke 9", "options": ["vernachlässigt", "verhandelt", "vernommen"], "a": 0}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie lesen in einer Zeitschrift einen Artikel über Langeweile. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Lob der Langeweile",
+     "body": "Kaum entsteht eine Wartezeit an der Bushaltestelle oder an der Supermarktkasse, greifen die meisten Menschen zum Smartphone. Langeweile scheint ein Zustand zu sein, den es um jeden Preis zu vermeiden gilt. Dabei könnte genau das ein Fehler sein, meinen einige Forscherinnen und Forscher.\n\nIn einem oft zitierten Experiment ließ man Versuchspersonen zunächst eine besonders eintönige Aufgabe erledigen: Sie mussten eine Viertelstunde lang Nummern aus einem Telefonbuch abschreiben. Anschließend sollten sie sich möglichst viele Verwendungszwecke für zwei Plastikbecher ausdenken. Die gelangweilten Teilnehmenden hatten deutlich mehr und originellere Ideen als eine Vergleichsgruppe, die zuvor nichts Langweiliges getan hatte.\n\nDie Psychologin Dr. Sandra Weil erklärt das so: „Wenn uns äußere Reize fehlen, beginnt unser Geist zu wandern. Wir denken über Vergangenes nach, schmieden Pläne oder verknüpfen scheinbar unzusammenhängende Gedanken. Genau in diesem Zustand entstehen oft kreative Einfälle.“ Der ständige Griff zum Smartphone unterbreche diesen Prozess, bevor er überhaupt beginnen könne.\n\nWeil betont jedoch, dass Langeweile nicht automatisch nützlich ist. Wer sich über lange Zeit chronisch langweilt, etwa in einem unterfordernden Job, leidet häufiger unter Unzufriedenheit und neigt eher zu ungesundem Verhalten. Entscheidend sei der Unterschied zwischen kurzen Momenten des Leerlaufs und einem dauerhaften Gefühl der Sinnlosigkeit.\n\nBesonders wichtig findet Weil das Thema bei Kindern. Viele Eltern fühlen sich verpflichtet, ihren Nachwuchs rund um die Uhr zu beschäftigen, und füllen den Nachmittag mit Kursen und Terminen. „Kinder, die sich manchmal langweilen dürfen, lernen, selbst Ideen zu entwickeln und sich zu beschäftigen“, sagt sie. Das sei eine wichtige Fähigkeit, die man nicht in einem Kurs erwerben könne.\n\nIhr Rat für Erwachsene klingt einfach: Wartezeiten bewusst ohne Bildschirm überstehen, beim Spaziergang die Kopfhörer weglassen und den Gedanken freien Lauf lassen. „Am Anfang fühlt sich das ungewohnt an“, räumt Weil ein. „Aber viele berichten schon nach kurzer Zeit, dass sie sich ausgeruhter fühlen.“"
+    }
+   ],
+   "items": [
+    {"q": "Viele Menschen greifen in Wartezeiten zum Smartphone, weil sie …", "options": ["wichtige Nachrichten erwarten.", "Langeweile vermeiden wollen.", "ihre Zeit besser planen möchten."], "a": 1},
+    {"q": "Im beschriebenen Experiment hatten die gelangweilten Teilnehmenden …", "options": ["mehr und originellere Ideen.", "weniger Lust auf die zweite Aufgabe.", "die gleichen Ergebnisse wie die Vergleichsgruppe."], "a": 0},
+    {"q": "Laut Dr. Weil entstehen kreative Ideen oft, wenn …", "options": ["man unter Zeitdruck steht.", "man sich ganz auf eine Aufgabe konzentriert.", "die Gedanken frei wandern können."], "a": 2},
+    {"q": "Chronische Langeweile …", "options": ["fördert die Kreativität besonders stark.", "kann zu Unzufriedenheit führen.", "tritt vor allem bei Kindern auf."], "a": 1},
+    {"q": "Kinder, die sich manchmal langweilen dürfen, …", "options": ["lernen, sich selbst zu beschäftigen.", "brauchen mehr Kurse.", "werden schneller unzufrieden."], "a": 0},
+    {"q": "Dr. Weil rät Erwachsenen, …", "options": ["mehr Kurse zu besuchen.", "beim Spazierengehen Musik zu hören.", "Wartezeiten ohne Bildschirm zu verbringen."], "a": 2},
+    {"q": "Viele, die Weils Rat befolgen, …", "options": ["geben schnell wieder auf.", "fühlen sich bald ausgeruhter.", "langweilen sich stärker als vorher."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Lesen Sie den Text. Welcher Satz a–h passt in welche Lücke 1–6? Zwei Sätze passen nicht.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Die letzte Meile auf drei Rädern",
+     "body": "Der Onlinehandel boomt, und mit ihm wächst der Lieferverkehr in den Städten. Paketwagen blockieren Radwege, halten in zweiter Reihe und verursachen Staus. [1] Immer mehr Logistikunternehmen setzen deshalb in den Innenstädten auf elektrische Lastenräder.\n\nDas Konzept funktioniert meist über sogenannte Mikrodepots. [2] Von dort aus übernehmen Lastenräder die Verteilung auf der sogenannten letzten Meile – dem Weg bis zur Haustür.\n\nDie Vorteile liegen auf der Hand. Lastenräder stoßen keine Abgase aus, sind leise und kommen auch durch enge Gassen und Fußgängerzonen. [3] Auch die Parkplatzsuche entfällt, was in dichten Innenstädten viel Zeit spart.\n\nAllerdings stößt das Modell an Grenzen. [4] Große Möbelstücke oder schwere Getränkekisten lassen sich mit einem Fahrrad nicht befördern. Zudem müssen die Fahrerinnen und Fahrer bei jedem Wetter unterwegs sein, was den Beruf körperlich anstrengend macht.\n\nEin weiteres Hindernis sind die Flächen. [5] Viele Städte unterstützen die Unternehmen deshalb, indem sie ungenutzte Parkhäuser oder Container auf öffentlichen Plätzen zur Verfügung stellen.\n\nOb sich das Lastenrad in der Paketzustellung langfristig durchsetzt, hängt auch von der Politik ab. [6] Fachleute sind sich jedoch einig, dass es den Lieferverkehr allein nicht lösen kann – wohl aber einen wichtigen Beitrag dazu leisten."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Gerade in zentralen Lagen sind geeignete Räume für Mikrodepots knapp und teuer."},
+    {"key": "b", "text": "Hinzu kommen Lärm und Abgase, die vor allem die Anwohner belasten."},
+    {"key": "c", "text": "Die ersten Lastenräder wurden bereits im 19. Jahrhundert gebaut."},
+    {"key": "d", "text": "Dabei bringen Lastwagen die Pakete zunächst gesammelt zu kleinen Lagern mitten in der Stadt."},
+    {"key": "e", "text": "Würden etwa Einfahrverbote für Lieferwagen eingeführt, bekäme das Lastenrad einen deutlichen Schub."},
+    {"key": "f", "text": "In vielen Fällen sind sie dort sogar schneller als ein Lieferwagen."},
+    {"key": "g", "text": "Nicht jede Sendung eignet sich für den Transport auf zwei oder drei Rädern."},
+    {"key": "h", "text": "Deshalb verzichten die meisten Kunden inzwischen ganz auf Bestellungen im Internet."}
+   ],
+   "items": [
+    {"q": "Lücke 1", "a": "b"},
+    {"q": "Lücke 2", "a": "d"},
+    {"q": "Lücke 3", "a": "f"},
+    {"q": "Lücke 4", "a": "g"},
+    {"q": "Lücke 5", "a": "a"},
+    {"q": "Lücke 6", "a": "e"}
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie lesen in einem Elternmagazin Stellungnahmen zur Frage, ob Smartphones an Schulen komplett verboten werden sollten. Lesen Sie die Texte a–d und die Aussagen 1–8. Wer äußert sich wie? Die Personen können mehrmals gewählt werden.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Frau Becker, 48, Schulleiterin: Seit einem Jahr gilt an unserer Schule ein Handyverbot von der ersten bis zur letzten Stunde, auch in den Pausen. Anfangs gab es Proteste, inzwischen sehen es die meisten positiv. Auf dem Schulhof wird wieder Fußball gespielt und geredet, statt auf Bildschirme zu starren. Auch Fälle von Mobbing über soziale Netzwerke während der Schulzeit sind deutlich zurückgegangen."},
+    {"key": "b", "text": "Emil, 16, Schüler: Ich verstehe, dass Handys im Unterricht stören können. Aber ein komplettes Verbot finde ich übertrieben. In der Pause schreibe ich meiner Mutter, ob ich nachmittags abgeholt werde, oder schaue nach, ob mein Bus ausfällt. Außerdem nutzen wir die Handys manchmal sinnvoll im Unterricht, etwa für Recherchen oder Umfragen. Man sollte uns zutrauen, verantwortungsvoll damit umzugehen."},
+    {"key": "c", "text": "Prof. Dr. Tanja Ruff, 55, Bildungsforscherin: Die Studienlage ist weniger eindeutig, als es in der öffentlichen Debatte oft scheint. Einige Untersuchungen finden nach Handyverboten leicht bessere Leistungen, vor allem bei schwächeren Schülerinnen und Schülern; andere finden kaum Effekte. Wichtiger als ein Verbot scheint mir, dass Schulen klare Regeln gemeinsam mit den Jugendlichen entwickeln. Regeln, die man selbst mitbestimmt hat, werden eher eingehalten."},
+    {"key": "d", "text": "Herr Yıldız, 44, Vater von zwei Kindern: Als Vater bin ich hin- und hergerissen. Einerseits beruhigt es mich, dass meine Tochter mich im Notfall erreichen kann. Andererseits sehe ich zu Hause, wie schwer es ihr fällt, das Handy wegzulegen. Wenn die Schule wenigstens ein paar Stunden am Tag handyfrei ist, hilft ihr das vermutlich mehr, als sie zugeben würde. Ein Notfalltelefon im Sekretariat reicht meiner Meinung nach aus."}
+   ],
+   "items": [
+    {"q": "Wer hält die Forschungsergebnisse für widersprüchlich?", "a": "c"},
+    {"q": "Wer schildert Beobachtungen aus dem Familienalltag?", "a": "d"},
+    {"q": "Wer berichtet von positiven Veränderungen in den Pausen?", "a": "a"},
+    {"q": "Wer betont, dass Handys auch im Unterricht nützlich sein können?", "a": "b"},
+    {"q": "Wer sieht für Notfälle eine Lösung im Sekretariat?", "a": "d"},
+    {"q": "Wer erwähnt, dass es zunächst Widerstand gab?", "a": "a"},
+    {"q": "Wer nennt praktische Gründe, das Handy in der Pause zu benutzen?", "a": "b"},
+    {"q": "Wer empfiehlt, die Schülerinnen und Schüler an den Regeln zu beteiligen?", "a": "c"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text einmal. Zu jedem Text lösen Sie zwei Aufgaben. Wählen Sie bei jeder Aufgabe die richtige Lösung.",
+   "type": "rf",
+   "plays": 1,
+   "items": [
+    {"audio": "Herzlich willkommen beim Bürgeramt der Stadt Leipzig. Bitte beachten Sie: Termine für Personalausweise und Reisepässe vergeben wir ausschließlich online über unser Terminportal. Telefonisch können wir leider keine Termine mehr vereinbaren. Wenn Sie lediglich einen fertigen Ausweis abholen möchten, benötigen Sie keinen Termin; kommen Sie einfach während der Öffnungszeiten vorbei. Für alle anderen Anliegen bleiben Sie bitte in der Leitung, Sie werden mit dem nächsten freien Mitarbeiter verbunden.", "q": "Für die Abholung eines fertigen Ausweises braucht man einen Termin.", "a": false},
+    {"type": "abc", "q": "Wie bekommt man einen Termin für einen neuen Reisepass?", "options": ["Telefonisch.", "Persönlich im Bürgeramt.", "Über das Internet."], "a": 2},
+    {"audio": "Guten Tag, Frau Lindgren, hier spricht Peter Albers vom Rosenfeld Verlag. Vielen Dank für das Manuskript Ihres Sachbuchs über Stadtgärten. Wir haben es im Lektorat mit großem Interesse gelesen und würden es gern ins Programm für das nächste Frühjahr aufnehmen. Allerdings ist der Text mit fast vierhundert Seiten deutlich zu lang für unsere Reihe; wir müssten ihn um etwa ein Drittel kürzen. Bevor wir einen Vertrag aufsetzen, würde ich das gern persönlich mit Ihnen besprechen. Passt es Ihnen nächste Woche?", "q": "Der Verlag möchte das Buch veröffentlichen.", "a": true},
+    {"type": "abc", "q": "Was möchte der Verlag ändern?", "options": ["Den Titel des Buches.", "Den Umfang des Textes.", "Den Erscheinungstermin."], "a": 1},
+    {"audio": "Musik kann Schmerzen lindern – das ist nicht neu. Eine neue Studie der Universität Wien zeigt nun, dass es dabei weniger auf die Art der Musik ankommt als darauf, ob die Patienten sie selbst ausgesucht haben. Teilnehmende, die nach einer Operation ihre Lieblingsmusik hörten, benötigten deutlich weniger Schmerzmittel als jene, denen beruhigende Musik vorgespielt wurde. Die Forscher empfehlen deshalb, Patienten vor einem Eingriff zu bitten, eine eigene Playlist zusammenzustellen.", "q": "Laut der Studie wirkt beruhigende Musik am besten gegen Schmerzen.", "a": false},
+    {"type": "abc", "q": "Was empfehlen die Forscher?", "options": ["Patienten sollen ihre Musik selbst auswählen.", "Musik soll Schmerzmittel ersetzen.", "Kliniken sollen Musiktherapeuten einstellen."], "a": 0},
+    {"audio": "Information zu Gleis sieben: Der Regionalexpress nach Rostock, planmäßige Abfahrt zehn Uhr achtzehn, fällt heute wegen Bauarbeiten zwischen Berlin und Oranienburg aus. Bitte nutzen Sie den Ersatzverkehr mit Bussen ab dem Bahnhofsvorplatz, Ausgang Nord. Die Busse fahren bis Oranienburg; dort können Sie in den Zug nach Rostock umsteigen. Bitte planen Sie für die Fahrt etwa vierzig Minuten mehr Zeit ein. Fahrräder können in den Bussen leider nicht mitgenommen werden.", "q": "Reisende nach Rostock fahren zunächst mit dem Bus.", "a": true},
+    {"type": "abc", "q": "Was ist im Ersatzverkehr nicht möglich?", "options": ["Mit Gepäck zu reisen.", "Fahrräder mitzunehmen.", "Fahrkarten zu kaufen."], "a": 1},
+    {"audio": "Viele Hundebesitzer unterschätzen, wie schnell es im Sommer gefährlich werden kann. Ein Auto heizt sich in der Sonne innerhalb weniger Minuten auf über fünfzig Grad auf – auch wenn das Fenster einen Spalt offen ist. Ich rate deshalb dringend davon ab, Tiere im Auto warten zu lassen, und sei es nur für einen kurzen Einkauf. Spaziergänge sollte man in die frühen Morgen- oder späten Abendstunden verlegen. Und testen Sie den Asphalt mit der Hand: Wenn er Ihnen zu heiß ist, ist er es auch für die Pfoten Ihres Hundes.", "q": "Ein offenes Fenster verhindert, dass sich das Auto stark aufheizt.", "a": false},
+    {"type": "abc", "q": "Wann sollte man im Sommer mit dem Hund spazieren gehen?", "options": ["Am frühen Morgen oder am späten Abend.", "Zur Mittagszeit.", "Nur bei Regen."], "a": 0}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Ein Moderator spricht mit der Winzerin Katharina Moser über die Folgen des Klimawandels für den Weinbau.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Moderator: Frau Moser, Ihre Familie baut seit vier Generationen Wein an der Mosel an. Merken Sie den Klimawandel in Ihren Weinbergen?\nMoser: Sehr deutlich. Als mein Großvater den Betrieb geführt hat, begann die Weinlese meistens Mitte Oktober. Heute fangen wir oft schon Anfang September an. Die Trauben reifen schneller, weil es wärmer ist.\nModerator: Das klingt zunächst gar nicht so schlecht. Früher galten warme Jahre doch als besonders gute Jahrgänge.\nMoser: Das stimmt, und in mancher Hinsicht haben wir tatsächlich profitiert. Rotweinsorten, die früher bei uns kaum reif wurden, gedeihen heute problemlos. Aber die Kehrseite ist, dass unsere klassischen Rieslinge an Säure verlieren, wenn es zu heiß wird. Und gerade die Frische ist das, was unsere Weine ausmacht.\nModerator: Welche Probleme gibt es noch?\nMoser: Das Wetter ist extremer geworden. Wir hatten in den letzten Jahren Hagelschläge, die in wenigen Minuten einen Großteil der Ernte vernichtet haben, und dann wieder wochenlange Trockenheit. Junge Reben mit kurzen Wurzeln leiden besonders darunter. Außerdem tauchen neue Schädlinge auf, die es hier früher wegen der kalten Winter nicht gab.\nModerator: Wie reagieren Sie darauf?\nMoser: Auf verschiedene Weise. Wir lassen zwischen den Rebzeilen Gras und Kräuter wachsen, damit der Boden mehr Feuchtigkeit speichert. Bei Neupflanzungen wählen wir Lagen, die nach Osten ausgerichtet sind und weniger Sonne abbekommen. Und wir experimentieren mit pilzwiderstandsfähigen Sorten, die weniger Pflanzenschutz brauchen.\nModerator: Werden wir in Zukunft ganz andere Weine aus Deutschland trinken?\nMoser: Teilweise sicher. Ich glaube nicht, dass der Riesling verschwindet, aber er wird sich verändern, und man wird ihn in Zukunft vielleicht eher in höheren oder kühleren Lagen anbauen. Gleichzeitig gibt es heute schon Winzer, die mit Sorten aus Südeuropa experimentieren.\nModerator: Sind Sie optimistisch?\nMoser: Vorsichtig optimistisch. Weinbau war immer ein Beruf, in dem man sich an die Natur anpassen musste. Was mir Sorgen macht, ist eher das Tempo der Veränderungen. Eine Rebe steht dreißig, vierzig Jahre im Weinberg. Wer heute pflanzt, muss also schon an das Klima der Siebzigerjahre dieses Jahrhunderts denken.",
+   "items": [
+    {"q": "Im Vergleich zur Zeit ihres Großvaters beginnt die Weinlese heute …", "options": ["später.", "früher.", "zur gleichen Zeit."], "a": 1},
+    {"q": "Ein Vorteil des wärmeren Klimas ist, dass …", "options": ["Rotweinsorten besser reif werden.", "der Riesling mehr Säure hat.", "es seltener hagelt."], "a": 0},
+    {"q": "Bei großer Hitze verliert der Riesling …", "options": ["an Farbe.", "an Alkohol.", "an Frische."], "a": 2},
+    {"q": "Als weiteres Problem nennt Frau Moser …", "options": ["zu viel Regen im Herbst.", "das Auftauchen neuer Schädlinge.", "den Mangel an Erntehelfern."], "a": 1},
+    {"q": "Gras und Kräuter zwischen den Rebzeilen sollen …", "options": ["mehr Feuchtigkeit im Boden halten.", "Schädlinge anlocken.", "die Trauben vor Hagel schützen."], "a": 0},
+    {"q": "Über die Zukunft des Rieslings sagt sie, dass er …", "options": ["bald ganz verschwinden wird.", "durch südeuropäische Sorten ersetzt wird.", "sich verändern und vielleicht in kühleren Lagen wachsen wird."], "a": 2},
+    {"q": "Besondere Sorgen macht ihr, dass …", "options": ["der Weinbau unwirtschaftlich wird.", "sich das Klima so schnell verändert.", "junge Menschen den Beruf nicht mehr wählen."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören einen Vortrag. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Ein Lernforscher spricht über verbreitete Irrtümer beim Lernen.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Liebe Zuhörerinnen und Zuhörer, wer von Ihnen hat schon einmal einen Test gemacht, um herauszufinden, ob er ein visueller, auditiver oder haptischer Lerntyp ist? Ich sehe einige Hände. Heute möchte ich Ihnen zeigen, warum solche Tests wenig aussagen, und einige weitere verbreitete Irrtümer über das Lernen ansprechen.\nBeginnen wir mit den Lerntypen. Die Vorstellung, dass jeder Mensch am besten über einen bestimmten Sinn lernt, ist intuitiv einleuchtend und in Schulen weit verbreitet. In sorgfältig kontrollierten Studien hat sich jedoch kein Vorteil gezeigt, wenn der Unterricht an den angeblichen Lerntyp angepasst wurde. Was tatsächlich hilft, ist, Inhalte über mehrere Kanäle gleichzeitig anzubieten – also zum Beispiel eine Erklärung mit einer passenden Grafik zu verbinden. Davon profitieren alle.\nEin zweiter Irrtum betrifft das Wiederholen. Viele Studierende lesen ihre Unterlagen vor einer Prüfung mehrmals durch und markieren wichtige Stellen. Das fühlt sich produktiv an, weil der Text mit jedem Lesen vertrauter wirkt. Doch Vertrautheit ist nicht dasselbe wie Wissen. Wesentlich wirksamer ist es, sich selbst abzufragen: Karteikarten, Übungsaufgaben oder der Versuch, das Gelernte aus dem Gedächtnis aufzuschreiben. Jedes Mal, wenn wir eine Information aktiv abrufen, festigt sie sich im Gedächtnis.\nDrittens: der Zeitpunkt. Wer den gesamten Stoff in der Nacht vor der Prüfung lernt, kann am nächsten Morgen durchaus gut abschneiden. Nach wenigen Wochen ist das meiste aber vergessen. Verteilt man das Lernen dagegen auf mehrere kürzere Einheiten über einen längeren Zeitraum, bleibt das Wissen deutlich länger erhalten. Man spricht vom verteilten Lernen.\nUnd schließlich der Schlaf. Er ist keine verlorene Lernzeit, im Gegenteil: Während wir schlafen, verarbeitet das Gehirn die Eindrücke des Tages und überträgt sie ins Langzeitgedächtnis. Eine durchgearbeitete Nacht schadet dem Lernerfolg daher eher, als dass sie nützt.\nMeine Empfehlung lautet deshalb: Fragen Sie sich selbst ab, verteilen Sie das Lernen über mehrere Tage und gönnen Sie sich ausreichend Schlaf. Das klingt weniger aufregend als ein persönlicher Lerntyp, ist aber wissenschaftlich gut belegt. Vielen Dank.",
+   "items": [
+    {"q": "Über die Theorie der Lerntypen sagt der Redner, dass …", "options": ["sie in Studien nicht bestätigt wurde.", "sie nur für Kinder gilt.", "sie in Schulen kaum bekannt ist."], "a": 0},
+    {"q": "Was hilft laut dem Redner allen Lernenden?", "options": ["Ein Test des eigenen Lerntyps.", "Inhalte über mehrere Kanäle zu präsentieren.", "Ausschließlich mit Bildern zu lernen."], "a": 1},
+    {"q": "Mehrmaliges Lesen und Markieren …", "options": ["ist die wirksamste Lernmethode.", "wird von den meisten Lehrkräften empfohlen.", "erzeugt vor allem ein Gefühl der Vertrautheit."], "a": 2},
+    {"q": "Besonders wirksam ist es, …", "options": ["sich selbst abzufragen.", "Texte laut vorzulesen.", "Zusammenfassungen abzuschreiben."], "a": 0},
+    {"q": "Wer in der Nacht vor der Prüfung lernt, …", "options": ["vergisst den Stoff sofort.", "vergisst das meiste nach einigen Wochen.", "schneidet immer schlecht ab."], "a": 1},
+    {"q": "Verteiltes Lernen bedeutet, …", "options": ["mit anderen in Gruppen zu lernen.", "verschiedene Fächer gleichzeitig zu lernen.", "in mehreren kürzeren Einheiten über längere Zeit zu lernen."], "a": 2},
+    {"q": "Während des Schlafs …", "options": ["überträgt das Gehirn Gelerntes ins Langzeitgedächtnis.", "ruht das Gehirn vollständig.", "geht neu Gelerntes verloren."], "a": 0},
+    {"q": "Seine Empfehlungen sind laut dem Redner …", "options": ["neu und noch nicht erforscht.", "wissenschaftlich gut belegt.", "nur für Studierende geeignet."], "a": 1}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1 – Forumsbeitrag",
+   "task": "In einem Nachrichtenportal haben Sie einen Artikel mit dem Titel „Werbung ohne Grenzen? Forderungen nach strengeren Regeln für Influencer“ gelesen. Sie möchten im Kommentarforum des Portals Stellung nehmen.",
+   "prompt": "Schreiben Sie einen Forumsbeitrag (circa 230 Wörter). Gehen Sie dabei auf alle folgenden Punkte ein. Achten Sie auf eine klare Gliederung, eine passende Einleitung und einen passenden Schluss.",
+   "points": ["die Rolle von Influencern für junge Menschen", "Probleme bei der Kennzeichnung von Werbung", "mögliche Regeln oder Verbote", "Ihre eigene Meinung mit Begründung"],
+   "words": 230,
+   "sample": "Der Artikel über strengere Regeln für Influencer greift ein Thema auf, das ich für überfällig halte. Im Folgenden möchte ich begründen, warum ich klare Vorgaben befürworte, ohne die Branche pauschal zu verurteilen.\n\nFür viele Jugendliche sind Influencer heute wichtigere Vorbilder als Sportler oder Musiker. Sie vermitteln das Gefühl, eine Freundin oder ein Freund zu sein, der ehrliche Tipps gibt. Genau darin liegt jedoch das Problem: Wer einer Person vertraut, nimmt deren Empfehlungen viel weniger kritisch wahr als klassische Werbung.\n\nZwar ist Werbung in den meisten Ländern bereits kennzeichnungspflichtig, doch in der Praxis wird das häufig umgangen. Hinweise verstecken sich in langen Textblöcken oder erscheinen nur für Sekunden im Bild. Besonders jüngere Nutzerinnen und Nutzer erkennen deshalb oft nicht, dass ein Beitrag bezahlt wurde.\n\nIch halte daher einheitliche und gut sichtbare Kennzeichnungen für unerlässlich. Darüber hinaus sollte Werbung für bestimmte Produkte, etwa für riskante Finanzanlagen oder fragwürdige Schönheitsbehandlungen, besonders streng geregelt werden. Verstöße müssten spürbare Strafen nach sich ziehen, und auch die Plattformen sollten Verantwortung übernehmen.\n\nEin generelles Verbot von Werbung durch Influencer lehne ich dagegen ab. Viele von ihnen leisten seriöse Arbeit, informieren über Bildung, Sport oder Nachhaltigkeit und finanzieren sich nun einmal über Kooperationen.\n\nAlles in allem plädiere ich für klare Regeln und mehr Medienbildung in den Schulen. Nur wer Werbemechanismen durchschaut, kann bewusst entscheiden, wem er folgt und was er kauft."
+  },
+  {
+   "title": "Teil 2 – Formelle Beschwerde",
+   "task": "Sie haben an einer internationalen Fachkonferenz teilgenommen. Das Hotelzimmer hatten Sie über die Veranstalter gebucht, doch bei Ihrer Ankunft lag keine Reservierung vor, und Sie mussten ein teureres Hotel nehmen. Sie schreiben an Herrn Brückner von der Konferenzorganisation.",
+   "prompt": "Schreiben Sie eine formelle E-Mail (circa 120 Wörter). Gehen Sie auf alle folgenden Punkte ein und achten Sie auf eine passende Anrede und einen passenden Schluss.",
+   "points": ["Grund Ihres Schreibens", "Beschreibung des Problems bei der Ankunft", "entstandene Mehrkosten und Unannehmlichkeiten", "Ihre Forderung"],
+   "words": 120,
+   "sample": "Sehr geehrter Herr Brückner,\n\nvom 8. bis 10. Mai habe ich an der Konferenz „Digitale Bildung in Europa“ teilgenommen. Mit diesem Schreiben möchte ich Sie auf ein Problem mit meiner Hotelbuchung aufmerksam machen.\n\nMein Zimmer im Hotel Am Stadtpark hatte ich, wie empfohlen, über Ihr Anmeldeportal gebucht und eine Bestätigung erhalten. Als ich am Abend des 7. Mai eintraf, lag dem Hotel jedoch keine Reservierung vor, und alle Zimmer waren belegt.\n\nIch musste daraufhin kurzfristig ein anderes Hotel buchen, das pro Nacht 65 Euro teurer war und weit vom Tagungsort entfernt lag. Dadurch entstanden mir zusätzlich Taxikosten.\n\nIch bitte Sie daher, mir die Mehrkosten von insgesamt 245 Euro zu erstatten. Die entsprechenden Belege füge ich bei.\n\nFür eine baldige Klärung wäre ich Ihnen dankbar.\n\nMit freundlichen Grüßen\nDr. Nadia Haddad"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Vortrag halten",
+   "task": "Sie sollen in einem Seminar einen Vortrag (circa 3–4 Minuten) halten. Wählen Sie eines der beiden Themen: A) „Brauchen wir eine Frauenquote in Führungspositionen?“ oder B) „Sollte Fast Fashion stärker besteuert werden?“ Stellen Sie das Thema vor, beschreiben Sie verschiedene Positionen mit ihren Vor- und Nachteilen, nehmen Sie begründet Stellung und schließen Sie mit einem Fazit.",
+   "cards": ["Einleitung: Thema und Gliederung", "aktuelle Situation", "Argumente beider Seiten", "Beispiel aus Ihrem Heimatland", "eigene Position und Fazit"],
+   "phrases": ["Ich habe mich für das Thema … entschieden, weil …", "Werfen wir zunächst einen Blick auf …", "Befürworter führen an, dass …", "Gegner halten dem entgegen, dass …", "Mein Fazit lautet daher: …"],
+   "sample": "Ich habe mich für das Thema „Sollte Fast Fashion stärker besteuert werden?“ entschieden, weil mich die Frage beschäftigt, was hinter den Billigpreisen in vielen Modegeschäften steckt. Zunächst beschreibe ich die aktuelle Situation, danach stelle ich Argumente beider Seiten vor, nenne ein Beispiel aus meinem Heimatland und schließe mit meinem Fazit.\n\nWerfen wir zunächst einen Blick auf die Situation. Manche Modeketten bringen inzwischen jede Woche neue Kollektionen heraus, und ein T-Shirt kostet oft weniger als ein Kaffee. Die Folge ist, dass Kleidung immer häufiger nach wenigen Malen Tragen weggeworfen wird.\n\nBefürworter einer Steuer führen an, dass die niedrigen Preise die wahren Kosten verschleiern: Wasserverbrauch, Chemikalien, Müllberge und oft schlechte Arbeitsbedingungen in den Produktionsländern. Eine Abgabe würde diese Kosten sichtbarer machen und nachhaltige Marken wettbewerbsfähiger.\n\nGegner halten dem entgegen, dass eine solche Steuer vor allem Menschen mit wenig Geld treffen würde, die sich teure Kleidung nicht leisten können. Außerdem sei schwer festzulegen, was genau als Fast Fashion gilt.\n\nIn meinem Heimatland gibt es inzwischen viele Secondhand-Märkte und Tauschpartys, die gerade bei jungen Leuten beliebt sind. Das zeigt, dass es auch ohne Steuer Alternativen gibt.\n\nMein Fazit lautet daher: Eine moderate Abgabe halte ich für sinnvoll, wenn die Einnahmen in Reparaturangebote und Secondhand-Initiativen fließen und gleichzeitig Menschen mit geringem Einkommen entlastet werden. Vielen Dank fürs Zuhören."
+  },
+  {
+   "title": "Teil 2 – Diskussion führen",
+   "task": "Diskutieren Sie mit Ihrem Gesprächspartner über die Frage: „Sollte das Studium stärker praxisorientiert sein?“ Tauschen Sie Argumente aus, gehen Sie auf die Äußerungen Ihres Gesprächspartners ein und versuchen Sie am Ende, zu einem gemeinsamen Ergebnis zu kommen.",
+   "cards": ["Pflichtpraktika", "Theorie als Grundlage", "Erwartungen von Arbeitgebern", "wissenschaftliches Denken", "Zusammenarbeit mit Unternehmen"],
+   "phrases": ["Ich möchte gleich zu Beginn betonen, dass …", "Das überzeugt mich nicht ganz, denn …", "Sie sprechen da einen wichtigen Punkt an.", "Wie stellen Sie sich das konkret vor?", "Fassen wir zusammen: …"],
+   "sample": "A: Ich möchte gleich zu Beginn betonen, dass viele Absolventen nach dem Studium kaum wissen, wie der Berufsalltag aussieht. Deshalb sollte das Studium deutlich praxisorientierter werden.\nB: Das überzeugt mich nicht ganz, denn eine Universität ist keine Berufsschule. Sie soll wissenschaftliches Denken vermitteln, und das braucht eine solide theoretische Grundlage.\nA: Sie sprechen da einen wichtigen Punkt an. Aber Theorie und Praxis schließen sich doch nicht aus. Ein Pflichtpraktikum könnte zeigen, wofür man die Theorie überhaupt braucht.\nB: Wie stellen Sie sich das konkret vor? Viele Praktika sind unbezahlt, und nicht jeder kann sich das leisten.\nA: Das stimmt. Praktika müssten deshalb angemessen bezahlt werden. Außerdem könnten Unternehmen Projekte anbieten, die Studierende im Rahmen von Seminaren bearbeiten.\nB: Solange die Unternehmen nicht die Inhalte bestimmen, kann ich mir das vorstellen. Die Unabhängigkeit der Forschung darf nicht leiden.\nA: Fassen wir zusammen: Wir sind uns einig, dass Praxisphasen sinnvoll sind, wenn sie bezahlt werden und die wissenschaftliche Ausbildung nicht ersetzen, sondern ergänzen.\nB: Genau, so sehe ich das auch."
+  }
+ ]
+}

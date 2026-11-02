@@ -1,0 +1,186 @@
+{
+ "id": "C1-02",
+ "level": "C1",
+ "title": "Modelltest 2",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen einen Zeitungsartikel, in dem einige Wörter fehlen. Wählen Sie für jede Lücke 1–9 das passende Wort a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Reparieren statt wegwerfen",
+     "body": "Ein wackeliger Stuhl, ein Toaster, der nicht mehr heizt, eine Jeans mit einem Loch im Knie: Was früher selbstverständlich [1] wurde, landet heute oft im Müll. Neue Geräte sind häufig billiger als eine Reparatur, und Ersatzteile sind oft nur schwer [2]. Gegen diesen Trend wenden sich die sogenannten Repair-Cafés, die inzwischen in fast jeder größeren Stadt zu finden sind.\n\nDas Prinzip ist einfach: Ehrenamtliche Helferinnen und Helfer mit handwerklichem [3] treffen sich regelmäßig mit Menschen, die etwas Kaputtes mitbringen. Gemeinsam wird geschraubt, gelötet und genäht. Dabei geht es nicht nur darum, Dinge vor dem Müll zu [4]. Viele Besucher schätzen vor allem den Austausch und die Erfahrung, ein Problem selbst [5] zu haben.\n\nAuch die Politik hat das Thema inzwischen [6]. Nach neuen europäischen Vorgaben müssen Hersteller bestimmter Geräte künftig Ersatzteile über mehrere Jahre bereithalten und Reparaturanleitungen zur Verfügung stellen. Verbraucherschützer [7] diese Regelung grundsätzlich, halten sie aber für nicht weitreichend genug. Sie schlagen vor, Reparaturen steuerlich zu [8], wie es einige Länder bereits tun.\n\nOb das Reparieren wieder zur Gewohnheit wird, hängt letztlich auch von den Konsumenten ab. Denn die beste Regelung nützt wenig, wenn der Wunsch nach dem neuesten Modell [9] bleibt."
+    }
+   ],
+   "items": [
+    {"q": "Lücke 1", "options": ["instand gesetzt", "in Kauf genommen", "außer Acht gelassen"], "a": 0},
+    {"q": "Lücke 2", "options": ["verträglich", "erhältlich", "erreichbar"], "a": 1},
+    {"q": "Lücke 3", "options": ["Geschmack", "Geschäft", "Geschick"], "a": 2},
+    {"q": "Lücke 4", "options": ["bewahren", "verwahren", "aufbewahren"], "a": 0},
+    {"q": "Lücke 5", "options": ["erlöst", "gelöst", "aufgelöst"], "a": 1},
+    {"q": "Lücke 6", "options": ["aufgedeckt", "verdeckt", "entdeckt"], "a": 2},
+    {"q": "Lücke 7", "options": ["begrüßen", "empfangen", "grüßen"], "a": 0},
+    {"q": "Lücke 8", "options": ["fordern", "fördern", "befördern"], "a": 1},
+    {"q": "Lücke 9", "options": ["unterbrochen", "ungebrochen", "zerbrochen"], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie lesen in einem Wirtschaftsmagazin einen Artikel über den Umgang mit Fehlern in Unternehmen. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Darf man im Job scheitern?",
+     "body": "In der Luftfahrt gilt seit Jahrzehnten ein ungewöhnlicher Grundsatz: Wer einen Fehler meldet, wird dafür nicht bestraft. Piloten und Fluglotsen können kritische Situationen anonym berichten, damit andere daraus lernen. Viele Experten führen die außergewöhnlich hohe Sicherheit des Flugverkehrs auch auf diese offene Fehlerkultur zurück.\n\nIn vielen Unternehmen sieht die Realität anders aus. Laut einer Umfrage unter Beschäftigten gibt fast die Hälfte an, Fehler lieber zu verschweigen, als negative Konsequenzen zu riskieren. „Das ist fatal“, sagt der Organisationspsychologe Prof. Martin Reuter. „Ein Fehler, über den niemand spricht, wird mit großer Wahrscheinlichkeit wiederholt – im schlimmsten Fall von jemand anderem.“\n\nReuter unterscheidet zwischen verschiedenen Arten von Fehlern. Nachlässigkeit oder das bewusste Missachten von Regeln müssten durchaus Folgen haben. Ganz anders verhalte es sich mit Fehlern, die bei neuen, unsicheren Aufgaben entstehen. „Wer etwas Neues ausprobiert, kann nicht wissen, ob es funktioniert. Wenn solche Versuche bestraft werden, probiert bald niemand mehr etwas aus.“ Innovation sei so kaum möglich.\n\nEine gute Fehlerkultur beginnt nach Reuters Erfahrung bei den Führungskräften. Wenn Vorgesetzte offen über eigene Fehlentscheidungen sprechen, sinke die Hemmschwelle für die Mitarbeitenden deutlich. Einige Unternehmen gehen noch weiter und veranstalten regelmäßig sogenannte Scheiterabende, an denen Beschäftigte von gescheiterten Projekten erzählen. Reuter sieht solche Formate mit gemischten Gefühlen: „Sie können helfen, das Thema zu enttabuisieren. Aber wenn es nur um Unterhaltung geht und keine Konsequenzen für die Abläufe gezogen werden, bleibt es bei einer netten Show.“\n\nEntscheidend sei, aus Fehlern systematisch zu lernen: Was genau ist passiert? Welche Bedingungen haben den Fehler begünstigt? Und was muss sich ändern, damit er sich nicht wiederholt? Dabei gehe es ausdrücklich nicht um die Suche nach Schuldigen. „Die Frage ‚Wer war das?‘ verhindert meist, dass man die wirklich wichtige Frage stellt: ‚Wie konnte das passieren?‘“"
+    }
+   ],
+   "items": [
+    {"q": "In der Luftfahrt werden Fehler …", "options": ["streng bestraft.", "ohne Strafe gemeldet.", "nur von Piloten berichtet."], "a": 1},
+    {"q": "Laut der Umfrage verschweigen viele Beschäftigte Fehler, weil sie …", "options": ["Nachteile befürchten.", "sie für unwichtig halten.", "keine Zeit für Berichte haben."], "a": 0},
+    {"q": "Prof. Reuter hält das Verschweigen von Fehlern für gefährlich, weil …", "options": ["es teure Verfahren verursacht.", "Kunden das Vertrauen verlieren.", "sich Fehler dann wiederholen."], "a": 2},
+    {"q": "Fehler bei neuen Aufgaben sollten laut Reuter …", "options": ["genauso bestraft werden wie Nachlässigkeit.", "keine Strafe nach sich ziehen.", "sofort der Geschäftsleitung gemeldet werden."], "a": 1},
+    {"q": "Führungskräfte können eine gute Fehlerkultur fördern, indem sie …", "options": ["eigene Fehler offen ansprechen.", "Fehler schnell selbst korrigieren.", "strengere Kontrollen einführen."], "a": 0},
+    {"q": "Über Scheiterabende urteilt Reuter …", "options": ["eindeutig positiv.", "ablehnend.", "differenziert."], "a": 2},
+    {"q": "Nach einem Fehler sollte man vor allem fragen, …", "options": ["wer verantwortlich ist.", "wie es dazu kommen konnte.", "wie hoch der Schaden ist."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Lesen Sie den Text. Welcher Satz a–h passt in welche Lücke 1–6? Zwei Sätze passen nicht.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Eine Institution mit Zeitung und Wasserglas",
+     "body": "Wer in Wien ein traditionelles Kaffeehaus betritt, taucht in eine eigene Welt ein. Marmortische, Bugholzstühle und Kellner im Frack gehören ebenso dazu wie die Zeitungen, die an hölzernen Haltern hängen. [1] Seit 2011 zählt die Wiener Kaffeehauskultur sogar zum immateriellen Kulturerbe.\n\nIhre Blütezeit erlebten die Kaffeehäuser um 1900. [2] Manche Schriftsteller gaben das Café sogar als Postadresse an. Hier wurden Zeitschriften gegründet, politische Debatten geführt und neue Kunstrichtungen diskutiert.\n\nZu den Besonderheiten gehört, dass man stundenlang bleiben darf, auch wenn man nur einen einzigen Kaffee bestellt. [3] Zum Kaffee wird traditionell ein Glas Leitungswasser serviert, das der Kellner unaufgefordert nachfüllt.\n\nAuch die Vielfalt der Kaffeespezialitäten ist bemerkenswert. [4] Wer schlicht „einen Kaffee“ bestellt, gibt sich in den Augen mancher Kellner als Tourist zu erkennen.\n\nIn den vergangenen Jahrzehnten hatten es die klassischen Häuser allerdings schwer. [5] Hohe Mieten und Personalkosten machten vielen Betreibern zu schaffen, einige traditionsreiche Cafés mussten schließen.\n\nInzwischen erlebt das Kaffeehaus jedoch eine Renaissance. [6] Gerade junge Menschen, die zu Hause oder im Büro keine Ruhe finden, schätzen die Mischung aus Anonymität und Geselligkeit."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Internationale Ketten mit schnellem Service und Kaffee zum Mitnehmen machten ihnen Konkurrenz."},
+    {"key": "b", "text": "Kaffee wurde in Wien übrigens erst im 20. Jahrhundert bekannt."},
+    {"key": "c", "text": "Damals trafen sich dort Künstler, Intellektuelle und Politiker, und manche verbrachten dort mehr Zeit als zu Hause."},
+    {"key": "d", "text": "Viele Gäste nutzen die Häuser heute auch als Arbeitsplatz für den Laptop."},
+    {"key": "e", "text": "Viele Gäste kommen vor allem, um in Ruhe die Tagespresse zu lesen."},
+    {"key": "f", "text": "Von der Melange über den Einspänner bis zum Kleinen Braunen umfasst die Karte oft mehr als ein Dutzend Varianten."},
+    {"key": "g", "text": "Deshalb gilt in den meisten Häusern inzwischen eine Höchstaufenthaltsdauer von einer Stunde."},
+    {"key": "h", "text": "Niemand wird gedrängt, den Platz für neue Gäste freizumachen."}
+   ],
+   "items": [
+    {"q": "Lücke 1", "a": "e"},
+    {"q": "Lücke 2", "a": "c"},
+    {"q": "Lücke 3", "a": "h"},
+    {"q": "Lücke 4", "a": "f"},
+    {"q": "Lücke 5", "a": "a"},
+    {"q": "Lücke 6", "a": "d"}
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie lesen in einem Onlinemagazin Meinungen zur Frage, ob es auf deutschen Autobahnen ein generelles Tempolimit geben sollte. Lesen Sie die Texte a–d und die Aussagen 1–8. Wer äußert sich wie? Die Personen können mehrmals gewählt werden.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Jonas, 29, Ingenieur: Ich pendle jeden Tag sechzig Kilometer über die Autobahn und fahre ohnehin selten schneller als 130. Für mich wäre ein Tempolimit vor allem eine Frage der Sicherheit. Die schwersten Unfälle passieren dort, wo die Geschwindigkeitsunterschiede zwischen den Fahrzeugen besonders groß sind. Außerdem würde der Verkehr gleichmäßiger fließen, und es gäbe weniger Staus durch abruptes Bremsen."},
+    {"key": "b", "text": "Sabine, 46, Unternehmerin: Ich bin beruflich viel unterwegs und schätze es, auf freien Strecken zügig voranzukommen. Deutschland ist eines der letzten Länder ohne generelles Tempolimit, und ich sehe nicht, warum wir diese Freiheit aufgeben sollten. Auf vielen Abschnitten gibt es ja längst Begrenzungen, wo es nötig ist. Die Einsparungen beim Klimaschutz werden meiner Meinung nach überschätzt – da gäbe es wirksamere Maßnahmen, etwa im Gebäudebereich."},
+    {"key": "c", "text": "Dr. Frank Mertens, 58, Verkehrsforscher: Die Datenlage ist eindeutiger, als die Debatte vermuten lässt. Ein Tempolimit von 120 würde den CO₂-Ausstoß des Verkehrs zwar nur um wenige Prozent senken, wäre aber praktisch ohne Kosten sofort umsetzbar. Kaum eine andere Maßnahme ist so günstig. Ich halte es allerdings für einen Fehler, das Thema zur Glaubensfrage zu machen. Sinnvoller wäre es, das Limit zunächst für einige Jahre zu testen und die Ergebnisse sorgfältig auszuwerten."},
+    {"key": "d", "text": "Marta, 35, Hebamme: Ich habe keinen Führerschein und fahre überall mit Bahn und Fahrrad. Ehrlich gesagt verstehe ich nicht, warum über ein Tempolimit so emotional gestritten wird, während Züge ständig ausfallen und Radwege fehlen. Wenn wir den Verkehr wirklich verändern wollen, müssen wir in Alternativen investieren. Ein Tempolimit kann dabei ein Baustein sein, aber eben nur einer von vielen."}
+   ],
+   "items": [
+    {"q": "Wer schlägt vor, ein Tempolimit zunächst befristet auszuprobieren?", "a": "c"},
+    {"q": "Wer verweist auf bereits bestehende Geschwindigkeitsbegrenzungen?", "a": "b"},
+    {"q": "Wer hält den Ausbau anderer Verkehrsmittel für wichtiger?", "a": "d"},
+    {"q": "Wer erwartet, dass der Verkehr mit Tempolimit flüssiger wird?", "a": "a"},
+    {"q": "Wer betont, dass ein Tempolimit kaum Geld kosten würde?", "a": "c"},
+    {"q": "Wer meint, dass es im Klimaschutz wirksamere Maßnahmen gibt?", "a": "b"},
+    {"q": "Wer begründet seine Haltung vor allem mit weniger schweren Unfällen?", "a": "a"},
+    {"q": "Wer ist selbst nicht mit dem Auto unterwegs?", "a": "d"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text einmal. Zu jedem Text lösen Sie zwei Aufgaben. Wählen Sie bei jeder Aufgabe die richtige Lösung.",
+   "type": "rf",
+   "plays": 1,
+   "items": [
+    {"audio": "Sehr geehrte Fahrgäste, aufgrund einer Signalstörung zwischen Fulda und Kassel hat unser Zug derzeit etwa fünfundzwanzig Minuten Verspätung. Fahrgäste mit Ziel Hamburg erreichen ihren Anschluss in Kassel-Wilhelmshöhe voraussichtlich nicht. Bitte nutzen Sie stattdessen den ICE um vierzehn Uhr zwölf ab Göttingen; wir halten dort außerplanmäßig. Ihre Fahrkarten behalten selbstverständlich ihre Gültigkeit. Für die Unannehmlichkeiten bitten wir um Entschuldigung. Im Bordrestaurant erhalten Sie gegen Vorlage Ihrer Fahrkarte ein kostenloses Getränk.", "q": "Reisende nach Hamburg sollen in Göttingen umsteigen.", "a": true},
+    {"type": "abc", "q": "Was bekommen die Fahrgäste als Entschädigung?", "options": ["Einen Gutschein für die nächste Fahrt.", "Ein Getränk im Bordrestaurant.", "Einen Teil des Fahrpreises zurück."], "a": 1},
+    {"audio": "Langes Sitzen im Büro gilt als ungesund – doch schon kleine Unterbrechungen können einen messbaren Unterschied machen. Das zeigt eine Studie der Sporthochschule Köln. Die Teilnehmenden standen jede halbe Stunde für drei Minuten auf und gingen ein paar Schritte. Nach zwölf Wochen hatten sich ihre Blutzuckerwerte deutlich verbessert, und sie klagten seltener über Rückenschmerzen. Überraschend war für die Forscher, dass die Konzentration durch die Pausen nicht litt, sondern sogar leicht zunahm.", "q": "Durch die kurzen Pausen sank die Konzentration der Teilnehmenden.", "a": false},
+    {"type": "abc", "q": "Was taten die Teilnehmenden der Studie?", "options": ["Sie trieben dreimal pro Woche Sport.", "Sie arbeiteten an Stehpulten.", "Sie unterbrachen regelmäßig das Sitzen."], "a": 2},
+    {"audio": "Guten Tag, Herr Okafor, hier ist Sandra Brehm von der Personalabteilung der Firma Kessler Logistik. Vielen Dank für Ihre Bewerbung als Teamleiter im Lager. Wir würden Sie gern zu einem Vorstellungsgespräch einladen. Ursprünglich hatten wir an Dienstag gedacht, unser Geschäftsführer ist an diesem Tag aber leider verhindert. Wäre Ihnen stattdessen Freitag um zehn Uhr recht? Das Gespräch dauert etwa eine Stunde, anschließend zeigen wir Ihnen gern das Lager. Bitte bringen Sie Ihre Zeugnisse im Original mit. Rufen Sie mich doch kurz zurück, um den Termin zu bestätigen.", "q": "Das Vorstellungsgespräch soll am Dienstag stattfinden.", "a": false},
+    {"type": "abc", "q": "Was soll Herr Okafor mitbringen?", "options": ["Seine Originalzeugnisse.", "Arbeitskleidung für das Lager.", "Ein Foto für den Ausweis."], "a": 0},
+    {"audio": "Viele stellen sich vor, dass Schriftstellerinnen auf die Inspiration warten. Bei mir ist es genau umgekehrt. Ich setze mich jeden Morgen um sieben an den Schreibtisch, auch wenn ich überhaupt keine Lust habe – und meistens kommt die Lust beim Schreiben. Mein Ziel sind tausend Wörter am Tag, egal wie gut sie sind. Überarbeiten kann ich später. Das Wichtigste ist, dass ich mein Telefon in einem anderen Zimmer lasse. Seit ich das mache, schreibe ich etwa doppelt so viel wie früher.", "q": "Die Autorin schreibt täglich zu einer festen Uhrzeit.", "a": true},
+    {"type": "abc", "q": "Was hat ihr am meisten geholfen, mehr zu schreiben?", "options": ["Ein ruhigeres Arbeitszimmer.", "Das Telefon nicht in der Nähe zu haben.", "Texte sofort zu überarbeiten."], "a": 1},
+    {"audio": "Sie möchten Ihre Präsentationsfähigkeiten verbessern? Die Volkshochschule bietet ab Oktober den Kurs „Überzeugend präsentieren“ an. An sechs Abenden lernen Sie, wie Sie Vorträge klar strukturieren, mit Lampenfieber umgehen und Folien gezielt einsetzen. Alle Teilnehmenden halten im Kurs mindestens zwei kurze Präsentationen und erhalten dazu eine Videoanalyse. Die Gruppe ist auf zehn Personen begrenzt. Eine Anmeldung ist bis zum fünfzehnten September möglich, auch telefonisch.", "q": "Im Kurs werden die Präsentationen der Teilnehmenden gefilmt.", "a": true},
+    {"type": "abc", "q": "Was gilt für die Anmeldung?", "options": ["Sie ist nur online möglich.", "Sie ist bis Mitte September möglich.", "Sie ist erst ab Oktober möglich."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Eine Moderatorin spricht mit der Restauratorin Elif Demir über ihre Arbeit in einem Kunstmuseum.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Moderatorin: Frau Demir, Sie restaurieren Gemälde im Städtischen Kunstmuseum. Wie muss man sich Ihren Arbeitsalltag vorstellen?\nDemir: Viel unspektakulärer, als die meisten denken. Ich verbringe einen großen Teil meiner Zeit damit, Bilder zu untersuchen und zu dokumentieren, bevor ich überhaupt etwas verändere. Mit dem Pinsel arbeite ich vielleicht ein Drittel der Zeit.\nModeratorin: Warum ist die Untersuchung so wichtig?\nDemir: Weil jeder Eingriff ein Risiko ist. Wir schauen uns ein Gemälde unter ultraviolettem Licht an, machen Röntgen- und Infrarotaufnahmen. Dabei sehen wir zum Beispiel, wo frühere Restauratoren übermalt haben oder ob der Künstler seine Komposition während der Arbeit verändert hat. Erst wenn ich ein Bild wirklich verstehe, entscheide ich, was zu tun ist.\nModeratorin: Gibt es Grundsätze, an die Sie sich halten?\nDemir: Ja, vor allem einen: Alles, was wir hinzufügen, muss sich später wieder entfernen lassen. Früher hat man das oft anders gesehen. Da wurden Bilder großzügig übermalt, um sie schöner zu machen. Heute ist unser Ziel nicht, ein Gemälde wie neu aussehen zu lassen, sondern seinen Zustand zu stabilisieren und es lesbar zu machen. Spuren des Alters gehören dazu.\nModeratorin: Woran arbeiten Sie gerade?\nDemir: An einem Porträt aus dem siebzehnten Jahrhundert, das jahrzehntelang in einem verrauchten Gasthaus hing. Die Oberfläche war völlig vergilbt. Beim Abnehmen des alten Firnisses kommen jetzt Farben zum Vorschein, die niemand mehr kannte – ein leuchtendes Blau zum Beispiel. Das sind die Momente, für die ich diesen Beruf liebe.\nModeratorin: Wie lange dauert so eine Restaurierung?\nDemir: Bei diesem Bild rechnen wir mit etwa acht Monaten. Das klingt lang, aber wir arbeiten oft nur mit kleinen Wattestäbchen, Zentimeter für Zentimeter.\nModeratorin: Was raten Sie jungen Menschen, die Restauratorin werden möchten?\nDemir: Man braucht Geduld, ein gutes Auge und ruhige Hände – aber auch naturwissenschaftliches Interesse. Viele unterschätzen, wie viel Chemie in diesem Beruf steckt. Und man sollte vor dem Studium unbedingt ein Praktikum machen; an den meisten Hochschulen ist das sogar Voraussetzung.",
+   "items": [
+    {"q": "Den größten Teil ihrer Zeit verbringt Frau Demir mit …", "options": ["dem Malen.", "der Untersuchung und Dokumentation.", "Führungen für Besucher."], "a": 1},
+    {"q": "Röntgen- und Infrarotaufnahmen zeigen unter anderem, …", "options": ["wie alt die Leinwand ist.", "welchen Wert ein Bild hat.", "wo ein Bild früher übermalt wurde."], "a": 2},
+    {"q": "Ein wichtiger Grundsatz ihrer Arbeit lautet: Alles Hinzugefügte muss …", "options": ["sich später entfernen lassen.", "aus natürlichen Materialien bestehen.", "vom Künstler stammen."], "a": 0},
+    {"q": "Ziel einer heutigen Restaurierung ist es, …", "options": ["ein Gemälde wie neu aussehen zu lassen.", "den Zustand eines Bildes zu stabilisieren.", "alle Altersspuren zu beseitigen."], "a": 1},
+    {"q": "Das Porträt, an dem sie gerade arbeitet, …", "options": ["hing lange in einem Gasthaus.", "wurde bei einem Brand beschädigt.", "stammt aus einer Privatsammlung."], "a": 0},
+    {"q": "Beim Entfernen des alten Firnisses …", "options": ["wurde das Bild beschädigt.", "zeigten sich vergessene Farben.", "entdeckte sie eine Signatur."], "a": 1},
+    {"q": "Wer Restauratorin werden möchte, sollte laut Frau Demir …", "options": ["zuerst Kunstgeschichte studieren.", "vor allem schnell arbeiten können.", "Interesse an Naturwissenschaften haben."], "a": 2}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören einen Vortrag. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Eine Psychologin spricht darüber, wie wir im Alltag Entscheidungen treffen.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Meine Damen und Herren, wussten Sie, dass wir jeden Tag schätzungsweise mehrere tausend Entscheidungen treffen? Die allermeisten davon fallen uns gar nicht auf: welchen Weg wir zur Arbeit nehmen, wann wir zur Kaffeetasse greifen, welche Nachricht wir zuerst lesen. Heute möchte ich Ihnen zeigen, wie solche Entscheidungen zustande kommen – und warum wir uns dabei häufiger irren, als wir glauben.\nDie Psychologie unterscheidet grob zwei Denkweisen. Die eine arbeitet schnell, automatisch und mühelos. Sie ermöglicht es uns, Gesichter zu erkennen oder im Straßenverkehr blitzschnell zu reagieren. Die andere ist langsam, bewusst und anstrengend – wir brauchen sie etwa, um eine komplizierte Rechnung zu lösen. Das Problem ist: Weil langsames Denken Energie kostet, überlässt unser Gehirn viele Entscheidungen dem schnellen System, auch solche, die eigentlich gründliche Überlegung verdienen.\nDas schnelle Denken greift dabei auf Faustregeln zurück. Meist funktionieren sie gut, aber sie führen auch zu typischen Fehlern. Ein Beispiel ist der sogenannte Ankereffekt. In einem bekannten Experiment sollten Menschen den Preis eines Produkts schätzen, nachdem sie zuvor eine zufällige Zahl gesehen hatten. Wer eine hohe Zahl gesehen hatte, schätzte deutlich höher – obwohl die Zahl offensichtlich nichts mit dem Produkt zu tun hatte.\nEin zweites Phänomen ist die Entscheidungsmüdigkeit. Je mehr Entscheidungen wir an einem Tag bereits getroffen haben, desto eher greifen wir zur bequemsten Option oder schieben die Entscheidung auf. Deshalb kann es sinnvoll sein, wichtige Fragen morgens zu klären und Routineentscheidungen zu reduzieren, etwa indem man die Mahlzeiten für die Woche im Voraus plant.\nAuch zu viel Auswahl kann uns lähmen. Wenn ein Geschäft vierundzwanzig Marmeladensorten anbietet statt sechs, bleiben zwar mehr Kunden stehen, aber weniger kaufen tatsächlich etwas. Und wer sich zwischen sehr vielen Möglichkeiten entschieden hat, ist hinterher oft unzufriedener, weil er sich fragt, ob eine andere Wahl besser gewesen wäre.\nWas folgt daraus? Ich rate nicht dazu, jede Entscheidung bis ins Letzte zu analysieren – das wäre weder möglich noch sinnvoll. Aber bei wichtigen Entscheidungen lohnt es sich, kurz innezuhalten und sich zu fragen: Welche Informationen beeinflussen mich gerade, und sind sie wirklich relevant? Schon diese einfache Frage kann viele Denkfehler verhindern. Vielen Dank.",
+   "items": [
+    {"q": "Die meisten unserer täglichen Entscheidungen …", "options": ["nehmen wir gar nicht bewusst wahr.", "treffen wir nach langem Überlegen.", "betreffen unsere Arbeit."], "a": 0},
+    {"q": "Das langsame Denken …", "options": ["arbeitet automatisch.", "kostet viel Energie.", "ist für die Gesichtserkennung zuständig."], "a": 1},
+    {"q": "Warum überlässt das Gehirn viele Entscheidungen dem schnellen Denken?", "options": ["Weil es fehlerfrei arbeitet.", "Weil es bewusster ist.", "Weil es weniger anstrengend ist."], "a": 2},
+    {"q": "Im Experiment zum Ankereffekt …", "options": ["beeinflusste eine zufällige Zahl die Schätzungen.", "schätzten alle Teilnehmenden richtig.", "kannten die Teilnehmenden den Preis bereits."], "a": 0},
+    {"q": "Entscheidungsmüdigkeit führt dazu, dass man …", "options": ["besonders gründlich abwägt.", "eher die bequemste Lösung wählt.", "morgens schlechter entscheidet."], "a": 1},
+    {"q": "Gegen Entscheidungsmüdigkeit empfiehlt die Rednerin, …", "options": ["wichtige Entscheidungen abends zu treffen.", "mehr Möglichkeiten zu prüfen.", "Routineentscheidungen zu verringern."], "a": 2},
+    {"q": "Bei einer großen Auswahl an Marmeladen …", "options": ["kauften weniger Menschen etwas.", "waren die Kunden zufriedener.", "kauften die Kunden mehrere Sorten."], "a": 0},
+    {"q": "Die Rednerin rät, bei wichtigen Entscheidungen …", "options": ["jedes Detail zu analysieren.", "kurz zu prüfen, was einen beeinflusst.", "dem ersten Gefühl zu folgen."], "a": 1}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1 – Forumsbeitrag",
+   "task": "In einer Wirtschaftszeitschrift haben Sie einen Artikel mit dem Titel „Brauchen wir noch Bargeld?“ gelesen. Viele Leserinnen und Leser haben den Artikel im Onlineforum der Zeitschrift kommentiert. Sie möchten sich an der Diskussion beteiligen.",
+   "prompt": "Schreiben Sie einen Forumsbeitrag (circa 230 Wörter). Gehen Sie dabei auf alle folgenden Punkte ein. Achten Sie auf eine klare Gliederung, eine passende Einleitung und einen passenden Schluss.",
+   "points": ["Vor- und Nachteile des bargeldlosen Bezahlens", "mögliche Folgen für ältere Menschen oder Menschen ohne Bankkonto", "Datenschutz und Sicherheit", "Ihre persönliche Meinung mit Begründung"],
+   "words": 230,
+   "sample": "Der Artikel „Brauchen wir noch Bargeld?“ greift eine Frage auf, die mich schon länger beschäftigt. Zwar zahle ich selbst fast nur noch mit der Karte oder dem Smartphone, dennoch halte ich eine vollständige Abschaffung des Bargelds für falsch.\n\nUnbestritten bietet bargeldloses Bezahlen viele Vorteile. Es ist schnell, bequem und erleichtert den Überblick über die eigenen Ausgaben. Zudem wird es Kriminellen erschwert, Geld zu waschen oder Steuern zu hinterziehen. Andererseits ist man vollständig auf funktionierende Technik angewiesen: Fällt das Netz aus, kann man nicht einmal mehr ein Brot kaufen.\n\nBesonders bedenklich finde ich die Folgen für Menschen, die mit digitalen Zahlungsmitteln nicht vertraut sind oder kein Bankkonto besitzen. Viele ältere Menschen fühlen sich ohnehin schon von der Digitalisierung abgehängt. Würde das Bargeld abgeschafft, verlören sie ein Stück Selbstständigkeit.\n\nHinzu kommt die Frage des Datenschutzes. Jede Kartenzahlung hinterlässt Spuren, aus denen sich ein genaues Bild unseres Alltags ergibt. Wer garantiert, dass diese Daten nicht missbraucht werden? Bargeld dagegen ermöglicht es, anonym zu bezahlen, und das halte ich in einer freien Gesellschaft für ein hohes Gut.\n\nMeiner Meinung nach sollte daher jeder selbst entscheiden können, wie er bezahlt. Statt das Bargeld abzuschaffen, sollten Geschäfte verpflichtet werden, es weiterhin anzunehmen. Nur so bleibt die Wahlfreiheit für alle erhalten."
+  },
+  {
+   "title": "Teil 2 – Formeller Brief",
+   "task": "Sie sind vor drei Monaten aus Ihrer Mietwohnung ausgezogen. Die Wohnung wurde bei der Übergabe ohne Mängel abgenommen, aber Sie haben Ihre Kaution noch nicht zurückerhalten. Sie schreiben an die Hausverwaltung Schubert & Partner.",
+   "prompt": "Schreiben Sie einen formellen Brief (circa 120 Wörter). Gehen Sie auf alle folgenden Punkte ein und achten Sie auf eine passende Anrede und einen passenden Schluss.",
+   "points": ["Grund Ihres Schreibens", "Hinweis auf die mängelfreie Übergabe", "Ihre bisherigen Kontaktversuche", "Frist und weiteres Vorgehen"],
+   "words": 120,
+   "sample": "Sehr geehrte Damen und Herren,\n\nam 30. Juni habe ich die Wohnung in der Lindenstraße 14, 2. Stock links, an Sie übergeben. Ich schreibe Ihnen, weil ich meine Mietkaution in Höhe von 1.800 Euro bis heute nicht zurückerhalten habe.\n\nWie aus dem Übergabeprotokoll hervorgeht, das Ihr Mitarbeiter Herr Kraus unterschrieben hat, wurde die Wohnung ohne Mängel abgenommen. Gründe für eine Einbehaltung sind mir daher nicht bekannt.\n\nBereits im August habe ich zweimal telefonisch nachgefragt und wurde jeweils auf eine baldige Überweisung vertröstet.\n\nIch bitte Sie deshalb, die Kaution einschließlich Zinsen bis zum 15. Oktober auf mein Ihnen bekanntes Konto zu überweisen. Sollte dies nicht geschehen, sehe ich mich gezwungen, rechtlichen Rat einzuholen.\n\nMit freundlichen Grüßen\nCarla Mendes"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Vortrag halten",
+   "task": "Sie sollen in einem Seminar einen Vortrag (circa 3–4 Minuten) halten. Wählen Sie eines der beiden Themen: A) „Sollten Schulnoten abgeschafft werden?“ oder B) „Mehr Grünflächen statt Parkplätze in den Innenstädten?“ Stellen Sie das Thema vor, beschreiben Sie verschiedene Positionen mit ihren Vor- und Nachteilen, nehmen Sie begründet Stellung und schließen Sie mit einem Fazit.",
+   "cards": ["Einleitung: Thema vorstellen und Gliederung nennen", "Hintergrund und Situation in Ihrem Heimatland", "Argumente beider Seiten abwägen", "eigene Meinung begründen", "Fazit"],
+   "phrases": ["Das Thema meines Vortrags lautet …", "Zunächst möchte ich …, anschließend …", "Ein gewichtiges Argument dafür ist …", "Kritiker wenden ein, dass …", "Zusammenfassend lässt sich sagen, dass …"],
+   "sample": "Das Thema meines Vortrags lautet: Sollten Schulnoten abgeschafft werden? Zunächst möchte ich kurz erklären, worum es in der Debatte geht, anschließend stelle ich Argumente beider Seiten vor, und zum Schluss sage ich, wie ich selbst darüber denke.\n\nIn vielen Ländern werden Leistungen in der Schule mit Ziffern bewertet. In letzter Zeit experimentieren jedoch immer mehr Schulen mit Alternativen, etwa mit ausführlichen schriftlichen Rückmeldungen oder Lernberichten.\n\nEin gewichtiges Argument gegen Noten ist, dass sie wenig über den Lernprozess aussagen. Eine Drei zeigt nicht, was ein Kind bereits gut kann und woran es noch arbeiten sollte. Außerdem erzeugen Noten Druck und Konkurrenz, was gerade schwächeren Schülerinnen und Schülern die Motivation nehmen kann.\n\nKritiker wenden ein, dass Noten Orientierung geben und Leistungen vergleichbar machen. Spätestens bei der Bewerbung um einen Studien- oder Ausbildungsplatz brauche man ein objektives Maß. Zudem seien ausführliche Berichte für Lehrkräfte mit viel Mehraufwand verbunden.\n\nIn meinem Heimatland gibt es in den ersten Grundschuljahren keine Noten, sondern Gespräche zwischen Lehrkräften, Eltern und Kindern. Ich habe selbst erlebt, dass das den Einstieg in die Schule erleichtert.\n\nZusammenfassend lässt sich sagen, dass beide Seiten berechtigte Argumente haben. Meiner Meinung nach sollte man in den ersten Schuljahren auf Noten verzichten und sie später durch ausführliche Rückmeldungen ergänzen. Vielen Dank fürs Zuhören."
+  },
+  {
+   "title": "Teil 2 – Diskussion führen",
+   "task": "Diskutieren Sie mit Ihrem Gesprächspartner über die Frage: „Sollten soziale Netzwerke erst ab 16 Jahren erlaubt sein?“ Tauschen Sie Argumente aus, gehen Sie auf die Äußerungen Ihres Gesprächspartners ein und versuchen Sie am Ende, zu einem gemeinsamen Ergebnis zu kommen.",
+   "cards": ["Schutz vor schädlichen Inhalten", "Kontakt zu Freunden", "Kontrolle des Alters", "Verantwortung der Eltern", "Medienkompetenz in der Schule"],
+   "phrases": ["Meines Erachtens …", "Ich sehe das etwas anders, weil …", "Da haben Sie natürlich recht, aber …", "Wie sehen Sie das?", "Lassen Sie uns festhalten, dass …"],
+   "sample": "A: Meines Erachtens sollte man soziale Netzwerke erst ab sechzehn erlauben. Viele Jüngere sind den Inhalten und dem ständigen Vergleich mit anderen noch nicht gewachsen.\nB: Ich sehe das etwas anders. Für viele Jugendliche sind soziale Netzwerke der wichtigste Weg, mit Freunden in Kontakt zu bleiben. Ein Verbot würde sie ausschließen.\nA: Da haben Sie natürlich recht, aber Kontakt ist auch über Messenger möglich, ohne endlose Videos und Werbung.\nB: Und wie wollen Sie das Alter überhaupt kontrollieren? Ein Häkchen bei „Ich bin sechzehn“ setzt jedes Kind.\nA: Das ist ein berechtigter Einwand. Man bräuchte eine zuverlässige Altersprüfung, ohne dass zu viele Daten gesammelt werden.\nB: Ich finde, die Verantwortung liegt vor allem bei den Eltern und bei der Schule. Kinder müssen lernen, kritisch mit Medien umzugehen.\nA: Das eine schließt das andere nicht aus. Medienkompetenz ist wichtig, aber eine Altersgrenze kann zusätzlich schützen.\nB: Lassen Sie uns festhalten: Wir sind uns einig, dass Medienbildung nötig ist, und eine Altersgrenze ist sinnvoll, wenn sie sich datensparsam kontrollieren lässt.\nA: Einverstanden."
+  }
+ ]
+}

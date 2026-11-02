@@ -23,6 +23,7 @@
  const date=value=>new Date(value).toLocaleString(root.NATIVE_LANG||'en',{dateStyle:'medium',timeStyle:'short'});
  const extra={tr:['Rozeti geri göster','Rozetin zaten var veya yenilenen bir aboneliğin bulunuyor. Önce Profilim’den yönet.'],en:['Show badge again','You already own this badge or have a renewing subscription. Manage it in My Profile first.'],de:['Abzeichen wieder anzeigen','Du hast das Abzeichen oder ein sich verlängerndes Abo. Verwalte es zuerst in Mein Profil.'],ar:['إظهار الشارة مجددًا','لديك هذه الشارة أو اشتراك يتجدد. أدره أولًا من ملفي الشخصي.'],fr:['Afficher à nouveau le badge','Tu as déjà ce badge ou un abonnement renouvelable. Gère-le d’abord dans Mon profil.'],es:['Mostrar insignia de nuevo','Ya tienes esta insignia o una suscripción renovable. Gestiónala primero en Mi perfil.'],ru:['Снова показать значок','Этот значок уже есть или подписка продлевается. Сначала управляй ею в Мой профиль.']};
  const E=i=>(extra[root.NATIVE_LANG]||extra.en)[i];
+ const hiddenCopy={tr:'Gizlendi',en:'Hidden',de:'Ausgeblendet',ar:'مخفية',fr:'Masqué',es:'Oculta',ru:'Скрыт'},H=()=>hiddenCopy[root.NATIVE_LANG]||hiddenCopy.en;
  const recurring=source=>((source.provider==='paddle'&&source.id.startsWith('sub_'))||(source.provider==='google_play'&&source.renewsAt))&&source.status!=='canceled'&&!source.cancelAt;
  const revokedCopy={tr:'Bu rozet hesabında kaldırılmış. Mevcut haklarını Profilim bölümünden kontrol et.',en:'This badge was removed from your account. Check your current benefits in My Profile.',de:'Dieses Abzeichen wurde aus deinem Konto entfernt. Prüfe deine Vorteile in Mein Profil.',ar:'أُزيلت هذه الشارة من حسابك. تحقق من مزاياك الحالية في ملفي الشخصي.',fr:'Ce badge a été retiré de ton compte. Vérifie tes avantages dans Mon profil.',es:'Esta insignia se retiró de tu cuenta. Consulta tus ventajas en Mi perfil.',ru:'Этот значок удалён из твоего аккаунта. Проверь преимущества в Мой профиль.'};
  const msg=error=>error.featureCode==='billing_badge_revoked'?(revokedCopy[root.NATIVE_LANG]||revokedCopy.en):['billing_already_active','billing_subscription_exists'].includes(error.featureCode)?E(1):T(['billing_not_configured','billing_catalog_incomplete','billing_permissions','billing_authentication'].includes(error.featureCode)?21:20);
@@ -94,7 +95,8 @@
    if(account!==uid()||!body.isConnected)return;box.replaceChildren(styles,n('h3','',T(0)),n('p','',T(1)),n('p','',T(24)));
    try{const result=await api('status');if(account!==uid()||!body.isConnected)return;box.lastElementChild.remove();if(!result.memberships.length)box.append(n('p','',T(2)));
     for(const row of result.memberships){
-     const card=n('div','billing-card'),heading=n('strong','',row.badge+' '+names(row.amount));card.append(heading,n('span','billing-state',T(row.removed||row.revoked?11:row.active?10:9)));
+     // A badge the buyer hid is "hidden", not "removed": it can be shown again.
+     const card=n('div','billing-card'),heading=n('strong','',row.badge+' '+names(row.amount));card.append(heading,n('span','billing-state',row.removed&&!row.revoked?H():T(row.revoked?11:row.active?10:9)));
      for(const source of row.sources){
       const details=n('dl'),add=(label,value)=>details.append(n('dt','',label),n('dd','',value));
       add(source.provider==='paddle'?'Paddle':source.provider==='google_play'?'Google Play':source.provider==='gift'?T(12):T(13),term(source));

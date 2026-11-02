@@ -1,0 +1,529 @@
+{
+ "id": "A2-03",
+ "level": "A2",
+ "title": "Modelltest 3",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen in einer Zeitung diesen Text. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Bücher im Telefonhäuschen",
+     "body": "Früher hat man hier telefoniert, heute leiht man hier Bücher aus: Im Dorf Altenburg steht seit dem Frühjahr ein altes, gelbes Telefonhäuschen mit Regalen voller Bücher. Jeder kann ein Buch herausnehmen, ohne etwas zu bezahlen. Wer möchte, stellt dafür ein anderes Buch hinein.\n\nDie Idee kam von dem 15-jährigen Schüler Moritz Lang. „Bei uns im Dorf gibt es keine Bibliothek, und die nächste Stadt ist zwanzig Kilometer entfernt“, erklärt er. Zusammen mit seinem Großvater hat er das Telefonhäuschen von der Telefongesellschaft gekauft – für einen Euro. Die Regale hat der Großvater selbst gebaut.\n\nDas Projekt ist ein großer Erfolg. Besonders beliebt sind Kinderbücher und Krimis. „Manchmal finde ich hier Bücher, die ich schon lange gesucht habe“, sagt eine Nachbarin. Jetzt möchten auch zwei Nachbardörfer ein Bücher-Telefonhäuschen."
+    }
+   ],
+   "items": [
+    {
+     "q": "In dem Telefonhäuschen kann man …",
+     "options": [
+      "telefonieren.",
+      "kostenlos Bücher mitnehmen.",
+      "Bücher kaufen."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Moritz hatte die Idee, weil …",
+     "options": [
+      "er gern Bücher verkauft.",
+      "es im Dorf keine Bibliothek gibt.",
+      "sein Großvater Bibliothekar war."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Das Telefonhäuschen hat …",
+     "options": [
+      "nichts gekostet.",
+      "einen Euro gekostet.",
+      "sehr viel Geld gekostet."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Die Regale …",
+     "options": [
+      "hat Moritz gekauft.",
+      "kommen aus der Stadtbibliothek.",
+      "hat der Großvater gebaut."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Andere Dörfer …",
+     "options": [
+      "möchten auch so ein Projekt.",
+      "finden die Idee schlecht.",
+      "bringen ihre Bücher nach Altenburg."
+     ],
+     "a": 0
+    }
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie sind in einem Krankenhaus. Lesen Sie die Informationstafel und die Aufgaben 6–10. Wohin gehen Sie? Wählen Sie a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Klinikum St. Anna – Wegweiser",
+     "body": "5. Stock: Kinderklinik · Spielzimmer · Elternküche\n4. Stock: Chirurgie · Unfallstation (Station 4B)\n3. Stock: Innere Medizin · Herzzentrum\n2. Stock: Frauenklinik · Geburtsstation · Hebammen\n1. Stock: Röntgen · Labor · Physiotherapie\nErdgeschoss: Anmeldung · Notaufnahme · Kiosk · Cafeteria · Kapelle"
+    }
+   ],
+   "items": [
+    {
+     "q": "Ihre Schwester hat ein Baby bekommen. Sie möchten sie besuchen.",
+     "options": [
+      "5. Stock",
+      "anderer Stock",
+      "2. Stock"
+     ],
+     "a": 2
+    },
+    {
+     "q": "Sie möchten für einen Patienten eine Zeitung kaufen.",
+     "options": [
+      "Erdgeschoss",
+      "1. Stock",
+      "anderer Stock"
+     ],
+     "a": 0
+    },
+    {
+     "q": "Ihr Arzt hat gesagt, Sie sollen eine Blutuntersuchung machen.",
+     "options": [
+      "anderer Stock",
+      "3. Stock",
+      "Erdgeschoss"
+     ],
+     "a": 0
+    },
+    {
+     "q": "Ihr Freund hatte einen Fahrradunfall und liegt jetzt auf Station.",
+     "options": [
+      "4. Stock",
+      "1. Stock",
+      "3. Stock"
+     ],
+     "a": 0
+    },
+    {
+     "q": "Ihr Sohn (6) ist im Krankenhaus. Sie möchten ihm ein Mittagessen kochen.",
+     "options": [
+      "Erdgeschoss",
+      "anderer Stock",
+      "5. Stock"
+     ],
+     "a": 2
+    }
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie lesen eine E-Mail. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "E-Mail",
+     "body": "Lieber Herr Schneider,\n\nvielen Dank für Ihre Einladung zum Firmenausflug am 23. Mai. Ich komme sehr gern mit! Leider habe ich noch ein paar Fragen.\n\nSie schreiben, dass wir mit dem Bus fahren. Wann und wo treffen wir uns genau? Ich wohne außerhalb der Stadt und komme mit dem Zug. Der erste Zug kommt um 7:40 Uhr am Hauptbahnhof an.\n\nAußerdem möchte ich fragen, ob meine Frau mitkommen darf. Sie kennt schon viele Kollegen von der Weihnachtsfeier. Natürlich bezahlen wir ihren Teil selbst.\n\nNoch eine letzte Frage: Wir wandern ja am Nachmittag. Brauchen wir richtige Wanderschuhe, oder reichen normale Turnschuhe?\n\nVielen Dank und freundliche Grüße\nAndrzej Kowalski"
+    }
+   ],
+   "items": [
+    {
+     "q": "Herr Kowalski …",
+     "options": [
+      "möchte mitkommen.",
+      "kann nicht mitkommen.",
+      "organisiert den Ausflug."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Herr Kowalski fährt zum Treffpunkt …",
+     "options": [
+      "mit dem Auto.",
+      "mit dem Bus.",
+      "mit dem Zug."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Er möchte wissen, …",
+     "options": [
+      "wann und wo man sich trifft.",
+      "wie viel der Ausflug kostet.",
+      "wohin man fährt."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Seine Frau …",
+     "options": [
+      "kennt noch keine Kollegen.",
+      "soll für sich selbst bezahlen.",
+      "möchte nicht wandern."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Herr Kowalski fragt nach …",
+     "options": [
+      "dem Essen.",
+      "den Schuhen.",
+      "dem Wetter."
+     ],
+     "a": 1
+    }
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sechs Personen suchen im Internet nach Angeboten. Lesen Sie die Aufgaben 16–20 und die Anzeigen a–f. Welche Anzeige passt zu welcher Person? Eine Anzeige brauchen Sie nicht.",
+   "type": "match",
+   "choices": [
+    {
+     "key": "a",
+     "text": "Fotokurs für Anfänger: Lernen Sie, mit Ihrem Handy schöne Fotos zu machen. Zwei Samstage, 10–13 Uhr, 49 €."
+    },
+    {
+     "key": "b",
+     "text": "Hundesitter gesucht! Wer geht mittags mit unserem Hund Bello spazieren? 8 € pro Stunde. Tel. 0171 44 55 66"
+    },
+    {
+     "key": "c",
+     "text": "Erste-Hilfe-Kurs für Führerscheinbewerber: jeden Samstag, 9–16 Uhr, Rotes Kreuz, Anmeldung online."
+    },
+    {
+     "key": "d",
+     "text": "Chor „Fröhliche Stimmen“ sucht neue Mitglieder, besonders Männer. Proben donnerstags 19:30 Uhr."
+    },
+    {
+     "key": "e",
+     "text": "Schwimmkurs für Erwachsene: Keine Angst vor dem Wasser! Kleine Gruppen, montags 20 Uhr im Hallenbad."
+    },
+    {
+     "key": "f",
+     "text": "Computerhilfe für Senioren: Wir zeigen Ihnen geduldig, wie Sie E-Mails schreiben und Videotelefonate machen."
+    }
+   ],
+   "items": [
+    {
+     "q": "Frau Wolf (75) möchte mit ihren Enkeln in Australien per Video sprechen.",
+     "a": "f"
+    },
+    {
+     "q": "Kai macht gerade den Führerschein und braucht noch einen Kurs.",
+     "a": "c"
+    },
+    {
+     "q": "Herr Demir singt gern und möchte in einer Gruppe singen.",
+     "a": "d"
+    },
+    {
+     "q": "Emma studiert und sucht einen kleinen Job in der Mittagspause.",
+     "a": "b"
+    },
+    {
+     "q": "Tom (40) kann nicht schwimmen und möchte es endlich lernen.",
+     "a": "e"
+    }
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {
+     "audio": "Hallo Frau Yılmaz, hier ist Herr Brandt vom Kindergarten. Morgen machen wir einen Ausflug in den Wald. Bitte geben Sie Ihrer Tochter Gummistiefel und eine Regenjacke mit.",
+     "q": "Was soll die Tochter mitbringen?",
+     "options": [
+      "Gummistiefel und Regenjacke",
+      "Essen und Trinken",
+      "Eine Mütze"
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Und hier noch eine Meldung aus unserer Stadt: Das Freibad öffnet in diesem Jahr schon am fünfzehnten Mai. Der Eintritt bleibt gleich: vier Euro für Erwachsene, zwei Euro für Kinder.",
+     "q": "Wann öffnet das Freibad?",
+     "options": [
+      "Am 15. Mai",
+      "Am 1. Mai",
+      "Am 5. Mai"
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Hallo Daniel, hier ist Lea. Ich bin auf dem Weg zu dir, aber ich finde deine Straße nicht. Mein Navi funktioniert nicht. Kannst du mich zurückrufen und mir den Weg erklären?",
+     "q": "Was ist Leas Problem?",
+     "options": [
+      "Sie hat keine Zeit.",
+      "Ihr Auto ist kaputt.",
+      "Sie findet den Weg nicht."
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Liebe Fahrgäste, wegen eines Notarzteinsatzes verzögert sich die Weiterfahrt um etwa fünf Minuten. Wir bitten um Ihr Verständnis.",
+     "q": "Was ist passiert?",
+     "options": [
+      "Der Zug fällt aus.",
+      "Der Zug fährt eine andere Strecke.",
+      "Der Zug fährt später weiter."
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Hier ist der Anrufbeantworter der Zahnarztpraxis Dr. Vogel. Wir sind vom vierten bis achtzehnten August im Urlaub. In Notfällen rufen Sie bitte Dr. Mayer an.",
+     "q": "Was sollen Patienten in Notfällen machen?",
+     "options": [
+      "Später anrufen",
+      "Ins Krankenhaus gehen",
+      "Dr. Mayer anrufen"
+     ],
+     "a": 2
+    }
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Gespräch. Sie hören den Text einmal. Wo möchte Frau Simon welche Möbel haben? Wählen Sie für die Aufgaben 6–10 einen passenden Buchstaben a–h.",
+   "type": "match",
+   "plays": 1,
+   "audio": "Möbelpacker: Guten Morgen, Frau Simon. Wo sollen wir die Sachen hinstellen?\nFrau Simon: Guten Morgen! Also, das große Sofa kommt ins Wohnzimmer, gegenüber vom Fenster.\nMöbelpacker: Gut. Und der Schreibtisch?\nFrau Simon: Der kommt ins Arbeitszimmer, das ist das kleine Zimmer links.\nMöbelpacker: Und das Bett? Ins Schlafzimmer, nehme ich an?\nFrau Simon: Nein, das alte Bett kommt in den Keller. Ich habe ein neues Bett gekauft, das kommt morgen.\nMöbelpacker: Verstehe. Was ist mit dem Kühlschrank?\nFrau Simon: Der Kühlschrank kommt natürlich in die Küche.\nMöbelpacker: Und die vielen Bücherkisten?\nFrau Simon: Die stellen Sie bitte erst mal auf den Balkon. Ich packe sie später aus und stelle die Bücher ins Regal.",
+   "choices": [
+    {
+     "key": "a",
+     "text": "Wohnzimmer"
+    },
+    {
+     "key": "b",
+     "text": "Keller"
+    },
+    {
+     "key": "c",
+     "text": "Flur"
+    },
+    {
+     "key": "d",
+     "text": "Arbeitszimmer"
+    },
+    {
+     "key": "e",
+     "text": "Küche"
+    },
+    {
+     "key": "f",
+     "text": "Garage"
+    },
+    {
+     "key": "g",
+     "text": "Balkon"
+    },
+    {
+     "key": "h",
+     "text": "Schlafzimmer"
+    }
+   ],
+   "items": [
+    {
+     "q": "Sofa",
+     "a": "a"
+    },
+    {
+     "q": "Schreibtisch",
+     "a": "d"
+    },
+    {
+     "q": "altes Bett",
+     "a": "b"
+    },
+    {
+     "q": "Kühlschrank",
+     "a": "e"
+    },
+    {
+     "q": "Bücherkisten",
+     "a": "g"
+    }
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "plays": 1,
+   "items": [
+    {
+     "audio": "Frau: Ich möchte dieses Paket nach Polen schicken. Wie lange dauert das?\nMann: Ungefähr vier bis fünf Tage. Mit Express sind es zwei Tage, aber das kostet mehr.\nFrau: Normal ist okay, es ist nicht so eilig.",
+     "q": "Wie schickt die Frau das Paket?",
+     "options": [
+      "Mit Express",
+      "Normal",
+      "Per Kurier"
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Mann: Hast du schon ein Geschenk für Papa?\nFrau: Ja, ich habe ihm eine Konzertkarte gekauft. Er liebt doch klassische Musik.\nMann: Super Idee!",
+     "q": "Was schenkt die Frau ihrem Vater?",
+     "options": [
+      "Eine CD",
+      "Eine Konzertkarte",
+      "Ein Buch"
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Frau: Warum bist du heute so müde?\nMann: Die Nachbarn hatten bis drei Uhr nachts eine Party. Ich konnte kaum schlafen.\nFrau: Das ist ja ärgerlich!",
+     "q": "Warum ist der Mann müde?",
+     "options": [
+      "Er hat lange gearbeitet.",
+      "Er war auf einer Party.",
+      "Die Nachbarn waren laut."
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Mann: Ich suche einen Job für die Sommerferien.\nFrau: Im Freibad suchen sie noch Leute für den Kiosk. Ich glaube, sie zahlen zwölf Euro pro Stunde.\nMann: Das klingt gut, da frage ich mal.",
+     "q": "Wo könnte der Mann arbeiten?",
+     "options": [
+      "Im Supermarkt",
+      "Im Freibad",
+      "Im Kino"
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Frau: Wann fängt der Film an?\nMann: Um Viertel nach acht. Aber vorher gibt es noch zwanzig Minuten Werbung.\nFrau: Dann kommen wir einfach etwas später.",
+     "q": "Wann beginnt der Film?",
+     "options": [
+      "Um 20:15 Uhr",
+      "Um 20:00 Uhr",
+      "Um 20:35 Uhr"
+     ],
+     "a": 0
+    }
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie für die Aufgaben 16–20: Ja oder Nein?",
+   "type": "yn",
+   "plays": 2,
+   "audio": "Moderatorin: Heute sprechen wir mit Herrn Kaya. Herr Kaya, Sie sind vor zehn Jahren aus der Türkei nach Deutschland gekommen. Warum?\nHerr Kaya: Mein Bruder hat schon hier gelebt und mir eine Arbeit in seinem Restaurant angeboten. Ich war damals dreiundzwanzig.\nModeratorin: War das Deutschlernen schwer für Sie?\nHerr Kaya: Am Anfang sehr! Ich konnte nur „Guten Tag“ und „Danke“ sagen. Ich habe dann zwei Jahre lang abends einen Sprachkurs besucht. Heute spreche ich ziemlich gut, aber die Artikel – der, die, das – sind immer noch schwer.\nModeratorin: Und heute haben Sie Ihr eigenes Restaurant?\nHerr Kaya: Ja, seit drei Jahren. Wir kochen türkisch, aber auch ein paar deutsche Gerichte. Unsere Gäste lieben besonders die Linsensuppe.\nModeratorin: Was vermissen Sie aus der Türkei?\nHerr Kaya: Das Meer! Ich komme aus Izmir. Und natürlich meine Eltern. Aber sie besuchen uns jeden Sommer.\nModeratorin: Möchten Sie irgendwann zurück?\nHerr Kaya: Nein, ich glaube nicht. Meine Kinder sind hier geboren, meine Frau arbeitet hier. Deutschland ist jetzt unsere Heimat.",
+   "items": [
+    {
+     "q": "Herr Kaya ist wegen der Arbeit nach Deutschland gekommen.",
+     "a": true
+    },
+    {
+     "q": "Er hat am Anfang schon gut Deutsch gesprochen.",
+     "a": false
+    },
+    {
+     "q": "Die Artikel findet Herr Kaya heute noch schwierig.",
+     "a": true
+    },
+    {
+     "q": "In seinem Restaurant gibt es nur türkisches Essen.",
+     "a": false
+    },
+    {
+     "q": "Herr Kaya möchte mit seiner Familie in Deutschland bleiben.",
+     "a": true
+    }
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1",
+   "task": "Sie wollten heute mit Ihrer Kollegin Maria zu Mittag essen. Sie haben aber eine wichtige Besprechung. Schreiben Sie Maria eine SMS.",
+   "prompt": "Schreiben Sie circa 20–30 Wörter zu allen drei Punkten.",
+   "points": [
+    "Sagen Sie ab und entschuldigen Sie sich.",
+    "Nennen Sie den Grund.",
+    "Schlagen Sie einen anderen Tag vor."
+   ],
+   "words": 25,
+   "sample": "Hallo Maria, leider kann ich heute nicht mit dir essen. Ich habe um zwölf eine wichtige Besprechung mit dem Chef. Hast du morgen Zeit? Liebe Grüße, Yasmin"
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie haben in einem Online-Shop eine Jacke bestellt. Die Jacke ist zu klein. Schreiben Sie eine E-Mail an den Kundenservice.",
+   "prompt": "Schreiben Sie circa 30–40 Wörter zu allen drei Punkten. Vergessen Sie nicht Anrede und Gruß.",
+   "points": [
+    "Was haben Sie bestellt?",
+    "Was ist das Problem?",
+    "Was möchten Sie jetzt?"
+   ],
+   "words": 35,
+   "sample": "Sehr geehrte Damen und Herren,\n\nletzte Woche habe ich bei Ihnen eine blaue Winterjacke in Größe M bestellt. Leider ist die Jacke zu klein. Ich möchte sie gern gegen eine Jacke in Größe L umtauschen. Wie kann ich sie zurückschicken?\n\nMit freundlichen Grüßen\nOksana Melnyk"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Fragen zur Person",
+   "task": "Stellen Sie Ihrer Partnerin oder Ihrem Partner Fragen zu den Wörtern auf den Karten und beantworten Sie ihre oder seine Fragen.",
+   "cards": [
+    "Heimatstadt?",
+    "Musik?",
+    "Wochenende?",
+    "Haustier?",
+    "Frühstück?",
+    "Urlaub?",
+    "Handy?",
+    "Lieblingsfarbe?"
+   ],
+   "phrases": [
+    "Wie ist deine Heimatstadt?",
+    "Was für Musik hörst du?",
+    "Wohin fährst du gern in den Urlaub?",
+    "Wie lange benutzt du dein Handy pro Tag?"
+   ],
+   "sample": "Wie ist deine Heimatstadt? – Meine Heimatstadt ist klein, aber sehr grün.\nWas für Musik hörst du? – Ich höre gern Rockmusik.\nHast du ein Haustier? – Ja, ich habe einen Hund, er heißt Bobby."
+  },
+  {
+   "title": "Teil 2 – Über sich sprechen",
+   "task": "Erzählen Sie etwas über Ihr Leben. Thema: „Ihre Wohnung“. Die Fragen auf der Karte helfen Ihnen.",
+   "cards": [
+    "Wo?",
+    "Wie groß?",
+    "Was gefällt Ihnen?",
+    "Was gefällt Ihnen nicht?"
+   ],
+   "phrases": [
+    "Ich wohne in …",
+    "Meine Wohnung hat …",
+    "Besonders gut gefällt mir …",
+    "Leider …"
+   ],
+   "sample": "Ich wohne in einer Drei-Zimmer-Wohnung am Stadtrand. Sie hat ein Wohnzimmer, ein Schlafzimmer und ein Kinderzimmer. Besonders gut gefällt mir der große Balkon, dort frühstücken wir im Sommer. Leider ist die Küche sehr klein und die Straße ist laut."
+  },
+  {
+   "title": "Teil 3 – Gemeinsam etwas planen",
+   "task": "Sie möchten mit Ihrer Partnerin oder Ihrem Partner am Freitag ein Geschenk für eine Kollegin kaufen. Finden Sie einen Termin. Hier ist Ihr Terminkalender.",
+   "cards": [
+    "7–15 Uhr: Arbeit",
+    "15–16 Uhr: frei",
+    "16–17 Uhr: Zahnarzt",
+    "17–18:30 Uhr: frei",
+    "19 Uhr: Abendessen mit Freunden"
+   ],
+   "phrases": [
+    "Hast du am Freitag nach der Arbeit Zeit?",
+    "Da kann ich leider nicht, ich habe …",
+    "Wie wäre es um …?",
+    "Was wollen wir kaufen?",
+    "Gute Idee!"
+   ],
+   "sample": "A: Hast du am Freitag nach der Arbeit Zeit?\nB: Bis drei arbeite ich. Um vier habe ich einen Zahnarzttermin.\nA: Und um fünf? Passt dir das?\nB: Ja, um fünf geht es. Was wollen wir kaufen?\nA: Vielleicht ein Buch oder Blumen? – B: Ein Buch ist eine gute Idee!"
+  }
+ ]
+}

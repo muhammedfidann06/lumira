@@ -1,0 +1,530 @@
+{
+ "id": "A2-01",
+ "level": "A2",
+ "title": "Modelltest 1",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen in einer Zeitung diesen Text. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Ein Café für alle Generationen",
+     "body": "In der Kleinstadt Werder hat vor drei Monaten ein besonderes Café eröffnet: das „Café Miteinander“. Hier arbeiten junge und alte Menschen zusammen. Die Idee hatte die 68-jährige Rentnerin Gisela Brandt. „Viele ältere Menschen sind allein und möchten gern etwas tun. Und viele junge Leute suchen einen Nebenjob“, erzählt sie.\n\nIm Café arbeiten jetzt zwölf Personen: sechs Rentnerinnen und Rentner und sechs Schülerinnen und Schüler. Die Älteren backen die Kuchen nach alten Familienrezepten, die Jüngeren bedienen die Gäste und kümmern sich um die Internetseite.\n\nDas Café ist von Mittwoch bis Sonntag von 13 bis 18 Uhr geöffnet. Jeden zweiten Samstag gibt es am Nachmittag einen Spielenachmittag: Großeltern und Enkel spielen zusammen Brettspiele. Das Geld, das das Café verdient, geht an ein Projekt für Kinder in der Stadt."
+    }
+   ],
+   "items": [
+    {
+     "q": "Das „Café Miteinander“ …",
+     "options": [
+      "gibt es schon seit drei Jahren.",
+      "eröffnet in drei Monaten.",
+      "hat vor drei Monaten eröffnet."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Gisela Brandt hatte die Idee, weil …",
+     "options": [
+      "sie selbst einen Nebenjob suchte.",
+      "ältere Menschen oft allein sind.",
+      "sie gern Kuchen isst."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Die jungen Leute im Café …",
+     "options": [
+      "backen die Kuchen.",
+      "machen die Internetseite.",
+      "spielen mit den Gästen."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Das Café hat geöffnet …",
+     "options": [
+      "fünf Tage pro Woche.",
+      "jeden Tag.",
+      "nur am Wochenende."
+     ],
+     "a": 0
+    },
+    {
+     "q": "Mit dem Geld vom Café …",
+     "options": [
+      "hilft man Kindern in der Stadt.",
+      "bezahlt man die Rentner.",
+      "kauft man neue Spiele."
+     ],
+     "a": 0
+    }
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie sind in einem Kaufhaus. Lesen Sie die Informationstafel und die Aufgaben 6–10. In welchen Stock gehen Sie? Wählen Sie a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Kaufhaus Merkur – Wegweiser",
+     "body": "4. Stock: Restaurant mit Dachterrasse · Kundenservice · Fundbüro\n3. Stock: Elektronik · Computer · Handys · Fotoabteilung · Musik\n2. Stock: Kinderabteilung · Spielwaren · Schulbedarf · Sportartikel\n1. Stock: Damenmode · Herrenmode · Schuhe · Taschen\nErdgeschoss: Kosmetik · Schmuck · Uhren · Zeitschriften · Bäckerei\nUntergeschoss: Lebensmittel · Getränke · Haushaltswaren · Geschirr"
+    }
+   ],
+   "items": [
+    {
+     "q": "Sie möchten neue Laufschuhe zum Joggen kaufen.",
+     "options": [
+      "1. Stock",
+      "2. Stock",
+      "anderer Stock"
+     ],
+     "a": 1
+    },
+    {
+     "q": "Ihre Uhr ist kaputt. Sie brauchen eine neue.",
+     "options": [
+      "Erdgeschoss",
+      "3. Stock",
+      "anderer Stock"
+     ],
+     "a": 0
+    },
+    {
+     "q": "Sie haben im Kaufhaus Ihre Handschuhe verloren.",
+     "options": [
+      "anderer Stock",
+      "1. Stock",
+      "Erdgeschoss"
+     ],
+     "a": 0
+    },
+    {
+     "q": "Sie brauchen Teller und Tassen.",
+     "options": [
+      "4. Stock",
+      "Erdgeschoss",
+      "Untergeschoss"
+     ],
+     "a": 2
+    },
+    {
+     "q": "Sie möchten Ihrem Neffen ein Puzzle schenken.",
+     "options": [
+      "3. Stock",
+      "2. Stock",
+      "anderer Stock"
+     ],
+     "a": 1
+    }
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie lesen eine E-Mail. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "E-Mail",
+     "body": "Liebe Sandra,\n\nvielen Dank für deine Nachricht! Ich bin jetzt schon vier Wochen in Graz und es gefällt mir sehr gut. Mein Praktikum in der Firma ist interessant, aber auch anstrengend. Ich fange jeden Morgen um halb acht an und bin selten vor sechs Uhr fertig.\n\nIch wohne in einer Wohngemeinschaft mit zwei Studentinnen. Sie sind sehr nett, aber leider auch ein bisschen chaotisch: In der Küche ist es oft nicht sauber. Wir haben jetzt einen Putzplan gemacht – mal sehen, ob er funktioniert!\n\nAm Wochenende fahre ich oft mit dem Fahrrad in die Berge. Die Landschaft ist wunderschön. Hast du nicht Lust, mich im nächsten Monat zu besuchen? Vom 12. bis 14. habe ich frei. Du kannst bei mir schlafen, wir haben ein Gästesofa.\n\nSchreib mir bald!\nLiebe Grüße\nTina"
+    }
+   ],
+   "items": [
+    {
+     "q": "Tina ist in Graz, weil sie …",
+     "options": [
+      "dort studiert.",
+      "ein Praktikum macht.",
+      "Urlaub macht."
+     ],
+     "a": 1
+    },
+    {
+     "q": "Tinas Arbeitstag …",
+     "options": [
+      "ist kurz.",
+      "beginnt am Mittag.",
+      "ist oft lang."
+     ],
+     "a": 2
+    },
+    {
+     "q": "In der Wohngemeinschaft …",
+     "options": [
+      "streiten alle oft.",
+      "wohnen vier Personen.",
+      "gibt es Probleme mit der Ordnung."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Am Wochenende …",
+     "options": [
+      "arbeitet Tina.",
+      "besucht Tina ihre Familie.",
+      "fährt Tina Fahrrad."
+     ],
+     "a": 2
+    },
+    {
+     "q": "Sandra kann …",
+     "options": [
+      "im Hotel wohnen.",
+      "nur einen Tag bleiben.",
+      "bei Tina übernachten."
+     ],
+     "a": 2
+    }
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sechs Personen suchen im Internet nach Angeboten. Lesen Sie die Aufgaben 16–20 und die Anzeigen a–f. Welche Anzeige passt zu welcher Person? Eine Anzeige brauchen Sie nicht.",
+   "type": "match",
+   "choices": [
+    {
+     "key": "a",
+     "text": "Gitarrenunterricht für Anfänger und Fortgeschrittene – Einzelstunden bei Ihnen zu Hause, auch am Abend. 25 € pro Stunde."
+    },
+    {
+     "key": "b",
+     "text": "Seniorentanz im Gemeindezentrum – jeden Dienstag 15–17 Uhr. Kommen Sie allein oder zu zweit, keine Vorkenntnisse nötig!"
+    },
+    {
+     "key": "c",
+     "text": "Second-Hand-Laden „Kinderkiste“: gebrauchte Kinderkleidung, Kinderwagen und Spielzeug – günstig und in gutem Zustand."
+    },
+    {
+     "key": "d",
+     "text": "Nachhilfe-Börse: Schüler helfen Schülern in Mathe, Englisch und Deutsch. Eine Stunde nur 10 €."
+    },
+    {
+     "key": "e",
+     "text": "Wanderverein Berglust: gemeinsame Touren jeden Sonntag, für Familien mit Kindern geeignet. Mitgliedschaft 30 € im Jahr."
+    },
+    {
+     "key": "f",
+     "text": "Musikschule Klangwerk: Klavier- und Geigenunterricht für Kinder ab 5 Jahren, nachmittags in der Schule."
+    }
+   ],
+   "items": [
+    {
+     "q": "Herr Kühn (72) möchte sich bewegen und neue Leute kennenlernen.",
+     "a": "b"
+    },
+    {
+     "q": "Familie Aydın möchte am Wochenende mit ihren Kindern in der Natur sein.",
+     "a": "e"
+    },
+    {
+     "q": "Lena (15) hat schlechte Noten in Mathe und wenig Geld.",
+     "a": "d"
+    },
+    {
+     "q": "Frau Petrov sucht billig Kleidung für ihr Baby.",
+     "a": "c"
+    },
+    {
+     "q": "Markus (35) arbeitet tagsüber und möchte abends Gitarre lernen.",
+     "a": "a"
+    }
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {
+     "audio": "Und nun das Wetter für morgen: Im Norden ist es bewölkt bei 14 Grad. Im Süden scheint die Sonne, die Temperaturen steigen bis 22 Grad. Am Abend kommt im Westen Regen.",
+     "q": "Wie ist das Wetter morgen im Süden?",
+     "options": [
+      "Es ist sonnig.",
+      "Es regnet.",
+      "Es ist bewölkt."
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Hallo Frau Schröder, hier ist die Praxis Dr. Klein. Sie haben morgen um zehn Uhr einen Termin. Leider ist Dr. Klein krank. Können Sie am Freitag um elf Uhr kommen? Bitte rufen Sie uns an.",
+     "q": "Warum ruft die Praxis an?",
+     "options": [
+      "Frau Schröder hat ihren Termin vergessen.",
+      "Der Termin muss verschoben werden.",
+      "Die Praxis zieht um."
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Liebe Hörerinnen und Hörer, am Samstag ist wieder Flohmarkt auf dem Messegelände. Von acht bis fünfzehn Uhr können Sie alte und neue Sachen kaufen. Der Eintritt kostet zwei Euro, Kinder sind frei.",
+     "q": "Was kostet der Eintritt für Erwachsene?",
+     "options": [
+      "2 €",
+      "Nichts",
+      "15 €"
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Hallo Max, hier ist Jenny. Ich habe eine Frage zu unserem Ausflug am Sonntag. Fahren wir mit dem Zug oder mit deinem Auto? Ich würde lieber mit dem Zug fahren, dann können wir unterwegs Karten spielen.",
+     "q": "Wie möchte Jenny fahren?",
+     "options": [
+      "Mit dem Auto",
+      "Mit dem Bus",
+      "Mit dem Zug"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Achtung, Verkehrsinformation: Auf der A7 zwischen Kassel und Göttingen gibt es einen Stau von zwölf Kilometern wegen eines Unfalls. Bitte fahren Sie über die B3.",
+     "q": "Was ist auf der A7 passiert?",
+     "options": [
+      "Ein Unfall",
+      "Bauarbeiten",
+      "Ein Unwetter"
+     ],
+     "a": 0
+    }
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Gespräch. Sie hören den Text einmal. Was macht Jonas an welchem Tag? Wählen Sie für die Aufgaben 6–10 einen passenden Buchstaben a–h.",
+   "type": "match",
+   "plays": 1,
+   "audio": "Mutter: Jonas, nächste Woche habe ich viele Termine. Lass uns mal deine Woche planen. Was hast du am Montag?\nJonas: Am Montag habe ich nach der Schule Fußballtraining, bis sechs Uhr.\nMutter: Gut. Und am Dienstag? Da wollte Oma doch kommen.\nJonas: Ja, am Dienstag besucht mich Oma. Wir backen zusammen einen Kuchen.\nMutter: Schön. Am Mittwoch hast du doch Nachhilfe in Englisch, oder?\nJonas: Nein, die Nachhilfe ist diese Woche am Donnerstag. Am Mittwoch gehe ich mit Paul ins Schwimmbad.\nMutter: Ach so. Und am Freitag?\nJonas: Am Freitag ist der Geburtstag von Lea. Sie macht eine Party im Jugendzentrum.\nMutter: Prima. Dann musst du am Donnerstagabend noch ein Geschenk kaufen.\nJonas: Das mache ich schon am Montag nach dem Training.",
+   "choices": [
+    {
+     "key": "a",
+     "text": "Fußball spielen"
+    },
+    {
+     "key": "b",
+     "text": "Fahrrad reparieren"
+    },
+    {
+     "key": "c",
+     "text": "auf eine Party gehen"
+    },
+    {
+     "key": "d",
+     "text": "Zimmer aufräumen"
+    },
+    {
+     "key": "e",
+     "text": "schwimmen gehen"
+    },
+    {
+     "key": "f",
+     "text": "Kuchen backen"
+    },
+    {
+     "key": "g",
+     "text": "ins Kino gehen"
+    },
+    {
+     "key": "h",
+     "text": "Englisch lernen"
+    }
+   ],
+   "items": [
+    {
+     "q": "Montag",
+     "a": "a"
+    },
+    {
+     "q": "Dienstag",
+     "a": "f"
+    },
+    {
+     "q": "Mittwoch",
+     "a": "e"
+    },
+    {
+     "q": "Donnerstag",
+     "a": "h"
+    },
+    {
+     "q": "Freitag",
+     "a": "c"
+    }
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "plays": 1,
+   "items": [
+    {
+     "audio": "Frau: Ich möchte diese Hose umtauschen. Sie ist mir zu klein.\nMann: Haben Sie den Kassenbon dabei?\nFrau: Ja, hier.\nMann: Möchten Sie eine größere Hose oder Ihr Geld zurück?\nFrau: Eine Nummer größer, bitte.",
+     "q": "Was möchte die Frau?",
+     "options": [
+      "Eine größere Hose",
+      "Ihr Geld zurück",
+      "Einen Gutschein"
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Mann: Weißt du, wann die Bibliothek heute schließt?\nFrau: Normalerweise um acht, aber heute ist Samstag. Da schließt sie schon um vier.\nMann: Oh, dann muss ich mich beeilen.",
+     "q": "Wann schließt die Bibliothek heute?",
+     "options": [
+      "Um 20 Uhr",
+      "Um 14 Uhr",
+      "Um 16 Uhr"
+     ],
+     "a": 2
+    },
+    {
+     "audio": "Frau: Wie hat dir das Konzert gefallen?\nMann: Die Musik war toll, aber wir hatten ganz schlechte Plätze. Ich habe die Band fast nicht gesehen.\nFrau: Schade!",
+     "q": "Was war das Problem beim Konzert?",
+     "options": [
+      "Die Plätze waren schlecht.",
+      "Die Musik war schlecht.",
+      "Das Konzert war zu kurz."
+     ],
+     "a": 0
+    },
+    {
+     "audio": "Mann: Guten Tag, ich habe Zimmer 15 reserviert, aber die Heizung funktioniert nicht.\nFrau: Oh, das tut mir leid. Ich gebe Ihnen sofort ein anderes Zimmer, Nummer 22.\nMann: Danke schön.",
+     "q": "Welches Zimmer bekommt der Mann?",
+     "options": [
+      "Zimmer 15",
+      "Zimmer 22",
+      "Zimmer 25"
+     ],
+     "a": 1
+    },
+    {
+     "audio": "Frau: Kommst du heute Abend mit zum Sprachcafé?\nMann: Ich würde gern, aber ich muss noch für meine Prüfung morgen lernen.\nFrau: Dann viel Erfolg!",
+     "q": "Warum kommt der Mann nicht mit?",
+     "options": [
+      "Er ist krank.",
+      "Er muss lernen.",
+      "Er muss arbeiten."
+     ],
+     "a": 1
+    }
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie für die Aufgaben 16–20: Ja oder Nein?",
+   "type": "yn",
+   "plays": 2,
+   "audio": "Moderatorin: Herzlich willkommen zu „Menschen in der Stadt“. Heute ist Herr Sommer bei uns. Herr Sommer, Sie sind Busfahrer, richtig?\nHerr Sommer: Ja, seit fünfzehn Jahren. Vorher war ich Lkw-Fahrer, aber da war ich immer weg von meiner Familie.\nModeratorin: Was gefällt Ihnen an Ihrem Beruf?\nHerr Sommer: Ich mag den Kontakt mit Menschen. Viele Fahrgäste kenne ich schon lange. Morgens fahren immer dieselben Schüler mit, und eine ältere Dame bringt mir manchmal sogar Kekse mit.\nModeratorin: Gibt es auch schwierige Momente?\nHerr Sommer: Natürlich. Der Verkehr ist oft schlimm, besonders am Freitagnachmittag. Und manche Fahrgäste sind unfreundlich, wenn der Bus Verspätung hat. Aber das ist zum Glück selten.\nModeratorin: Wie sieht Ihr Arbeitstag aus?\nHerr Sommer: Ich arbeite im Schichtdienst. Diese Woche fange ich um fünf Uhr morgens an. Das ist früh, aber dafür habe ich am Nachmittag frei und kann meine Kinder von der Schule abholen.\nModeratorin: Und was machen Sie in Ihrer Freizeit?\nHerr Sommer: Ganz bestimmt nicht Auto fahren! Ich gehe lieber mit unserem Hund spazieren oder arbeite im Garten.",
+   "items": [
+    {
+     "q": "Herr Sommer ist seit fünfzehn Jahren Busfahrer.",
+     "a": true
+    },
+    {
+     "q": "Er hat früher als Taxifahrer gearbeitet.",
+     "a": false
+    },
+    {
+     "q": "Herr Sommer findet alle Fahrgäste unfreundlich.",
+     "a": false
+    },
+    {
+     "q": "Diese Woche beginnt seine Arbeit sehr früh.",
+     "a": true
+    },
+    {
+     "q": "In seiner Freizeit fährt er gern Auto.",
+     "a": false
+    }
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1",
+   "task": "Sie sind mit Ihrem Freund Carlos für heute Abend verabredet. Sie können nicht pünktlich kommen. Schreiben Sie Carlos eine SMS.",
+   "prompt": "Schreiben Sie circa 20–30 Wörter zu allen drei Punkten.",
+   "points": [
+    "Entschuldigen Sie sich und sagen Sie, warum Sie später kommen.",
+    "Nennen Sie eine neue Uhrzeit.",
+    "Machen Sie einen Vorschlag, was Carlos bis dahin machen kann."
+   ],
+   "words": 25,
+   "sample": "Hallo Carlos, tut mir leid! Mein Zug hat Verspätung. Ich bin erst um halb acht da. Kannst du schon im Restaurant einen Tisch suchen und etwas trinken? Bis gleich, Daniel"
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie möchten einen Kochkurs an der Volkshochschule machen. Schreiben Sie eine E-Mail an Frau Lange von der Volkshochschule.",
+   "prompt": "Schreiben Sie circa 30–40 Wörter zu allen drei Punkten. Vergessen Sie nicht Anrede und Gruß.",
+   "points": [
+    "Sagen Sie, warum Sie schreiben.",
+    "Fragen Sie nach dem Preis.",
+    "Fragen Sie, was Sie mitbringen müssen."
+   ],
+   "words": 35,
+   "sample": "Sehr geehrte Frau Lange,\n\nich interessiere mich für den Kochkurs „Italienische Küche“ im März und möchte mich gern anmelden. Wie viel kostet der Kurs? Und muss ich etwas mitbringen, zum Beispiel eine Schürze oder Lebensmittel?\n\nMit freundlichen Grüßen\nLeyla Aksoy"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Fragen zur Person",
+   "task": "Stellen Sie Ihrer Partnerin oder Ihrem Partner Fragen zu den Wörtern auf den Karten und beantworten Sie ihre oder seine Fragen.",
+   "cards": [
+    "Geburtstag?",
+    "Wohnort?",
+    "Beruf?",
+    "Sprachen?",
+    "Familie?",
+    "Hobby?",
+    "Reisen?",
+    "Lieblingsessen?"
+   ],
+   "phrases": [
+    "Wann hast du Geburtstag?",
+    "Wo wohnst du?",
+    "Was machst du beruflich?",
+    "Welche Sprachen sprichst du?",
+    "Hast du Geschwister?"
+   ],
+   "sample": "Wann hast du Geburtstag? – Mein Geburtstag ist am zwölften November.\nWelche Sprachen sprichst du? – Ich spreche Arabisch, Französisch und ein bisschen Deutsch.\nWas ist dein Lieblingsessen? – Ich esse am liebsten Couscous mit Gemüse."
+  },
+  {
+   "title": "Teil 2 – Über sich sprechen",
+   "task": "Erzählen Sie etwas über Ihr Leben. Thema: „Was machen Sie am Wochenende?“ Die Fragen auf der Karte helfen Ihnen.",
+   "cards": [
+    "Mit wem?",
+    "Wo?",
+    "Was machen Sie gern?",
+    "Was machen Sie nicht gern?"
+   ],
+   "phrases": [
+    "Am Wochenende … ich meistens …",
+    "Am liebsten …",
+    "Ich mag es nicht, wenn …",
+    "Manchmal …"
+   ],
+   "sample": "Am Wochenende schlafe ich zuerst lange. Am Samstag kaufe ich mit meinem Mann auf dem Markt ein. Am Nachmittag treffen wir oft Freunde im Park. Am Sonntag besuchen wir meine Eltern. Ich putze nicht gern am Wochenende, das mache ich lieber unter der Woche."
+  },
+  {
+   "title": "Teil 3 – Gemeinsam etwas planen",
+   "task": "Sie möchten mit Ihrer Partnerin oder Ihrem Partner am Samstag einen Freund im Krankenhaus besuchen. Finden Sie eine Uhrzeit. Hier ist Ihr Terminkalender.",
+   "cards": [
+    "8–10 Uhr: Sport",
+    "10–12 Uhr: frei",
+    "12–13 Uhr: Mittagessen mit Eltern",
+    "14–16 Uhr: Deutschkurs",
+    "ab 17 Uhr: frei"
+   ],
+   "phrases": [
+    "Hast du am Vormittag Zeit?",
+    "Um … Uhr kann ich leider nicht, da …",
+    "Wie wäre es um …?",
+    "Das passt mir gut.",
+    "Sollen wir Blumen mitbringen?"
+   ],
+   "sample": "A: Wann hast du am Samstag Zeit? Am Vormittag?\nB: Von acht bis zehn mache ich Sport, aber um zehn habe ich Zeit.\nA: Um zehn kann ich leider nicht, da muss ich einkaufen. Wie wäre es um fünf?\nB: Das passt mir gut. Sollen wir Blumen mitbringen?\nA: Gute Idee, ich kaufe sie."
+  }
+ ]
+}

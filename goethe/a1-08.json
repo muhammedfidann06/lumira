@@ -1,0 +1,67 @@
+{
+ "id":"A1-08","level":"A1","title":"Modelltest 8",
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören sechs kurze Gespräche. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–6 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Frau: Wann landet dein Flug in Berlin?\nMann: Um vierzehn Uhr zwanzig. Kannst du mich vom Flughafen abholen?\nFrau: Ja, klar.","q":"Wann landet der Flug?","options":["Um 14:20 Uhr","Um 12:40 Uhr","Um 14:00 Uhr"],"a":0},
+   {"audio":"Mann: Was nimmst du mit in den Urlaub?\nFrau: Nicht viel. Einen Koffer und meine Kamera. Ich mache so gern Fotos.","q":"Was nimmt die Frau mit?","options":["Zwei Koffer","Einen Koffer und eine Kamera","Einen Rucksack"],"a":1},
+   {"audio":"Frau: Wie war dein Urlaub in Spanien?\nMann: Sehr schön, aber zu heiß. Es waren jeden Tag fast vierzig Grad.","q":"Wie war das Wetter in Spanien?","options":["Kalt","Regnerisch","Sehr heiß"],"a":2},
+   {"audio":"Mann: Ich möchte ein Auto mieten. Für eine Woche.\nFrau: Ein kleines Auto kostet dreihundertzwanzig Euro pro Woche.","q":"Wie lange möchte der Mann das Auto mieten?","options":["Einen Tag","Ein Wochenende","Eine Woche"],"a":2},
+   {"audio":"Frau: Entschuldigung, wo ist hier ein Geldautomat?\nMann: Im Bahnhof, gleich neben dem Blumenladen.","q":"Wo ist der Geldautomat?","options":["Neben dem Blumenladen","Neben dem Kiosk","Vor dem Hotel"],"a":0},
+   {"audio":"Mann: Wie viele Nächte bleiben Sie?\nFrau: Vier Nächte. Wir fahren am Samstag wieder ab.","q":"Wie viele Nächte bleibt die Frau?","options":["Drei","Vier","Fünf"],"a":1}
+  ]},
+  {"title":"Teil 2","task":"Sie hören vier Durchsagen. Sie hören jeden Text einmal. Sind die Aussagen 7–10 richtig oder falsch?","type":"rf","plays":1,"items":[
+   {"audio":"Letzter Aufruf für Flug EW 762 nach London. Die Passagiere werden gebeten, sofort zum Ausgang C vier zu kommen.","q":"Die Passagiere nach London sollen zum Ausgang C4 kommen.","a":true},
+   {"audio":"Liebe Gäste, das Schwimmbad im Hotel ist heute von sieben bis zwanzig Uhr geöffnet. Handtücher bekommen Sie an der Rezeption.","q":"Die Handtücher liegen im Schwimmbad.","a":false},
+   {"audio":"Achtung an Bahnsteig drei: Der Zug nach Salzburg fällt heute aus. Bitte nehmen Sie den nächsten Zug um elf Uhr fünf.","q":"Der Zug nach Salzburg fährt heute nicht.","a":true},
+   {"audio":"Willkommen an Bord! Unsere Flugzeit nach Antalya beträgt heute drei Stunden und zehn Minuten. Wir servieren Ihnen gleich Getränke.","q":"Der Flug dauert etwa vier Stunden.","a":false}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf Ansagen am Telefon. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Eva, hier ist Simon. Wir sind gut in Paris angekommen. Das Hotel ist toll und nur zehn Minuten vom Eiffelturm entfernt. Ich rufe morgen wieder an!","q":"Wo ist Simon?","options":["In Rom","In Paris","In Wien"],"a":1},
+   {"audio":"Guten Tag, hier ist die Autovermietung Mobil. Sie können Ihr Auto morgen ab acht Uhr bei uns abholen. Bitte bringen Sie Ihren Führerschein mit.","q":"Was soll die Person mitbringen?","options":["Den Führerschein","Den Reisepass","Ein Foto"],"a":0},
+   {"audio":"Hallo Sabine, hier ist Henrik. Ich habe meinen Regenschirm bei dir vergessen. Er ist grün. Kannst du ihn morgen mit zur Arbeit bringen?","q":"Was hat Henrik vergessen?","options":["Seine Jacke","Seinen Schal","Seinen Regenschirm"],"a":2},
+   {"audio":"Hier ist das Hotel Alpenblick. Ihr Zimmer ist ab vierzehn Uhr fertig. Sie können Ihr Gepäck aber schon am Vormittag bei uns lassen.","q":"Ab wann ist das Zimmer fertig?","options":["Ab 10 Uhr","Ab 12 Uhr","Ab 14 Uhr"],"a":2},
+   {"audio":"Hallo Mama, hier ist Lisa. Mein Flug hat Verspätung. Ich lande erst um dreiundzwanzig Uhr. Du musst mich nicht abholen, ich nehme ein Taxi.","q":"Wie fährt Lisa nach Hause?","options":["Mit dem Taxi","Mit dem Bus","Die Mutter holt sie ab."],"a":0}
+  ]}
+ ],
+ "lesen":[
+  {"title":"Teil 1","task":"Lesen Sie die zwei Texte. Sind die Aussagen 1–5 richtig oder falsch?","type":"rf","texts":[
+   {"title":"Postkarte","body":"Liebe Grüße aus Hamburg!\n\nHier ist es sehr schön, aber es regnet oft. Gestern haben wir eine Hafenrundfahrt gemacht. Heute gehen wir in ein Musical. Das Essen ist gut, besonders der Fisch. Am Dienstag fahren wir mit dem Zug zurück.\n\nBis bald\nRuth und Jakob"},
+   {"title":"Hotelinformation","body":"Liebe Gäste,\n\ndas Frühstück servieren wir von 6:30 bis 10:00 Uhr im Restaurant im Erdgeschoss. Am Sonntag gibt es Frühstück bis 11:00 Uhr. Bitte geben Sie Ihren Zimmerschlüssel bei der Abreise an der Rezeption ab.\n\nIhr Hotelteam"}
+  ],"items":[
+   {"q":"In Hamburg ist das Wetter immer schön.","a":false},
+   {"q":"Ruth und Jakob waren gestern auf einem Schiff.","a":true},
+   {"q":"Sie fahren mit dem Zug nach Hause.","a":true},
+   {"q":"Am Sonntag gibt es länger Frühstück.","a":true},
+   {"q":"Die Gäste sollen den Schlüssel im Zimmer lassen.","a":false}
+  ]},
+  {"title":"Teil 2","task":"Lesen Sie die Texte und die Aufgaben 6–10. Wo finden Sie Informationen? Wählen Sie a oder b.","type":"ab","items":[
+   {"q":"Sie möchten eine Stadtführung auf Englisch machen.","options":["Stadtführungen auf Deutsch und Englisch – täglich 11 Uhr ab Rathausplatz.","Busreisen nach Prag und Wien – Abfahrt jeden Freitag."],"a":0},
+   {"q":"Sie suchen ein günstiges Zimmer für eine Nacht.","options":["Jugendherberge am Park – Betten ab 25 € pro Nacht, mit Frühstück.","Luxushotel Palast – Suiten ab 300 € pro Nacht, mit Spa."],"a":0},
+   {"q":"Sie möchten mit dem Schiff fahren.","options":["Fahrradtouren an der Elbe – geführte Touren mit Picknick.","Elbe-Schifffahrt: Rundfahrten stündlich ab 10 Uhr, Anlegestelle Altstadt."],"a":1},
+   {"q":"Sie möchten am Abend in einem Restaurant am See essen.","options":["Seerestaurant Möwe – direkt am Wasser, täglich 17–23 Uhr.","Bergrestaurant Gipfel – mit Blick auf die Alpen, 9–17 Uhr."],"a":0},
+   {"q":"Sie brauchen eine Reiseversicherung.","options":["Reisebüro Weltweit – Flüge, Hotels und Reiseversicherungen.","Kofferladen Mobil – Koffer und Taschen in allen Größen."],"a":0}
+  ]},
+  {"title":"Teil 3","task":"Lesen Sie die Texte. Sind die Aussagen 11–15 richtig oder falsch?","type":"rf","items":[
+   {"text":"Check-in\nab 15 Uhr\nCheck-out bis 11 Uhr","q":"Man muss das Zimmer bis 11 Uhr verlassen.","a":true},
+   {"text":"Strand\nBaden heute verboten!\nStarker Wind","q":"Man darf heute im Meer schwimmen.","a":false},
+   {"text":"Gepäckaufbewahrung\n1. Stock\n5 € pro Tag","q":"Die Gepäckaufbewahrung ist kostenlos.","a":false},
+   {"text":"Touristeninformation\nHeute 9–13 Uhr","q":"Die Touristeninformation ist heute am Nachmittag geschlossen.","a":true},
+   {"text":"Sie sind hier: Hafen\nZum Bahnhof: 800 m","q":"Der Bahnhof ist weniger als einen Kilometer entfernt.","a":true}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Ihre Freundin Ana Kovač möchte in einem Reisebüro eine Reise buchen. Füllen Sie das Formular für sie aus. Schreiben Sie fünf Informationen.","situation":"Ana Kovač kommt aus Kroatien und wohnt in Augsburg. Sie möchte mit ihrer Tochter nach Portugal fliegen. Die Reise soll vom 2. bis zum 9. August sein. Sie möchten ein Hotel mit Frühstück.","form":[
+   {"label":"Familienname","a":"Kovač","alt":["Kovac"]},
+   {"label":"Reiseziel","a":"Portugal"},
+   {"label":"Personen","a":"2","alt":["zwei"]},
+   {"label":"Reisedatum","a":"2.–9. August","alt":["2. bis 9. August","2.8.–9.8.","02.08.–09.08.","2. 8. bis 9. 8."]},
+   {"label":"Verpflegung (ohne / mit Frühstück)","a":"mit Frühstück","alt":["Frühstück"]}
+  ]},
+  {"title":"Teil 2","task":"Sie sind im Urlaub. Schreiben Sie Ihrer Freundin Melanie eine Karte.","prompt":"Schreiben Sie zu jedem Punkt ein bis zwei Sätze (circa 30 Wörter). Schreiben Sie auch eine Anrede und einen Gruß.","points":["Wo sind Sie?","Wie ist das Wetter?","Was machen Sie jeden Tag?"],"words":30,"sample":"Liebe Melanie,\n\nviele Grüße aus Italien! Ich bin mit meiner Familie in Neapel. Das Wetter ist super, jeden Tag scheint die Sonne. Morgens schwimmen wir im Meer und abends essen wir Pizza.\n\nBis bald!\nNatascha"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Sich vorstellen","task":"Stellen Sie sich vor. Die Wörter auf den Karten helfen Ihnen. Danach buchstabieren Sie Ihren Vornamen und nennen eine Zahl.","cards":["Name","Alter","Land","Wohnort","Sprachen","Beruf","Hobby"],"phrases":["Ich heiße …","Ich komme aus …","Ich lebe in …","Ich bin … von Beruf.","Ich reise gern."],"sample":"Ich heiße Jonas Lindqvist. Ich bin sechsunddreißig Jahre alt und komme aus Schweden. Ich lebe in Kiel. Ich spreche Schwedisch, Englisch und Deutsch. Ich bin Koch von Beruf. Ich reise sehr gern."},
+  {"title":"Teil 2 – Um Informationen bitten und Informationen geben","task":"Thema: Reisen und Verkehr. Ziehen Sie eine Karte und stellen Sie eine Frage mit dem Wort. Antworten Sie auch auf die Frage Ihres Partners.","cards":["Flugzeug","Fahrkarte","Hotel","Ferien","Bus","Wetter"],"phrases":["Fliegst du gern?","Wo kaufst du …?","Wohin fährst du in den …?","Ich fahre lieber …"],"sample":"Frage: Fliegst du gern mit dem Flugzeug? – Antwort: Ja, das geht schnell. Aber ich fahre auch gern mit dem Zug.\nFrage: Wo kaufst du deine Fahrkarte? – Antwort: Meistens im Internet oder am Automaten."},
+  {"title":"Teil 3 – Bitten formulieren und darauf reagieren","task":"Formulieren Sie zu jeder Karte eine Bitte. Ihre Partnerin oder Ihr Partner reagiert.","cards":["Stadtplan (Sie suchen das Museum)","Koffer (er ist schwer)","Handtuch (im Hotel)","Taxi (Sie möchten zum Flughafen)"],"phrases":["Haben Sie einen Stadtplan für mich?","Können Sie mir bitte helfen?","Ich brauche bitte …","Ja, natürlich.","Einen Moment, bitte."],"sample":"Haben Sie bitte einen Stadtplan für mich? Ich suche das Museum. – Ja, hier, bitte. Das Museum ist hier.\nKönnen Sie mir bitte mit dem Koffer helfen? – Natürlich.\nIch brauche bitte noch ein Handtuch. – Gern, ich bringe es sofort."}
+ ]
+}

@@ -1,0 +1,67 @@
+{
+ "id":"A1-10","level":"A1","title":"Modelltest 10",
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören sechs kurze Gespräche. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–6 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Frau: Entschuldigung, wie komme ich zur Post?\nMann: Gehen Sie hier links, dann sehen Sie die Kirche. Die Post ist gegenüber von der Kirche.","q":"Wo ist die Post?","options":["Neben der Kirche","Gegenüber von der Kirche","Hinter der Kirche"],"a":1},
+   {"audio":"Mann: Was kosten die Erdbeeren?\nFrau: Eine Schale kostet zwei Euro fünfzig, zwei Schalen nur vier Euro.\nMann: Dann nehme ich zwei.","q":"Wie viel bezahlt der Mann?","options":["2,50 €","4,00 €","5,00 €"],"a":1},
+   {"audio":"Frau: Fährt dieser Bus zum Stadion?\nMann: Nein, zum Stadion fährt die Linie acht. Das hier ist die Linie drei.","q":"Welche Linie fährt zum Stadion?","options":["Linie 3","Linie 6","Linie 8"],"a":2},
+   {"audio":"Mann: Wann ist der Markt hier?\nFrau: Jeden Dienstag und Freitag, von sieben bis eins.","q":"An welchen Tagen ist der Markt?","options":["Dienstag und Freitag","Montag und Donnerstag","Mittwoch und Samstag"],"a":0},
+   {"audio":"Frau: Wie weit ist es bis zum Museum?\nMann: Nicht weit. Zu Fuß sind es ungefähr zehn Minuten.","q":"Wie lange geht man zum Museum?","options":["5 Minuten","20 Minuten","10 Minuten"],"a":2},
+   {"audio":"Mann: Ich suche ein Geschenk für meine Mutter.\nFrau: Wie wäre es mit Blumen? Wir haben schöne Rosen.\nMann: Gute Idee, ich nehme rote Rosen.","q":"Was kauft der Mann?","options":["Rosen","Pralinen","Ein Buch"],"a":0}
+  ]},
+  {"title":"Teil 2","task":"Sie hören vier Durchsagen. Sie hören jeden Text einmal. Sind die Aussagen 7–10 richtig oder falsch?","type":"rf","plays":1,"items":[
+   {"audio":"Liebe Marktbesucher, heute gibt es am Stand zwölf frischen Honig aus der Region. Probieren Sie kostenlos!","q":"Man kann den Honig kostenlos probieren.","a":true},
+   {"audio":"Nächster Halt: Goetheplatz. Hier haben Sie Anschluss an die U-Bahn-Linien zwei und vier.","q":"Am Goetheplatz kann man in die U-Bahn umsteigen.","a":true},
+   {"audio":"Achtung, Achtung! Die Straße am Rathaus ist am Sonntag wegen eines Stadtlaufs von acht bis vierzehn Uhr gesperrt.","q":"Die Straße ist am Sonntag den ganzen Tag gesperrt.","a":false},
+   {"audio":"Sehr geehrte Kunden, unsere Filiale in der Bahnhofstraße schließt am Freitag. Ab Montag finden Sie uns im Einkaufszentrum Nord.","q":"Das Geschäft zieht in das Einkaufszentrum Süd.","a":false}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf Ansagen am Telefon. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Moritz, hier ist Leonie. Ich stehe vor dem Kino, aber du bist nicht da. Wo bist du? Ich warte noch zehn Minuten, dann gehe ich allein rein.","q":"Wo wartet Leonie?","options":["Vor dem Kino","Im Café","An der Haltestelle"],"a":0},
+   {"audio":"Guten Tag, hier ist das Fundbüro der Stadt. Wir haben Ihren Rucksack gefunden. Sie können ihn von Montag bis Freitag zwischen acht und zwölf Uhr abholen.","q":"Was hat das Fundbüro gefunden?","options":["Einen Koffer","Einen Rucksack","Eine Brieftasche"],"a":1},
+   {"audio":"Hi Pia, hier ist Ole. Der Flohmarkt am Samstag ist nicht auf dem Marktplatz, sondern auf dem Parkplatz am Stadion. Bis Samstag!","q":"Wo ist der Flohmarkt?","options":["Auf dem Marktplatz","Im Stadion","Auf dem Parkplatz am Stadion"],"a":2},
+   {"audio":"Hallo Herr Müller, hier ist die Stadtverwaltung. Ihr Antrag ist fertig. Bitte kommen Sie am Donnerstag um zehn Uhr in Zimmer vierzehn.","q":"Wann soll Herr Müller kommen?","options":["Am Donnerstag um 10 Uhr","Am Dienstag um 10 Uhr","Am Donnerstag um 14 Uhr"],"a":0},
+   {"audio":"Hallo Rita, hier ist Bernd. Ich kaufe gerade ein. Brauchen wir noch Kartoffeln? Und soll ich Wein oder Bier kaufen? Schreib mir bitte schnell!","q":"Wo ist Bernd?","options":["Zu Hause","Bei der Arbeit","Beim Einkaufen"],"a":2}
+  ]}
+ ],
+ "lesen":[
+  {"title":"Teil 1","task":"Lesen Sie die zwei Texte. Sind die Aussagen 1–5 richtig oder falsch?","type":"rf","texts":[
+   {"title":"E-Mail","body":"Hallo Mehmet,\n\nmorgen besuchst du mich zum ersten Mal! Hier ist der Weg: Nimm am Bahnhof die Straßenbahn Nummer 4 bis zur Haltestelle „Sonnenplatz“. Das dauert circa 15 Minuten. Dann gehst du über die Straße und links in die Blumenstraße. Ich wohne in Nummer 9, im ersten Stock.\n\nIch freue mich!\nKatrin"},
+   {"title":"Plakat","body":"Stadtfest am Wochenende!\n\nSamstag 12–24 Uhr, Sonntag 11–20 Uhr\nMusik, Essen aus aller Welt und ein großes Feuerwerk am Samstag um 22 Uhr.\nEintritt frei!"}
+  ],"items":[
+   {"q":"Mehmet soll mit der Straßenbahn fahren.","a":true},
+   {"q":"Die Fahrt dauert etwa eine halbe Stunde.","a":false},
+   {"q":"Katrin wohnt im ersten Stock.","a":true},
+   {"q":"Das Feuerwerk ist am Sonntag.","a":false},
+   {"q":"Das Stadtfest kostet keinen Eintritt.","a":true}
+  ]},
+  {"title":"Teil 2","task":"Lesen Sie die Texte und die Aufgaben 6–10. Wo finden Sie Informationen? Wählen Sie a oder b.","type":"ab","items":[
+   {"q":"Sie möchten am Sonntag auf einen Flohmarkt gehen.","options":["Flohmarkt am Flussufer – jeden ersten Sonntag im Monat, 8–16 Uhr.","Kunstmarkt im Rathaus – Samstag 10–18 Uhr, Bilder und Schmuck."],"a":0},
+   {"q":"Sie suchen eine Apotheke in der Nähe vom Bahnhof.","options":["Apotheke am Bahnhof – Bahnhofsplatz 1, Mo–Sa 8–20 Uhr.","Apotheke im Ärztehaus – Krankenhausweg 3, Mo–Fr 8–18 Uhr."],"a":0},
+   {"q":"Sie möchten mit dem Fahrrad eine Stadtrundfahrt machen.","options":["Bus-Stadtrundfahrt im Doppeldecker, jede Stunde ab Hauptbahnhof.","Fahrradtour durch die Altstadt – mit Guide, Räder inklusive, täglich 14 Uhr."],"a":1},
+   {"q":"Sie möchten günstig gebrauchte Bücher kaufen.","options":["Antiquariat Seite 1 – gebrauchte Bücher ab 1 €.","Buchhandlung Neu – aktuelle Bestseller und Kalender."],"a":0},
+   {"q":"Sie möchten wissen, wann die Straßenbahn fährt.","options":["Stadtwerke: Fahrpläne und Tickets online unter www.stadtwerke-mobil.de","Taxiruf Stadt: 0800 22 33 44, rund um die Uhr."],"a":0}
+  ]},
+  {"title":"Teil 3","task":"Lesen Sie die Texte. Sind die Aussagen 11–15 richtig oder falsch?","type":"rf","items":[
+   {"text":"Haltestelle verlegt!\nBitte 50 m weiter vor der Bank einsteigen.","q":"Der Bus hält an einer anderen Stelle.","a":true},
+   {"text":"Rathaus\nBürgerbüro: Mo, Di, Do 8–16 Uhr\nMi und Fr geschlossen","q":"Das Bürgerbüro ist am Mittwoch geöffnet.","a":false},
+   {"text":"Markthalle\nSamstag ab 6 Uhr geöffnet","q":"Am Samstag kann man schon früh in der Markthalle einkaufen.","a":true},
+   {"text":"Spielplatz\nNur für Kinder bis 12 Jahre","q":"Auf dem Spielplatz dürfen alle Kinder spielen.","a":false},
+   {"text":"Taxistand\nTaxi-Ruf: Knopf drücken","q":"Am Taxistand kann man ein Taxi rufen.","a":true}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Ihre Nachbarin Olena Bondar möchte sich in der Stadt anmelden. Füllen Sie das Formular für sie aus. Schreiben Sie fünf Informationen.","situation":"Olena Bondar kommt aus der Ukraine. Sie ist am 4. Juni 1988 geboren. Sie wohnt jetzt in Leipzig, in der Lindenstraße 21. Sie ist verheiratet. Ihr Mann heißt Taras.","form":[
+   {"label":"Familienname","a":"Bondar"},
+   {"label":"Geburtsdatum","a":"4.6.1988","alt":["4. Juni 1988","04.06.1988","4. 6. 1988"]},
+   {"label":"Staatsangehörigkeit","a":"ukrainisch","alt":["Ukraine","Ukrainerin"]},
+   {"label":"Straße und Hausnummer","a":"Lindenstraße 21","alt":["Lindenstrasse 21"]},
+   {"label":"Familienstand","a":"verheiratet"}
+  ]},
+  {"title":"Teil 2","task":"Sie suchen in Ihrer Stadt einen Sprachpartner. Schreiben Sie eine kurze Anzeige für das schwarze Brett.","prompt":"Schreiben Sie zu jedem Punkt ein bis zwei Sätze (circa 30 Wörter).","points":["Wer sind Sie?","Was suchen Sie?","Wie kann man Sie erreichen?"],"words":30,"sample":"Hallo!\n\nIch heiße Ji-woo, bin 26 Jahre alt und komme aus Korea. Ich suche einen Sprachpartner oder eine Sprachpartnerin. Ich möchte Deutsch sprechen und kann Koreanisch oder Englisch üben. Bitte ruf mich an: 0176 55 44 33 22.\n\nJi-woo"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Sich vorstellen","task":"Stellen Sie sich vor. Die Wörter auf den Karten helfen Ihnen. Danach buchstabieren Sie den Namen Ihrer Stadt und nennen Ihre Hausnummer.","cards":["Name","Alter","Land","Wohnort","Sprachen","Beruf","Hobby"],"phrases":["Ich heiße …","Ich bin … Jahre alt.","Ich wohne in der …straße.","Ich arbeite als …","Am Wochenende …"],"sample":"Ich heiße Daniel Okafor. Ich bin vierunddreißig Jahre alt und komme aus Nigeria. Ich wohne in Köln, in der Rheinstraße. Ich spreche Englisch, Yoruba und Deutsch. Ich arbeite als Verkäufer. Am Wochenende spiele ich Fußball."},
+  {"title":"Teil 2 – Um Informationen bitten und Informationen geben","task":"Thema: In der Stadt. Ziehen Sie eine Karte und stellen Sie eine Frage mit dem Wort. Antworten Sie auch auf die Frage Ihres Partners.","cards":["Bus","Park","Einkaufen","Museum","Bahnhof","Café"],"phrases":["Wie kommst du zum …?","Gehst du gern in den …?","Wo kaufst du …?","Ich fahre mit dem …"],"sample":"Frage: Wie kommst du zur Arbeit? – Antwort: Ich fahre mit dem Bus, das dauert zwanzig Minuten.\nFrage: Gehst du gern in den Park? – Antwort: Ja, am Sonntag gehe ich dort oft spazieren."},
+  {"title":"Teil 3 – Bitten formulieren und darauf reagieren","task":"Formulieren Sie zu jeder Karte eine Bitte. Ihre Partnerin oder Ihr Partner reagiert.","cards":["Weg (Sie suchen die Post)","Fahrkarte (am Automaten, Problem)","Wechselgeld (Sie haben nur 20 €)","Tür (der Bus fährt los)"],"phrases":["Können Sie mir bitte helfen?","Wie komme ich zur Post?","Können Sie mir 20 Euro wechseln?","Ja, natürlich.","Leider nicht."],"sample":"Entschuldigung, können Sie mir bitte helfen? Wie komme ich zur Post? – Gehen Sie geradeaus, dann rechts.\nKönnen Sie mir bitte 20 Euro wechseln? – Moment, ja, das geht.\nDer Automat funktioniert nicht. Können Sie mir helfen? – Ja, gern, Sie müssen hier drücken."}
+ ]
+}

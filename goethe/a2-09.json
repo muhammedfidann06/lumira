@@ -1,0 +1,88 @@
+{
+ "id":"A2-09","level":"A2","title":"Modelltest 9",
+ "lesen":[
+  {"title":"Teil 1","task":"Sie lesen in einer Zeitung diesen Text. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.","type":"abc","texts":[{"title":"Hunde helfen beim Lesenlernen","body":"In der Stadtbibliothek Münster gibt es ein ungewöhnliches Angebot: Kinder, die nicht gern laut lesen, können einem Hund vorlesen. Jeden zweiten Samstag kommen drei speziell ausgebildete Hunde mit ihren Besitzerinnen in die Bibliothek. Die Kinder setzen sich zu einem Hund auf eine Decke und lesen ihm eine Geschichte vor.\n\n„Viele Kinder haben Angst, vor der Klasse Fehler zu machen“, erklärt die Bibliothekarin Susanne Hartmann. „Ein Hund lacht nicht und korrigiert nicht. Er hört einfach zu.“ Das gibt den Kindern Mut. Nach einigen Wochen lesen viele flüssiger und mit mehr Freude.\n\nDas Angebot ist für Kinder zwischen sechs und zehn Jahren und kostenlos. Allerdings muss man sich vorher anmelden, denn jedes Kind bekommt zwanzig Minuten allein mit einem Hund. Kinder mit einer Hundeallergie können leider nicht mitmachen. Für sie plant die Bibliothek ein Vorleseprojekt mit Senioren."}],"items":[
+   {"q":"In der Bibliothek können Kinder …","options":["Hunde kaufen.","mit Hunden spielen.","einem Hund vorlesen."],"a":2},
+   {"q":"Die Hunde kommen …","options":["jeden Samstag.","jeden Tag.","alle zwei Wochen."],"a":2},
+   {"q":"Nach Frau Hartmann haben viele Kinder Angst, …","options":["in der Schule Fehler zu machen.","vor Hunden.","in die Bibliothek zu gehen."],"a":0},
+   {"q":"Für das Angebot …","options":["muss man sich anmelden.","muss man bezahlen.","muss man älter als zehn sein."],"a":0},
+   {"q":"Für Kinder mit Allergie …","options":["gibt es andere Tiere.","plant man ein Projekt mit älteren Menschen.","gibt es keine Lösung."],"a":1}
+  ]},
+  {"title":"Teil 2","task":"Sie sind an einem Bahnhof. Lesen Sie die Informationstafel und die Aufgaben 6–10. Wohin gehen Sie? Wählen Sie a, b oder c.","type":"abc","texts":[{"title":"Hauptbahnhof – Übersicht","body":"Obergeschoss: Gleise 1–12 · Wartebereich · Bahnhofsmission\nErdgeschoss: Reisezentrum (Fahrkarten, Beratung) · Fundbüro · Bäckerei · Blumenladen · Zeitschriften\nUntergeschoss: U-Bahn · S-Bahn · Toiletten · Schließfächer · Apotheke\nVorplatz: Taxistand · Busbahnhof · Fahrradverleih"}],"items":[
+   {"q":"Sie möchten mit der U-Bahn weiterfahren.","options":["Untergeschoss","Obergeschoss","Vorplatz"],"a":0},
+   {"q":"Sie haben im Zug Ihre Jacke vergessen.","options":["Obergeschoss","Untergeschoss","Erdgeschoss"],"a":2},
+   {"q":"Sie möchten für ein paar Stunden ein Fahrrad mieten.","options":["Vorplatz","Erdgeschoss","Untergeschoss"],"a":0},
+   {"q":"Sie fühlen sich nicht gut und brauchen Hilfe und einen Platz zum Ausruhen.","options":["Vorplatz","Erdgeschoss","Obergeschoss"],"a":2},
+   {"q":"Sie möchten eine Zeitung für die Fahrt kaufen.","options":["Untergeschoss","Erdgeschoss","Obergeschoss"],"a":1}
+  ]},
+  {"title":"Teil 3","task":"Sie lesen eine E-Mail. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","texts":[{"title":"E-Mail","body":"Hallo Nils,\n\nich habe eine große Bitte an dich. Nächste Woche fliege ich für zehn Tage zu meiner Familie nach Brasilien. Könntest du in dieser Zeit meine Pflanzen gießen und meinen Briefkasten leeren? Meine Nachbarin macht das sonst immer, aber sie ist leider auch verreist.\n\nDie Pflanzen brauchen nicht viel: Es reicht, wenn du zweimal pro Woche kommst. Die großen Pflanzen im Wohnzimmer brauchen etwas mehr Wasser, die Kakteen in der Küche fast gar keins.\n\nDen Schlüssel kann ich dir am Sonntag vorbeibringen. Bist du zu Hause? Ich fliege am Montag sehr früh.\n\nAls Dankeschön bringe ich dir echten brasilianischen Kaffee mit! Und wenn du willst, kannst du in meiner Wohnung auch meinen großen Fernseher benutzen, um das Fußballspiel am Samstag zu sehen.\n\nVielen Dank schon mal!\nGabriela"}],"items":[
+   {"q":"Gabriela fliegt nach Brasilien, um …","options":["Urlaub am Strand zu machen.","dort zu arbeiten.","ihre Familie zu besuchen."],"a":2},
+   {"q":"Nils soll …","options":["jeden Tag kommen.","einmal kommen.","zweimal pro Woche kommen."],"a":2},
+   {"q":"Die Kakteen …","options":["brauchen sehr viel Wasser.","brauchen kaum Wasser.","stehen im Wohnzimmer."],"a":1},
+   {"q":"Gabriela möchte den Schlüssel …","options":["am Montag bringen.","am Sonntag bringen.","bei der Nachbarin lassen."],"a":1},
+   {"q":"Als Dank bekommt Nils …","options":["einen Fernseher.","Kaffee.","Fußballkarten."],"a":1}
+  ]},
+  {"title":"Teil 4","task":"Sechs Personen suchen im Internet nach Angeboten. Lesen Sie die Aufgaben 16–20 und die Anzeigen a–f. Welche Anzeige passt zu welcher Person? Eine Anzeige brauchen Sie nicht.","type":"match","choices":[
+   {"key":"a","text":"Möbliertes Zimmer bei älterer Dame: Miete nur 200 €, wenn Sie beim Einkaufen und im Garten helfen."},
+   {"key":"b","text":"Kinderturnen für 3- bis 6-Jährige: Spielen, Springen, Klettern – jeden Freitag 15 Uhr in der Sporthalle Süd."},
+   {"key":"c","text":"Abendschule: Holen Sie Ihren Schulabschluss nach! Unterricht Montag bis Donnerstag 18–21 Uhr."},
+   {"key":"d","text":"Englisch für die Reise: Kurzkurs in vier Wochen, ideal vor dem Urlaub. Samstag vormittags."},
+   {"key":"e","text":"Pflanzenflohmarkt im Botanischen Garten: Tauschen und kaufen Sie Zimmerpflanzen, Samen und Ableger. Sonntag 11–16 Uhr."},
+   {"key":"f","text":"Internetcafé mit Druckservice: Drucken, Scannen, Kopieren – auch Bewerbungen. Täglich 9–22 Uhr."}
+  ],"items":[
+   {"q":"Herr Abdi (30) arbeitet tagsüber und möchte seinen Schulabschluss machen.","a":"c"},
+   {"q":"Lea studiert und sucht ein günstiges Zimmer.","a":"a"},
+   {"q":"Frau Jansen fliegt im Sommer nach New York und spricht kein Englisch.","a":"d"},
+   {"q":"Familie Ivanova hat eine sehr aktive vierjährige Tochter.","a":"b"},
+   {"q":"Can muss seinen Lebenslauf drucken, hat aber keinen Drucker.","a":"f"}
+  ]}
+ ],
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–5 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Lars, hier ist Vera. Wir treffen uns morgen nicht um sieben am Kino, sondern um halb sieben im Restaurant daneben. Wir wollen vorher noch etwas essen.","q":"Wo treffen sich Lars und Vera?","options":["Im Restaurant","Am Kino","Bei Vera"],"a":0},
+   {"audio":"Hier ist Radio Nord mit einer wichtigen Information: Das Konzert der Band „Nordlicht“ am Freitag fällt leider aus. Die Sängerin ist krank. Die Karten können Sie zurückgeben.","q":"Warum fällt das Konzert aus?","options":["Die Sängerin ist krank.","Das Wetter ist schlecht.","Es wurden zu wenig Karten verkauft."],"a":0},
+   {"audio":"Hallo Frau Krüger, hier ist die Praxis Dr. Nowak. Ihre Laborergebnisse sind da. Bitte rufen Sie uns an, um einen Termin für die Besprechung zu machen.","q":"Was soll Frau Krüger machen?","options":["Einen Termin machen","Ins Labor gehen","Medikamente abholen"],"a":0},
+   {"audio":"Liebe Fahrgäste, aufgrund eines Streiks fahren heute nur wenige Züge. Bitte informieren Sie sich vor Ihrer Fahrt im Internet oder am Infopunkt.","q":"Was ist heute los?","options":["Es gibt Bauarbeiten.","Es gibt ein Unwetter.","Es gibt einen Streik."],"a":2},
+   {"audio":"Hey Moritz, hier ist Clara. Ich habe meine Schlüssel in der Schule vergessen und komme nicht in die Wohnung. Kannst du früher nach Hause kommen? Ich warte im Café gegenüber.","q":"Wo wartet Clara?","options":["Im Café gegenüber","In der Schule","Vor der Wohnung"],"a":0}
+  ]},
+  {"title":"Teil 2","task":"Sie hören ein Gespräch. Sie hören den Text einmal. Was hat Frau Weber in welchem Monat vor? Wählen Sie für die Aufgaben 6–10 einen passenden Buchstaben a–h.","type":"match","plays":1,"audio":"Freund: Na, Monika, du hast ja dieses Jahr viel vor!\nFrau Weber: Oh ja. Im März fange ich meinen Spanischkurs an, das wollte ich schon lange.\nFreund: Und dein Umzug? Wann ist der?\nFrau Weber: Der ist im Mai. Die neue Wohnung ist endlich fertig renoviert.\nFreund: Und im Juli? Da wolltest du doch verreisen.\nFrau Weber: Genau, im Juli fliege ich nach Island. Ich möchte Wale sehen.\nFreund: Toll! Und dein Geburtstag ist ja im September.\nFrau Weber: Ja, da mache ich eine große Feier, ich werde vierzig!\nFreund: Und dann ist das Jahr fast vorbei.\nFrau Weber: Nicht ganz. Im November laufe ich meinen ersten Halbmarathon.","choices":[
+   {"key":"a","text":"eine Feier machen"},
+   {"key":"b","text":"einen Kurs beginnen"},
+   {"key":"c","text":"umziehen"},
+   {"key":"d","text":"einen Hund kaufen"},
+   {"key":"e","text":"verreisen"},
+   {"key":"f","text":"heiraten"},
+   {"key":"g","text":"einen Lauf machen"},
+   {"key":"h","text":"die Arbeit wechseln"}
+  ],"items":[
+   {"q":"März","a":"b"},
+   {"q":"Mai","a":"c"},
+   {"q":"Juli","a":"e"},
+   {"q":"September","a":"a"},
+   {"q":"November","a":"g"}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf kurze Gespräche. Sie hören jeden Text einmal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":1,"items":[
+   {"audio":"Mann: Ich möchte gern eine Kinokarte für den Film um acht.\nFrau: Die Karte kostet zehn Euro. Mit Popcorn und Getränk sind es fünfzehn.\nMann: Nur die Karte, bitte.","q":"Wie viel bezahlt der Mann?","options":["15 €","10 €","8 €"],"a":1},
+   {"audio":"Frau: Wie war dein erster Tag in der neuen Firma?\nMann: Sehr gut! Die Kollegen haben mich zum Mittagessen eingeladen. Nur der Weg ist lang, fast eine Stunde.\nFrau: Das ist anstrengend.","q":"Was ist das Problem mit der neuen Arbeit?","options":["Die Kollegen sind unfreundlich.","Der Weg ist lang.","Die Arbeit ist langweilig."],"a":1},
+   {"audio":"Mann: Weißt du, wo mein Handy ist?\nFrau: Ich glaube, es liegt im Badezimmer neben dem Waschbecken.\nMann: Ah, da ist es. Danke!","q":"Wo ist das Handy?","options":["In der Küche","Im Auto","Im Badezimmer"],"a":2},
+   {"audio":"Frau: Gehst du heute noch joggen?\nMann: Nein, es ist zu kalt. Ich gehe lieber ins Fitnessstudio.\nFrau: Gute Idee, ich komme mit.","q":"Wohin geht der Mann?","options":["Joggen im Park","Ins Fitnessstudio","Schwimmen"],"a":1},
+   {"audio":"Mann: Kann ich bei Ihnen auch mit Karte bezahlen?\nFrau: Leider nicht, nur bar. Aber gegenüber ist ein Geldautomat.\nMann: Gut, dann hole ich schnell Geld.","q":"Wie bezahlt der Mann?","options":["Bar","Mit Karte","Mit dem Handy"],"a":0}
+  ]},
+  {"title":"Teil 4","task":"Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie für die Aufgaben 16–20: Ja oder Nein?","type":"yn","plays":2,"audio":"Moderatorin: Heute zu Gast ist Herr Lehmann. Er hat mit seiner Familie ein Jahr lang auf einem Segelboot gelebt. Herr Lehmann, wie kam es dazu?\nHerr Lehmann: Meine Frau und ich segeln schon lange. Als unsere Kinder sieben und neun Jahre alt waren, haben wir gesagt: Jetzt oder nie! Wir haben unsere Wohnung vermietet und sind losgefahren.\nModeratorin: Und die Schule?\nHerr Lehmann: Wir haben die Kinder selbst unterrichtet, mit Material von einer Fernschule. Das hat erstaunlich gut funktioniert. Die Kinder haben aber auch viel praktisch gelernt, zum Beispiel über das Meer und das Wetter.\nModeratorin: Wo waren Sie überall?\nHerr Lehmann: Wir sind von Portugal über die Kanarischen Inseln bis in die Karibik gesegelt.\nModeratorin: Gab es auch gefährliche Momente?\nHerr Lehmann: Einmal hatten wir einen starken Sturm. Da hatten wir alle Angst. Aber zum Glück ist nichts passiert.\nModeratorin: Würden Sie es wieder machen?\nHerr Lehmann: Sofort! Aber jetzt wollen die Kinder erst mal wieder in ihre alte Schule zu ihren Freunden.","items":[
+   {"q":"Die Familie hat ihre Wohnung verkauft.","a":false},
+   {"q":"Die Kinder hatten während der Reise Unterricht.","a":true},
+   {"q":"Die Familie ist bis in die Karibik gesegelt.","a":true},
+   {"q":"Die Reise war immer ruhig und ohne Probleme.","a":false},
+   {"q":"Die Kinder möchten jetzt zuerst in ihre alte Schule zurück.","a":true}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Sie können morgen nicht zum Deutschkurs kommen. Schreiben Sie Ihrem Kurskollegen Juan eine SMS.","prompt":"Schreiben Sie circa 20–30 Wörter zu allen drei Punkten.","points":["Sagen Sie, dass Sie nicht kommen.","Nennen Sie den Grund.","Bitten Sie Juan um die Hausaufgaben."],"words":25,"sample":"Hallo Juan, ich kann morgen leider nicht zum Kurs kommen. Mein Sohn ist krank und ich muss bei ihm bleiben. Kannst du mir bitte die Hausaufgaben schicken? Danke! Fatma"},
+  {"title":"Teil 2","task":"Sie haben im Internet eine Wohnung gesehen. Schreiben Sie der Vermieterin, Frau Schäfer, eine E-Mail.","prompt":"Schreiben Sie circa 30–40 Wörter zu allen drei Punkten. Vergessen Sie nicht Anrede und Gruß.","points":["Sagen Sie, dass Sie sich für die Wohnung interessieren.","Fragen Sie nach den Nebenkosten.","Bitten Sie um einen Besichtigungstermin."],"words":35,"sample":"Sehr geehrte Frau Schäfer,\n\nich habe Ihre Anzeige im Internet gesehen und interessiere mich sehr für die Drei-Zimmer-Wohnung in der Bergstraße. Wie hoch sind die Nebenkosten? Könnte ich die Wohnung nächste Woche besichtigen?\n\nMit freundlichen Grüßen\nMarek Nowak"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Fragen zur Person","task":"Stellen Sie Ihrer Partnerin oder Ihrem Partner Fragen zu den Wörtern auf den Karten und beantworten Sie ihre oder seine Fragen.","cards":["Geburtstag?","Arbeitszeit?","Lieblingsessen?","Sport?","Wohnung?","Reisen?","Fernsehen?","Zukunft?"],"phrases":["Wann arbeitest du?","Welchen Sport machst du?","Wohin möchtest du gern reisen?","Was möchtest du in der Zukunft machen?"],"sample":"Wann arbeitest du? – Ich arbeite von Montag bis Freitag, von acht bis vier.\nWohin möchtest du gern reisen? – Ich möchte gern einmal nach Japan reisen.\nWas möchtest du in der Zukunft machen? – Ich möchte eine Ausbildung als Elektriker machen."},
+  {"title":"Teil 2 – Über sich sprechen","task":"Erzählen Sie etwas über Ihr Leben. Thema: „Ihre Lieblingsjahreszeit“. Die Fragen auf der Karte helfen Ihnen.","cards":["Welche?","Warum?","Was machen Sie dann?","Welche Jahreszeit mögen Sie nicht?"],"phrases":["Meine Lieblingsjahreszeit ist …","Ich mag … , weil …","Im … gehe ich oft …","Den … mag ich nicht so gern, weil …"],"sample":"Meine Lieblingsjahreszeit ist der Sommer, weil es warm ist und die Tage lang sind. Im Sommer gehe ich oft mit meinen Kindern schwimmen und wir grillen im Park. Den Winter mag ich nicht so gern, weil es früh dunkel wird und ich oft erkältet bin."},
+  {"title":"Teil 3 – Gemeinsam etwas planen","task":"Sie möchten mit Ihrer Partnerin oder Ihrem Partner am Sonntag zusammen Fahrrad fahren. Finden Sie einen Termin. Hier ist Ihr Terminkalender.","cards":["9–10 Uhr: frei","10–12 Uhr: Brunch mit Freundinnen","12–14 Uhr: frei","14–16 Uhr: Video-Anruf mit Familie","ab 16 Uhr: frei"],"phrases":["Wann wollen wir losfahren?","Um … geht es leider nicht, weil …","Wie wäre es mit …?","Wohin fahren wir?","Einverstanden."],"sample":"A: Wann wollen wir am Sonntag Fahrrad fahren?\nB: Von zehn bis zwölf bin ich beim Brunch. Wie wäre es um zwölf?\nA: Um zwölf passt es mir gut.\nB: Wohin fahren wir?\nA: Vielleicht am Fluss entlang bis zum Biergarten? – B: Einverstanden."}
+ ]
+}

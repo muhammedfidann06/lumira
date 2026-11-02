@@ -1,0 +1,67 @@
+{
+ "id":"A1-01","level":"A1","title":"Modelltest 1",
+ "hoeren":[
+  {"title":"Teil 1","task":"Sie hören sechs kurze Gespräche. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 1–6 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Frau: Entschuldigung, wie spät ist es?\nMann: Es ist Viertel nach drei.\nFrau: Oh, dann muss ich mich beeilen. Mein Bus fährt um halb vier.","q":"Wie spät ist es?","options":["15:15 Uhr","15:30 Uhr","14:45 Uhr"],"a":0},
+   {"audio":"Mann: Was möchtest du trinken? Kaffee oder Tee?\nFrau: Heute keinen Kaffee. Ich nehme einen Orangensaft, bitte.\nMann: Gut, und ich nehme ein Wasser.","q":"Was trinkt die Frau?","options":["Kaffee","Tee","Orangensaft"],"a":2},
+   {"audio":"Frau: Wo ist denn der Supermarkt?\nMann: Gehen Sie hier geradeaus und dann die zweite Straße links. Der Supermarkt ist neben der Apotheke.","q":"Wo ist der Supermarkt?","options":["Neben der Post","Neben der Apotheke","Neben dem Bahnhof"],"a":1},
+   {"audio":"Mann: Hallo Lisa, wann kommst du am Samstag?\nFrau: Ich arbeite bis zwölf. Ich komme so um zwei Uhr.\nMann: Prima, dann essen wir zusammen Kuchen.","q":"Wann kommt Lisa am Samstag?","options":["Um 12 Uhr","Um 14 Uhr","Um 16 Uhr"],"a":1},
+   {"audio":"Frau: Guten Tag, ich möchte ein Kilo Tomaten.\nMann: Das kostet zwei Euro achtzig.\nFrau: Hier sind drei Euro.\nMann: Und zwanzig Cent zurück. Danke schön!","q":"Wie viel kosten die Tomaten?","options":["2,20 €","3,00 €","2,80 €"],"a":2},
+   {"audio":"Mann: Fährst du heute mit dem Auto ins Büro?\nFrau: Nein, mein Auto ist kaputt. Und der Bus ist mir zu langsam. Ich fahre mit dem Fahrrad.","q":"Wie fährt die Frau ins Büro?","options":["Mit dem Fahrrad","Mit dem Auto","Mit dem Bus"],"a":0}
+  ]},
+  {"title":"Teil 2","task":"Sie hören vier Durchsagen. Sie hören jeden Text einmal. Sind die Aussagen 7–10 richtig oder falsch?","type":"rf","plays":1,"items":[
+   {"audio":"Achtung am Gleis vier: Der Regionalexpress nach Hamburg hat heute circa zwanzig Minuten Verspätung. Wir bitten um Entschuldigung.","q":"Der Zug nach Hamburg kommt später.","a":true},
+   {"audio":"Liebe Kundinnen und Kunden, heute gibt es in unserer Obstabteilung Äpfel zum halben Preis. Das Angebot gilt nur bis achtzehn Uhr.","q":"Die Äpfel sind heute den ganzen Tag billiger.","a":false},
+   {"audio":"Herr Martin Weber, bitte kommen Sie zur Information im Erdgeschoss. Ihre Frau wartet dort auf Sie.","q":"Herr Weber soll zur Information im ersten Stock kommen.","a":false},
+   {"audio":"Sehr geehrte Fluggäste, Flug LH 312 nach Wien ist jetzt bereit zum Einsteigen. Bitte gehen Sie zum Ausgang B zwölf.","q":"Die Fluggäste nach Wien sollen zum Ausgang B 12 gehen.","a":true}
+  ]},
+  {"title":"Teil 3","task":"Sie hören fünf Ansagen am Telefon. Sie hören jeden Text zweimal. Wählen Sie für die Aufgaben 11–15 die richtige Lösung a, b oder c.","type":"abc","plays":2,"items":[
+   {"audio":"Hallo Tom, hier ist Anna. Unser Kino heute Abend fängt schon um sieben an, nicht um acht. Ich warte um Viertel vor sieben vor dem Kino. Bis dann!","q":"Wann wartet Anna vor dem Kino?","options":["Um 18:45 Uhr","Um 19:00 Uhr","Um 20:00 Uhr"],"a":0},
+   {"audio":"Guten Tag, hier ist die Praxis Dr. Schneider. Ihr Termin am Dienstag muss leider ausfallen. Können Sie am Donnerstag um zehn Uhr kommen? Bitte rufen Sie uns zurück.","q":"Wann ist der neue Termin?","options":["Am Dienstag","Am Donnerstag","Am Freitag"],"a":1},
+   {"audio":"Hallo Mama, ich bin's, Jonas. Ich bin noch bei Paul. Wir lernen zusammen für die Mathearbeit. Ich esse heute hier. Ich komme um neun nach Hause.","q":"Was macht Jonas bei Paul?","options":["Er spielt Fußball.","Er lernt Mathe.","Er sieht fern."],"a":1},
+   {"audio":"Guten Morgen, Frau Kaya. Hier ist Fahrradladen Berger. Ihr Fahrrad ist fertig. Sie können es heute ab fünfzehn Uhr abholen. Die Reparatur kostet vierzig Euro.","q":"Was kostet die Reparatur?","options":["14 €","15 €","40 €"],"a":2},
+   {"audio":"Hi Sara, hier ist Mehmet. Ich habe am Freitag Geburtstag und mache eine kleine Party. Bringst du bitte Salat mit? Getränke habe ich schon. Ruf mich an!","q":"Was soll Sara mitbringen?","options":["Getränke","Kuchen","Salat"],"a":2}
+  ]}
+ ],
+ "lesen":[
+  {"title":"Teil 1","task":"Lesen Sie die zwei Texte. Sind die Aussagen 1–5 richtig oder falsch?","type":"rf","texts":[
+   {"title":"E-Mail","body":"Liebe Clara,\n\nich bin jetzt seit zwei Wochen in Leipzig. Meine Wohnung ist klein, aber hell, und sie ist nur fünf Minuten von der Universität entfernt. Mein Deutschkurs beginnt jeden Tag um neun Uhr. Am Nachmittag arbeite ich drei Stunden in einem Café.\n\nAm Wochenende besucht mich meine Schwester. Kommst du auch? Dann kochen wir zusammen!\n\nViele Grüße\nElena"},
+   {"title":"Notiz","body":"Hallo Herr Braun,\n\ndas Paket für Sie ist bei mir. Ich bin heute bis 17 Uhr im Büro, danach zu Hause im 2. Stock. Klingeln Sie einfach!\n\nIhre Nachbarin\nFrau Hoffmann"}
+  ],"items":[
+   {"q":"Elenas Wohnung ist nah an der Universität.","a":true},
+   {"q":"Der Deutschkurs fängt am Nachmittag an.","a":false},
+   {"q":"Elenas Schwester kommt am Wochenende.","a":true},
+   {"q":"Frau Hoffmann hat ein Paket für Herrn Braun.","a":true},
+   {"q":"Frau Hoffmann ist den ganzen Abend im Büro.","a":false}
+  ]},
+  {"title":"Teil 2","task":"Lesen Sie die Texte und die Aufgaben 6–10. Wo finden Sie Informationen? Wählen Sie a oder b.","type":"ab","items":[
+   {"q":"Sie möchten am Sonntag schwimmen gehen.","options":["Hallenbad Mitte – Öffnungszeiten: Montag bis Freitag 7–21 Uhr, Samstag und Sonntag 9–18 Uhr.","Sportzentrum Nord – Tennis und Fitness: Montag bis Samstag 8–22 Uhr, Sonntag geschlossen."],"a":0},
+   {"q":"Sie suchen eine Wohnung mit Balkon.","options":["2-Zimmer-Wohnung, 55 m², 3. Stock, Balkon, Küche, ab 1. Mai frei. Tel. 0341 22 81 90","1-Zimmer-Apartment, 30 m², Erdgeschoss, möbliert, ideal für Studenten. Tel. 0341 77 41 06"],"a":0},
+   {"q":"Sie möchten am Abend Deutsch lernen.","options":["Sprachschule Lingua: Deutschkurse am Vormittag, Montag bis Freitag 9–12 Uhr.","Volkshochschule: Deutsch A1 – dienstags und donnerstags 18:30–20:30 Uhr."],"a":1},
+   {"q":"Ihr Kind ist krank. Sie brauchen am Samstag einen Arzt.","options":["Kinderarztpraxis Dr. Lang – Sprechzeiten: Mo–Fr 8–12 Uhr und 15–18 Uhr.","Ärztlicher Notdienst für Kinder – Samstag, Sonntag und Feiertag, Telefon 116 117."],"a":1},
+   {"q":"Sie möchten ein günstiges Fahrrad kaufen.","options":["Fahrrad Schmidt: neue E-Bikes ab 2.500 €, Probefahrt jederzeit möglich.","Flohmarkt am Rathausplatz, jeden Samstag: gebrauchte Fahrräder ab 40 €."],"a":1}
+  ]},
+  {"title":"Teil 3","task":"Lesen Sie die Texte. Sind die Aussagen 11–15 richtig oder falsch?","type":"rf","items":[
+   {"text":"Bäckerei Krause\nVom 1. bis 15. August Urlaub.\nAb 16. August sind wir wieder für Sie da!","q":"Die Bäckerei ist im August zwei Wochen geschlossen.","a":true},
+   {"text":"Bibliothek\nBitte Handys ausschalten!\nTelefonieren nur im Eingangsbereich.","q":"In der Bibliothek darf man überall telefonieren.","a":false},
+   {"text":"Deutschkurs A1 – Raum 204\nHeute im Raum 112 (1. Stock).\nDie Lehrerin, Frau Klein","q":"Der Kurs ist heute in einem anderen Raum.","a":true},
+   {"text":"Parkhaus am Markt\n1 Stunde: 2 €\nab 20 Uhr: kostenlos","q":"Am Abend muss man im Parkhaus nichts bezahlen.","a":true},
+   {"text":"Arztpraxis Dr. Yilmaz\nMittwochnachmittag keine Sprechstunde.\nTermine nur nach Vereinbarung.","q":"Man kann am Mittwochnachmittag ohne Termin zum Arzt kommen.","a":false}
+  ]}
+ ],
+ "schreiben":[
+  {"title":"Teil 1","task":"Ihr Freund Carlos Gómez möchte einen Deutschkurs machen. Er spricht noch nicht gut Deutsch. Helfen Sie ihm und füllen Sie das Anmeldeformular aus. Schreiben Sie fünf Informationen.","situation":"Carlos Gómez kommt aus Spanien, aus Valencia. Er ist 28 Jahre alt und wohnt jetzt in Köln, in der Goethestraße 14. Er möchte am Abend lernen, denn er arbeitet tagsüber als Koch. Er bezahlt den Kurs mit Überweisung.","form":[
+   {"label":"Familienname","a":"Gómez","alt":["Gomez"]},
+   {"label":"Herkunftsland","a":"Spanien"},
+   {"label":"Alter","a":"28","alt":["28 Jahre","achtundzwanzig"]},
+   {"label":"Kurszeit (Vormittag / Abend)","a":"Abend","alt":["am Abend","abends"]},
+   {"label":"Beruf","a":"Koch"}
+  ]},
+  {"title":"Teil 2","task":"Sie wollen am Wochenende mit Ihrer Freundin Julia ins Kino gehen. Schreiben Sie Julia eine kurze Nachricht.","prompt":"Schreiben Sie zu jedem Punkt ein bis zwei Sätze (circa 30 Wörter). Schreiben Sie auch eine Anrede und einen Gruß.","points":["Warum schreiben Sie?","Welcher Tag und welche Uhrzeit?","Wo treffen Sie sich?"],"words":30,"sample":"Liebe Julia,\n\nhast du am Wochenende Zeit? Ich möchte gern mit dir ins Kino gehen. Es gibt einen neuen Film mit Tom Hanks. Wir können am Samstag um 19 Uhr gehen. Treffen wir uns um halb sieben vor dem Kino am Markt?\n\nViele Grüße\nSofia"}
+ ],
+ "sprechen":[
+  {"title":"Teil 1 – Sich vorstellen","task":"Stellen Sie sich vor. Die Wörter auf den Karten helfen Ihnen. Danach buchstabieren Sie Ihren Namen und nennen eine Zahl (zum Beispiel Ihre Telefonnummer).","cards":["Name","Alter","Land","Wohnort","Sprachen","Beruf","Hobby"],"phrases":["Ich heiße …","Ich bin … Jahre alt.","Ich komme aus …","Ich wohne in …","Ich spreche …","Ich bin … von Beruf.","Mein Hobby ist …"],"sample":"Ich heiße Ana Silva. Ich bin dreiunddreißig Jahre alt. Ich komme aus Portugal, aus Porto. Jetzt wohne ich in Frankfurt. Ich spreche Portugiesisch, Englisch und ein bisschen Deutsch. Ich bin Krankenschwester von Beruf. Mein Hobby ist Fotografieren."},
+  {"title":"Teil 2 – Um Informationen bitten und Informationen geben","task":"Thema: Einkaufen. Ziehen Sie eine Karte und stellen Sie Ihrer Partnerin oder Ihrem Partner eine Frage mit dem Wort. Antworten Sie auch auf die Frage Ihres Partners.","cards":["Obst","Geschäft","Wochenende","Geld","Brot","Kleidung"],"phrases":["Was kaufst du gern …?","Wo kaufst du …?","Wann gehst du einkaufen?","Ich kaufe gern …","Am Wochenende …"],"sample":"Frage: Kaufst du gern Obst? – Antwort: Ja, ich kaufe jeden Tag Obst, am liebsten Bananen und Äpfel.\nFrage: In welchem Geschäft kaufst du Kleidung? – Antwort: Ich kaufe Kleidung meistens im Internet oder im Kaufhaus in der Stadt."},
+  {"title":"Teil 3 – Bitten formulieren und darauf reagieren","task":"Auf den Karten sehen Sie Situationen. Formulieren Sie zu jeder Karte eine Bitte. Ihre Partnerin oder Ihr Partner reagiert darauf.","cards":["Fenster (es ist kalt)","Wasser (Sie haben Durst)","Stift (Sie wollen schreiben)","Handy (Ihr Akku ist leer)"],"phrases":["Kannst du bitte …?","Können Sie bitte …?","Ich hätte gern …","Ja, gern.","Natürlich, hier bitte.","Tut mir leid, …"],"sample":"Können Sie bitte das Fenster zumachen? Es ist sehr kalt. – Ja, natürlich.\nKannst du mir bitte ein Glas Wasser geben? – Gern, hier bitte.\nHast du einen Stift für mich? – Tut mir leid, ich habe nur einen."}
+ ]
+}

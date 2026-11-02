@@ -22,7 +22,7 @@ function trackWrite(promise){storageWrites.add(promise);promise.finally(()=>stor
 function addCache(cache,request){if(storageReset)return Promise.reject(Error('storage_paused'));return trackWrite(cache.add(request));}
 function putCache(cache,key,response){if(storageReset)return Promise.resolve();return trackWrite(cache.put(key,response));}
 
-const CACHE_VERSION = 'v1.11.15';
+const CACHE_VERSION = 'v1.11.18';
 const SHELL_CACHE   = `lumira-shell-${CACHE_VERSION}`;
 const VOCAB_CACHE   = 'lumira-vocab-v1.11.4';
 const PHRASE_CACHE  = 'lumira-phrases-v1.11.4';
@@ -52,6 +52,8 @@ const SHELL = [
   './practice-gloss.js',
   './learning-i18n.js',
   './learning.js',
+  './goethe-exam.js',
+  './goethe-exam.css',
   './maintenance.js',
   './phrases-de.js',
   './public-pages.css',
@@ -91,6 +93,8 @@ const SHELL = [
 
   './live-cloud.js',
   './live-translate.js',
+  './live-conversation.js',
+  './live-conversation.css',
   './live-source.js',
   './live-text.js',
   './live-browser.js',

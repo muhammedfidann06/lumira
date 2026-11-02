@@ -1,0 +1,186 @@
+{
+ "id": "C1-01",
+ "level": "C1",
+ "title": "Modelltest 1",
+ "lesen": [
+  {
+   "title": "Teil 1",
+   "task": "Sie lesen einen Zeitungsartikel, in dem einige Wörter fehlen. Wählen Sie für jede Lücke 1–9 das passende Wort a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Die stille Revolution der Bibliotheken",
+     "body": "Noch vor zwanzig Jahren galten öffentliche Bibliotheken vielen als Auslaufmodell. Wozu Bücher ausleihen, wenn das gesamte Wissen der Welt nur wenige Klicks [1] ist? Doch die düsteren Prognosen haben sich nicht [2]. Im Gegenteil: In zahlreichen Städten verzeichnen Bibliotheken steigende Besucherzahlen, obwohl die Zahl der Ausleihen [3] zurückgeht.\n\nDer Grund liegt in einem grundlegenden [4] des Selbstverständnisses. Moderne Bibliotheken verstehen sich nicht mehr in erster Linie als Aufbewahrungsort für Medien, sondern als sogenannte „dritte Orte“ – Räume zwischen Wohnung und Arbeitsplatz, an denen man sich ohne Konsumzwang [5] kann. Schülerinnen und Schüler finden dort ruhige Lernplätze, Seniorinnen und Senioren lassen sich den Umgang mit dem Smartphone [6], und in manchen Häusern stehen sogar 3D-Drucker oder Nähmaschinen zur Verfügung.\n\nKritiker [7] allerdings ein, dass die Bibliotheken damit Aufgaben übernehmen, für die eigentlich andere Einrichtungen zuständig wären. Zudem sei die Finanzierung vielerorts alles andere als [8]. Dennoch spricht vieles dafür, dass die Bibliothek der Zukunft weniger ein Lager für Bücher als vielmehr ein Ort der Begegnung sein wird – vorausgesetzt, die Kommunen sind bereit, in sie zu [9]."
+    }
+   ],
+   "items": [
+    {"q": "Lücke 1", "options": ["entfernt", "entlegen", "abgelegen"], "a": 0},
+    {"q": "Lücke 2", "options": ["bewahrheitet", "bewährt", "bewiesen"], "a": 0},
+    {"q": "Lücke 3", "options": ["vorsätzlich", "tendenziell", "vergeblich"], "a": 1},
+    {"q": "Lücke 4", "options": ["Vorgang", "Wandel", "Verlauf"], "a": 1},
+    {"q": "Lücke 5", "options": ["verhalten", "aufhalten", "enthalten"], "a": 1},
+    {"q": "Lücke 6", "options": ["erzählen", "beraten", "erklären"], "a": 2},
+    {"q": "Lücke 7", "options": ["stellen", "wenden", "geben"], "a": 1},
+    {"q": "Lücke 8", "options": ["versichert", "besichtigt", "gesichert"], "a": 2},
+    {"q": "Lücke 9", "options": ["investieren", "finanzieren", "anlegen"], "a": 0}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie lesen in einer Zeitschrift einen Artikel über das Aufschieben von Aufgaben. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Morgen ist auch noch ein Tag",
+     "body": "Fast jeder kennt das: Die Steuererklärung liegt seit Wochen auf dem Schreibtisch, der Abgabetermin für die Hausarbeit rückt näher – und trotzdem räumt man lieber den Keller auf. Psychologen sprechen von Prokrastination, und sie betonen, dass es sich dabei keineswegs um ein Zeichen von Faulheit handelt. „Faule Menschen haben schlicht keine Lust, etwas zu tun, und fühlen sich damit wohl“, erklärt die Münsteraner Psychologin Dr. Katrin Albers. „Wer prokrastiniert, will die Aufgabe dagegen eigentlich erledigen und leidet darunter, dass es ihm nicht gelingt.“\n\nNach heutigem Forschungsstand ist das Aufschieben vor allem ein Problem der Gefühlsregulation. Unangenehme Aufgaben lösen Stress, Langeweile oder Versagensangst aus. Indem wir sie verschieben, verschaffen wir uns kurzfristig Erleichterung – ein Effekt, den das Gehirn als Belohnung verbucht. Langfristig jedoch wächst der Druck und mit ihm die negativen Gefühle, die das Aufschieben ursprünglich vermeiden sollte. Ein Teufelskreis entsteht.\n\nBesonders anfällig sind Menschen, die hohe Ansprüche an sich selbst stellen. Wer fürchtet, eine Aufgabe nicht perfekt zu erledigen, fängt oft gar nicht erst an. Auch die Arbeitsumgebung spielt eine Rolle: Großraumbüros mit ständigen Unterbrechungen und Smartphones, die im Minutentakt Nachrichten melden, machen es leicht, sich ablenken zu lassen.\n\nWas also hilft? Von reinen Appellen an die Disziplin hält Albers wenig. Erfolgversprechender sei es, große Vorhaben in überschaubare Schritte zu zerlegen und sich für den ersten Schritt eine feste Uhrzeit vorzunehmen. „Das Anfangen ist die größte Hürde. Wer erst einmal zehn Minuten gearbeitet hat, macht meist weiter.“ Hilfreich sei außerdem, sich selbst gegenüber nachsichtig zu sein. Studien zeigen, dass Studierende, die sich nach einer verpatzten Prüfung selbst verziehen hatten, vor der nächsten Prüfung weniger aufschoben als jene, die sich Vorwürfe machten.\n\nGanz verschwinden wird das Aufschieben wohl nie – und das muss es auch nicht. Problematisch wird es erst, wenn wichtige Lebensbereiche darunter leiden: wenn Rechnungen unbezahlt bleiben, Arzttermine nicht vereinbart werden oder das Studium ins Stocken gerät. Für diese Fälle bieten inzwischen viele Hochschulen spezielle Beratungen an."
+    }
+   ],
+   "items": [
+    {"q": "Laut Dr. Albers unterscheiden sich Menschen, die prokrastinieren, von faulen Menschen dadurch, dass sie …", "options": ["grundsätzlich weniger arbeiten.", "unter ihrem Verhalten leiden.", "keine Lust auf Arbeit haben."], "a": 1},
+    {"q": "Das Aufschieben wird heute vor allem erklärt als …", "options": ["Mangel an Intelligenz.", "Folge schlechter Organisation.", "Versuch, unangenehme Gefühle zu vermeiden."], "a": 2},
+    {"q": "Kurzfristig führt das Verschieben einer Aufgabe dazu, dass …", "options": ["man sich erleichtert fühlt.", "der Stress sofort zunimmt.", "man die Aufgabe vergisst."], "a": 0},
+    {"q": "Menschen mit hohen Ansprüchen an sich selbst …", "options": ["arbeiten besonders effizient.", "beginnen manche Aufgaben gar nicht erst.", "lassen sich selten ablenken."], "a": 1},
+    {"q": "Dr. Albers empfiehlt vor allem, …", "options": ["an die eigene Disziplin zu appellieren.", "große Aufgaben in kleine Schritte zu teilen.", "auf Pausen möglichst zu verzichten."], "a": 1},
+    {"q": "Die erwähnte Studie zeigt, dass Selbstvorwürfe …", "options": ["das Aufschieben eher verstärken.", "zu besseren Noten führen.", "keine Auswirkungen haben."], "a": 0},
+    {"q": "Laut Text wird das Aufschieben zum Problem, wenn …", "options": ["man es überhaupt tut.", "wichtige Lebensbereiche beeinträchtigt werden.", "man an einer Hochschule studiert."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Lesen Sie den Text. Welcher Satz a–h passt in welche Lücke 1–6? Zwei Sätze passen nicht.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Ernte im zehnten Stock",
+     "body": "In einer ehemaligen Lagerhalle am Stadtrand von Berlin wachsen Salate, Kräuter und Erdbeeren in bis zu zwölf Etagen übereinander. Tageslicht gibt es hier nicht, Erde ebenso wenig. [1] Die Betreiber sprechen von „Vertical Farming“ und sehen darin eine Antwort auf einige der drängendsten Probleme der Landwirtschaft.\n\nTatsächlich sind die Vorteile beachtlich. Weil die Pflanzen in einem geschlossenen Kreislauf wachsen, verbrauchen sie bis zu 95 Prozent weniger Wasser als auf dem Feld. [2] Zudem lässt sich das ganze Jahr über ernten, unabhängig von Wetter und Jahreszeit.\n\nAuch der Transport fällt kürzer aus. [3] In einer Zeit, in der immer mehr Menschen in Städten leben, könnte das die Versorgung mit frischem Gemüse deutlich verbessern.\n\nDoch das Konzept hat einen Haken: den Energieverbrauch. [4] Nur wenn dieser Strom aus erneuerbaren Quellen stammt, fällt die Klimabilanz positiv aus. Bei den aktuellen Strompreisen ist es zudem schwierig, wirtschaftlich zu arbeiten. Mehrere Unternehmen der Branche mussten in den vergangenen Jahren Insolvenz anmelden.\n\nHinzu kommt, dass sich nur bestimmte Pflanzen für den Anbau in Regalen eignen. [5] Getreide, Kartoffeln oder Mais dagegen benötigen zu viel Platz und Licht, als dass sich ihr Anbau in Innenräumen lohnen würde.\n\nExperten sehen die vertikalen Farmen deshalb nicht als Ersatz für die herkömmliche Landwirtschaft, sondern als Ergänzung. [6] Ob sie sich langfristig durchsetzen, wird vor allem davon abhängen, wie sich die Energiekosten entwickeln."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Pestizide werden in den abgeschotteten Räumen ebenfalls nicht benötigt."},
+    {"key": "b", "text": "Die Lampen und Klimaanlagen benötigen enorme Mengen Strom."},
+    {"key": "c", "text": "Stattdessen hängen die Wurzeln in einer Nährlösung, und LED-Lampen ersetzen die Sonne."},
+    {"key": "d", "text": "Viele Landwirte haben ihre Höfe deshalb bereits auf vertikalen Anbau umgestellt."},
+    {"key": "e", "text": "Besonders in dicht besiedelten Regionen könnten sie einen wichtigen Beitrag zur Versorgung leisten."},
+    {"key": "f", "text": "Wenn die Farm mitten in der Stadt steht, legt der Salat oft nur wenige Kilometer bis zum Teller zurück."},
+    {"key": "g", "text": "Der Geschmack des Gemüses wird von Verbrauchern allerdings häufig kritisiert."},
+    {"key": "h", "text": "Vor allem Blattgemüse und Kräuter wachsen schnell und brauchen wenig Raum."}
+   ],
+   "items": [
+    {"q": "Lücke 1", "a": "c"},
+    {"q": "Lücke 2", "a": "a"},
+    {"q": "Lücke 3", "a": "f"},
+    {"q": "Lücke 4", "a": "b"},
+    {"q": "Lücke 5", "a": "h"},
+    {"q": "Lücke 6", "a": "e"}
+   ]
+  },
+  {
+   "title": "Teil 4",
+   "task": "Sie lesen in einem Onlineforum Beiträge zur Frage, ob das Wahlalter bei Bundestagswahlen auf 16 Jahre gesenkt werden sollte. Lesen Sie die Texte a–d und die Aussagen 1–8. Wer äußert sich wie? Die Personen können mehrmals gewählt werden.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Lena, 17: Ich finde es absurd, dass ich mit sechzehn eine Ausbildung beginnen, Steuern zahlen und mich für einen Beruf entscheiden darf, bei der Bundestagswahl aber nicht mitbestimmen soll. Die Entscheidungen, die heute getroffen werden – etwa beim Klimaschutz oder bei der Rente –, betreffen meine Generation am längsten. In unserer Klasse wird über Politik übrigens mehr diskutiert als in mancher Familie beim Abendessen. Wer behauptet, Jugendliche interessierten sich nicht für Politik, war schon lange nicht mehr in einer Schule."},
+    {"key": "b", "text": "Thomas, 52, Gymnasiallehrer: Ich unterrichte seit über zwanzig Jahren Politik und erlebe viele engagierte Jugendliche. Trotzdem bin ich skeptisch. Mit sechzehn sind viele noch stark von Eltern, Freunden oder sozialen Medien beeinflusst, und komplexe Themen wie die Haushaltspolitik überfordern manche. Ich hielte es für sinnvoller, zunächst den Politikunterricht auszubauen, der an vielen Schulen nur eine Stunde pro Woche umfasst. Erst wenn alle jungen Menschen gut vorbereitet sind, sollte man über das Wahlalter reden."},
+    {"key": "c", "text": "Ayşe, 34, Politikwissenschaftlerin: Die Erfahrungen aus Bundesländern, in denen Sechzehnjährige bei Kommunal- und Landtagswahlen schon wählen dürfen, sind durchaus ermutigend. Wer früh zum ersten Mal wählt, bleibt der Wahl auch später eher treu – die erste Wahl prägt gewissermaßen eine Gewohnheit. Allerdings hängt viel davon ab, ob die Schulen die erste Wahl begleiten. Das Argument, Jugendliche seien leicht zu beeinflussen, überzeugt mich wenig: Das gilt für Erwachsene genauso."},
+    {"key": "d", "text": "Gerhard, 71, Rentner: Ich habe nichts gegen junge Menschen, im Gegenteil – meine Enkel erklären mir regelmäßig, was in der Welt los ist. Aber Rechte und Pflichten sollten zusammengehören. Mit achtzehn ist man voll geschäftsfähig, kann Verträge unterschreiben und wird für seine Taten wie ein Erwachsener bestraft. Diese Grenze hat sich bewährt. Wenn wir das Wahlalter senken, müssten wir konsequenterweise auch über andere Altersgrenzen nachdenken, und das halte ich für keinen guten Weg."}
+   ],
+   "items": [
+    {"q": "Wer meint, dass das Wahlrecht an die Volljährigkeit gekoppelt sein sollte?", "a": "d"},
+    {"q": "Wer hält das politische Interesse junger Menschen für unterschätzt?", "a": "a"},
+    {"q": "Wer sieht in einer frühen ersten Wahl einen langfristigen Vorteil?", "a": "c"},
+    {"q": "Wer möchte zuerst die politische Bildung verbessern?", "a": "b"},
+    {"q": "Wer weist darauf hin, dass auch Ältere beeinflussbar sind?", "a": "c"},
+    {"q": "Wer betont, dass politische Entscheidungen die Jugend besonders lange betreffen?", "a": "a"},
+    {"q": "Wer befürchtet Folgen für weitere Altersgrenzen?", "a": "d"},
+    {"q": "Wer bezweifelt, dass alle Jugendlichen schwierige Themen verstehen?", "a": "b"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Teil 1",
+   "task": "Sie hören fünf kurze Texte. Sie hören jeden Text einmal. Zu jedem Text lösen Sie zwei Aufgaben. Wählen Sie bei jeder Aufgabe die richtige Lösung.",
+   "type": "rf",
+   "plays": 1,
+   "items": [
+    {"audio": "Guten Tag, Frau Petrović, hier spricht Jörg Lindner aus dem Prüfungsamt der Fakultät für Sozialwissenschaften. Es geht um Ihre Anmeldung zur mündlichen Abschlussprüfung. Leider fehlt in Ihren Unterlagen noch die Bestätigung Ihres Zweitgutachters. Ohne diese Unterschrift kann ich den Termin am Dreiundzwanzigsten nicht verbindlich eintragen. Sie können das Formular entweder persönlich in meiner Sprechstunde am Donnerstag abgeben oder eingescannt per E-Mail schicken – das reicht vorerst aus. Das Original bräuchte ich dann aber bis spätestens Ende des Monats. Vielen Dank.", "q": "Frau Petrovićs Prüfungstermin ist bereits fest eingetragen.", "a": false},
+    {"type": "abc", "q": "Was soll Frau Petrović tun?", "options": ["Einen neuen Termin vorschlagen.", "Die fehlende Bestätigung einreichen.", "Ihren Zweitgutachter anrufen lassen."], "a": 1},
+    {"audio": "Lärm macht nicht nur schlechte Laune, sondern kann auch dem Herzen schaden. Zu diesem Ergebnis kommt eine Langzeitstudie der Universitätsmedizin Mainz, für die mehr als fünfzehntausend Erwachsene über zehn Jahre begleitet wurden. Besonders gefährlich ist demnach nächtlicher Fluglärm: Selbst wenn die Betroffenen nicht aufwachen, steigen Blutdruck und Stresshormone messbar an. Die Forscher fordern deshalb strengere Nachtflugverbote in der Nähe von Wohngebieten. Straßenlärm wirkte sich in der Studie ebenfalls negativ aus, allerdings in geringerem Maße.", "q": "Laut der Studie schadet Fluglärm auch dann, wenn man davon nicht aufwacht.", "a": true},
+    {"type": "abc", "q": "Was fordern die Forscher?", "options": ["Mehr Schallschutzfenster für Wohnungen.", "Weniger Straßenverkehr in Städten.", "Strengere Regeln für Nachtflüge."], "a": 2},
+    {"audio": "Liebe Teilnehmerinnen und Teilnehmer, eine kurze organisatorische Mitteilung: Der Vortrag von Professor Haller zum Thema „Digitale Verwaltung“ muss heute leider entfallen, da Herr Haller wegen eines Bahnstreiks nicht anreisen konnte. Er hat uns jedoch angeboten, seinen Vortrag morgen um vierzehn Uhr per Videoschaltung zu halten. Die für diese Zeit geplante Podiumsdiskussion verlegen wir in den großen Saal und beginnen sie bereits um dreizehn Uhr. Das Mittagessen wird dafür um eine halbe Stunde vorgezogen. Die aktualisierten Programme liegen am Empfang aus.", "q": "Professor Haller wird seinen Vortrag morgen online halten.", "a": true},
+    {"type": "abc", "q": "Was ändert sich außerdem?", "options": ["Das Mittagessen beginnt früher.", "Die Podiumsdiskussion fällt aus.", "Der Empfang schließt heute früher."], "a": 0},
+    {"audio": "Mein erstes Unternehmen ist nach anderthalb Jahren gescheitert. Wir hatten eine App entwickelt, mit der man übrig gebliebenes Essen aus Restaurants günstig kaufen konnte – eine gute Idee, dachten wir. Aber wir hatten nie wirklich mit Restaurantbesitzern gesprochen. Wie sich herausstellte, hatten die gar keine Zeit, jeden Abend Angebote einzustellen. Heute würde ich als Erstes mit den Menschen reden, für die das Produkt gedacht ist, bevor ich auch nur eine Zeile Code schreiben lasse. Das Scheitern war schmerzhaft, aber ich habe dabei mehr gelernt als in meinem ganzen Studium.", "q": "Die App scheiterte, weil sie technisch nicht funktionierte.", "a": false},
+    {"type": "abc", "q": "Was würde der Sprecher heute anders machen?", "options": ["Mehr Geld von Investoren einwerben.", "Zuerst mit den künftigen Nutzern sprechen.", "Ein größeres Entwicklerteam einstellen."], "a": 1},
+    {"audio": "Und nun noch ein Tipp für das Wochenende: Das Landesmuseum in Stuttgart zeigt ab Samstag die Ausstellung „Spuren im Eis“ über die Klimageschichte der Alpen. Herzstück sind Bohrkerne aus Gletschern, in denen Luftblasen aus mehreren Jahrtausenden eingeschlossen sind. An interaktiven Stationen können Besucher selbst nachvollziehen, wie Forscher daraus die Temperaturen der Vergangenheit ableiten. Am Eröffnungswochenende ist der Eintritt frei; Führungen müssen allerdings vorab online gebucht werden, da die Plätze begrenzt sind.", "q": "Am ersten Wochenende kostet die Ausstellung keinen Eintritt.", "a": true},
+    {"type": "abc", "q": "Was gilt für die Führungen?", "options": ["Sie finden nur am Samstag statt.", "Man muss sie im Voraus reservieren.", "Sie sind im Eintrittspreis enthalten."], "a": 1}
+   ]
+  },
+  {
+   "title": "Teil 2",
+   "task": "Sie hören ein Interview. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Ein Moderator spricht mit der Glaziologin Dr. Miriam Kofler über die Alpengletscher.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Moderator: Frau Dr. Kofler, Sie erforschen seit fünfzehn Jahren die Gletscher der Ostalpen. Wie geht es ihnen?\nKofler: Ehrlich gesagt: schlecht. Seit Beginn meiner Messungen hat der Gletscher, den wir am intensivsten beobachten, fast ein Drittel seiner Masse verloren. Was mich dabei am meisten beunruhigt, ist nicht einmal der Verlust an sich, sondern das Tempo. Veränderungen, für die wir früher Jahrzehnte angesetzt hätten, sehen wir heute innerhalb weniger Sommer.\nModerator: Woran liegt das?\nKofler: Die höheren Temperaturen sind natürlich der Hauptgrund. Aber es gibt einen Verstärkungseffekt, der oft übersehen wird. Wenn der Schnee auf dem Gletscher früher im Jahr schmilzt, kommt das darunterliegende Eis zum Vorschein. Dieses Eis ist dunkler, häufig auch durch Staub und Ruß verschmutzt. Es reflektiert weniger Sonnenlicht und schmilzt dadurch noch schneller.\nModerator: Wie sieht Ihre Arbeit konkret aus?\nKofler: Im Sommer sind wir regelmäßig oben auf dem Eis. Wir bohren Stangen in den Gletscher und messen, wie viel Eis um sie herum abgeschmolzen ist. Das ist mühsame Handarbeit, aber durch nichts zu ersetzen. Ergänzend werten wir Satellitenbilder und Drohnenaufnahmen aus. Die Satelliten liefern uns den Überblick, die Messungen vor Ort die Genauigkeit.\nModerator: Manche Skigebiete decken ihre Gletscher im Sommer mit großen Planen ab. Ist das eine Lösung?\nKofler: Lokal kann das helfen, den Schwund an bestimmten Stellen zu bremsen, zum Teil um mehr als die Hälfte. Aber das ist teuer und funktioniert nur auf kleinen Flächen. Für die Gletscher als Ganzes ist es bestenfalls ein Tropfen auf den heißen Stein. Man muss ehrlich sagen: Die meisten Alpengletscher unterhalb von dreitausend Metern werden wir nicht retten können.\nModerator: Was bedeutet das für die Menschen in den Alpen?\nKofler: Kurzfristig paradoxerweise mehr Wasser, weil mehr Eis schmilzt. Langfristig aber fehlt dieses Wasser, vor allem in heißen, trockenen Sommern, in denen die Gletscher bisher als Reserve dienten. Das betrifft die Landwirtschaft, die Stromerzeugung aus Wasserkraft und auch den Tourismus. Hinzu kommen Gefahren durch Felsstürze, weil der auftauende Permafrost die Berge instabiler macht.\nModerator: Sie klingen trotzdem nicht resigniert.\nKofler: Nein. Jedes Zehntelgrad Erwärmung, das wir vermeiden, zählt. Ob die großen Gletscher in den Westalpen bis zum Ende des Jahrhunderts zur Hälfte oder fast vollständig verschwinden, liegt noch in unserer Hand. Das motiviert mich weiterzumachen.",
+   "items": [
+    {"q": "Was beunruhigt Dr. Kofler am meisten?", "options": ["Die Geschwindigkeit der Veränderungen.", "Der Verlust eines bestimmten Gletschers.", "Die fehlende Aufmerksamkeit der Medien."], "a": 0},
+    {"q": "Welche Rolle spielt das dunkle Eis?", "options": ["Es schützt den Gletscher vor Sonnenlicht.", "Es beschleunigt das Abschmelzen.", "Es entsteht nur in großer Höhe."], "a": 1},
+    {"q": "Die Messungen vor Ort sind laut Dr. Kofler …", "options": ["inzwischen durch Satelliten ersetzt.", "nur im Winter möglich.", "trotz des Aufwands unverzichtbar."], "a": 2},
+    {"q": "Über das Abdecken von Gletschern mit Planen sagt sie, dass es …", "options": ["nur auf kleinen Flächen wirkt.", "den Schwund vollständig stoppt.", "besonders kostengünstig ist."], "a": 0},
+    {"q": "Kurzfristig führt die Gletscherschmelze zu …", "options": ["weniger Felsstürzen.", "mehr verfügbarem Wasser.", "sinkenden Temperaturen."], "a": 1},
+    {"q": "Langfristig fehlt das Gletscherwasser vor allem …", "options": ["in trockenen Sommern.", "im Frühling.", "in den Städten am Alpenrand."], "a": 0},
+    {"q": "Am Ende des Interviews betont Dr. Kofler, dass …", "options": ["alle Gletscher bereits verloren sind.", "sie ihre Forschung beenden will.", "Klimaschutz noch einen Unterschied macht."], "a": 2}
+   ]
+  },
+  {
+   "title": "Teil 3",
+   "task": "Sie hören einen Vortrag. Sie hören den Text zweimal. Wählen Sie bei jeder Aufgabe die richtige Lösung a, b oder c. Ein Sprachwissenschaftler spricht über das Aufwachsen mit mehreren Sprachen.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Guten Abend, meine Damen und Herren. Ich freue mich, dass Sie so zahlreich erschienen sind, um mit mir über ein Thema zu sprechen, das viele Familien bewegt: das Aufwachsen mit mehreren Sprachen.\nLange Zeit hielt sich die Vorstellung, Mehrsprachigkeit überfordere Kinder. Noch in den sechziger Jahren rieten Ärzte und Lehrkräfte Eltern, mit ihren Kindern ausschließlich die Landessprache zu sprechen. Heute wissen wir, dass diese Sorge unbegründet war. Das kindliche Gehirn ist sehr wohl in der Lage, zwei oder sogar drei Sprachen gleichzeitig zu erwerben.\nRichtig ist allerdings, dass mehrsprachige Kinder in jeder einzelnen Sprache anfangs manchmal einen etwas kleineren Wortschatz haben als einsprachige Gleichaltrige. Zählt man aber die Wörter aller Sprachen zusammen, liegen sie gleichauf oder sogar vorn. Dieser anfängliche Unterschied verschwindet in der Regel bis zum Schulalter.\nHäufig beobachten Eltern auch, dass ihre Kinder Sprachen mischen, etwa einen deutschen Satz mit einem türkischen Wort beenden. Das ist kein Zeichen von Verwirrung, wie oft angenommen wird. Im Gegenteil: Studien zeigen, dass Kinder dabei durchaus Regeln folgen und sehr genau wissen, mit wem sie mischen können und mit wem nicht.\nWelche Vorteile bringt Mehrsprachigkeit nun mit sich? Hier ist die Forschung vorsichtiger geworden. Vor einigen Jahren wurde viel über einen allgemeinen geistigen Vorteil zweisprachiger Menschen berichtet, etwa bei der Konzentration. Neuere, größere Studien konnten diesen Effekt jedoch nicht immer bestätigen. Unbestritten sind dagegen die sozialen und beruflichen Vorteile – und nicht zuletzt der Zugang zu zwei Kulturen.\nWas können Eltern tun? Entscheidend ist weniger eine bestimmte Methode als die Menge und die Qualität des Kontakts mit jeder Sprache. Ein Kind, das eine Sprache nur eine Stunde pro Woche hört, wird sie kaum aktiv sprechen. Eltern sollten außerdem die Sprache sprechen, in der sie sich selbst am wohlsten fühlen. Gefühle, Witze, Gutenachtgeschichten – all das gelingt in der eigenen Sprache am besten.\nUnd schließlich: Haben Sie Geduld. Viele Kinder durchlaufen Phasen, in denen sie eine der Sprachen verweigern, häufig wenn sie in den Kindergarten kommen. Das ist normal und meist vorübergehend. Wichtig ist, dass die Sprache in der Familie lebendig bleibt – durch Besuche, Bücher oder Gespräche mit den Großeltern.\nIch danke Ihnen für Ihre Aufmerksamkeit und freue mich jetzt auf Ihre Fragen.",
+   "items": [
+    {"q": "Früher wurde Eltern geraten, …", "options": ["mit ihren Kindern nur die Landessprache zu sprechen.", "ihre Kinder früh mehrere Sprachen lernen zu lassen.", "Fremdsprachen erst in der Schule einzuführen."], "a": 0},
+    {"q": "Der Wortschatz mehrsprachiger Kinder ist …", "options": ["in jeder Sprache immer größer.", "insgesamt ähnlich groß oder größer.", "bis ins Erwachsenenalter kleiner."], "a": 1},
+    {"q": "Das Mischen von Sprachen ist laut dem Redner …", "options": ["ein Hinweis auf Verwirrung.", "ein Grund zur Sorge.", "an Regeln gebunden."], "a": 2},
+    {"q": "Über einen allgemeinen geistigen Vorteil sagt der Redner, dass er …", "options": ["eindeutig bewiesen ist.", "nicht immer bestätigt wurde.", "nur bei Erwachsenen auftritt."], "a": 1},
+    {"q": "Als unbestritten gelten …", "options": ["soziale und berufliche Vorteile.", "bessere Noten in Mathematik.", "eine höhere Konzentrationsfähigkeit."], "a": 0},
+    {"q": "Für den Spracherwerb ist besonders wichtig, …", "options": ["welche Methode die Eltern wählen.", "wie viel und wie gut das Kind die Sprache erlebt.", "dass das Kind früh lesen lernt."], "a": 1},
+    {"q": "Eltern sollten mit ihrem Kind die Sprache sprechen, …", "options": ["die in der Schule unterrichtet wird.", "die am weitesten verbreitet ist.", "in der sie sich selbst wohlfühlen."], "a": 2},
+    {"q": "Wenn ein Kind eine Sprache verweigert, ist das …", "options": ["meist nur eine Phase.", "ein Zeichen von Überforderung.", "ein Grund, die Sprache aufzugeben."], "a": 0}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Teil 1 – Forumsbeitrag",
+   "task": "Sie haben in einer Onlinezeitung einen Artikel mit dem Titel „Zu viele Gäste? Städte wollen den Tourismus begrenzen“ gelesen. Im Forum der Zeitung möchten Sie Ihre Meinung äußern.",
+   "prompt": "Schreiben Sie einen Forumsbeitrag (circa 230 Wörter). Gehen Sie dabei auf alle folgenden Punkte ein. Achten Sie auf eine klare Gliederung, eine passende Einleitung und einen passenden Schluss.",
+   "points": ["Folgen des Massentourismus für die Bewohner", "Ihre Meinung zu Eintrittsgebühren oder Besucherobergrenzen", "Verantwortung der Reisenden", "Erfahrungen oder Beispiele aus Ihrem Heimatland"],
+   "words": 230,
+   "sample": "Der Artikel über Städte, die den Tourismus begrenzen wollen, spricht ein Problem an, das inzwischen viele beliebte Reiseziele betrifft. Im Folgenden möchte ich darlegen, warum ich solche Maßnahmen grundsätzlich für richtig halte.\n\nZunächst darf man nicht vergessen, dass der Massentourismus für die Einwohner gravierende Folgen hat. In vielen Altstädten werden Wohnungen in Ferienapartments umgewandelt, sodass die Mieten steigen und alteingesessene Familien wegziehen müssen. Gleichzeitig verschwinden Bäckereien und Handwerksbetriebe, weil sie Souvenirläden weichen.\n\nEintrittsgebühren für Tagesgäste oder Obergrenzen für Kreuzfahrtschiffe halte ich daher für ein legitimes Mittel. Zwar besteht die Gefahr, dass Reisen zu einem Privileg für Wohlhabende wird, doch eine moderate Gebühr dürfte kaum jemanden abschrecken. Entscheidend ist, dass die Einnahmen tatsächlich den Bewohnern zugutekommen, etwa für die Instandhaltung historischer Gebäude.\n\nAllerdings sehe ich auch die Reisenden selbst in der Pflicht. Wer außerhalb der Hauptsaison reist, öffentliche Verkehrsmittel nutzt und in familiengeführten Unterkünften übernachtet, trägt dazu bei, dass der Tourismus verträglicher wird.\n\nIn meinem Heimatland habe ich erlebt, wie eine kleine Küstenstadt innerhalb weniger Jahre ihr Gesicht verloren hat. Inzwischen begrenzt die Gemeinde die Zahl der Reisebusse – mit spürbarem Erfolg.\n\nAlles in allem bin ich der Überzeugung, dass ein gelenkter Tourismus allen nützt: den Einheimischen ebenso wie den Gästen, die schließlich eine lebendige Stadt erleben möchten und keine Kulisse."
+  },
+  {
+   "title": "Teil 2 – Formelle E-Mail",
+   "task": "Sie haben an einem dreitägigen Weiterbildungsseminar zum Thema „Projektmanagement für Fortgeschrittene“ teilgenommen, das Ihr Arbeitgeber bezahlt hat. Das Seminar entsprach nicht der Beschreibung im Programm. Sie schreiben an die Seminarleiterin, Frau Dr. Seidel.",
+   "prompt": "Schreiben Sie eine formelle E-Mail (circa 120 Wörter). Gehen Sie auf alle folgenden Punkte ein und achten Sie auf eine passende Anrede und einen passenden Schluss.",
+   "points": ["Grund Ihres Schreibens", "was nicht der Beschreibung entsprach", "welche Folgen das für Sie hat", "was Sie von der Seminarleitung erwarten"],
+   "words": 120,
+   "sample": "Sehr geehrte Frau Dr. Seidel,\n\nvom 4. bis 6. März habe ich an Ihrem Seminar „Projektmanagement für Fortgeschrittene“ teilgenommen. Leider muss ich Ihnen mitteilen, dass ich mit der Veranstaltung nicht zufrieden war.\n\nIm Programm wurden praktische Übungen mit gängiger Projektsoftware angekündigt. Tatsächlich bestand das Seminar jedoch fast ausschließlich aus Vorträgen über Grundlagen, die mir längst bekannt waren. Die Software wurde lediglich am letzten Nachmittag kurz vorgeführt.\n\nDa mein Arbeitgeber die Teilnahme finanziert hat, um mich auf ein neues Projekt vorzubereiten, fehlen mir nun wichtige Kenntnisse.\n\nIch bitte Sie daher, mir entweder die Teilnahme an einem passenden Praxisworkshop zu ermöglichen oder einen Teil der Gebühr zu erstatten. Für eine baldige Rückmeldung wäre ich Ihnen dankbar.\n\nMit freundlichen Grüßen\nDaniel Weber"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Teil 1 – Vortrag halten",
+   "task": "Sie sollen in einem Seminar einen Vortrag (circa 3–4 Minuten) halten. Wählen Sie eines der beiden Themen: A) „Sollten Museen kostenlos sein?“ oder B) „Lebenslanges Lernen – Pflicht oder Privatsache?“ Stellen Sie das Thema vor, beschreiben Sie verschiedene Positionen mit ihren Vor- und Nachteilen, nehmen Sie begründet Stellung und schließen Sie mit einem Fazit.",
+   "cards": ["Einleitung: Thema vorstellen und Gliederung nennen", "verschiedene Positionen darstellen", "Vor- und Nachteile abwägen", "eigene Meinung begründen", "Fazit und Ausblick"],
+   "phrases": ["Ich möchte heute über ein Thema sprechen, das …", "Befürworter argumentieren, dass …", "Dem lässt sich entgegenhalten, dass …", "Meiner Einschätzung nach überwiegen …", "Abschließend möchte ich festhalten, dass …"],
+   "sample": "Ich möchte heute über die Frage sprechen, ob Museen kostenlos sein sollten. Zunächst stelle ich die wichtigsten Positionen vor, anschließend wäge ich Vor- und Nachteile ab, und zum Schluss nenne ich meine eigene Einschätzung.\n\nBefürworter eines freien Eintritts argumentieren, dass Kultur allen Menschen offenstehen sollte, unabhängig vom Einkommen. Erfahrungen aus Großbritannien zeigen, dass nach der Abschaffung der Eintrittspreise in staatlichen Museen deutlich mehr Menschen kamen, darunter viele, die vorher nie ein Museum besucht hatten.\n\nDem lässt sich entgegenhalten, dass Museen auf Einnahmen angewiesen sind. Ohne Eintrittsgelder müssten Staat und Kommunen die Kosten übernehmen, und in Zeiten knapper Kassen könnte das zulasten von Ausstellungen oder Personal gehen. Außerdem wird kritisiert, dass vor allem Touristen profitieren würden, die den Eintritt ohnehin bezahlen könnten.\n\nIn meinem Heimatland gibt es einen Kompromiss: An einem Sonntag im Monat ist der Eintritt in viele Museen frei. An diesen Tagen sind die Häuser voll, und man trifft dort viele Familien und junge Leute.\n\nMeiner Einschätzung nach überwiegen die Vorteile, zumindest für Kinder, Jugendliche und Studierende. Für alle anderen halte ich einen moderaten Preis für vertretbar, sofern es regelmäßig kostenlose Tage gibt.\n\nAbschließend möchte ich festhalten, dass Museen nicht nur Orte der Bewahrung, sondern auch der Bildung sind. Je mehr Menschen Zugang zu ihnen haben, desto besser. Vielen Dank für Ihre Aufmerksamkeit."
+  },
+  {
+   "title": "Teil 2 – Diskussion führen",
+   "task": "Diskutieren Sie mit Ihrem Gesprächspartner über die Frage: „Sollte Homeoffice für alle Beschäftigten, deren Tätigkeit es erlaubt, zum gesetzlichen Recht werden?“ Tauschen Sie Argumente aus, gehen Sie auf die Äußerungen Ihres Gesprächspartners ein und versuchen Sie am Ende, zu einem gemeinsamen Ergebnis zu kommen.",
+   "cards": ["Vereinbarkeit von Familie und Beruf", "Teamarbeit und Kommunikation", "Kosten für Arbeitgeber und Beschäftigte", "Grenzen zwischen Arbeit und Freizeit", "Pendelverkehr und Umwelt"],
+   "phrases": ["Ich vertrete die Auffassung, dass …", "Da muss ich Ihnen widersprechen, denn …", "Das ist ein berechtigter Einwand, allerdings …", "Könnten Sie das genauer erklären?", "Wir könnten uns vielleicht darauf einigen, dass …"],
+   "sample": "A: Ich vertrete die Auffassung, dass Homeoffice ein Recht werden sollte. Wer nicht täglich pendeln muss, spart Zeit und kann Familie und Beruf besser vereinbaren.\nB: Das ist ein berechtigter Punkt, allerdings sehe ich die Gefahr, dass der Zusammenhalt im Team leidet. Viele gute Ideen entstehen doch im spontanen Gespräch auf dem Flur.\nA: Da gebe ich Ihnen teilweise recht. Aber niemand fordert, dass alle nur noch zu Hause arbeiten. Es geht um die Möglichkeit, zum Beispiel an zwei oder drei Tagen pro Woche.\nB: Und wer trägt die Kosten? Ein ergonomischer Arbeitsplatz zu Hause ist teuer.\nA: Hier sehe ich die Arbeitgeber in der Pflicht, zumindest teilweise. Sie sparen ja auch Bürofläche.\nB: Ein weiteres Problem ist, dass viele im Homeoffice nicht mehr abschalten. Die Grenze zwischen Arbeit und Freizeit verschwimmt.\nA: Das stimmt, deshalb bräuchte man klare Regeln zur Erreichbarkeit.\nB: Wir könnten uns also darauf einigen, dass ein Recht auf Homeoffice sinnvoll ist, wenn es klare Regeln für Kosten und Erreichbarkeit gibt.\nA: Damit bin ich einverstanden."
+  }
+ ]
+}

@@ -682,6 +682,25 @@
       .pm-root .wp-alt{font:inherit;font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid rgba(61,255,160,0.4);background:transparent;color:#c6ffe3;cursor:pointer;}
       .pm-root .wp-alt[aria-pressed="true"]{background:rgba(61,255,160,0.16);border-color:var(--pm-good);color:var(--pm-good);font-weight:700;}
       .pm-root .wp-issue.is-focus{border-color:var(--pm-accent);box-shadow:0 0 0 2px rgba(79,232,255,0.22);}
+      .pm-root .wp-hist-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px;}
+      .pm-root .wp-hist-stats div{background:var(--pm-panel);border:1px solid var(--pm-border);border-radius:14px;padding:12px 8px;text-align:center;}
+      .pm-root .wp-hist-stats b{display:block;font-size:20px;color:#eef4ff;}
+      .pm-root .wp-hist-stats span{display:block;font-size:10.5px;line-height:1.4;color:#8291b3;margin-top:3px;}
+      .pm-root .wp-hist-trend{font-size:12.5px;line-height:1.6;color:#c2d0df;background:rgba(79,232,255,0.07);border:1px solid rgba(79,232,255,0.25);border-radius:12px;padding:9px 12px;margin:0 0 12px;}
+      .pm-root .wp-hist-trend.up{color:#c6ffe3;background:rgba(61,255,160,0.08);border-color:rgba(61,255,160,0.35);}
+      .pm-root .wp-hist-trend.down{color:#ffe2b8;background:rgba(255,190,90,0.08);border-color:rgba(255,190,90,0.35);}
+      .pm-root .wp-hist-chart{display:flex;align-items:flex-end;gap:6px;height:110px;padding:22px 10px 8px;margin:0 0 14px;background:var(--pm-panel);border:1px solid var(--pm-border);border-radius:14px;}
+      .pm-root .wp-hist-chart span{position:relative;flex:1;height:var(--h);min-height:4px;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,#4fe8ff,#9b7bff);}
+      .pm-root .wp-hist-chart i{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:3px;font-style:normal;font-size:9.5px;color:#8291b3;white-space:nowrap;}
+      .pm-root .wp-hist-list{display:grid;gap:8px;margin:0 0 14px;}
+      .pm-root .wp-hist-item{display:flex;flex-direction:column;gap:5px;width:100%;text-align:start;font:inherit;color:inherit;cursor:pointer;background:var(--pm-panel);border:1px solid var(--pm-border);border-radius:14px;padding:12px 14px;}
+      .pm-root .wp-hist-item:hover{border-color:var(--pm-accent);}
+      .pm-root .wp-hist-meta{font-size:11px;color:#8291b3;}
+      .pm-root .wp-hist-snippet{font-family:Georgia,'Iowan Old Style',serif;font-size:14px;line-height:1.55;color:#eef4ff;overflow-wrap:anywhere;}
+      .pm-root .wp-hist-badges{display:flex;gap:6px;flex-wrap:wrap;}
+      .pm-root .wp-hist-badges span{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(79,232,255,0.1);color:#bfefff;}
+      .pm-root .wp-hist-badges span.bad{background:rgba(255,95,122,0.14);color:#ffd2d9;}
+      .pm-root .wp-hist-badges span.good{background:rgba(61,255,160,0.12);color:#c6ffe3;}
     `;
     document.head.appendChild(style);
   }
@@ -817,6 +836,7 @@
     html += '<div class="pm-weak-meta" style="margin-top:10px;">'+(catInfo.best ? ('💪 '+window.t('pm_strongest_cat')+' <b>'+escapeHtml((typeof catName==='function')?catName(catInfo.best.cat):catInfo.best.cat)+'</b>') : window.t('pm_not_enough_data'))+'<br>'+(catInfo.worst ? ('🎯 '+window.t('pm_weakest_cat')+' <b>'+escapeHtml((typeof catName==='function')?catName(catInfo.worst.cat):catInfo.worst.cat)+'</b>') : '')+'</div>';
     html += '<div class="pm-weak-meta" id="pmTotalTime" style="margin-top:6px;">⏱ '+window.t('pm_total_time_loading')+'</div>';
     html += '</div>';
+    html += '<div id="pmGoetheSummary" hidden></div>';
 
     html += '<div class="pm-card"><h4>'+window.t('pm_daily_tasks')+'</h4>';
     taskDefs.forEach(td=>{
@@ -927,6 +947,8 @@
     document.getElementById('pmWeakBtn').onclick = renderWeakWords;
     const dueBtn = document.getElementById('pmDueBtn');
     if(dueBtn) dueBtn.onclick = startDailyReview;
+    /* Goethe denemelerinin özeti: seviye başına ortalama, en zayıf bölüm ve sıradaki deneme. */
+    try{ window.LUMIRA_GOETHE?.mountSummary(document.getElementById('pmGoetheSummary'), { learningGerman: (window.TARGET_LANG||activeLang)==='de', open: target => window.PM_openGoethe(target) }); }catch(e){}
 
     if(window.LB_getTotalSeconds){
       window.LB_getTotalSeconds(currentName, (secs)=>{
@@ -1029,6 +1051,22 @@
     return poolForActiveLang().filter(v=>v.level===level).length;
   }
 
+  /* Seviye Tespit girişi: Kelime sınavı (aşağıdaki akış) veya Goethe denemeleri. */
+  let pmGoetheTarget = null;
+  function openPlacementHub(){
+    pmInWritingFlow = false; pmInStoryFlow = false;
+    try{['langBox','langPair','levelBox','chips'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}catch(e){}
+    const target = pmGoetheTarget; pmGoetheTarget = null;
+    if(!window.LUMIRA_GOETHE){ openLevelTestPicker(); return; }
+    injectStyles();
+    window.LUMIRA_GOETHE.hub(root, { word: openLevelTestPicker, home: () => document.getElementById('tabPersonal')?.click(), target });
+  }
+  /* Kişisel alandaki Goethe kartı: Seviye Tespit sekmesini açıp istenen seviyeye/denemeye gider. */
+  window.PM_openGoethe = function(target){
+    pmGoetheTarget = target && typeof target === 'object' ? target : {};
+    const tab = document.getElementById('tabPlacement');
+    if(tab) tab.click(); else { pmInWritingFlow=false; pmInStoryFlow=false; openPersonalMode(openPlacementHub); }
+  };
   function openLevelTestPicker(){
     pmInWritingFlow = false;
     let html = '<div class="pm-root"><div class="pm-head"><div class="pm-eyebrow">'+(window.t?window.t('pm_level_test_btn'):'🎓 Seviye Tespit Sınavı')+'</div>'+
@@ -1049,9 +1087,10 @@
         '<span class="nm" style="font-size:10px;">'+sub+'</span></div>';
     });
     html += '</div>';
-    html += '<button type="button" class="ctrl primary" id="pmBackHome" style="width:100%;margin-top:18px;">'+(window.t?window.t('pm_back_home_btn'):'← Ana Sayfaya Dön')+'</button></div>';
+    const hubBack = !!window.LUMIRA_GOETHE;
+    html += '<button type="button" class="ctrl primary" id="pmBackHome" style="width:100%;margin-top:18px;">'+(hubBack?escapeHtml((document.documentElement.dir==='rtl'||window.NATIVE_LANG==='ar'?'→ ':'← ')+window.LUMIRA_LEARNING.text('back')):(window.t?window.t('pm_back_home_btn'):'← Ana Sayfaya Dön'))+'</button></div>';
     root.innerHTML = html;
-    document.getElementById('pmBackHome').onclick=()=>document.getElementById('tabPersonal')?.click();
+    document.getElementById('pmBackHome').onclick=()=>{ if(hubBack){ ltState=null; openPlacementHub(); } else document.getElementById('tabPersonal')?.click(); };
     const label=document.createElement('h3'),picker=document.createElement('div');label.className='work-label';label.id='ltLanguageLabel';label.textContent=window.LUMIRA_LEARNING.text('choose');picker.className='practice-language-grid';picker.setAttribute('role','group');picker.setAttribute('aria-labelledby',label.id);
     for(const code of(window.learningLanguageCodes?.()||Object.keys(LANGS).filter(code=>code!==window.NATIVE_LANG))){const button=document.createElement('button');button.type='button';button.dataset.ltLanguage=code;window.LUMIRA_LEARNING.decorateLanguage(button,code,(window.t('lang_names')||{})[code]||LANGS[code].native,code===(window.TARGET_LANG||activeLang));button.onclick=async()=>{if(code===(window.TARGET_LANG||activeLang))return;for(const item of picker.children)item.disabled=true;try{await window.setLangPair(window.NATIVE_LANG,code);if(!picker.isConnected||root.style.display==='none')return;activeLevel='TÜMÜ';ltState=null;openLevelTestPicker();}catch{if(!picker.isConnected)return;showToast(window.LUMIRA_LEARNING.text('error'));for(const item of picker.children)item.disabled=false;}};picker.append(button);}
     root.querySelector('.pm-head').append(label,picker);
@@ -1818,6 +1857,129 @@
     box.hidden = false; box.innerHTML = '<b>' + escapeHtml(wpX('topicLabel')) + '</b>' + escapeHtml(list[wpTopicIndex]);
   }
 
+  /* Yazma geçmişi: kontrol edilen her metin hesaba kaydedilir (son 30).
+     progress/<uid>/writing/items/<id> metni ve önerileri, /index ise yalnızca
+     id → zaman eşlemesini tutar; eski kayıtlar bu küçük indeksle budanır. */
+  const WP_HISTORY_MAX = 30;
+  const WP_HISTORY_COPY = {
+    tr:{open:'📜 Yazma geçmişim',title:'Yazma geçmişin',sub:'Kontrol ettiğin son {n} metin hesabında saklanır.',empty:'Henüz kontrol ettiğin bir metin yok. Bir metin yazıp kontrol ettiğinde burada görünecek.',texts:'Metin',words:'Kelime',rate:'100 kelimede hata',chart:'Son metinlerinde 100 kelimedeki hata sayısı',better:'Harika gidiyorsun: son 5 metninde öncekilere göre daha az hata var.',worse:'Son metinlerinde hata biraz arttı; açıklamaları tekrar gözden geçirmek iyi gelebilir.',same:'Hata oranın sabit. Yeni konular deneyerek kendini zorlayabilirsin.',errors:'{n} öneri',clean:'Hatasız',rewrite:'✍️ Bu metni yeniden yaz',back:'← Geri',loading:'Geçmiş yükleniyor…',failed:'Geçmiş yüklenemedi. İnternet bağlantını kontrol edip tekrar dene.',retry:'Tekrar dene'},
+    en:{open:'📜 My writing history',title:'Your writing history',sub:'Your last {n} checked texts are kept in your account.',empty:'No checked texts yet. Write a text and check it, and it will appear here.',texts:'Texts',words:'Words',rate:'Errors per 100 words',chart:'Errors per 100 words in your recent texts',better:'Great progress: your last 5 texts have fewer errors than the ones before.',worse:'Errors went up a little recently; reviewing the explanations again may help.',same:'Your error rate is steady. Try new topics to challenge yourself.',errors:'{n} suggestions',clean:'No errors',rewrite:'✍️ Rewrite this text',back:'← Back',loading:'Loading history…',failed:'History could not be loaded. Check your connection and try again.',retry:'Try again'},
+    de:{open:'📜 Mein Schreibverlauf',title:'Dein Schreibverlauf',sub:'Deine letzten {n} geprüften Texte werden in deinem Konto gespeichert.',empty:'Noch keine geprüften Texte. Schreib einen Text und prüfe ihn, dann erscheint er hier.',texts:'Texte',words:'Wörter',rate:'Fehler pro 100 Wörter',chart:'Fehler pro 100 Wörter in deinen letzten Texten',better:'Toll: Deine letzten 5 Texte haben weniger Fehler als die davor.',worse:'Zuletzt gab es etwas mehr Fehler; lies die Erklärungen noch einmal.',same:'Deine Fehlerquote ist stabil. Probiere neue Themen aus.',errors:'{n} Hinweise',clean:'Fehlerfrei',rewrite:'✍️ Diesen Text neu schreiben',back:'← Zurück',loading:'Verlauf wird geladen…',failed:'Der Verlauf konnte nicht geladen werden. Prüfe die Verbindung und versuche es erneut.',retry:'Erneut versuchen'},
+    ar:{open:'📜 سجل كتاباتي',title:'سجل كتاباتك',sub:'تُحفظ آخر {n} نصوص دققتها في حسابك.',empty:'لا توجد نصوص مدققة بعد. اكتب نصًا ودققه ليظهر هنا.',texts:'النصوص',words:'الكلمات',rate:'أخطاء لكل 100 كلمة',chart:'عدد الأخطاء لكل 100 كلمة في نصوصك الأخيرة',better:'تقدم رائع: أخطاء آخر 5 نصوص أقل من السابقة.',worse:'زادت الأخطاء قليلًا مؤخرًا؛ قد تفيدك مراجعة الشروح مجددًا.',same:'نسبة أخطائك ثابتة. جرّب مواضيع جديدة.',errors:'{n} اقتراحات',clean:'بلا أخطاء',rewrite:'✍️ أعد كتابة هذا النص',back:'→ رجوع',loading:'جارٍ تحميل السجل…',failed:'تعذر تحميل السجل. تحقق من الاتصال وحاول مجددًا.',retry:'إعادة المحاولة'},
+    fr:{open:'📜 Mon historique d’écriture',title:'Ton historique d’écriture',sub:'Tes {n} derniers textes vérifiés sont conservés dans ton compte.',empty:'Aucun texte vérifié pour l’instant. Écris un texte et vérifie-le : il apparaîtra ici.',texts:'Textes',words:'Mots',rate:'Erreurs pour 100 mots',chart:'Erreurs pour 100 mots dans tes derniers textes',better:'Beau progrès : tes 5 derniers textes contiennent moins d’erreurs.',worse:'Les erreurs ont un peu augmenté ; relire les explications peut aider.',same:'Ton taux d’erreurs est stable. Essaie de nouveaux sujets.',errors:'{n} suggestions',clean:'Sans erreur',rewrite:'✍️ Réécrire ce texte',back:'← Retour',loading:'Chargement de l’historique…',failed:'Impossible de charger l’historique. Vérifie ta connexion et réessaie.',retry:'Réessayer'},
+    es:{open:'📜 Mi historial de escritura',title:'Tu historial de escritura',sub:'Tus últimos {n} textos revisados se guardan en tu cuenta.',empty:'Aún no hay textos revisados. Escribe un texto y revísalo para verlo aquí.',texts:'Textos',words:'Palabras',rate:'Errores por cada 100 palabras',chart:'Errores por cada 100 palabras en tus textos recientes',better:'¡Gran progreso! Tus últimos 5 textos tienen menos errores que los anteriores.',worse:'Los errores han subido un poco; repasar las explicaciones puede ayudarte.',same:'Tu tasa de errores es estable. Prueba temas nuevos.',errors:'{n} sugerencias',clean:'Sin errores',rewrite:'✍️ Reescribir este texto',back:'← Volver',loading:'Cargando historial…',failed:'No se pudo cargar el historial. Revisa tu conexión e inténtalo de nuevo.',retry:'Reintentar'},
+    ru:{open:'📜 Моя история письма',title:'Твоя история письма',sub:'Последние {n} проверенных текстов хранятся в аккаунте.',empty:'Проверенных текстов пока нет. Напиши текст и проверь его — он появится здесь.',texts:'Тексты',words:'Слова',rate:'Ошибок на 100 слов',chart:'Ошибки на 100 слов в последних текстах',better:'Отличный прогресс: в последних 5 текстах меньше ошибок, чем раньше.',worse:'Ошибок стало немного больше; полезно ещё раз прочитать объяснения.',same:'Доля ошибок стабильна. Попробуй новые темы.',errors:'Подсказок: {n}',clean:'Без ошибок',rewrite:'✍️ Переписать этот текст',back:'← Назад',loading:'Загрузка истории…',failed:'Не удалось загрузить историю. Проверь подключение и попробуй снова.',retry:'Повторить'}
+  };
+  function wpH(key, values){
+    let value = (WP_HISTORY_COPY[window.NATIVE_LANG] || WP_HISTORY_COPY.en)[key] || WP_HISTORY_COPY.en[key] || key;
+    Object.keys(values || {}).forEach(k => { value = value.replaceAll('{'+k+'}', String(values[k])); });
+    return value;
+  }
+  function wpHistoryBase(){ let uid = ''; try{ uid = window.firebase.auth().currentUser.uid || ''; }catch(e){} return uid ? 'progress/' + uid + '/writing' : null; }
+  function wpHistoryEntry(text, langCode, level, matches, views){
+    const native = window.NATIVE_LANG || 'tr', cats = {};
+    const m = views.items.slice(0, 60).map(x => {
+      const c = wpCategory(x), message = String(x._messageLang === native && x._message ? x._message : (x.message || x.shortMessage || '')).slice(0, 300);
+      cats[c] = (cats[c] || 0) + 1;
+      return { o:x.offset, l:x.length, r:(x.replacements || []).map(r => r && r.value).filter(v => v != null).slice(0, 3).map(v => String(v).slice(0, 200)), c, msg:message, ml:x._messageLang === native && x._message ? native : '' };
+    });
+    return { lang:langCode, level:level || '', text:text.slice(0, 4000), at:Date.now(), words:wpWordCount(text), errors:views.count, cats, m };
+  }
+  function wpEntryMatches(entry){
+    return (Array.isArray(entry.m) ? entry.m : []).filter(x => x && Number.isFinite(x.o) && Number.isFinite(x.l)).map(x => ({
+      offset:x.o, length:x.l, message:x.msg || '', _message:x.ml ? x.msg : '', _messageLang:x.ml || '',
+      replacements:(Array.isArray(x.r) ? x.r : []).map(value => ({ value })), rule:{ category:{ id:({spelling:'TYPOS',grammar:'GRAMMAR',punctuation:'PUNCTUATION',casing:'CASING',style:'STYLE'})[x.c] || 'MISC' } }
+    }));
+  }
+  let wpHistoryCache = null;
+  async function wpSaveHistory(entry){
+    const base = wpHistoryBase(), db = window.LB_getDb ? window.LB_getDb() : null;
+    if(!base || !db) return;
+    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    await db.ref(base + '/items/' + id).set(entry);
+    let removed = [];
+    await db.ref(base + '/index').transaction(index => {
+      index = index && typeof index === 'object' ? Object.assign({}, index) : {};
+      index[id] = entry.at;
+      const keys = Object.keys(index).sort((a, b) => (Number(index[a]) || 0) - (Number(index[b]) || 0));
+      removed = keys.slice(0, Math.max(0, keys.length - WP_HISTORY_MAX));
+      removed.forEach(k => { delete index[k]; });
+      return index;
+    });
+    if(removed.length){ const updates = {}; removed.forEach(k => { updates[base + '/items/' + k] = null; }); await db.ref().update(updates); }
+    wpHistoryCache = null;
+  }
+  async function wpLoadHistory(){
+    const base = wpHistoryBase(), db = window.LB_getDb ? window.LB_getDb() : null;
+    if(!base || !db) throw new Error('login_required');
+    if(wpHistoryCache && wpHistoryCache.base === base) return wpHistoryCache.items;
+    const value = (await db.ref(base + '/items').once('value')).val() || {};
+    const items = Object.keys(value).map(id => Object.assign({ id }, value[id])).filter(e => e && typeof e.text === 'string' && Number.isFinite(e.at)).sort((a, b) => b.at - a.at);
+    wpHistoryCache = { base, items };
+    return items;
+  }
+  const wpRate = e => e.words ? Math.round(e.errors / e.words * 1000) / 10 : 0;
+  let wpHistoryReturn = null;
+  function wpHistoryHead(){
+    return '<div class="pm-root" data-wp-history><div class="pm-head"><div class="pm-title">' + escapeHtml(wpH('title')) + '</div><div class="pm-sub">' + escapeHtml(wpH('sub', {n:WP_HISTORY_MAX})) + '</div></div>';
+  }
+  async function renderWritingHistory(returnTo){
+    if(typeof returnTo === 'function') wpHistoryReturn = returnTo;
+    pmInWritingFlow = true;
+    injectStyles();
+    root.innerHTML = wpHistoryHead() + '<div class="wp-loading">' + escapeHtml(wpH('loading')) + '</div></div>';
+    const view = root.firstElementChild;
+    let items;
+    try{ items = await wpLoadHistory(); }
+    catch(e){
+      if(!view.isConnected) return;
+      root.innerHTML = wpHistoryHead() + '<div class="wp-error">' + escapeHtml(wpH('failed')) + '</div><button class="pm-btn small" id="wpHistRetry">' + escapeHtml(wpH('retry')) + '</button><button class="pm-btn small" id="wpHistBack">' + escapeHtml(wpH('back')) + '</button></div>';
+      document.getElementById('wpHistRetry').onclick = () => renderWritingHistory();
+      document.getElementById('wpHistBack').onclick = () => (wpHistoryReturn || renderWritingLangSelect)();
+      return;
+    }
+    if(!view.isConnected || !view.hasAttribute('data-wp-history')) return;
+    let html = wpHistoryHead();
+    if(!items.length){
+      html += '<div class="pm-empty">' + escapeHtml(wpH('empty')) + '</div>';
+    }else{
+      const words = items.reduce((sum, e) => sum + (e.words || 0), 0), recent = items.slice(0, 5), earlier = items.slice(5, 10);
+      const avg = rows => rows.length ? Math.round(rows.reduce((sum, e) => sum + wpRate(e), 0) / rows.length * 10) / 10 : 0;
+      html += '<div class="wp-hist-stats"><div><b>' + items.length + '</b><span>' + escapeHtml(wpH('texts')) + '</span></div><div><b>' + words + '</b><span>' + escapeHtml(wpH('words')) + '</span></div><div><b>' + avg(recent).toLocaleString(window.NATIVE_LANG || 'tr') + '</b><span>' + escapeHtml(wpH('rate')) + '</span></div></div>';
+      if(earlier.length >= 3){
+        const diff = avg(recent) - avg(earlier);
+        html += '<p class="wp-hist-trend ' + (diff < -0.5 ? 'up' : diff > 0.5 ? 'down' : '') + '">' + escapeHtml(wpH(diff < -0.5 ? 'better' : diff > 0.5 ? 'worse' : 'same')) + '</p>';
+      }
+      const chart = items.slice(0, 10).reverse(), peak = Math.max(1, ...chart.map(wpRate));
+      html += '<div class="wp-section-label">' + escapeHtml(wpH('chart')) + '</div><div class="wp-hist-chart" role="img" aria-label="' + escapeHtml(wpH('chart')) + '">' + chart.map(e => '<span style="--h:' + Math.max(4, Math.round(wpRate(e) / peak * 100)) + '%" title="' + escapeHtml(wpRate(e) + '') + '"><i>' + escapeHtml(wpRate(e).toLocaleString(window.NATIVE_LANG || 'tr')) + '</i></span>').join('') + '</div>';
+      html += '<div class="wp-hist-list">' + items.map(e => {
+        const L = wpFindLang(e.lang), date = new Date(e.at).toLocaleDateString(window.NATIVE_LANG || 'tr', { day:'numeric', month:'short', year:'numeric' });
+        return '<button type="button" class="wp-hist-item" data-wp-hist="' + escapeHtml(e.id) + '"><span class="wp-hist-meta">' + escapeHtml((L ? L.flag + ' ' + L.label : e.lang) + (e.level ? ' · ' + e.level : '') + ' · ' + date) + '</span><span class="wp-hist-snippet" lang="' + escapeHtml(e.lang) + '" dir="' + (e.lang === 'ar' ? 'rtl' : 'ltr') + '">' + escapeHtml(e.text.slice(0, 140) + (e.text.length > 140 ? '…' : '')) + '</span><span class="wp-hist-badges"><span>' + escapeHtml(wpX('words', {n:e.words || 0})) + '</span><span class="' + (e.errors ? 'bad' : 'good') + '">' + escapeHtml(e.errors ? wpH('errors', {n:e.errors}) : wpH('clean')) + '</span></span></button>';
+      }).join('') + '</div>';
+    }
+    html += '<button class="pm-btn small" id="wpHistBack">' + escapeHtml(wpH('back')) + '</button></div>';
+    root.innerHTML = html;
+    document.getElementById('wpHistBack').onclick = () => (wpHistoryReturn || renderWritingLangSelect)();
+    root.querySelectorAll('[data-wp-hist]').forEach(button => { button.onclick = () => renderWritingHistoryItem(items.find(e => e.id === button.dataset.wpHist)); });
+  }
+  function renderWritingHistoryItem(entry){
+    if(!entry) return;
+    const lang = wpFindLang(entry.lang) || { code:entry.lang, tts:entry.lang, label:entry.lang, flag:'🌐' };
+    const date = new Date(entry.at).toLocaleString(window.NATIVE_LANG || 'tr', { dateStyle:'medium', timeStyle:'short' });
+    root.innerHTML = wpHistoryHead() + '<p class="wp-summary">' + escapeHtml(lang.flag + ' ' + lang.label + (entry.level ? ' · ' + entry.level : '') + ' · ' + date) + '</p><div id="wpHistResult"></div><button class="pm-btn primary" id="wpHistRewrite">' + escapeHtml(wpH('rewrite')) + '</button><button class="pm-btn small" id="wpHistBack">' + escapeHtml(wpH('back')) + '</button></div>';
+    const box = document.getElementById('wpHistResult');
+    wpRenderResult(box, entry.text, lang, wpBuildViews(entry.text, wpEntryMatches(entry)));
+    box.querySelector('#wpApplyBtn')?.remove();
+    document.getElementById('wpHistBack').onclick = () => renderWritingHistory();
+    document.getElementById('wpHistRewrite').onclick = () => {
+      if(!wpFindLang(entry.lang)) return;
+      wpLang = entry.lang; wpLevel = WP_LEVELS.includes(entry.level) ? entry.level : 'A1'; wpLastResult = null; wpTopicIndex = -1;
+      renderWritingPractice();
+      const ta = document.getElementById('wpInput');
+      if(ta){ ta.value = entry.text; ta.dispatchEvent(new Event('input')); ta.focus(); }
+    };
+  }
+
   /* ---- 1. adım: dil seçimi ---- */
   function renderWritingLangSelect(){
     pmInWritingFlow = true;
@@ -1832,9 +1994,11 @@
       html += '<button type="button" class="practice-language" data-lang="'+l.code+'" data-wp-lang="'+l.code+'"><span class="lname">'+escapeHtml((typeof nbLangLabel==='function')?nbLangLabel(l.code):L.label)+'</span></button>';
     });
     html += '</div>';
-    html += '<button class="pm-btn small" id="wpBackHomeBtn" style="margin-top:16px;">'+(window.t?window.t('wp_back_to_notebook'):'← Notlarım\'a Dön')+'</button></div>';
+    html += '<button class="pm-btn small" id="wpLangHistoryBtn" type="button" style="margin-top:16px;">'+escapeHtml(wpH('open'))+'</button>';
+    html += '<button class="pm-btn small" id="wpBackHomeBtn" style="margin-top:8px;">'+(window.t?window.t('wp_back_to_notebook'):'← Notlarım\'a Dön')+'</button></div>';
     root.innerHTML = html;
     window.LUMIRA_FEATURES.mountWriting(root.querySelector('[data-writing-quota]'));
+    document.getElementById('wpLangHistoryBtn').onclick = () => renderWritingHistory(renderWritingLangSelect);
     root.querySelectorAll('[data-wp-lang]').forEach(el=>{
       window.LUMIRA_LEARNING.decorateLanguage(el,el.dataset.wpLang,window.t('lang_names')?.[el.dataset.wpLang]||el.dataset.wpLang,el.dataset.wpLang===wpLang);
       el.onclick = () => { wpLang = el.getAttribute('data-wp-lang'); wpLevel = null; wpLastResult = null; renderWritingLevelSelect(); };
@@ -2071,6 +2235,8 @@
       const views = wpBuildViews(text, matches);
       wpLastResult = { text:text, langCode:lang.code, matches:matches, views:views };
       wpRenderResult(resultBox, text, lang, views);
+      // History is a convenience: a failed save never touches the result.
+      try{ wpSaveHistory(wpHistoryEntry(text, lang.code, wpLevel, matches, views)).catch(()=>{}); }catch(e){}
     })
     .catch((err)=>{
       console.error('[Yazma Pratiği] Kontrol hatası:', err);
@@ -2100,7 +2266,7 @@
     html += '<div class="wp-topic" id="wpTopic" hidden></div>';
     html += '<textarea class="wp-textarea" id="wpInput" maxlength="4000" lang="'+lang.code+'" dir="'+(lang.code==='ar'?'rtl':'ltr')+'" placeholder="'+(window.t?window.t('wp_placeholder')(lang.label):('Buraya '+lang.label+' bir metin yaz...'))+'"></textarea>';
     html += '<div class="wp-counter" id="wpCounter" title="'+escapeHtml(wpX('draft'))+'">'+escapeHtml(wpCounterText(''))+'</div>';
-    html += '<div class="wp-tools"><button class="pm-btn small" id="wpTopicBtn" type="button">'+escapeHtml(wpX('topic'))+'</button><button class="pm-btn small" id="wpClearBtn" type="button">'+escapeHtml(wpX('clear'))+'</button></div>';
+    html += '<div class="wp-tools"><button class="pm-btn small" id="wpTopicBtn" type="button">'+escapeHtml(wpX('topic'))+'</button><button class="pm-btn small" id="wpClearBtn" type="button">'+escapeHtml(wpX('clear'))+'</button><button class="pm-btn small" id="wpHistoryBtn" type="button">'+escapeHtml(wpH('open'))+'</button></div>';
     html += '<button class="pm-btn primary" id="wpCheckBtn" title="'+escapeHtml(wpX('shortcut'))+'">'+(window.t?window.t('wp_check_btn'):'Kontrol Et')+'</button>';
     html += '<div id="wpResult"></div>';
     html += '<button class="pm-btn small" id="wpBackLevelBtn">'+(window.t?window.t('wp_back_level'):'← Seviye Değiştir')+'</button>';
@@ -2130,6 +2296,10 @@
       ta.addEventListener('keydown', e=>{ if(e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !e.isComposing){ e.preventDefault(); wpRunCheck(); } });
     }
     wpPaintTopic();
+    document.getElementById('wpHistoryBtn').onclick = () => {
+      const draft = ta ? ta.value : '';
+      renderWritingHistory(() => { renderWritingPractice(); const next = document.getElementById('wpInput'); if(next && draft){ next.value = draft; next.dispatchEvent(new Event('input')); } });
+    };
     document.getElementById('wpTopicBtn').onclick = () => {
       const list = (wpX('prompts') || {})[wpLevel] || [];
       if(!list.length) return;
@@ -2180,7 +2350,7 @@
     // mantığını çalıştırırken kullanıcı farklı bir ekrandaydı).
     const isVisible = root && root.style.display !== 'none';
     const activeTab=document.querySelector('.tabs .tab.active')?.id;
-    const landing=isVisible?(activeTab==='tabPersonal'?renderHome:activeTab==='tabPlacement'?openLevelTestPicker:activeTab==='tabStories'?renderStories:activeTab==='tabWriting'&&!window.LUMIRA_LEARNING?.isMounted()?renderWritingLangSelect:null):null;
+    const landing=isVisible?(activeTab==='tabPersonal'?renderHome:activeTab==='tabPlacement'?(window.LUMIRA_GOETHE?.isMounted()?null:openPlacementHub):activeTab==='tabStories'?renderStories:activeTab==='tabWriting'&&!window.LUMIRA_LEARNING?.isMounted()?renderWritingLangSelect:null):null;
     loadUserData(name,()=>{if(root.style.display!=='none'&&document.querySelector('.tabs .tab.active')?.id===activeTab)landing?.();});
   };
 
@@ -2205,10 +2375,15 @@
       if(pmInStoryFlow&&window.LUMIRA_STORIES?.isMounted()){window.LUMIRA_STORIES.refreshLocale();return;}
 
       if(window.LUMIRA_LEARNING?.isMounted())return;
-      if(document.getElementById('tabPlacement')?.classList.contains('active')){if(!ltState)openLevelTestPicker();return;}
+      if(document.getElementById('tabPlacement')?.classList.contains('active')){
+        if(window.LUMIRA_GOETHE?.isMounted()){ window.LUMIRA_GOETHE.refreshLocale(); return; }
+        if(!ltState){ if(!window.LUMIRA_GOETHE || root.querySelector('.lt-lv-opt,#pmLtCatGrid')) openLevelTestPicker(); else openPlacementHub(); }
+        return;
+      }
       if(pmInWritingFlow){
         ['langBox','langPair','levelBox','chips'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
         if(wpBusy){ wpLocalePending = true; return; }
+        if(root.querySelector('[data-wp-history]')){ renderWritingHistory(); return; }
         const oldInput = document.getElementById('wpInput');
         const oldValue = oldInput ? oldInput.value : '';
         const oldResult = document.getElementById('wpResult');
@@ -2245,7 +2420,7 @@
      yerine doğrudan dil seçim ekranını gösterir. */
   window.PM_openWritingPractice=function(){openRun++;pmInWritingFlow=true;pmInStoryFlow=false;injectStyles();window.LUMIRA_LEARNING.mount(root);};
   window.PM_openTextWriting=function(){openPersonalMode(renderWritingLangSelect);};
-  window.PM_openPlacement=function(){pmInWritingFlow=false;pmInStoryFlow=false;openPersonalMode(openLevelTestPicker);};
+  window.PM_openPlacement=function(){pmInWritingFlow=false;pmInStoryFlow=false;openPersonalMode(openPlacementHub);};
   function renderStories(){pmInWritingFlow=false;pmInStoryFlow=true;['langBox','langPair','levelBox','chips'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});window.LUMIRA_STORIES.mount(root,()=>document.getElementById('tabPersonal')?.click());}
   window.PM_openStories=function(){openPersonalMode(renderStories);};
   window.PR_storyWords=function(language){const uid=window.firebase?.auth?.().currentUser?.uid;if(!dataLoaded||!uid||currentKey!==uid||language!==TARGET_LANG)return[];return poolForActiveLang().filter(v=>getRecord(v)?.known).map(v=>({w:FRONT_W(v),meaning:BACK_W(v)}));};

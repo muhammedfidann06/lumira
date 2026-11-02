@@ -1125,6 +1125,7 @@ function deactivateAllTabs(){
   ['tabWriting','tabPlacement','tabStories'].forEach(id=>toggleActive(id,false));
   setDisplay('maintenanceView','none');
   if(window.LUMIRA_LIVE && window.LUMIRA_LIVE.isMounted()) window.LUMIRA_LIVE.unmount();
+  window.LUMIRA_LIVE_MODES?.unmount();
   try{document.body.classList.remove('pm-active');}catch(e){}
   try{document.body.classList.remove('notebook-active');}catch(e){}
   toggleActive('tabCards', false);
@@ -1170,12 +1171,15 @@ if($('tabQuiz')) $('tabQuiz').onclick = () => {
   buildQuizDeck();
 };
 if($('tabLiveTranslate')) $('tabLiveTranslate').onclick = () => {
-  if($('tabLiveTranslate').classList.contains('active') && window.LUMIRA_LIVE && window.LUMIRA_LIVE.isMounted()) return;
+  if($('tabLiveTranslate').classList.contains('active') && ((window.LUMIRA_LIVE && window.LUMIRA_LIVE.isMounted()) || window.LUMIRA_LIVE_MODES?.isMounted())) return;
   deactivateAllTabs();
   toggleActive('tabLiveTranslate', true);
   setDisplay('liveTranslateView', 'block');
   ['levelBox','chips','langBox','langPair'].forEach(id => setDisplay(id, 'none'));
-  if(window.LUMIRA_LIVE) window.LUMIRA_LIVE.mount($('liveTranslateView'));
+  // Live Translation keeps its own screen; a small chooser in front of it
+  // also offers face-to-face translation.
+  if(window.LUMIRA_LIVE_MODES) window.LUMIRA_LIVE_MODES.open($('liveTranslateView'));
+  else if(window.LUMIRA_LIVE) window.LUMIRA_LIVE.mount($('liveTranslateView'));
 };
 if($('tabPersonal')) $('tabPersonal').onclick = () => {
   deactivateAllTabs();

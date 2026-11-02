@@ -1,0 +1,208 @@
+/* Goethe deneme sınavları: Yazma Pratiği ile aynı .workspace görünümü üzerine. */
+.ge-page .work-hero p{max-width:70ch}
+.ge-disclaimer{margin:-6px 0 18px;padding:12px 14px;border:1px dashed #4fe8ff45;border-radius:14px;background:#4fe8ff0a;color:#b3c6dd;font-size:12.5px;line-height:1.75}
+.ge-disclaimer a{color:#9fe9f0;font-weight:650;text-underline-offset:3px}
+.ge-levels,.ge-modules{display:grid;gap:12px}
+.ge-level{display:grid;grid-template-columns:58px minmax(0,1fr) 18px;align-items:center;gap:14px;width:100%;padding:18px 16px;border:1px solid #4b60805c;border-radius:19px;background:linear-gradient(145deg,#152138eb,#10192de8);color:#e9f3ff;text-align:start}
+.ge-level:hover{border-color:#73d8dc99;background:#172a3f}
+.ge-level-id{display:grid;place-items:center;height:58px;border-radius:16px;background:linear-gradient(135deg,#21465a,#302c50);border:1px solid #72ddef55;color:#e5fbff;font-size:20px;font-weight:800;letter-spacing:.02em}
+.ge-level-body strong{display:block;font-size:16px;line-height:1.45}
+.ge-level-body small{display:block;margin-top:4px;color:#a8bbd5;font-size:12.5px;line-height:1.7}
+.ge-level-meta{display:block;margin-top:6px;color:#8fd8d2;font-size:11.5px;font-weight:650}
+.ge-tests{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ge-test{display:flex;flex-direction:column;gap:6px;width:100%;padding:15px 14px;border:1px solid #4b60805c;border-radius:17px;background:linear-gradient(145deg,#152138eb,#10192de8);color:#e9f3ff;text-align:start}
+.ge-test:hover{border-color:#73d8dc99}
+.ge-test strong{font-size:15.5px}
+.ge-test small{min-height:18px;color:#a8bbd5;font-size:11.5px}
+.ge-chips{display:flex;flex-wrap:wrap;gap:5px}
+.ge-chip{padding:2px 8px;border-radius:999px;border:1px solid #4b6080;color:#9fb3cc;font-size:10.5px;font-weight:650;white-space:nowrap}
+.ge-chip.good{border-color:#3dffa088;color:#c6ffe3;background:#3dffa014}
+.ge-chip.warn{border-color:#ffbe5a88;color:#ffe2b8;background:#ffbe5a14}
+.ge-module{padding:17px 16px;border:1px solid #49608060;border-radius:19px;background:#101a2ded}
+.ge-module-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.ge-module-head strong{font-size:18px}
+.ge-module-sub{color:#9fb3cc;font-size:12.5px}
+.ge-module-meta{margin:4px 0 0;color:#a8bbd5;font-size:12.5px}
+.ge-module-status{margin:8px 0 0;font-size:12.5px;font-weight:700}
+.ge-module-status.good{color:#9ff5cf}.ge-module-status.warn{color:#ffd59a}
+.ge-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.ge-actions>*{flex:1 1 150px}
+.ge-wide{width:100%;margin-top:14px}
+.ge-intro-list{margin:0;padding-inline-start:20px;display:grid;gap:9px;color:#d7e3f5;font-size:14px;line-height:1.7}
+.ge-intro-list strong{color:#a4e7e4}
+.ge-toggle{display:flex;align-items:center;gap:10px;margin-top:16px;color:#c9d7f5;font-size:13.5px;cursor:pointer}
+.ge-toggle input{width:20px;height:20px;accent-color:#4fe8ff;flex:none}
+/* Sınav ekranı */
+.ge-run{padding-top:0}
+.ge-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;margin:0 -2px 10px;padding:10px 4px;background:linear-gradient(180deg,#0a1222 78%,#0a122200)}
+.ge-exit{flex:none;min-height:40px;padding:8px 12px;border:1px solid #3b5570;border-radius:11px;background:#14213a;color:#b7d9e2;font-size:12.5px}
+.ge-bar-title{flex:1;font-weight:750;font-size:14px;color:#e7efff;text-align:center}
+.ge-clock{flex:none;min-width:76px;padding:7px 10px;border-radius:11px;background:#16314a;border:1px solid #4fe8ff44;color:#c8f6ff;font:700 13px/1.2 ui-monospace,Menlo,Consolas,monospace;text-align:center}
+.ge-clock.low{background:#4a2330;border-color:#ff7a8a88;color:#ffd2d9}
+.ge-progress{height:5px;border-radius:5px;background:#22384f;overflow:hidden}
+.ge-progress>span{display:block;height:100%;background:linear-gradient(90deg,#4fe8ff,#9b7bff);transition:width .2s}
+.ge-counter{margin:6px 0 12px;color:#93a9c4;font-size:11.5px;text-align:end}
+.ge-teil{padding:18px 16px;border:1px solid #49608060;border-radius:20px;background:#101a2ded}
+.ge-teil>h2{margin:0 0 8px;font-size:19px}
+.ge-task{margin:0 0 14px;padding:11px 13px;border-inline-start:3px solid #4fe8ff;border-radius:10px;background:#4fe8ff0d;color:#dbe9fb;font-size:14px;line-height:1.7}
+.ge-text,.ge-item-text{margin:0 0 14px;padding:16px;border:1px solid #d8e1ea;border-radius:14px;background:#f4f6f9;color:#1b2536}
+.ge-text h3{margin:0 0 8px;color:#16233a;font:700 15px/1.5 Georgia,'Iowan Old Style',serif}
+.ge-text-body p,.ge-choice-text p{margin:0 0 9px;font:15px/1.7 Georgia,'Iowan Old Style',serif}
+.ge-text-body p:last-child,.ge-choice-text p:last-child{margin-bottom:0}
+.ge-item-text{padding:12px 14px}
+.ge-choices{display:grid;gap:8px;margin:0 0 16px}
+.ge-choice{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start;padding:11px 12px;border:1px solid #d8e1ea;border-radius:12px;background:#f4f6f9;color:#1b2536}
+.ge-choice b{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#1f3b57;color:#e5fbff;font:700 14px/1 system-ui,sans-serif}
+.ge-choice-text p{font-size:14px}
+.ge-item{margin-top:12px;padding:14px 13px;border:1px solid #3e5570;border-radius:16px;background:#132036}
+.ge-item-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.ge-num{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#4fe8ff1f;border:1px solid #4fe8ff66;color:#c8f6ff;font-size:12px;font-weight:800}
+.ge-q{margin:2px 0 0;color:#e9f3ff;font-size:15px;line-height:1.65}
+.ge-opts{display:grid;gap:8px}
+.ge-pair{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ge-letters{grid-template-columns:repeat(auto-fill,minmax(46px,1fr))}
+.ge-opt{display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:10px 12px;border:1px solid #4b6585;border-radius:13px;background:#182941;color:#e1ecfb;font-size:14.5px;line-height:1.5;text-align:center}
+.ge-list .ge-opt{justify-content:flex-start;text-align:start}
+.ge-opt b{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:#ffffff12;font-size:13px}
+.ge-opt:hover:not(:disabled){border-color:#73d8dc}
+.ge-opt.is-selected{border-color:#72ddef;background:linear-gradient(135deg,#21465a,#302c50);color:#fff;box-shadow:inset 0 0 0 1px #4fe8ff40}
+.ge-opt.is-correct{border-color:#3dffa0;background:#163f35;color:#d6ffec;opacity:1}
+.ge-opt.is-wrong{border-color:#ff7a8a;background:#482a30;color:#ffe0e4;opacity:1}
+.workspace .ge-opt:disabled{opacity:.55}.workspace .ge-opt.is-correct:disabled,.workspace .ge-opt.is-wrong:disabled{opacity:1}
+.ge-verdict{margin:10px 0 0;font-size:13px;line-height:1.6}
+.ge-verdict.good{color:#9ff5cf}.ge-verdict.bad{color:#ffc4cc}
+.ge-why{margin:6px 0 0;color:#9fb3cc;font-size:12.5px;font-style:italic}
+.ge-audio{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 12px}
+.ge-play{min-width:130px}
+.ge-plays{color:#9fb3cc;font-size:12px}
+.ge-transcript{flex-basis:100%;padding:10px 12px;border:1px solid #3e5570;border-radius:12px;background:#0d1729}
+.ge-transcript summary{cursor:pointer;color:#a4e7e4;font-size:13px;font-weight:650}
+.ge-transcript .ge-text-body p{color:#d7e3f5;font-size:14px}
+.ge-nav{display:flex;gap:10px;margin:16px 0 0}
+.ge-nav>*{flex:1}
+/* Sonuç */
+.ge-result{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.ge-ring{--p:0;flex:none;display:grid;place-items:center;align-content:center;width:112px;height:112px;border-radius:50%;background:radial-gradient(closest-side,#101a2d 78%,transparent 79%),conic-gradient(var(--ring,#4fe8ff) calc(var(--p)*1%),#24364d 0)}
+.ge-ring.good{--ring:#3dffa0}.ge-ring.warn{--ring:#ffbe5a}
+.ge-ring strong{font-size:30px;line-height:1}.ge-ring small{color:#9fb3cc;font-size:11px}
+.ge-result-text{flex:1 1 200px}
+.ge-result-text h2{margin:0 0 6px;font-size:20px}
+.ge-result-text p{margin:0 0 6px;color:#c6d4ea}
+.ge-xp{color:#ffe08a!important;font-weight:750}
+.ge-breakdown{display:grid;gap:9px;margin:14px 0}
+.ge-break-row{display:grid;grid-template-columns:minmax(70px,auto) minmax(0,1fr) 46px;gap:10px;align-items:center;font-size:13px;color:#d7e3f5}
+.ge-break-bar{height:8px;border-radius:6px;background:#22384f;overflow:hidden}
+.ge-break-bar>span{display:block;height:100%;background:linear-gradient(90deg,#4fe8ff,#9b7bff)}
+.ge-break-score{text-align:end;color:#a8bbd5}
+/* Schreiben / Sprechen */
+.ge-form{display:grid;gap:10px;margin:0 0 14px}
+.ge-field{display:grid;gap:5px;color:#c6d4ea;font-size:13px}
+.ge-field input{width:100%;min-height:46px;padding:10px 12px;border:1px solid #526d89;border-radius:12px;background:#091429;color:#eef5ff;font-size:15px}
+.ge-points{margin:0 0 12px;padding:12px 13px;border:1px solid #3e5570;border-radius:14px;background:#132036}
+.ge-points-title{margin:0 0 6px;color:#a4e7e4;font-size:12.5px;font-weight:700}
+.ge-point{display:flex;gap:10px;align-items:flex-start;padding:5px 0;color:#e1ecfb;font-size:14px;line-height:1.55;cursor:pointer}
+.ge-point input{width:19px;height:19px;margin-top:2px;accent-color:#3dffa0;flex:none}
+.ge-textarea{display:block;width:100%;min-height:190px;resize:vertical;padding:14px;border:1px solid #526d89;border-radius:14px;background:#091429;color:#eef5ff;font:16px/1.7 Georgia,'Iowan Old Style',serif}
+.ge-words{margin:6px 0 0;color:#93a9c4;font-size:12px;text-align:end}
+.ge-check{margin-top:10px;font-size:13px;color:#d7e3f5}
+.ge-check ul{margin:6px 0 0;padding-inline-start:18px;display:grid;gap:4px}
+.ge-check b{color:#ffd2d9}.ge-check .ge-fix{color:#9ff5cf}
+.ge-check-ok{color:#9ff5cf}.ge-check-bad{color:#ffc4cc}
+.ge-sample{margin-top:14px;padding:12px 14px;border:1px solid #3dffa04d;border-radius:14px;background:#3dffa00a}
+.ge-sample summary{cursor:pointer;color:#9ff5cf;font-weight:700;font-size:13.5px}
+.ge-sample .ge-text-body{margin-top:10px}.ge-sample .ge-text-body p{color:#e6f6ee}
+.ge-cards{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.ge-card{padding:10px 14px;border-radius:12px;background:#f4f6f9;color:#1b2536;font:600 14px/1.4 system-ui,sans-serif;border:1px solid #d8e1ea}
+.ge-phrases,.ge-sample-box{margin:0 0 14px;padding:13px 14px;border:1px solid #3e5570;border-radius:14px;background:#132036}
+.ge-phrases h3,.ge-sample-box h3{margin:0 0 8px;font-size:13.5px;color:#a4e7e4}
+.ge-phrases ul{margin:0;padding-inline-start:18px;display:grid;gap:4px;color:#e1ecfb;font-size:14px}
+.ge-sample-box .ge-text-body p{color:#e1ecfb}
+.ge-sample-box .work-btn{margin-top:10px}
+details.ge-sample-box>summary{cursor:pointer;color:#9ff5cf;font-weight:700;font-size:13.5px}
+details.ge-sample-box[open]>summary{margin-bottom:10px}
+/* Yapay zekâ değerlendirmesi */
+.ge-ai-btn{flex:1 1 190px}
+.ge-ai-msg{min-height:0;margin:8px 0 0;color:#ffd59a;font-size:13px;line-height:1.6}
+.ge-ai-msg:empty{display:none}
+.ge-ai-wrap:empty{display:none}
+.ge-ai{margin-top:14px;padding:15px 14px;border:1px solid #9b7bff55;border-radius:18px;background:linear-gradient(160deg,#171a3cf0,#101a2df0)}
+.ge-ai-head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.ge-ring-sm{width:74px;height:74px}
+.ge-ring-sm strong{font-size:22px}.ge-ring-sm small{font-size:10px}
+.ge-ai-title{display:grid;gap:3px;min-width:0}
+.ge-ai-title strong{font-size:15.5px;color:#e9f3ff}
+.ge-ai-title span{color:#b9c8e0;font-size:12.5px;line-height:1.5}
+.ge-ai-stale{margin:0 0 10px;padding:8px 11px;border-radius:10px;background:#ffbe5a14;border:1px solid #ffbe5a55;color:#ffe2b8;font-size:12.5px;line-height:1.6}
+.ge-ai-criteria{display:grid;gap:10px}
+.ge-ai-crit-top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(60px,1fr) 34px;gap:10px;align-items:center}
+.ge-ai-crit-top strong{font-size:13px;color:#dbe7f8}
+.ge-ai-crit-score{text-align:end;color:#a8bbd5;font-size:12.5px;font-weight:700}
+.ge-ai-crit p{margin:4px 0 0;color:#b9c8e0;font-size:12.5px;line-height:1.65}
+.ge-ai-list{margin-top:12px}
+.ge-ai-list h4{margin:0 0 5px;font-size:13px;color:#a4e7e4}
+.ge-ai-list.good h4{color:#9ff5cf}.ge-ai-list.warn h4{color:#ffd59a}
+.ge-ai-list ul{margin:0;padding-inline-start:18px;display:grid;gap:4px;color:#e1ecfb;font-size:13.5px;line-height:1.6}
+.ge-ai .ge-sample{margin-top:12px}
+.ge-ai-note{margin:12px 0 0;color:#8ea4c0;font-size:11.5px;line-height:1.6}
+/* Sprechen: sesli cevap */
+.ge-answer{margin:0 0 14px;padding:14px;border:1px solid #4fe8ff40;border-radius:16px;background:#0f1c31}
+.ge-answer h3{margin:0 0 4px;font-size:14px;color:#a4e7e4}
+.ge-answer-hint{margin:0 0 10px;color:#a8bbd5;font-size:12.5px;line-height:1.6}
+.ge-answer-text{min-height:130px}
+.ge-rec.is-active{background:linear-gradient(115deg,#ff8aa0,#ffb36b);border-color:#ffb3c0;color:#2a0f17;animation:ge-pulse 1.6s ease-in-out infinite}
+@keyframes ge-pulse{0%,100%{box-shadow:0 0 0 0 #ff8aa055}50%{box-shadow:0 0 0 8px #ff8aa000}}
+/* Bölüm sonucu: görev bazlı geri bildirim */
+.ge-feedback{margin-top:10px;padding:12px 13px;border:1px solid #3e5570;border-radius:15px;background:#101a2ded}
+.ge-feedback>summary{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;cursor:pointer;color:#e9f3ff;font-size:14px}
+.ge-feedback>summary span{color:#93a9c4;font-size:12px}
+.ge-feedback .ge-text{margin-top:10px}
+/* Kişisel alan: Goethe özet kartı */
+.ge-summary .ge-sum-list{display:grid;gap:8px;margin-top:8px}
+.ge-sum-row{display:grid;grid-template-columns:44px minmax(0,1fr) 14px;gap:12px;align-items:center;width:100%;padding:11px 12px;border:1px solid #4b60805c;border-radius:15px;background:#ffffff08;color:inherit;text-align:start;cursor:pointer;font:inherit}
+.ge-sum-row:hover{border-color:#73d8dc99}
+.ge-sum-row .ge-level-id{height:44px;border-radius:12px;font-size:15px}
+.ge-sum-body{display:grid;gap:6px;min-width:0}
+.ge-sum-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px;font-size:13.5px}
+.ge-sum-avg{font-size:12px;font-weight:750}
+.ge-sum-avg.good{color:#9ff5cf}.ge-sum-avg.warn{color:#ffd59a}
+.ge-sum-empty,.ge-sum-weak{margin:8px 0 0;color:#b9c8e0;font-size:13px;line-height:1.65}
+.ge-sum-top strong{color:#eef4ff}
+.ge-summary button.ge-sum-cta,.pm-root .ge-summary button.ge-sum-cta{width:100%;margin:12px 0 0}
+.ge-ai .ge-ring{background:radial-gradient(closest-side,#151a37 78%,transparent 79%),conic-gradient(var(--ring,#4fe8ff) calc(var(--p)*1%),#24364d 0)}
+/* Tam sınav */
+.ge-full{margin:0 0 14px;padding:17px 16px;border:1px solid #9b7bff66;border-radius:20px;background:linear-gradient(150deg,#1d1a44f0,#10203af0);box-shadow:0 10px 30px #05081655}
+.ge-full-head{display:flex;gap:13px;align-items:flex-start}
+.ge-full-icon{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#ffffff10;border:1px solid #c7b8ff44;font-size:23px}
+.ge-full-title{display:grid;gap:4px;min-width:0}
+.ge-full-title strong{font-size:17px;color:#f1ecff}
+.ge-full-title span{color:#c3c9e6;font-size:13px;line-height:1.65}
+.ge-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0 0;padding:0;list-style:none}
+.ge-step{display:grid;justify-items:center;gap:5px;padding:8px 4px;border-radius:12px;background:#ffffff08;color:#9fb3cc;font-size:11.5px;font-weight:650;text-align:center}
+.ge-step-dot{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;border:1px solid #4b6080;font-size:12px;font-weight:800}
+.ge-step.is-done{color:#c6ffe3}.ge-step.is-done .ge-step-dot{border-color:#3dffa0;background:#3dffa022}
+.ge-step.is-current{color:#f1ecff;background:#9b7bff22;box-shadow:inset 0 0 0 1px #9b7bff88}.ge-step.is-current .ge-step-dot{border-color:#c7b8ff;background:#9b7bff44}
+.ge-step-name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ge-full-note{margin:12px 0 14px;padding:10px 12px;border-radius:12px;background:#9b7bff1a;border:1px solid #9b7bff44;color:#e2dcff;font-size:13px;line-height:1.65}
+.ge-full-break h2{margin:16px 0 6px;font-size:20px}
+.ge-full-next{margin:4px 0 6px;color:#e7efff;font-size:15px;font-weight:650}
+.ge-chip-full{border-style:dashed}
+/* Sonuç belgesi */
+.ge-cert{position:relative;padding:20px 18px 16px;border:1px solid #c7b8ff55;border-radius:22px;background:radial-gradient(120% 90% at 100% 0%,#9b7bff26,transparent 60%),linear-gradient(160deg,#141c38f5,#0e1a2ff5);box-shadow:inset 0 0 0 6px #ffffff05}
+.ge-cert-top{display:grid;gap:3px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed #c7b8ff40}
+.ge-cert-eyebrow{color:#a9b6e8;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.ge-cert-top h2{margin:0;font:700 21px/1.35 Georgia,'Iowan Old Style',serif;color:#f4f1ff}
+.ge-cert-date{color:#9fb3cc;font-size:12px}
+.ge-cert-overall{font-weight:700;color:#e7efff!important}
+.ge-cert-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
+.ge-cert-tile{display:grid;justify-items:center;gap:3px;padding:12px 6px;border:1px solid #4b6080;border-radius:15px;background:#ffffff08;color:#e9f3ff;font:inherit;cursor:pointer}
+.ge-cert-tile:hover:not(:disabled){border-color:#73d8dc}
+.ge-cert-tile:disabled{cursor:default}
+.ge-cert-tile strong{font-size:13px}
+.ge-cert-score{font-size:24px;font-weight:800;line-height:1.2}
+.ge-cert-grade{color:#9fb3cc;font-size:11px;text-align:center}
+.ge-cert-tile.good{border-color:#3dffa077;background:#3dffa00f}.ge-cert-tile.good .ge-cert-score{color:#9ff5cf}
+.ge-cert-tile.warn{border-color:#ffbe5a77;background:#ffbe5a0f}.ge-cert-tile.warn .ge-cert-score{color:#ffd59a}
+.ge-cert .ge-ring{background:radial-gradient(closest-side,#121c36 78%,transparent 79%),conic-gradient(var(--ring,#4fe8ff) calc(var(--p)*1%),#24364d 0)}
+@media(max-width:480px){.ge-cert-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ge-cert{padding:17px 13px 14px}.ge-full{padding:15px 13px}}
+@media(max-width:480px){.ge-tests{grid-template-columns:minmax(0,1fr)}.ge-level{grid-template-columns:48px minmax(0,1fr) 14px;padding:15px 13px}.ge-level-id{height:48px;font-size:17px}.ge-teil{padding:15px 12px}.ge-text{padding:13px}.ge-bar-title{font-size:12.5px}.ge-break-row{grid-template-columns:minmax(60px,auto) minmax(0,1fr) 40px}}
+@media(prefers-reduced-motion:reduce){.ge-progress>span{transition:none}.ge-rec.is-active{animation:none}}
