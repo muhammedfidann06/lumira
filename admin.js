@@ -805,7 +805,7 @@
           o.reason ? ('Sebep: ' + esc(o.reason)) : '', function (b) {
           b.insertAdjacentHTML('beforeend',
             '<p class="lock-msg">Bu hesap yönetici tarafından askıya alındı. ' +
-            'İtiraz için Instagram üzerinden ulaşabilirsin.</p>');
+            'İtiraz için Instagram’da @lumira.learn hesabına ulaşabilirsin.</p>');
         });
       }
       try { firebase.auth().signOut(); } catch (e) {}

@@ -845,7 +845,17 @@ html.lite .support-btn{-webkit-backdrop-filter:none; backdrop-filter:none;}
 .lock-msg b{color:#ffd23b;}
 
 /* --- PDF seçim satırları --- */
-.pdf-row{margin:0 2px 14px;}
+.pdf-row{display:block;margin:0 2px 14px;}
+.pdf-select{
+  width:100%; min-height:46px; padding:10px 12px; border-radius:12px;
+  font:inherit; font-size:14px; font-weight:600; color:#e6eeff;
+  background:#121a30; border:1px solid rgba(140,190,255,.28);
+}
+.pdf-select:focus-visible{outline:2px solid #4fe8ff; outline-offset:2px;}
+.pdf-select:disabled{opacity:.6;}
+.pdf-check{display:flex; align-items:center; gap:10px; margin:0 2px 12px; font-size:13.5px; color:#c9d7f5; cursor:pointer;}
+.pdf-check input{width:20px; height:20px; accent-color:#4fe8ff; flex:none;}
+.pdf-summary{margin:0 2px 12px; font-size:12.5px; color:#9fb0d0;}
 .pdf-lbl{display:block; font-size:11.5px; color:#8291b3; margin-bottom:8px;}
 .pdf-chips{display:flex; flex-wrap:wrap; gap:7px;}
 .pdf-chip{

@@ -310,114 +310,174 @@
     }
   };
 
-  /* ============================================ KELİME LİSTESİ → PDF */
+  /* ============================================ KELİME LİSTESİ → PDF
+     Tek bir kategori ya da tüm kategoriler (her biri ayrı bölüm) yazdırılır.
+     Bölüm içindeki kelimeler hedef dilin alfabesine göre sıralanır; anlamlar
+     her zaman öğrencinin kendi dilindedir (öğrenme ekranlarıyla aynı deste). */
   var LANG_INFO = {
-    de: { ad: 'Almanca',    yerel: 'Deutsch',  renk: '#c8901e', rtl: false },
-    en: { ad: 'İngilizce',  yerel: 'English',  renk: '#1f63c8', rtl: false },
-    ar: { ad: 'Arapça',     yerel: 'العربية',  renk: '#0f7a4e', rtl: true  },
-    fr: { ad: 'Fransızca',  yerel: 'Français', renk: '#a3247c', rtl: false },
-    es: { ad: 'İspanyolca', yerel: 'Español',  renk: '#c2410c', rtl: false },
-    ru: { ad: 'Rusça',      yerel: 'Русский',  renk: '#5b34b3', rtl: false }
+    de: { renk: '#b7791f' }, en: { renk: '#1f63c8' }, ar: { renk: '#0f7a4e' }, fr: { renk: '#a3247c' },
+    es: { renk: '#c2410c' }, ru: { renk: '#5b34b3' }, tr: { renk: '#c8102e' }
   };
-
-  function collectWords(lang, level) {
-    var out = [];
-    try {
-      var V = (typeof VOCAB !== 'undefined') ? VOCAB : null;
-      if (!V) {
-        V = new Function('try{return typeof VOCAB!=="undefined"?VOCAB:null}catch(e){return null}')();
-      }
-      if (!V) return out;
-      for (var i = 0; i < V.length; i++) {
-        var v = V[i];
-        if (v.lang !== lang) continue;
-        if (level !== 'TÜMÜ' && v.level !== level) continue;
-        out.push({ w: v.w, tr: v.tr, cat: v.cat, level: v.level });
-      }
-    } catch (e) {}
-    out.sort(function (a, b2) {
-      return String(a.w).localeCompare(String(b2.w), 'tr', { sensitivity: 'base' });
+  var PDF_COPY = {
+    tr:{category:'Kategori',allCategories:'Tüm kategoriler (bölümlere ayrılmış)',contents:'İçindekiler',categories:'{n} kategori',words:'{n} kelime',examples:'Örnek cümleleri ekle',note:'Tek bir kategoriyi ya da tüm kategorileri ayrı bölümler hâlinde yazdırabilirsin. Her bölümde kelimeler alfabetik sıradadır.',articles:'Artikel renkleri',loading:'Kelimeler yükleniyor…',empty:'Bu seçimde kelime bulunamadı.',date:'Tarih',count:'Kelime',scope:'Kapsam'},
+    en:{category:'Category',allCategories:'All categories (in sections)',contents:'Contents',categories:'{n} categories',words:'{n} words',examples:'Include example sentences',note:'Print a single category, or all categories in separate sections. Words are in alphabetical order in every section.',articles:'Article colours',loading:'Loading words…',empty:'No words for this selection.',date:'Date',count:'Words',scope:'Scope'},
+    de:{category:'Kategorie',allCategories:'Alle Kategorien (in Abschnitten)',contents:'Inhalt',categories:'{n} Kategorien',words:'{n} Wörter',examples:'Beispielsätze hinzufügen',note:'Drucke eine einzelne Kategorie oder alle Kategorien in eigenen Abschnitten. In jedem Abschnitt sind die Wörter alphabetisch sortiert.',articles:'Artikelfarben',loading:'Wörter werden geladen…',empty:'Für diese Auswahl gibt es keine Wörter.',date:'Datum',count:'Wörter',scope:'Umfang'},
+    ar:{category:'الفئة',allCategories:'كل الفئات (في أقسام)',contents:'المحتويات',categories:'{n} فئة',words:'{n} كلمة',examples:'إضافة جمل أمثلة',note:'اطبع فئة واحدة أو كل الفئات في أقسام منفصلة. الكلمات مرتبة أبجديًا في كل قسم.',articles:'ألوان أدوات التعريف',loading:'جارٍ تحميل الكلمات…',empty:'لا توجد كلمات لهذا الاختيار.',date:'التاريخ',count:'الكلمات',scope:'النطاق'},
+    fr:{category:'Catégorie',allCategories:'Toutes les catégories (en sections)',contents:'Sommaire',categories:'{n} catégories',words:'{n} mots',examples:'Ajouter des phrases d’exemple',note:'Imprime une seule catégorie ou toutes les catégories en sections séparées. Dans chaque section, les mots sont classés par ordre alphabétique.',articles:'Couleurs des articles',loading:'Chargement des mots…',empty:'Aucun mot pour cette sélection.',date:'Date',count:'Mots',scope:'Contenu'},
+    es:{category:'Categoría',allCategories:'Todas las categorías (por secciones)',contents:'Índice',categories:'{n} categorías',words:'{n} palabras',examples:'Añadir frases de ejemplo',note:'Imprime una sola categoría o todas en secciones separadas. En cada sección las palabras están en orden alfabético.',articles:'Colores de los artículos',loading:'Cargando palabras…',empty:'No hay palabras para esta selección.',date:'Fecha',count:'Palabras',scope:'Contenido'},
+    ru:{category:'Категория',allCategories:'Все категории (по разделам)',contents:'Содержание',categories:'Категорий: {n}',words:'Слов: {n}',examples:'Добавить примеры предложений',note:'Распечатай одну категорию или все категории отдельными разделами. В каждом разделе слова расположены по алфавиту.',articles:'Цвета артиклей',loading:'Загрузка слов…',empty:'Для этого выбора нет слов.',date:'Дата',count:'Слов',scope:'Охват'}
+  };
+  function nativeLang() { return window.NATIVE_LANG || 'tr'; }
+  function pdfText(key, values) {
+    var s = (PDF_COPY[nativeLang()] || PDF_COPY.en)[key] || PDF_COPY.en[key] || key;
+    Object.keys(values || {}).forEach(function (k) { s = s.split('{' + k + '}').join(String(values[k])); });
+    return s;
+  }
+  function vocabRows() { try { return typeof VOCAB !== 'undefined' ? VOCAB : []; } catch (e) { return []; } }
+  function deckFor(lang) {
+    var native = nativeLang(), V = vocabRows(), source;
+    if (native === 'tr') source = V;
+    else if (lang === 'tr') source = V.filter(function (v) { return v.lang === native && !v.phraseId; }).map(function (v) { return Object.assign({}, v, { lang: 'tr', w: v.tr, tr: v.w, ex: v.exTr, exTr: v.ex }); });
+    else source = typeof window.buildCrossDeck === 'function' ? window.buildCrossDeck(native, lang) : [];
+    return source.filter(function (v) {
+      return v.lang === lang && !v.phraseId && v.w && v.tr && (!window.LUMIRA_MAINTENANCE || window.LUMIRA_MAINTENANCE.categoryAvailable(v.cat) !== false);
+    });
+  }
+  /* Hedef dilin ve (Türkçe dışındaki) ana dilin sözlüğü yüklenmiş olmalı. */
+  function ensureDeck(lang) {
+    var need = [lang, nativeLang()].filter(function (l, i, all) { return l !== 'tr' && all.indexOf(l) === i && window.VOCAB_LOADED && !window.VOCAB_LOADED[l]; });
+    if (!need.length || !window.ensureVocab) return Promise.resolve();
+    return Promise.all(need.map(function (l) { return window.ensureVocab(l); }));
+  }
+  function collectWords(lang, level, category) {
+    var seen = {}, out = [];
+    deckFor(lang).forEach(function (v) {
+      if (level !== 'TÜMÜ' && v.level !== level) return;
+      if (category && v.cat !== category) return;
+      var key = v.cat + '\u0000' + v.w + '\u0000' + v.tr;
+      if (seen[key]) return; seen[key] = 1;
+      out.push({ w: v.w, tr: v.tr, cat: v.cat || '', level: v.level || '', ex: v.ex || '', exTr: v.exTr || '' });
     });
     return out;
   }
 
-  function buildPdfHtml(lang, level, words) {
-    var info = LANG_INFO[lang] || LANG_INFO.de;
-    const C=window.LUMIRA_ACCESS_COPY, ui=window.NATIVE_LANG || 'tr', languageNames=new Intl.DisplayNames([ui],{type:'language'});
-    var bugun = new Date().toLocaleDateString(ui, { day: 'numeric', month: 'long', year: 'numeric' });
-    /* Kişi kendi ana dilinin (NATIVE_LANG) listesini indiriyorsa ve ters
-       öğrenme modundaysa (Türkçe öğreniyorsa), liste de onun öğrendiği
-       yönde olsun: soldaki sütun Türkçe, sağdaki kendi dili. Başka bir
-       dilin listesini indirirse (bonus/merak amaçlı) eski davranış kalır. */
-    var flip = (typeof window.isReversed === 'function') && window.isReversed() &&
-               (typeof window.NATIVE_LANG !== 'undefined') && window.NATIVE_LANG === lang;
+  /* Sözlük düzeni: artikel ve harekeler sıralamaya ve harf başlığına girmez. */
+  var LEADING = { de: /^(der|die|das)\s+/i, fr: /^(les|le|la)\s+|^l['’]\s*/i, es: /^(los|las|el|la)\s+/i, en: /^(the|to)\s+/i, ar: /^ال/ };
+  function sortKey(word, lang) {
+    var s = String(word).trim();
+    if (LEADING[lang]) s = s.replace(LEADING[lang], '');
+    if (lang === 'ar') s = s.replace(/[ً-ٰٟ]/g, '');
+    return s || String(word);
+  }
+  function letterOf(word, lang) {
+    var c = (Array.from(sortKey(word, lang))[0] || '#').toLocaleUpperCase(lang);
+    if (lang === 'ar') c = c.replace(/[أإآ]/, 'ا');
+    else if (['de', 'fr', 'en', 'es'].indexOf(lang) >= 0 && !(lang === 'es' && c === 'Ñ')) c = c.normalize('NFD').replace(/[̀-ͯ]/g, '');
+    return /\p{L}/u.test(c) ? c : '#';
+  }
+  function groupWords(words, lang, ui) {
+    var order = new Intl.Collator(lang, { sensitivity: 'base', numeric: true }), names = new Intl.Collator(ui, { sensitivity: 'base' }), groups = {};
+    words.forEach(function (w) { (groups[w.cat] = groups[w.cat] || []).push(w); });
+    return Object.keys(groups).map(function (cat) {
+      return { cat: cat, name: (window.catName ? window.catName(cat) : cat) || '—', words: groups[cat].sort(function (a, b) { return order.compare(sortKey(a.w, lang), sortKey(b.w, lang)) || order.compare(a.w, b.w); }) };
+    }).sort(function (a, b) { return names.compare(a.name, b.name); });
+  }
+  function wordHtml(word, lang) {
+    var m = lang === 'de' && /^(der|die|das)\s+(.+)$/i.exec(String(word));
+    return m ? '<span class="art art-' + m[1].toLowerCase() + '">' + esc(m[1]) + '</span>&nbsp;' + esc(m[2]) : esc(word);
+  }
+  var BUTTERFLY = '<svg viewBox="0 0 64 48" aria-hidden="true"><path fill="#a5ecdb" d="M30 22C25 2 2-2 6 13c3 9 13 13 24 12C12 22 9 39 20 40c9 1 11-10 12-14Z"/><path fill="#b4b9ee" d="M34 22C39 2 62-2 58 13c-3 9-13 13-24 12 18-3 21 14 10 15-9 1-11-10-12-14Z"/></svg>';
 
-    /* Liste her zaman "src" sütununa göre alfabetik sıralanır (dictionary
-       düzeni); collectWords varsayılan olarak w'ye göre sıralar, ters
-       modda src=Türkçe olduğu için burada tr'ye göre yeniden sıralanır. */
-    words = words.slice();
-    if (flip) {
-      words.sort(function (a, b2) { return String(a.tr).localeCompare(String(b2.tr), 'tr', { sensitivity: 'base' }); });
-    }
+  function buildPdfHtml(lang, level, words, options) {
+    options = options || {};
+    var C = window.LUMIRA_ACCESS_COPY, ui = nativeLang(), names = new Intl.DisplayNames([ui], { type: 'language' });
+    var accent = (LANG_INFO[lang] || LANG_INFO.de).renk, groups = groupWords(words, lang, ui), single = !!options.category;
+    var wordDir = lang === 'ar' ? 'rtl' : 'ltr', uiDir = ui === 'ar' ? 'rtl' : 'ltr';
+    var today = new Date().toLocaleDateString(ui, { day: 'numeric', month: 'long', year: 'numeric' });
+    var levelText = level === 'TÜMÜ' ? C.text('all') : level, scope = single ? groups[0].name : pdfText('categories', { n: groups.length });
+    var title = 'Lumira · ' + names.of(lang) + ' · ' + C.text('wordList') + (single ? ' · ' + groups[0].name : '') + (level === 'TÜMÜ' ? '' : ' · ' + level);
+    var two = function (n) { return String(n).padStart(2, '0'); };
 
-    var rows = '';
-    for (var i = 0; i < words.length; i++) {
-      var w = words[i];
-      var srcTxt = flip ? w.tr : w.w;
-      var trTxt  = flip ? w.w  : w.tr;
-      rows += '<div class="entry">' +
-                '<span class="src">' + esc(srcTxt) + '</span>' +
-                '<span class="dots"></span>' +
-                '<span class="tr">' + esc(trTxt) + '</span>' +
-              '</div>';
-    }
+    var sections = groups.map(function (g, gi) {
+      var body = '', last = '';
+      g.words.forEach(function (w) {
+        var letter = letterOf(w.w, lang);
+        if (letter !== last) { body += '<div class="letter" aria-hidden="true">' + esc(letter) + '</div>'; last = letter; }
+        body += '<div class="entry"><div class="line">' +
+          '<span class="src" lang="' + lang + '" dir="' + wordDir + '">' + wordHtml(w.w, lang) + '</span>' +
+          (level === 'TÜMÜ' && w.level ? '<span class="lvl">' + esc(w.level) + '</span>' : '') +
+          '<span class="dots"></span><span class="tr" lang="' + ui + '" dir="' + uiDir + '">' + esc(w.tr) + '</span></div>' +
+          (options.examples && w.ex ? '<div class="ex" lang="' + lang + '" dir="' + wordDir + '">' + esc(w.ex) + '</div>' + (w.exTr ? '<div class="ex-tr" lang="' + ui + '" dir="' + uiDir + '">' + esc(w.exTr) + '</div>' : '') : '') +
+          '</div>';
+      });
+      return '<section class="cat" id="cat-' + gi + '"><header class="cat-head">' + (single ? '' : '<span class="cat-no">' + two(gi + 1) + '</span>') +
+        '<h2>' + esc(g.name) + '</h2><span class="cat-count">' + esc(pdfText('words', { n: g.words.length })) + '</span></header>' +
+        '<div class="cols' + (options.examples ? ' with-ex' : '') + '">' + body + '</div></section>';
+    }).join('');
 
-    return '<!DOCTYPE html><html lang="'+esc(ui)+'" dir="'+(ui==='ar'?'rtl':'ltr')+'"><head><meta charset="utf-8">' +
-      '<title>Lumira ' + esc(languageNames.of(lang)) + ' · '+esc(C.text('wordList'))+'</title>' +
-      '<style>' +
-      '@page{size:A4;margin:18mm 16mm 20mm;}' +
-      '*{box-sizing:border-box;}' +
-      'body{margin:0;font-family:"Georgia","Times New Roman",serif;color:#1a1a1a;' +
-      '     -webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
-      '.cover{height:100vh;display:flex;flex-direction:column;align-items:center;' +
-      '       justify-content:center;text-align:center;page-break-after:always;}' +
-      '.cover .brand{font-size:13pt;letter-spacing:.42em;color:' + info.renk + ';' +
-      '       text-transform:uppercase;margin-bottom:26px;}' +
-      '.cover h1{font-size:34pt;margin:0 0 6px;font-weight:700;letter-spacing:-.01em;}' +
-      '.cover h2{font-size:15pt;margin:0;font-weight:400;color:#555;font-style:italic;}' +
-      '.cover .rule{width:120px;height:2px;background:' + info.renk + ';margin:26px 0;}' +
-      '.cover .meta{font-size:10.5pt;color:#666;line-height:1.9;}' +
-      '.cover .foot{position:absolute;bottom:24mm;font-size:9pt;color:#888;}' +
-      'h3.sec{font-size:11pt;letter-spacing:.28em;text-transform:uppercase;' +
-      '       color:' + info.renk + ';border-bottom:1.5px solid ' + info.renk + ';' +
-      '       padding-bottom:6px;margin:0 0 14px;}' +
-      '.cols{column-count:2;column-gap:12mm;column-rule:.5pt solid #ddd;}' +
-      '.entry{display:flex;align-items:baseline;font-size:10.5pt;line-height:1.62;' +
-      '       break-inside:avoid;page-break-inside:avoid;padding:1.5px 0;}' +
-      '.src{color:' + info.renk + ';font-weight:700;white-space:nowrap;' +
-      ((info.rtl && !flip) ? 'direction:rtl;unicode-bidi:isolate;font-size:12pt;' : '') + '}' +
-      '.dots{flex:1 1 auto;border-bottom:1px dotted #bbb;margin:0 5px;transform:translateY(-3px);}' +
-      '.tr{color:#111;white-space:nowrap;' +
-      ((info.rtl && flip) ? 'direction:rtl;unicode-bidi:isolate;font-size:12pt;' : '') + '}' +
-      '@media print{.noprint{display:none !important;}}' +
-      '.noprint{position:fixed;top:0;left:0;right:0;background:#0d1226;color:#fff;' +
-      '   padding:12px 16px;font-family:system-ui,sans-serif;font-size:14px;text-align:center;z-index:9;}' +
-      '.noprint button{font:inherit;font-weight:700;margin-left:10px;padding:8px 18px;' +
-      '   border:0;border-radius:8px;background:#4fe8ff;color:#04050a;cursor:pointer;}' +
+    var contents = !single && groups.length > 1 ? '<section class="toc"><h2>' + esc(pdfText('contents')) + '</h2><ol>' + groups.map(function (g, gi) {
+      return '<li><a href="#cat-' + gi + '"><span class="toc-no">' + two(gi + 1) + '</span><span class="toc-name">' + esc(g.name) + '</span><span class="dots"></span><span class="toc-count">' + g.words.length + '</span></a></li>';
+    }).join('') + '</ol></section>' : '';
+    var legend = lang === 'de' ? '<p class="legend">' + esc(pdfText('articles')) + ': <span class="art art-der">der</span> · <span class="art art-die">die</span> · <span class="art art-das">das</span></p>' : '';
+
+    return '<!DOCTYPE html><html lang="' + esc(ui) + '" dir="' + uiDir + '"><head><meta charset="utf-8">' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(title) + '</title><style>' +
+      ':root{--accent:' + accent + ';--tint:' + accent + '14;--line:#dfe4ee;--ink:#172033;--muted:#5d6a80}' +
+      '@page{size:A4;margin:15mm 14mm 17mm;@bottom-center{content:"lumira-tr.com  ·  @lumira.learn  ·  " counter(page);font:8pt system-ui,sans-serif;color:#8a94a6}}' +
+      '@page :first{@bottom-center{content:none}}' +
+      '*{box-sizing:border-box}html{-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+      'body{margin:0;background:#e8ecf3;color:var(--ink);font-family:Georgia,"Iowan Old Style","Times New Roman",serif}' +
+      '.paper{width:210mm;max-width:100%;margin:72px auto 32px;padding:15mm 14mm;background:#fff;box-shadow:0 10px 40px #1c26402e;border-radius:4px}' +
+      '.bar{position:fixed;inset:0 0 auto;z-index:9;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 16px;padding:12px 16px;background:#0d1226;color:#e6ecff;font:14px system-ui,sans-serif;text-align:center}' +
+      '.bar button{font:inherit;font-weight:700;padding:9px 20px;border:0;border-radius:10px;background:linear-gradient(120deg,#4fe8ff,#9b7bff);color:#04050a;cursor:pointer}' +
+      '.cover{position:relative;display:flex;flex-direction:column;min-height:262mm;break-after:page;page-break-after:always}' +
+      '.cover-band{display:flex;align-items:center;justify-content:space-between;padding:12mm 12mm 26mm;border-radius:10px;background:linear-gradient(125deg,#0f1b33,#262150 70%,#3a2462);color:#eef4ff}' +
+      '.brand{display:flex;align-items:center;gap:9px;font:700 12pt system-ui,sans-serif;letter-spacing:.38em}.brand svg{width:34px;height:26px}' +
+      '.band-tag{font:600 9pt system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#a9b8d6}' +
+      '.cover-card{margin:-16mm 9mm 0;padding:12mm 11mm;border-radius:10px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 28px #1c26401f}' +
+      '.eyebrow{font:700 9pt system-ui,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}' +
+      '.cover h1{margin:6px 0 2px;font-size:40pt;line-height:1.08;letter-spacing:-.01em}' +
+      '.pair{margin:0;font-size:14pt;font-style:italic;color:var(--muted)}' +
+      '.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10mm}' +
+      '.stats div{padding:9px 12px;border-radius:9px;background:var(--tint);border:1px solid ' + accent + '33}' +
+      '.stats span{display:block;font:600 8pt system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}' +
+      '.stats b{display:block;margin-top:2px;font-size:13pt;overflow-wrap:anywhere}' +
+      '.legend{margin:8mm 0 0;font:10pt system-ui,sans-serif;color:var(--muted)}' +
+      '.art{font-weight:700}.art-der{color:#2563eb}.art-die{color:#dc2626}.art-das{color:#15803d}' +
+      '.cover-foot{margin-top:auto;padding-top:10mm;text-align:center;font:9pt system-ui,sans-serif;letter-spacing:.06em;color:#8a94a6}' +
+      '.toc{break-after:page;page-break-after:always}' +
+      '.toc h2,.cat-head h2{margin:0;font-size:15pt}.toc h2{padding-bottom:6px;margin-bottom:8px;border-bottom:2px solid var(--accent)}' +
+      '.toc ol{margin:0;padding:0;list-style:none;columns:2;column-gap:10mm}' +
+      '.toc a{display:flex;align-items:baseline;gap:6px;padding:4px 0;color:inherit;text-decoration:none;break-inside:avoid;font-size:10.5pt}' +
+      '.toc-no{font:700 8.5pt system-ui,sans-serif;color:var(--accent)}.toc-count{font:9pt system-ui,sans-serif;color:var(--muted)}' +
+      '.cat+.cat{margin-top:8mm}' +
+      '.cat-head{display:flex;align-items:center;gap:9px;margin-bottom:4mm;padding:7px 12px;border-radius:9px;background:var(--tint);border-inline-start:4px solid var(--accent);break-after:avoid;page-break-after:avoid}' +
+      '.cat-head h2{flex:1;line-height:1.3}.cat-no{font:700 9pt system-ui,sans-serif;color:var(--accent)}' +
+      '.cat-count{font:600 8.5pt system-ui,sans-serif;color:var(--muted);white-space:nowrap}' +
+      '.cols{column-count:2;column-gap:10mm;column-rule:.5pt solid var(--line)}' +
+      '.letter{margin:5pt 0 2pt;padding-bottom:1pt;border-bottom:1pt solid ' + accent + '55;font:700 9pt system-ui,sans-serif;letter-spacing:.1em;color:var(--accent);break-after:avoid;page-break-after:avoid}' +
+      '.cols>.letter:first-child{margin-top:0}' +
+      '.entry{padding:1.6pt 0;font-size:10.3pt;line-height:1.48;break-inside:avoid;page-break-inside:avoid}' +
+      '.with-ex .entry{padding:3pt 0}' +
+      '.line{display:flex;align-items:baseline;gap:4px}' +
+      '.src{flex:0 1 auto;font-weight:700;color:var(--ink);unicode-bidi:isolate' + (lang === 'ar' ? ';font-size:12pt' : '') + '}' +
+      '.lvl{flex:none;padding:0 3px;border:.6pt solid var(--accent);border-radius:3px;font:700 6.5pt system-ui,sans-serif;color:var(--accent)}' +
+      '.dots{flex:1 1 10px;min-width:8px;border-bottom:1px dotted #c3cad8;transform:translateY(-3px)}' +
+      '.tr{flex:0 3 auto;color:#2b3547;text-align:end;unicode-bidi:isolate}' +
+      '.ex{margin-inline-start:9px;font-size:8.8pt;font-style:italic;color:#46526a}.ex-tr{margin-inline-start:9px;font:8.4pt system-ui,sans-serif;color:#8a94a6}' +
+      '@media screen and (max-width:640px){.paper{margin-top:96px;padding:6vw}.cols,.toc ol{column-count:1;columns:1}.cover{min-height:0}.cover h1{font-size:30pt}.stats{grid-template-columns:1fr}}' +
+      '@media print{body{background:#fff}.bar{display:none!important}.paper{width:auto;margin:0;padding:0;box-shadow:none;border-radius:0}}' +
       '</style></head><body>' +
-      '<div class="noprint">'+esc(C.text('pdfSave'))+'<button onclick="window.print()">'+esc(C.text('pdfPrint'))+'</button></div>' +
-      '<div class="cover">' +
-        '<div class="brand">Lumira</div>' +
-        '<h1>' + esc(languageNames.of(flip?'tr':lang)) + ' · '+esc(C.text('wordList'))+'</h1>' +
-        '<h2>' + esc(languageNames.of(flip?'tr':lang)) + ' — ' + esc(languageNames.of(flip?lang:'tr')) + '</h2>' +
-        '<div class="rule"></div>' +
-        '<div class="meta">'+esc(C.text('level'))+': <b>' + esc(level==='TÜMÜ'?C.text('all'):level) + '</b><br>' +
-          esc(C.text('words'))+': <b>' + words.length + '</b><br>' + bugun + '</div>' +
-        '<div class="foot">lumira-tr.com</div>' +
-      '</div>' +
-      '<h3 class="sec">' + esc(languageNames.of(flip?'tr':lang)) + ' — ' + esc(languageNames.of(flip?lang:'tr')) + ' · ' + esc(level==='TÜMÜ'?C.text('all'):level) + '</h3>' +
-      '<div class="cols">' + rows + '</div>' +
-      '</body></html>';
+      '<div class="bar">' + esc(C.text('pdfSave')) + '<button onclick="window.print()">' + esc(C.text('pdfPrint')) + '</button></div>' +
+      '<main class="paper"><section class="cover"><div class="cover-band"><div class="brand">' + BUTTERFLY + 'LUMIRA</div><div class="band-tag">' + esc(levelText) + '</div></div>' +
+      '<div class="cover-card"><div class="eyebrow">' + esc(C.text('wordList')) + '</div><h1>' + esc(names.of(lang)) + '</h1>' +
+      '<p class="pair">' + esc(names.of(lang)) + ' → ' + esc(names.of(ui)) + '</p><div class="stats">' +
+      '<div><span>' + esc(C.text('level')) + '</span><b>' + esc(levelText) + '</b></div>' +
+      '<div><span>' + esc(pdfText('scope')) + '</span><b>' + esc(scope) + '</b></div>' +
+      '<div><span>' + esc(pdfText('count')) + '</span><b>' + words.length + '</b></div>' +
+      '<div><span>' + esc(pdfText('date')) + '</span><b>' + esc(today) + '</b></div></div>' + legend + '</div>' +
+      '<div class="cover-foot">lumira-tr.com · @lumira.learn</div></section>' +
+      contents + sections + '</main></body></html>';
   }
 
   function esc(t) {
@@ -431,9 +491,11 @@
     if (!(window.PWA && window.PWA.sheet)) return;
 
     window.PWA.sheet(window.t?window.t('pdf_export_title'):'📄 Kelimeleri PDF olarak indir',
-      window.LUMIRA_ACCESS_COPY.text('pdfNoteExport'), function (b) {
+      pdfText('note'), function (b) {
 
-      var lang = 'de', level = 'TÜMÜ';
+      var codes = (typeof window.learningLanguageCodes === 'function' ? window.learningLanguageCodes() : ['de','en','ar','fr','es','ru']).filter(function (c) { return c !== nativeLang() && LANG_INFO[c]; });
+      var target = typeof TARGET_LANG !== 'undefined' ? TARGET_LANG : 'de';
+      var lang = codes.indexOf(target) >= 0 ? target : codes[0], level = 'TÜMÜ', category = '', examples = false, run = 0;
 
       function chipRow(label, items, current, onPick) {
         var wrap = document.createElement('div');
@@ -457,30 +519,84 @@
         return wrap;
       }
 
-      const languageNames = new Intl.DisplayNames([window.NATIVE_LANG || 'tr'], {type:'language'});
-      b.appendChild(chipRow(window.LUMIRA_ACCESS_COPY.text('language'), ['de','en','ar','fr','es','ru'].map(code => ({v:code,t:languageNames.of(code)})), function(){return lang;}, function(v){lang=v;}));
+      const languageNames = new Intl.DisplayNames([nativeLang()], {type:'language'});
+      b.appendChild(chipRow(window.LUMIRA_ACCESS_COPY.text('language'), codes.map(code => ({v:code,t:languageNames.of(code)})), function(){return lang;}, function(v){lang=v;refresh();}));
 
       b.appendChild(chipRow(window.LUMIRA_ACCESS_COPY.text('level'), [
         { v: 'TÜMÜ', t: window.LUMIRA_ACCESS_COPY.text('all') }, { v: 'A1', t: 'A1' }, { v: 'A2', t: 'A2' },
         { v: 'B1', t: 'B1' }, { v: 'B2', t: 'B2' }
-      ], function () { return level; }, function (v) { level = v; }));
+      ], function () { return level; }, function (v) { level = v; refresh(); }));
+
+      /* Kategori: boş değer tüm kategorileri ayrı bölümler hâlinde basar. */
+      var catRow = document.createElement('label');
+      catRow.className = 'pdf-row';
+      catRow.innerHTML = '<span class="pdf-lbl">' + esc(pdfText('category')) + '</span>';
+      var select = document.createElement('select');
+      select.className = 'pdf-select';
+      select.dataset.pdfCategory = '';
+      catRow.appendChild(select);
+      b.appendChild(catRow);
+
+      var exRow = document.createElement('label');
+      exRow.className = 'pdf-check';
+      var exBox = document.createElement('input');
+      exBox.type = 'checkbox';
+      exBox.onchange = function () { examples = exBox.checked; };
+      exRow.append(exBox, document.createTextNode(pdfText('examples')));
+      b.appendChild(exRow);
+
+      var summary = document.createElement('p');
+      summary.className = 'pdf-summary';
+      summary.setAttribute('role', 'status');
+      b.appendChild(summary);
 
       var go = document.createElement('button');
       go.type = 'button';
       go.className = 'pwa-btn';
       go.textContent = window.t?window.t('pdf_generate_btn'):'Listeyi oluştur';
+
+      var counts = {}, total = 0;
+      function paintSummary() {
+        var n = category ? (counts[category] || 0) : total, groups = Object.keys(counts).length;
+        summary.textContent = !n ? pdfText('empty') : category ? pdfText('words', { n: n }) : pdfText('words', { n: n }) + ' · ' + pdfText('categories', { n: groups });
+        go.disabled = !n;
+      }
+      select.onchange = function () { category = select.value; paintSummary(); };
+      async function refresh() {
+        var mine = ++run;
+        select.disabled = true; go.disabled = true;
+        select.innerHTML = '<option>' + esc(pdfText('loading')) + '</option>';
+        summary.textContent = pdfText('loading');
+        try { await ensureDeck(lang); } catch (e) {}
+        if (mine !== run || !select.isConnected) return;
+        var words = collectWords(lang, level, ''), order = new Intl.Collator(nativeLang(), { sensitivity: 'base' });
+        counts = {}; total = words.length;
+        words.forEach(function (w) { counts[w.cat] = (counts[w.cat] || 0) + 1; });
+        if (category && !counts[category]) category = '';
+        select.innerHTML = '';
+        var all = document.createElement('option');
+        all.value = ''; all.textContent = pdfText('allCategories') + ' · ' + total;
+        select.appendChild(all);
+        Object.keys(counts).map(function (c) { return { c: c, name: window.catName ? window.catName(c) : c }; })
+          .sort(function (x, y) { return order.compare(x.name, y.name); })
+          .forEach(function (x) { var o = document.createElement('option'); o.value = x.c; o.textContent = x.name + ' · ' + counts[x.c]; select.appendChild(o); });
+        select.value = category;
+        select.disabled = !total;
+        paintSummary();
+      }
+
       go.onclick = async function () {
         go.disabled=true;go.textContent=window.t?window.t('pdf_generating'):'…';
         const F=window.LUMIRA_FEATURES, C=window.LUMIRA_ACCESS_COPY;
-        const finish=()=>{go.disabled=false;go.textContent=window.t?window.t('pdf_generate_btn'):'PDF';};
+        const finish=()=>{go.textContent=window.t?window.t('pdf_generate_btn'):'PDF';paintSummary();};
         // Open synchronously during the click so Safari keeps the user gesture.
         let win=window.open('','_blank'), frame, operation, committed=false;
         try{
           if(win)win.document.body.textContent=C.text('checking');
-          if(window.VOCAB_LOADED && !window.VOCAB_LOADED[lang] && window.ensureVocab)await window.ensureVocab(lang);
-          const words=collectWords(lang,level);
-          if(!words.length)throw new Error(window.t('pdf_words_not_found'));
-          const html=buildPdfHtml(lang,level,words);
+          await ensureDeck(lang);
+          const words=collectWords(lang,level,category);
+          if(!words.length)throw new Error(pdfText('empty'));
+          const html=buildPdfHtml(lang,level,words,{category:category,examples:examples});
           // A finite account-wide allowance requires an online reservation.
           // Cached, verified higher badges can generate unlimited PDFs offline.
           const entitlement=F.entitlement();
@@ -501,8 +617,7 @@
         }finally{finish();}
       };
       b.appendChild(go);
-
-      const note=document.createElement('p');note.className='pwa-note';note.textContent=window.LUMIRA_ACCESS_COPY.text('pdfNoteExport');b.appendChild(note);
+      refresh();
     });
   }
   window.openPdfExport = openPdfExport;

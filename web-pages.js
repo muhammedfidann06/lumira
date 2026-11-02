@@ -64,6 +64,6 @@
   const valid=/^txn_[a-z\d]{26}$/.test(id||'');main.append(link(c[4],base+'?web=1'+(valid?'&payment=return&transaction='+encodeURIComponent(id):'')));
  }else{
   main.append(n('p',c[5]),n('p',kind==='refund'?c[8]:c[6]),n('p',c[7]),n('p','Lumira · Muhammed Fidan'));
-  main.append(link('Paddle Buyer Terms','https://www.paddle.com/legal/buyer-terms'),link('Paddle Refund Policy','https://www.paddle.com/legal/refund-policy'),link('Paddle.net','https://www.paddle.net/'),link('Instagram · @muhammedf.fdn','https://www.instagram.com/muhammedf.fdn'));
+  main.append(link('Paddle Buyer Terms','https://www.paddle.com/legal/buyer-terms'),link('Paddle Refund Policy','https://www.paddle.com/legal/refund-policy'),link('Paddle.net','https://www.paddle.net/'),link('Instagram · @lumira.learn','https://www.instagram.com/lumira.learn'));
  }
 })();
