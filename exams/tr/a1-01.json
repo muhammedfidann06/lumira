@@ -1,0 +1,113 @@
+{
+ "id": "tr-A1-01",
+ "level": "A1",
+ "lang": "tr",
+ "title": "Deneme Sınavı 1",
+ "lesen": [
+  {
+   "title": "1. Bölüm – Kısa mesaj",
+   "task": "Mesajı okuyun. Cümleler doğru mu, yanlış mı?",
+   "type": "rf",
+   "texts": [
+    {
+     "title": "Ayşe'den mesaj",
+     "body": "Merhaba Can,\n\nBen şimdi Antalya'dayım. Ailemle birlikte bir otelde kalıyoruz. Otel denize çok yakın. Hava çok sıcak ve güneşli. Sabahları denize giriyoruz, akşamları eski şehirde yürüyoruz. Dün bir balık restoranında yemek yedik. Çok lezzetliydi!\n\nPazar günü İstanbul'a dönüyoruz.\n\nGörüşürüz,\nAyşe"
+    }
+   ],
+   "items": [
+    {"q": "Ayşe ailesiyle Antalya'da.", "a": true},
+    {"q": "Otel denizden uzak.", "a": false},
+    {"q": "Antalya'da hava soğuk.", "a": false},
+    {"q": "Dün balık restoranında yemek yediler.", "a": true},
+    {"q": "Ayşe pazar günü İstanbul'a dönüyor.", "a": true}
+   ]
+  },
+  {
+   "title": "2. Bölüm – İlan",
+   "task": "İlanı okuyun ve doğru cevabı seçin.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Lezzet Durağı Lokantası",
+     "body": "Ev yemekleri ve tatlılar!\n\nHer gün saat 11.00'den 22.00'ye kadar açığız. Pazartesi günleri kapalıyız.\n\nÖğle menüsü: çorba, ana yemek ve salata – 250 lira.\nYemekten sonra çay ücretsiz.\n\nAdres: Çiçek Sokak No: 7, postanenin yanı."
+    }
+   ],
+   "items": [
+    {"q": "Lokanta saat kaçta açılıyor?", "options": ["11.00'de", "09.00'da", "22.00'de"], "a": 0},
+    {"q": "Lokanta hangi gün kapalı?", "options": ["pazar", "pazartesi", "cuma"], "a": 1},
+    {"q": "Öğle menüsü kaç lira?", "options": ["150 lira", "200 lira", "250 lira"], "a": 2},
+    {"q": "Ne ücretsiz?", "options": ["çay", "tatlı", "salata"], "a": 0},
+    {"q": "Lokanta nerede?", "options": ["bankanın yanında", "postanenin yanında", "okulun yanında"], "a": 1}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "1. Bölüm – Kısa konuşmalar",
+   "task": "Kısa konuşmaları dinleyin ve doğru cevabı seçin. Her konuşmayı iki kez dinleyeceksiniz.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Erkek: Affedersiniz, kütüphane nerede?\nKadın: Kütüphane ikinci katta, asansörün yanında.", "q": "Kütüphane nerede?", "options": ["birinci katta", "ikinci katta", "üçüncü katta"], "a": 1},
+    {"audio": "Kadın: Bu tişört kaç lira?\nErkek: Dört yüz lira.", "q": "Tişört kaç lira?", "options": ["400 lira", "300 lira", "500 lira"], "a": 0},
+    {"audio": "Erkek: Ne içersiniz?\nKadın: Bir ayran lütfen.", "q": "Kadın ne içiyor?", "options": ["çay", "kahve", "ayran"], "a": 2},
+    {"audio": "Kadın: Saat kaç?\nErkek: Saat dört buçuk.", "q": "Saat kaç?", "options": ["4.30", "5.00", "3.30"], "a": 0},
+    {"audio": "Erkek: Kız kardeşin ne iş yapıyor?\nKadın: Kız kardeşim öğretmen, bir ilkokulda çalışıyor.", "q": "Kadının kız kardeşi ne iş yapıyor?", "options": ["doktor", "öğretmen", "mühendis"], "a": 1}
+   ]
+  },
+  {
+   "title": "2. Bölüm – Sesli mesaj",
+   "task": "Mesajı dinleyin. Cümleler doğru mu, yanlış mı? Mesajı iki kez dinleyeceksiniz.",
+   "type": "rf",
+   "plays": 2,
+   "audio": "Mehmet: Merhaba Ali, ben Mehmet. Yarın cumartesi, kardeşim Zeynep'in doğum günü. Evde küçük bir parti yapıyoruz, saat yedide. Annem mantı yapıyor. Sen lütfen pasta getir. Evim Lale Sokak'ta, sekiz numara. Gelebilirsen beni ara. Görüşürüz!",
+   "items": [
+    {"q": "Parti cumartesi günü.", "a": true},
+    {"q": "Parti Mehmet'in doğum günü.", "a": false},
+    {"q": "Parti saat yedide başlıyor.", "a": true},
+    {"q": "Ali mantı getirecek.", "a": false},
+    {"q": "Mehmet'in evi Lale Sokak'ta.", "a": true}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "1. Görev – Form",
+   "task": "Bir Türkçe kursuna kaydolmak istiyorsunuz. Bilgileri okuyun ve formu doldurun.",
+   "situation": "Adınız Anna Müller. Almansınız. 27 yaşındasınız. İzmir'de yaşıyorsunuz. Mimarsınız. Akşam kursuna gitmek istiyorsunuz.",
+   "form": [
+    {"label": "Adı", "a": "Anna"},
+    {"label": "Soyadı", "a": "Müller"},
+    {"label": "Uyruğu", "a": "Alman", "alt": ["Almanya"]},
+    {"label": "Yaşı", "a": "27"},
+    {"label": "Şehir", "a": "İzmir"},
+    {"label": "Mesleği", "a": "mimar"},
+    {"label": "Kurs saati", "a": "akşam", "alt": ["akşam kursu"]}
+   ]
+  },
+  {
+   "title": "2. Görev – Kartpostal",
+   "task": "Tatildesiniz. Bir arkadaşınıza kısa bir kartpostal yazın.",
+   "prompt": "Kartpostal yazın (20–30 kelime): Neredesiniz? Kiminle? Hava nasıl? Neler yapıyorsunuz?",
+   "points": ["yer", "kiminle", "hava", "etkinlikler"],
+   "words": 25,
+   "sample": "Sevgili Elif,\n\nŞimdi Kapadokya'dayım. Kardeşimle birlikteyim. Hava güzel ama biraz serin. Sabah balonla uçtuk, öğleden sonra peri bacalarını gezdik. Burası çok güzel!\n\nSevgiler,\nMaria"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "1. Görev – Kendinizi tanıtın",
+   "task": "Kendinizi tanıtın: adınız, yaşınız, ülkeniz, şehriniz, işiniz veya okulunuz, hobileriniz.",
+   "cards": ["ad", "yaş", "ülke", "şehir", "iş / okul", "hobiler"],
+   "phrases": ["Benim adım …", "… yaşındayım.", "… geliyorum.", "… yaşıyorum.", "… seviyorum."],
+   "sample": "Merhaba, benim adım Tom. Yirmi beş yaşındayım. İngiltere'den geliyorum, şimdi Ankara'da yaşıyorum. Üniversitede İngilizce öğretmeniyim. Futbol oynamayı, kitap okumayı ve Türk yemeklerini çok seviyorum."
+  },
+  {
+   "title": "2. Görev – Pazarda",
+   "task": "Pazardasınız. Meyve almak istiyorsunuz. Fiyatları sorun ve alışveriş yapın. Sınav görevlisi satıcıdır.",
+   "cards": ["elma", "muz", "fiyat", "kaç kilo", "ödeme"],
+   "phrases": ["Merhaba, … istiyorum.", "Kilosu kaç lira?", "Bana … kilo verir misiniz?", "Ne kadar tutuyor?", "Teşekkürler, iyi günler."],
+   "sample": "Merhaba! Elmalar çok güzel görünüyor. Kilosu kaç lira? Kırk lira mı? Tamam, bana iki kilo verir misiniz? Muz da var mı? Kilosu ne kadar? Bir kilo muz da alayım. Ne kadar tutuyor? Buyurun. Teşekkürler, iyi günler!"
+  }
+ ]
+}

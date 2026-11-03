@@ -1,0 +1,191 @@
+{
+ "id": "en-B2-01",
+ "level": "B2",
+ "lang": "en",
+ "title": "Practice Test 1",
+ "lesen": [
+  {
+   "title": "Part 1 – Use of English",
+   "task": "Read the text and decide which answer a, b or c best fits each gap.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "The science of habits",
+     "body": "Most of us like to think that our daily actions are the [1] of careful decisions. In fact, researchers estimate that around 40 per cent of what we do every day is driven by habit rather than conscious choice. Habits form because the brain is constantly looking for ways to [2] effort. Once a behaviour has been repeated often enough in the same situation, it becomes automatic.\n\nThis can work in our [3]: brushing our teeth or locking the door requires almost no thought. But it also explains why bad habits are so hard to [4]. According to psychologists, willpower alone rarely works. Instead, they suggest changing the environment so that the unwanted behaviour becomes more difficult. For example, people who want to eat less sugar should simply [5] sweets out of sight.\n\nBuilding a new habit, on the other hand, takes time. One study found that it took participants an [6] of 66 days before a new behaviour, such as drinking a glass of water with lunch, felt automatic. The key, researchers say, is not to give up after missing a day or two – what [7] most is consistency over the long [8]."
+    }
+   ],
+   "items": [
+    {"q": "Gap 1", "options": ["result", "reason", "cause"], "a": 0},
+    {"q": "Gap 2", "options": ["spare", "save", "keep"], "a": 1},
+    {"q": "Gap 3", "options": ["advantage", "benefit", "favour"], "a": 2},
+    {"q": "Gap 4", "options": ["break", "crack", "split"], "a": 0},
+    {"q": "Gap 5", "options": ["hold", "keep", "stay"], "a": 1},
+    {"q": "Gap 6", "options": ["amount", "number", "average"], "a": 2},
+    {"q": "Gap 7", "options": ["matters", "makes", "means"], "a": 0},
+    {"q": "Gap 8", "options": ["way", "term", "distance"], "a": 1}
+   ]
+  },
+  {
+   "title": "Part 2 – Reading",
+   "task": "Read the article and choose the answer a, b or c which you think fits best according to the text.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "The lost art of getting lost",
+     "body": "When I was twenty, I spent a summer travelling around Portugal with nothing but a rucksack, a train pass and a folded paper map that eventually fell apart at the creases. I got lost constantly. I once spent an entire afternoon looking for a beach that, as it turned out, was on the other side of the river. Yet when I think back on that trip, those wrong turns are among my favourite memories.\n\nTwenty years later, I rarely get lost. My phone tells me where to go, how long it will take and which café nearby has the best reviews. It is undeniably convenient, and I would not want to give it up entirely. But recently I have begun to wonder what I am losing in exchange.\n\nScientists have started to investigate the same question. One study found that when drivers followed satellite navigation, the part of the brain responsible for planning routes was far less active than when they found their own way. The researchers were careful not to claim that GPS damages the brain. Their point was more subtle: like a muscle that is rarely used, our sense of direction may simply never develop if we always rely on technology.\n\nThere is also something less measurable at stake. When we navigate by ourselves, we pay attention to our surroundings – the shape of a church tower, the smell of a bakery, the direction of the sun. These details become the anchors of our memories. When we follow a blue dot on a screen, our eyes are on the phone, and the city passes us by almost unnoticed.\n\nNone of this means we should throw our phones into the nearest river. Navigation apps have made travel safer and opened up places that once felt intimidating. But I have started to experiment. On my last trip, to Edinburgh, I allowed myself to check the map only once each morning. The rest of the day I wandered, asked people for directions and occasionally ended up somewhere I had not intended to go. I found a tiny bookshop I would never have searched for, and an elderly man who drew me a map on a paper napkin.\n\nGetting lost, it turns out, is not a failure. It is an invitation."
+    }
+   ],
+   "items": [
+    {"q": "In the first paragraph, the writer suggests that his trip to Portugal…", "options": ["was badly organised.", "is remembered fondly partly because of his mistakes.", "made him decide never to travel without a guide."], "a": 1},
+    {"q": "How does the writer feel about using his phone for navigation today?", "options": ["He finds it useful but has some doubts.", "He thinks it is completely unnecessary.", "He would like to stop using it immediately."], "a": 0},
+    {"q": "What did the researchers conclude?", "options": ["GPS seriously harms the brain.", "Drivers who use GPS have more accidents.", "Not using our navigation skills may stop them from developing."], "a": 2},
+    {"q": "According to the writer, noticing details while navigating…", "options": ["helps us form memories of places.", "makes travelling more tiring.", "is only possible in small towns."], "a": 0},
+    {"q": "What does the writer say about navigation apps in the fifth paragraph?", "options": ["They should be banned in city centres.", "They have made some places easier to visit.", "They are less reliable than paper maps."], "a": 1},
+    {"q": "What was the writer's approach on his trip to Edinburgh?", "options": ["He did not use his phone at all.", "He only used a paper map.", "He limited how often he looked at the map."], "a": 2}
+   ]
+  },
+  {
+   "title": "Part 3 – Gapped text",
+   "task": "Six sentences have been removed from the article. Choose from the sentences a–g the one which fits each gap. There is one extra sentence which you do not need to use.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Learning to row in my forties",
+     "body": "I had never been particularly sporty, so when a friend suggested that I join her rowing club at the age of forty-three, I laughed. [1] Nevertheless, curiosity got the better of me, and one cold Saturday morning in March I found myself standing on the riverbank in borrowed clothes.\n\nThe first session was humbling. Before we were allowed anywhere near the water, the coach made us practise on rowing machines in the boathouse. [2] By the end of the hour, my hands were sore and my back ached in places I did not know existed.\n\nGetting into a real boat was a different experience altogether. Rowing boats are long and narrow, and the slightest movement can make them roll. [3] It took several weeks before I stopped gripping the oar as if my life depended on it.\n\nWhat surprised me most was the importance of timing. [4] If one person pulls too early or too late, the whole crew loses rhythm and the boat slows down. Gradually, I learned to watch the back of the person in front of me and to match my movements to hers.\n\nThree years later, rowing has become an essential part of my week. [5] There is something deeply satisfying about gliding along the river at sunrise, when the water is still and the city is just waking up.\n\nI have even taken part in two races, although our crew finished last both times. [6] For me, the real achievement is being part of a team that I would never have imagined joining."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Our coach kept reminding us that eight people rowing together are only as fast as their worst-timed stroke."},
+    {"key": "b", "text": "I could not imagine anything less suited to my personality."},
+    {"key": "c", "text": "She explained that we needed to learn the correct movement before we could think about speed."},
+    {"key": "d", "text": "I go out on the water three mornings a week, whatever the weather."},
+    {"key": "e", "text": "Nobody seemed to mind."},
+    {"key": "f", "text": "On my first outing, I was convinced we were going to tip over."},
+    {"key": "g", "text": "Rowing is one of the oldest sports at the Olympic Games."}
+   ],
+   "items": [
+    {"q": "Gap 1", "a": "b"},
+    {"q": "Gap 2", "a": "c"},
+    {"q": "Gap 3", "a": "f"},
+    {"q": "Gap 4", "a": "a"},
+    {"q": "Gap 5", "a": "d"},
+    {"q": "Gap 6", "a": "e"}
+   ]
+  },
+  {
+   "title": "Part 4 – Multiple matching",
+   "task": "Four people talk about volunteering abroad. For questions 1–10, choose from the people a–d. The people may be chosen more than once.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Priya: I spent six months teaching English in a village school in Nepal. I had no teaching qualifications, and at first I felt completely out of my depth – thirty children, no textbooks and a blackboard that was barely visible. The other teachers were incredibly patient with me, though, and by the end I had developed a confidence I didn't know I had. What I hadn't expected was how hard it would be to come home; for weeks afterwards, my life in London felt strangely empty."},
+    {"key": "b", "text": "Marcus: I joined a marine conservation project in Mexico, monitoring turtle nests on the beach at night. The work itself was physically demanding but fairly repetitive, and honestly, some nights I struggled to stay awake. What made it worthwhile was the group – volunteers from twelve countries, many of whom are still close friends. I'd warn anyone considering such a project to research the organisation carefully: ours was well run, but I heard stories about others that charged high fees and did very little."},
+    {"key": "c", "text": "Elena: I helped build a community centre in rural Ghana. I'd imagined myself doing something heroic, but I quickly realised that the local builders were far more skilled than any of us, and we were mostly carrying bricks. That was a valuable lesson in humility. The experience changed my career plans completely: I'm now studying architecture, with the aim of designing affordable housing."},
+    {"key": "d", "text": "Tom: My three months at a wildlife sanctuary in South Africa were the most expensive thing I've ever done – the programme fee was enormous, and I'm still paying back a loan. Was it worth it? I'm not sure. I learned a lot about animal care, but we volunteers did tasks that local people could have been paid to do. If I went again, I'd choose a project that employs local staff."}
+   ],
+   "items": [
+    {"q": "Who advises checking an organisation before signing up?", "a": "b"},
+    {"q": "Who felt unprepared for the work at the beginning?", "a": "a"},
+    {"q": "Who questions whether volunteers were really needed?", "a": "d"},
+    {"q": "Who found it difficult to readjust to normal life?", "a": "a"},
+    {"q": "Who made lasting friendships?", "a": "b"},
+    {"q": "Who changed their professional direction?", "a": "c"},
+    {"q": "Who found the tasks rather monotonous?", "a": "b"},
+    {"q": "Who had unrealistic expectations of their role?", "a": "c"},
+    {"q": "Who is still dealing with the financial consequences?", "a": "d"},
+    {"q": "Who gained self-belief?", "a": "a"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Part 1",
+   "task": "You will hear people talking in eight different situations. For each question, choose the best answer a, b or c. You will hear each recording twice.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Woman: I signed up for the photography course mainly because my friend was doing it, to be honest. I expected it to be quite technical, and I was worried I wouldn't keep up. But the tutor was brilliant at explaining things simply, and by the end I was the one giving my friend advice!", "q": "You hear a woman talking about a course. What does she say about it?", "options": ["It was more technical than she expected.", "It was easier to follow than she had feared.", "Her friend enjoyed it more than she did."], "a": 1},
+    {"audio": "Man: The salary's slightly lower than in my last job, and the commute is longer. But I'm finally doing work I find meaningful – we're developing software for hospitals – and that makes up for everything else.", "q": "You hear a man talking about his new job. What does he value most?", "options": ["the money", "the location", "the purpose of the work"], "a": 2},
+    {"audio": "Woman: So, what did you make of it?\nMan: The acting was superb, no doubt about that. But it was far too long – they could easily have cut forty minutes.\nWoman: I agree, especially the middle part.", "q": "You hear two friends talking about a film. What do they both think?", "options": ["It was too long.", "The acting was poor.", "The ending was disappointing."], "a": 0},
+    {"audio": "Woman: Hi, it's Jenny from the garage. We've had a look at your car, and the problem isn't the battery as we thought – it's a faulty starter motor. We can replace it, but we'll need to order the part first, so it won't be ready until Thursday.", "q": "You hear a voicemail. Why is the woman calling?", "options": ["to say the car is ready", "to explain a different problem with the car", "to ask for payment"], "a": 1},
+    {"audio": "Man: People always say you should practise speaking from day one. For me, though, it was reading that made the difference. Once I started reading novels in Spanish, my vocabulary grew so fast that speaking became much easier.", "q": "You hear a man talking about learning a language. What helped him most?", "options": ["reading books", "speaking from the start", "taking lessons"], "a": 0},
+    {"audio": "Guide: Before we go in, a quick reminder: photography is allowed in the main hall, but not in the chapel. Please keep your bags with you at all times, and we'll meet back here at the fountain at half past three.", "q": "You hear a tour guide. Where will the group meet later?", "options": ["in the main hall", "in the chapel", "at the fountain"], "a": 2},
+    {"audio": "Student: Everyone expected me to go straight to university, but I decided to take a year out first and work in a restaurant. I wanted to save some money, but mainly I needed time to work out what I actually wanted to study.", "q": "You hear a student. Why did she take a year out?", "options": ["to earn money for a trip", "to decide what to study", "to train as a chef"], "a": 1},
+    {"audio": "Woman: The room was tiny and the view was of a car park, but the staff couldn't have been more helpful. When my flight was cancelled, they found me a room for an extra night at no cost.", "q": "You hear a woman talking about a hotel. What impressed her?", "options": ["the staff", "the size of the room", "the view"], "a": 0}
+   ]
+  },
+  {
+   "title": "Part 2",
+   "task": "You will hear five short extracts in which people talk about why they moved to the countryside. For each speaker, choose from the list a–h the main reason. There are three extra letters which you do not need to use. You will hear the recording twice.",
+   "type": "match",
+   "plays": 2,
+   "audio": "Speaker 1: For years I commuted two hours a day into the city. When my company allowed us to work from home, I realised there was no reason to pay city rents any more. Now I live in a village and my costs are a fraction of what they were.\nSpeaker 2: I grew up on a farm, and when my parents got older, someone had to take over. I'd never planned to come back, but I couldn't let the farm go after three generations.\nSpeaker 3: It was my doctor who suggested it, actually. I'd been suffering from asthma for years, and the air in the city was making it worse. Within months of moving, I needed my inhaler far less often.\nSpeaker 4: We wanted our children to grow up with space to run around and explore, not in a small flat surrounded by traffic. They spend every afternoon outdoors now.\nSpeaker 5: I'm a painter, and I'd lost all inspiration in the city. Out here, the light changes every hour and the landscape is full of colour. I've produced more work in a year than in the previous five.",
+   "choices": [
+    {"key": "a", "text": "to improve their health"},
+    {"key": "b", "text": "to find inspiration for their work"},
+    {"key": "c", "text": "to reduce their living costs"},
+    {"key": "d", "text": "to be closer to friends"},
+    {"key": "e", "text": "to continue a family business"},
+    {"key": "f", "text": "to give their children a better environment"},
+    {"key": "g", "text": "to start a new career"},
+    {"key": "h", "text": "to escape noisy neighbours"}
+   ],
+   "items": [
+    {"q": "Speaker 1", "a": "c"},
+    {"q": "Speaker 2", "a": "e"},
+    {"q": "Speaker 3", "a": "a"},
+    {"q": "Speaker 4", "a": "f"},
+    {"q": "Speaker 5", "a": "b"}
+   ]
+  },
+  {
+   "title": "Part 3",
+   "task": "You will hear an interview with Maya Okafor, a video game designer. For each question, choose the best answer a, b or c. You will hear the interview twice.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Interviewer: My guest today is Maya Okafor, a video game designer whose latest game has sold over two million copies. Maya, did you always want to make games?\nMaya: Not at all. As a child I wanted to be a writer. I spent hours making up stories, and I still see myself as a storyteller first. Games just turned out to be a wonderful way of telling stories in which the player makes the choices.\nInterviewer: How did you get into the industry?\nMaya: Through a rather unusual route. I studied history, and in my final year I volunteered to help a small studio check the historical details in a game set in ancient Rome. They liked my ideas so much that they offered me a job writing dialogue.\nInterviewer: What does a typical working day look like?\nMaya: There really isn't one. Some days I'm writing scripts, others I'm in meetings with artists and programmers, and quite often I'm playing early versions of the game to see what isn't working. People imagine we spend all day having fun, but testing the same level fifty times is not exactly entertaining!\nInterviewer: Your latest game deals with climate change. Weren't you worried that it would be too serious?\nMaya: The publishers were certainly nervous. But I felt strongly that games can handle difficult subjects, just as films and novels do. The key was to make it hopeful rather than depressing – the player is rebuilding a community, not watching the world end.\nInterviewer: The game has been praised for its diverse characters. Was that a deliberate choice?\nMaya: Absolutely. Players come from every background, and they deserve to see themselves in the stories they play. Our team itself is very diverse, which helped enormously.\nInterviewer: Finally, what advice would you give to young people who want to design games?\nMaya: Start making things now. You don't need expensive equipment – there are free tools available online. Make small games, finish them and show them to people. Finishing something, however simple, teaches you more than any course.",
+   "items": [
+    {"q": "As a child, Maya wanted to…", "options": ["design games.", "become a writer.", "study history."], "a": 1},
+    {"q": "Maya got her first job in games after…", "options": ["helping with historical research for a game.", "winning a writing competition.", "taking a course in programming."], "a": 0},
+    {"q": "What does Maya say about her working days?", "options": ["They mostly involve playing games for fun.", "They are very similar to each other.", "Some tasks can be quite boring."], "a": 2},
+    {"q": "How did the publishers react to the idea of a game about climate change?", "options": ["They were enthusiastic.", "They had some concerns.", "They refused to publish it."], "a": 1},
+    {"q": "Maya wanted the climate change game to…", "options": ["leave players feeling hopeful.", "show the end of the world.", "be used in schools."], "a": 0},
+    {"q": "Why did Maya include diverse characters?", "options": ["Her publishers asked her to.", "It made the game more popular abroad.", "She wanted players to recognise themselves."], "a": 2},
+    {"q": "Maya's main advice to young designers is to…", "options": ["buy professional equipment.", "complete small projects.", "study at a famous university."], "a": 1}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Part 1 – Essay",
+   "task": "In your English class you have been talking about technology and education. Now your teacher has asked you to write an essay with the title: \"Should schools replace textbooks with tablets?\"",
+   "prompt": "Write your essay using all the notes and giving reasons for your point of view. Write 140–190 words.",
+   "points": ["cost for schools and families", "students' concentration", "your own idea"],
+   "words": 160,
+   "sample": "Many schools are considering replacing printed textbooks with tablets. While this idea has clear advantages, I believe it should be introduced carefully.\n\nFirst of all, there is the question of cost. Tablets are expensive to buy and repair, and not every family can afford one. On the other hand, digital books can be updated cheaply, whereas printed textbooks quickly become out of date.\n\nA second issue is concentration. Tablets give students access to games, messages and videos, which can easily distract them during lessons. Teachers would need to control which apps can be used, otherwise learning might suffer.\n\nFinally, I would argue that tablets make lessons more interactive. Students can watch short videos, take quizzes and receive instant feedback, which many find motivating.\n\nIn conclusion, I think tablets can be a valuable tool, but they should not completely replace textbooks. A combination of both, with clear rules for using devices, would be the most sensible solution."
+  },
+  {
+   "title": "Part 2 – Review",
+   "task": "You see this announcement on an English-language website: \"Reviews wanted: a place to eat. Write a review of a café or restaurant you know. Describe the food, the service and the atmosphere, and say whether you would recommend it to other readers.\"",
+   "prompt": "Write your review in 140–190 words.",
+   "points": ["the food", "the service", "the atmosphere", "whether you recommend it"],
+   "words": 160,
+   "sample": "If you are ever in the old town, don't miss Lemon Tree, a small family-run restaurant hidden in a narrow side street.\n\nThe menu is short, which is always a good sign. Everything is cooked fresh, and the dishes change with the seasons. I had grilled fish with herbs and roasted vegetables, and it was simply delicious. The homemade lemon cake is famous in the neighbourhood, and now I understand why.\n\nThe service was friendly and relaxed. Our waiter, who turned out to be the owner's son, recommended dishes and even explained how some of them were prepared. The only disadvantage was that the food took quite a long time to arrive on a busy Saturday evening.\n\nAs for the atmosphere, the restaurant has just ten tables, soft lighting and old photographs on the walls, so it feels warm and personal.\n\nOverall, I would definitely recommend Lemon Tree, especially for a quiet dinner with friends. Just book in advance and don't be in a hurry!"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Part 1 – Long turn",
+   "task": "Imagine two photographs. In the first, people are working together in a busy open-plan office. In the second, a person is working alone from home at a kitchen table. Compare the two situations and say which way of working you think is more productive, and why. Speak for about one minute.",
+   "cards": ["what the people are doing", "advantages of each situation", "disadvantages of each situation", "your opinion with reasons"],
+   "phrases": ["Both pictures show …, but …", "Whereas in the first picture …, in the second …", "One advantage of … is that …", "Personally, I'd say …"],
+   "sample": "Both pictures show people at work, but the situations are very different. In the first picture, a group of colleagues is working together in a large, busy office. They seem to be discussing a project, and there's a lot of energy in the room. Whereas in the second picture, a woman is working alone at her kitchen table, probably from home.\n\nOne advantage of the office is that you can ask colleagues for help immediately and share ideas. However, it can be noisy and full of interruptions. Working from home, on the other hand, is quieter and you save time on commuting, but you might feel lonely or find it hard to separate work from your private life.\n\nPersonally, I'd say working from home is more productive for tasks that need concentration, like writing reports, but the office is better for creative teamwork. Ideally, people should be able to do both."
+  },
+  {
+   "title": "Part 2 – Collaborative task",
+   "task": "Your town wants to attract more young people. Talk together about these ideas – a music festival, cheaper public transport, a new sports centre, free Wi-Fi in parks and a weekly market for young designers – and then decide which two ideas would be most effective.",
+   "cards": ["a music festival", "cheaper public transport", "a new sports centre", "free Wi-Fi in parks", "a market for young designers"],
+   "phrases": ["Shall we start with …?", "That's a good point, but don't you think …?", "I'm not convinced that …", "It would make a real difference if …", "So we've decided on … and …"],
+   "sample": "A: Shall we start with the music festival? It would definitely attract young people, at least for a weekend.\nB: That's a good point, but don't you think it's only a short-term solution? People come for the festival and then leave.\nA: True. Cheaper public transport would help every day, especially students who don't have cars.\nB: I agree. It would make a real difference if young people could travel cheaply in the evenings.\nA: What about the sports centre? It's expensive to build, though.\nB: I'm not convinced it's the best choice. The market for young designers is cheaper and could help young people start businesses.\nA: That's an interesting idea – it would give them a reason to stay, not just visit.\nB: So we've decided on cheaper public transport and the designers' market?\nA: Yes, I think those two would be the most effective."
+  }
+ ]
+}

@@ -56,30 +56,46 @@ export function normalizeUsage(value, now, zone = 'Europe/Vienna') {
     if (!interval || !Number.isFinite(interval.start) || !Number.isFinite(interval.end) || interval.end <= now - WINDOW_MS || interval.end <= interval.start) delete s.live.intervals[key];
   }
   if (s.live.session && s.live.session.until <= now) delete s.live.session;
+  // Karşılıklı Çeviri has its own pool with the same per-badge minutes as
+  // Canlı Çeviri, so using one never shortens the other.
+  s.convo ||= {};
+  s.convo.intervals ||= {};
+  for (const [key, interval] of Object.entries(s.convo.intervals)) {
+    if (!interval || !Number.isFinite(interval.start) || !Number.isFinite(interval.end) || interval.end <= now - WINDOW_MS || interval.end <= interval.start) delete s.convo.intervals[key];
+  }
+  if (s.convo.session && s.convo.session.until <= now) delete s.convo.session;
   s.pdf ||= { count: 0, events: {}, pending: {} };
   s.pdf.count = Math.max(0, Math.floor(Number(s.pdf.count) || 0));
   s.pdf.events ||= {}; s.pdf.pending ||= {};
   for (const [id, event] of Object.entries(s.pdf.pending)) if (!event || event.at <= now - 90000) delete s.pdf.pending[id];
   return s;
 }
-export function liveUse(state, now, includeReserved = false) {
-  return Object.values(state.live.intervals).reduce((sum, i) => sum + Math.max(0, (includeReserved ? i.end : Math.min(now, i.end)) - Math.max(i.start, now - WINDOW_MS)) / 1000, 0);
+export function liveUse(state, now, includeReserved = false, pool = 'live') {
+  return Object.values(state[pool].intervals).reduce((sum, i) => sum + Math.max(0, (includeReserved ? i.end : Math.min(now, i.end)) - Math.max(i.start, now - WINDOW_MS)) / 1000, 0);
+}
+function poolSummary(s, tier, now, zone, pool) {
+  const usedSeconds = Math.ceil(liveUse(s, now, false, pool));
+  const starts = Object.values(s[pool].intervals).filter(i => i.end > i.start).map(i => Math.max(i.start, now - WINDOW_MS));
+  return { limitSeconds: tier.minutes === null ? null : tier.minutes * 60, usedSeconds, remainingSeconds: tier.minutes === null ? null : Math.max(0, tier.minutes * 60 - usedSeconds), resetsAt: starts.length ? Math.min(...starts) + WINDOW_MS : null, timeZone: zone };
 }
 export function summary(value, tier, now, zone = 'Europe/Vienna') {
   const s = normalizeUsage(value, now, zone);
   const events = Object.values(s.writing.events);
   const pending = Object.keys(s.writing.pending).length;
-  const usedSeconds = Math.ceil(liveUse(s, now));
-  const starts = Object.values(s.live.intervals).filter(i => i.end > i.start).map(i => Math.max(i.start, now - WINDOW_MS));
   return {
     serverNow: now, tier: tier.amount, badge: tier.badge,
     ...(tier.memberships?{memberships:tier.memberships}:{}),
     ...(tier.supportAmounts?{supportAmounts:tier.supportAmounts,revokedSupport:tier.revokedSupport||[]}:{}),
     writing: { limit: tier.count, used: events.length, remaining: tier.count === null ? null : Math.max(0, tier.count - events.length - pending), resetsAt: events.length ? Math.min(...events.map(e => e.at)) + WINDOW_MS : null },
-    live: { limitSeconds: tier.minutes === null ? null : tier.minutes * 60, usedSeconds, remainingSeconds: tier.minutes === null ? null : Math.max(0, tier.minutes * 60 - usedSeconds), resetsAt: starts.length ? Math.min(...starts) + WINDOW_MS : null, timeZone: zone },
+    live: poolSummary(s, tier, now, zone, 'live'),
+    convo: poolSummary(s, tier, now, zone, 'convo'),
     pdf: { limit: tier.amount === 0 ? 0 : tier.amount === 1 ? 5 : null, used: s.pdf.count, remaining: tier.amount === 0 ? 0 : tier.amount === 1 ? Math.max(0, 5 - s.pdf.count - Object.keys(s.pdf.pending).length) : null },
     offline: tier.amount > 0
   };
+}
+function sessionPool(s, p) {
+  if (p.pool === 'convo' || p.pool === 'live') return p.pool;
+  return s.live.session?.id !== p.id && s.convo.session?.id === p.id ? 'convo' : 'live';
 }
 // Return a new state or throw. The Firebase transaction calls this repeatedly.
 export function changeUsage(value, tier, action, p, now, zone = 'Europe/Vienna') {
@@ -101,38 +117,43 @@ export function changeUsage(value, tier, action, p, now, zone = 'Europe/Vienna')
   } else if (action === 'writingCancel') {
     if (s.writing.pending[p.id]?.hash === p.hash) delete s.writing.pending[p.id];
   } else if (action === 'liveStart') {
-    if (s.live.session && s.live.session.id !== p.id) throw fault('live_already_active', 409);
-    if (s.live.session) return s; // Idempotent network retry.
-    const remaining = tier.minutes === null ? Infinity : tier.minutes * 60 - liveUse(s, now, true);
-    if (remaining <= 0) throw fault('live_limit', 429);
+    // Canlı Çeviri keeps using the live pool; Karşılıklı Çeviri asks for 'convo'.
+    const pool = p.pool === 'convo' ? 'convo' : 'live', L = s[pool];
+    if (L.session && L.session.id !== p.id) throw fault('live_already_active', 409);
+    if (L.session) return s; // Idempotent network retry.
+    const remaining = tier.minutes === null ? Infinity : tier.minutes * 60 - liveUse(s, now, true, pool);
+    if (remaining <= 0) throw fault(pool === 'convo' ? 'convo_limit' : 'live_limit', 429);
     const until = Math.min(now + LEASE_MS, now + remaining * 1000);
     const key = p.id + '_' + now;
-    s.live.intervals[key] = { start: now, end: until };
-    s.live.session = { id: p.id, until, key };
+    L.intervals[key] = { start: now, end: until };
+    L.session = { id: p.id, until, key };
   } else if (action === 'liveRenew') {
-    const session = s.live.session;
+    const pool = sessionPool(s, p), L = s[pool], session = L.session;
     if (!session || session.id !== p.id) throw fault('session_expired', 409);
-    const remaining = tier.minutes === null ? Infinity : tier.minutes * 60 - liveUse(s, now, true);
+    const remaining = tier.minutes === null ? Infinity : tier.minutes * 60 - liveUse(s, now, true, pool);
     const until = Math.min(now + LEASE_MS, session.until + Math.max(0, remaining) * 1000);
     if (until > session.until) {
-      s.live.intervals[session.key].end = until;
+      L.intervals[session.key].end = until;
       session.until = until;
     }
   } else if (action === 'liveStop') {
-    if (s.live.session?.id === p.id) {
-      const interval = s.live.intervals[s.live.session.key];
+    const L = s[sessionPool(s, p)];
+    if (L.session?.id === p.id) {
+      const interval = L.intervals[L.session.key];
       if (interval) interval.end = Math.min(now, interval.end);
-      delete s.live.session;
+      delete L.session;
     }
   } else if (action === 'liveConnect' || action === 'liveAudioBegin' || action === 'liveText') {
-    if (!s.live.session || s.live.session.id !== p.id) throw fault('session_expired', 409);
+    // Shared translation helpers send only the session id; it identifies the pool.
+    const L = s[sessionPool(s, p)];
+    if (!L.session || L.session.id !== p.id) throw fault('session_expired', 409);
     // Each finished sentence needs one text translation. Counting those as
     // provider connections exhausted 18/min in fast lessons and stopped them.
     const key = action === 'liveConnect' ? 'connects' : action === 'liveText' ? 'texts' : 'requests';
     const maximum = action === 'liveConnect' ? 18 : action === 'liveText' ? 90 : 30;
-    s.live[key] = (s.live[key] || []).filter(at => at > now - 60000);
-    if (s.live[key].length >= maximum) throw fault('speech_busy', 429);
-    s.live[key].push(now);
+    L[key] = (L[key] || []).filter(at => at > now - 60000);
+    if (L[key].length >= maximum) throw fault('speech_busy', 429);
+    L[key].push(now);
   } else if (action === 'pdfBegin') {
     if (tier.amount === 0) throw fault('pdf_badge_required', 403);
     if (s.pdf.events[p.id]) return s;

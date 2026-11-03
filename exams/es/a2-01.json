@@ -1,0 +1,167 @@
+{
+ "id": "es-A2-01",
+ "level": "A2",
+ "lang": "es",
+ "title": "Examen de práctica 1",
+ "lesen": [
+  {
+   "title": "Tarea 1 – Una carta",
+   "task": "Lea la carta y conteste las preguntas. Seleccione la opción correcta: a, b o c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Querida abuela:",
+     "body": "Querida abuela:\n\nTe escribo desde Salamanca, donde estoy haciendo un curso de español de un mes. Llegué hace dos semanas y ya tengo muchos amigos de diferentes países: una chica japonesa, dos chicos brasileños y una profesora de Canadá.\n\nVivo con una familia muy simpática. La señora Carmen cocina muy bien; ayer preparó una tortilla de patatas buenísima. Las clases empiezan a las nueve y terminan a la una. Después comemos en casa y por la tarde hacemos actividades: visitas a museos, clases de baile o excursiones.\n\nEl fin de semana pasado fuimos a Ávila en autobús. La ciudad tiene una muralla muy antigua y preciosa. El próximo sábado vamos a ir a Segovia.\n\nVuelvo a casa el día 30. ¡Te echo de menos!\n\nUn abrazo muy fuerte,\nLena"
+    }
+   ],
+   "items": [
+    {"q": "Lena está en Salamanca para…", "options": ["trabajar.", "estudiar español.", "visitar a su familia."], "a": 1},
+    {"q": "¿Cuánto tiempo lleva Lena en Salamanca?", "options": ["dos semanas", "un mes", "tres días"], "a": 0},
+    {"q": "Lena vive…", "options": ["en una residencia.", "en un hotel.", "con una familia."], "a": 2},
+    {"q": "Las clases terminan…", "options": ["a las nueve.", "a la una.", "por la tarde."], "a": 1},
+    {"q": "¿Cómo fueron a Ávila?", "options": ["en tren", "en coche", "en autobús"], "a": 2},
+    {"q": "¿Qué van a hacer el próximo sábado?", "options": ["ir a Segovia", "volver a casa", "ir a un museo"], "a": 0}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Anuncios de trabajo",
+   "task": "Lea los textos 1–6 sobre personas que buscan trabajo y los anuncios a–i. Relacione cada persona con un anuncio. Hay tres anuncios que no tiene que seleccionar.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Se busca camarero/a para fines de semana. Experiencia mínima de un año."},
+    {"key": "b", "text": "Colegio busca profesor/a de inglés nativo para clases por la tarde."},
+    {"key": "c", "text": "Familia necesita persona para cuidar a dos niños por las mañanas."},
+    {"key": "d", "text": "Tienda de informática busca dependiente con conocimientos de ordenadores."},
+    {"key": "e", "text": "Se necesita conductor/a con carné para repartir paquetes."},
+    {"key": "f", "text": "Hotel en la playa busca recepcionista que hable alemán, julio y agosto."},
+    {"key": "g", "text": "Clínica veterinaria busca ayudante. Imprescindible amor por los animales."},
+    {"key": "h", "text": "Empresa busca contable con cinco años de experiencia."},
+    {"key": "i", "text": "Gimnasio busca monitor/a de natación."}
+   ],
+   "items": [
+    {"q": "Andrés es estudiante y solo puede trabajar los sábados y domingos. Trabajó dos años en un bar.", "a": "a"},
+    {"q": "Sabine es alemana y busca un trabajo para el verano cerca del mar.", "a": "f"},
+    {"q": "Marcos tiene carné de conducir y le gusta mucho conducir.", "a": "e"},
+    {"q": "Lucía tiene tres perros y dos gatos y quiere trabajar con animales.", "a": "g"},
+    {"q": "Jorge sabe mucho de ordenadores y quiere trabajar con el público.", "a": "d"},
+    {"q": "Rosa tiene experiencia con niños y está libre por las mañanas.", "a": "c"}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Un artículo",
+   "task": "Lea el artículo y conteste las preguntas. Seleccione la opción correcta: a, b o c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "La siesta: ¿costumbre del pasado?",
+     "body": "La siesta es una de las costumbres españolas más famosas en el mundo. Sin embargo, hoy en día pocos españoles duermen la siesta todos los días. Según una encuesta reciente, solo el dieciocho por ciento la duerme a diario, y la mayoría de ellos son personas jubiladas.\n\nLa razón principal es el horario de trabajo. En las grandes ciudades, muchas personas trabajan de nueve a seis y tienen solo una hora para comer, normalmente cerca de la oficina. No tienen tiempo para volver a casa.\n\nPero los médicos dicen que una siesta corta, de veinte minutos, es buena para la salud: mejora la memoria y reduce el estrés. Por eso, algunas empresas modernas han creado salas de descanso donde los trabajadores pueden dormir un poco después de comer. En verano, cuando hace mucho calor, la siesta sigue siendo muy popular, sobre todo en los pueblos del sur."
+    }
+   ],
+   "items": [
+    {"q": "Según la encuesta, la mayoría de las personas que duermen la siesta a diario son…", "options": ["estudiantes.", "jubilados.", "trabajadores."], "a": 1},
+    {"q": "¿Qué porcentaje de españoles duerme la siesta todos los días?", "options": ["el 18 %", "el 80 %", "el 50 %"], "a": 0},
+    {"q": "Muchas personas no duermen la siesta porque…", "options": ["no les gusta.", "duermen mucho por la noche.", "no tienen tiempo de volver a casa."], "a": 2},
+    {"q": "Según los médicos, una siesta corta…", "options": ["es mala para la salud.", "mejora la memoria.", "produce estrés."], "a": 1},
+    {"q": "Algunas empresas modernas…", "options": ["tienen salas para descansar.", "prohíben la siesta.", "cierran a mediodía."], "a": 0},
+    {"q": "¿Cuándo es más popular la siesta?", "options": ["en invierno", "los lunes", "en verano"], "a": 2}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Tarea 1 – Conversaciones",
+   "task": "Va a escuchar seis conversaciones breves. Para cada una, seleccione la opción correcta: a, b o c. Escuchará cada conversación dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Mujer: ¿Qué tal el viaje a Sevilla?\nHombre: Muy bien, pero hizo mucho calor. Casi cuarenta grados todos los días.", "q": "¿Qué tiempo hizo en Sevilla?", "options": ["Llovió mucho.", "Hizo mucho calor.", "Hizo frío."], "a": 1},
+    {"audio": "Hombre: Perdona, ¿para ir al Museo del Prado?\nMujer: Coge la línea dos del metro y bájate en Banco de España. Luego son cinco minutos andando.", "q": "¿En qué estación tiene que bajarse?", "options": ["Banco de España", "Sol", "Atocha"], "a": 0},
+    {"audio": "Mujer: ¿Por qué no viniste ayer a clase?\nHombre: Porque tuve que llevar a mi madre al médico. No se encontraba bien.", "q": "¿Por qué no fue el hombre a clase?", "options": ["Estaba enfermo.", "Tenía que trabajar.", "Acompañó a su madre al médico."], "a": 2},
+    {"audio": "Hombre: Quería reservar una mesa para el sábado.\nMujer: ¿Para cuántas personas?\nHombre: Para seis, a las nueve y media.", "q": "¿Para cuántas personas es la reserva?", "options": ["cuatro", "seis", "nueve"], "a": 1},
+    {"audio": "Mujer: ¿Te gusta tu nuevo trabajo?\nHombre: Sí, mucho. Mis compañeros son muy simpáticos, aunque la oficina está un poco lejos de casa.", "q": "¿Qué problema tiene el nuevo trabajo?", "options": ["Los compañeros son antipáticos.", "Gana poco dinero.", "Está lejos de casa."], "a": 2},
+    {"audio": "Hombre: ¿Qué le regalamos a Elena por su cumpleaños?\nMujer: Le encanta leer. ¿Qué tal un libro?\nHombre: Buena idea. Y unas flores también.", "q": "¿Qué van a regalar a Elena?", "options": ["un libro y flores", "un perfume", "un disco y flores"], "a": 0}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Anuncios de radio",
+   "task": "Va a escuchar seis anuncios. Relacione cada anuncio con un tema a–i. Hay tres temas que no tiene que seleccionar. Escuchará cada anuncio dos veces.",
+   "type": "match",
+   "plays": 2,
+   "choices": [
+    {"key": "a", "text": "Un concierto"},
+    {"key": "b", "text": "Rebajas en una tienda"},
+    {"key": "c", "text": "Un curso de idiomas"},
+    {"key": "d", "text": "El tiempo"},
+    {"key": "e", "text": "Un nuevo restaurante"},
+    {"key": "f", "text": "Un problema en el transporte"},
+    {"key": "g", "text": "Una exposición"},
+    {"key": "h", "text": "Un partido de fútbol"},
+    {"key": "i", "text": "Una oferta de viajes"}
+   ],
+   "items": [
+    {"audio": "Locutor: Mañana, la línea cinco del metro estará cerrada por obras entre las estaciones de Ópera y Callao. Hay autobuses gratuitos.", "q": "Anuncio 1", "a": "f"},
+    {"audio": "Locutora: ¡Este verano, viaja a Mallorca! Siete noches en hotel de cuatro estrellas con vuelo incluido por solo cuatrocientos euros.", "q": "Anuncio 2", "a": "i"},
+    {"audio": "Locutor: Este sábado, en el Palacio de Deportes, el grupo Luna Roja presenta su nuevo disco. Entradas a la venta desde veinte euros.", "q": "Anuncio 3", "a": "a"},
+    {"audio": "Locutora: El Museo de Bellas Artes presenta las obras de Sorolla hasta el treinta de junio. Entrada gratuita los domingos.", "q": "Anuncio 4", "a": "g"},
+    {"audio": "Locutor: En Almacenes García, todo al cincuenta por ciento: zapatos, ropa y bolsos. Solo hasta el domingo.", "q": "Anuncio 5", "a": "b"},
+    {"audio": "Locutora: Aprende francés o italiano en nuestra academia. Grupos pequeños y profesores nativos. Primera clase gratis.", "q": "Anuncio 6", "a": "c"}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Una entrevista",
+   "task": "Va a escuchar una entrevista a un cocinero. Seleccione la opción correcta: a, b o c. Escuchará la entrevista dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Periodista: Hoy está con nosotros Pablo Ortega, cocinero del restaurante La Huerta. Pablo, ¿cuándo empezaste a cocinar?\nPablo: Muy pequeño, con siete u ocho años. Mi abuela tenía un bar en el pueblo y yo la ayudaba en la cocina.\nPeriodista: ¿Y estudiaste cocina?\nPablo: Sí, estudié dos años en una escuela de hostelería en San Sebastián. Después trabajé en Francia tres años.\nPeriodista: ¿Qué tipo de cocina haces en tu restaurante?\nPablo: Cocina tradicional, pero con un toque moderno. Uso productos de la zona: verduras de nuestro huerto, pescado del mercado.\nPeriodista: ¿Cuál es tu plato favorito?\nPablo: Las lentejas de mi abuela. Es un plato muy sencillo, pero me recuerda a mi infancia.\nPeriodista: ¿Y tus planes para el futuro?\nPablo: Quiero escribir un libro de recetas para cocinar en casa de manera fácil y sana.",
+   "items": [
+    {"q": "Pablo empezó a cocinar…", "options": ["en la escuela de hostelería.", "cuando era niño.", "en Francia."], "a": 1},
+    {"q": "La abuela de Pablo tenía…", "options": ["un bar.", "un hotel.", "una tienda."], "a": 0},
+    {"q": "¿Dónde estudió cocina?", "options": ["en Francia", "en Madrid", "en San Sebastián"], "a": 2},
+    {"q": "En su restaurante, Pablo hace cocina…", "options": ["internacional.", "tradicional con un toque moderno.", "solo vegetariana."], "a": 1},
+    {"q": "Su plato favorito es…", "options": ["el pescado del mercado.", "la paella.", "las lentejas de su abuela."], "a": 2},
+    {"q": "En el futuro, Pablo quiere…", "options": ["escribir un libro de recetas.", "abrir otro restaurante.", "volver a Francia."], "a": 0}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Tarea 1 – Responder a un mensaje",
+   "task": "Su amiga Clara le escribe: «¡Hola! El mes que viene me cambio de casa. ¿Me puedes ayudar con la mudanza? ¿Cómo es tu barrio?»",
+   "prompt": "Responda a Clara (entre 60 y 70 palabras). Salude, diga si puede ayudarla y cuándo, describa su barrio y despídase.",
+   "points": ["saludar", "ayudar con la mudanza", "describir su barrio", "despedirse"],
+   "words": 65,
+   "sample": "¡Hola, Clara!\n\n¡Qué bien que tienes casa nueva! Claro que te ayudo con la mudanza. Puedo ir el sábado por la mañana, pero por la tarde trabajo. Mi barrio es tranquilo y tiene muchos árboles. Hay un mercado, dos parques y una biblioteca muy bonita. Lo malo es que está un poco lejos del centro. Cuando termines la mudanza, te invito a cenar.\n\nUn beso,\nAyşe"
+  },
+  {
+   "title": "Tarea 2 – Contar una experiencia",
+   "task": "Escriba un texto sobre un viaje que recuerda especialmente.",
+   "prompt": "Escriba un texto (entre 70 y 80 palabras). Cuente adónde fue, cuándo y con quién, qué hizo y por qué lo recuerda.",
+   "points": ["adónde y cuándo", "con quién", "qué hizo", "por qué lo recuerda"],
+   "words": 75,
+   "sample": "Hace tres años fui a Granada con mis mejores amigos. Viajamos en tren desde Madrid y nos quedamos cinco días en un pequeño hotel del barrio del Albaicín. Visitamos la Alhambra, que es impresionante, y por las noches salíamos a tomar tapas. Un día subimos al mirador de San Nicolás para ver la puesta de sol. Recuerdo especialmente este viaje porque fue la primera vez que viajé sin mi familia y me sentí muy libre."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Tarea 1 – Monólogo",
+   "task": "Hable durante dos o tres minutos sobre su trabajo o sus estudios: qué hace, dónde, desde cuándo, qué le gusta y qué no le gusta.",
+   "cards": ["qué hace", "dónde", "desde cuándo", "lo que le gusta", "lo que no le gusta"],
+   "phrases": ["Trabajo como … / Estudio …", "Desde hace … años …", "Lo que más me gusta es …", "Lo que no me gusta es …"],
+   "sample": "Trabajo como recepcionista en un hotel de Estambul desde hace cuatro años. Mi trabajo consiste en atender a los clientes, hacer las reservas y responder a sus preguntas. Lo que más me gusta es hablar con personas de todo el mundo y practicar idiomas. Lo que no me gusta es el horario, porque a veces trabajo por la noche o los fines de semana."
+  },
+  {
+   "title": "Tarea 2 – Describir una fotografía",
+   "task": "Imagine una fotografía de una familia haciendo un pícnic en el parque. Describa a las personas, el lugar y qué están haciendo, y diga qué cree que va a pasar después.",
+   "cards": ["las personas", "el lugar", "qué hacen", "qué va a pasar"],
+   "phrases": ["En la foto hay …", "Están en …", "Parece que …", "Creo que después van a …"],
+   "sample": "En la foto hay una familia: un padre, una madre y dos niños pequeños. Están en un parque muy verde, sentados en una manta debajo de un árbol. La madre está sirviendo zumo y el padre está cortando pan. Los niños están jugando con una pelota. Parece que hace buen tiempo y que están muy contentos. Creo que después van a dar un paseo o van a jugar todos juntos al fútbol."
+  },
+  {
+   "title": "Tarea 3 – Conversación",
+   "task": "Usted está en una agencia de viajes y quiere organizar un fin de semana en la costa. Pregunte por el transporte, el alojamiento, los precios y las actividades. El examinador es el empleado.",
+   "cards": ["transporte", "alojamiento", "precio", "actividades", "reservar"],
+   "phrases": ["Quería información sobre …", "¿Cómo se puede ir a …?", "¿Cuánto cuesta …?", "¿Qué se puede hacer allí?", "Lo reservo, por favor."],
+   "sample": "Buenas tardes. Quería información sobre un fin de semana en la costa, en Alicante. ¿Cómo se puede ir? ¿En tren o en autobús? ¿Cuánto tarda el tren? Y para dormir, ¿tienen algún hotel cerca de la playa? ¿Cuánto cuesta la habitación doble por noche? ¿El desayuno está incluido? ¿Qué se puede hacer allí, además de ir a la playa? Muy bien, lo reservo, por favor."
+  }
+ ]
+}

@@ -1,0 +1,98 @@
+{
+ "id": "fr-C1-01",
+ "level": "C1",
+ "lang": "fr",
+ "title": "Épreuve d'entraînement 1",
+ "hoeren": [
+  {
+   "title": "Exercice 1 – Document long",
+   "task": "Vous allez entendre un débat radiophonique. Lisez les questions, écoutez le document et choisissez la bonne réponse a, b ou c. Vous allez entendre le document deux fois.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Animateur: Bonsoir. L'intelligence artificielle générative bouleverse-t-elle le métier de traducteur ? Nous en débattons avec Hélène Vasseur, traductrice littéraire, et Marc Delorme, chercheur en traitement automatique des langues. Marc, les machines traduisent-elles aussi bien que les humains ?\nMarc: Pour certains types de textes – des notices techniques, des courriels professionnels – la qualité est désormais tout à fait acceptable, parfois indiscernable d'une traduction humaine. Ce serait malhonnête de le nier. En revanche, dès qu'un texte joue sur l'implicite, l'humour, les références culturelles, les systèmes commettent encore des erreurs grossières, avec une assurance déconcertante.\nHélène: C'est justement cette assurance qui m'inquiète. Une traduction humaine médiocre se repère ; une traduction automatique fluide mais fausse passe inaperçue. Le lecteur n'a aucun moyen de savoir ce qui a été perdu.\nAnimateur: Hélène, votre métier est-il menacé ?\nHélène: La littérature, beaucoup moins que d'autres secteurs. Mais je constate que certains éditeurs proposent désormais de la « post-édition » : on nous demande de corriger un texte prétraduit par une machine, payé deux fois moins. Or corriger un texte bancal prend parfois plus de temps que de traduire soi-même. Surtout, on perd la cohérence de la voix de l'auteur.\nMarc: Je comprends cette crainte, mais je crois qu'il faut distinguer l'outil de son usage. Ce sont des choix économiques qui dévalorisent la traduction, pas la technologie elle-même. Utilisée intelligemment, elle peut libérer les traducteurs des tâches répétitives.\nHélène: Peut-être. Mais la frontière entre tâches répétitives et création n'est pas aussi nette que vous le dites. Même dans un mode d'emploi, il y a des choix de ton, de clarté, d'adaptation au public.\nAnimateur: Que faudrait-il faire, selon vous ?\nMarc: Former les étudiants à travailler avec ces outils, tout en renforçant leur culture générale et leur sens critique. C'est ce qui fera la différence.\nHélène: Et imposer la transparence : le lecteur a le droit de savoir si un livre a été traduit par une machine.",
+   "items": [
+    {"q": "Selon Marc Delorme, les traductions automatiques sont de bonne qualité…", "options": ["pour tous les types de textes.", "pour les textes techniques et professionnels.", "seulement pour la littérature."], "a": 1},
+    {"q": "Quelle faiblesse des machines Marc reconnaît-il ?", "options": ["Elles sont trop lentes.", "Elles refusent de traduire certains textes.", "Elles se trompent sur l'implicite et l'humour."], "a": 2},
+    {"q": "Qu'est-ce qui inquiète particulièrement Hélène Vasseur ?", "options": ["Les erreurs des machines sont difficiles à repérer.", "Les machines coûtent trop cher.", "Les lecteurs préfèrent les traductions humaines."], "a": 0},
+    {"q": "Selon Hélène, la « post-édition »…", "options": ["est mieux payée que la traduction.", "peut prendre plus de temps que traduire soi-même.", "améliore la cohérence du texte."], "a": 1},
+    {"q": "Pour Marc, la dévalorisation de la traduction est due…", "options": ["à la technologie elle-même.", "au manque de formation des traducteurs.", "à des choix économiques."], "a": 2},
+    {"q": "Pourquoi Hélène conteste-t-elle l'idée de « tâches répétitives » ?", "options": ["Même les textes simples demandent des choix.", "Les traducteurs aiment les tâches répétitives.", "Les machines ne savent pas traduire les modes d'emploi."], "a": 0},
+    {"q": "Que propose Marc pour l'avenir ?", "options": ["interdire les outils automatiques dans les écoles", "former les étudiants aux outils tout en développant leur sens critique", "réserver la traduction aux machines"], "a": 1},
+    {"q": "Que réclame Hélène à la fin du débat ?", "options": ["une augmentation des tarifs", "la fin de la post-édition", "l'obligation d'informer le lecteur"], "a": 2}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Documents courts",
+   "task": "Vous allez entendre six courts extraits radiophoniques. Pour chaque extrait, choisissez la bonne réponse a, b ou c. Vous allez entendre chaque extrait une seule fois.",
+   "type": "abc",
+   "plays": 1,
+   "items": [
+    {"audio": "Journaliste: Selon une étude publiée ce matin, la consommation de viande en France a reculé de douze pour cent en dix ans, mais cette baisse concerne surtout les cadres et les urbains. Dans les zones rurales, elle reste quasiment stable.", "q": "Que révèle l'étude ?", "options": ["La baisse de la consommation de viande est inégale selon les populations.", "Les Français mangent plus de viande qu'avant.", "La consommation a baissé surtout à la campagne."], "a": 0},
+    {"audio": "Journaliste: Le gouvernement a annoncé le report de la réforme des retraites, initialement prévue pour janvier. Officiellement, il s'agit de prolonger la concertation ; officieusement, l'exécutif craindrait un mouvement social d'ampleur avant les élections.", "q": "Selon le journaliste, quelle est la raison probable du report ?", "options": ["un manque de financement", "la peur de manifestations importantes", "une demande des syndicats"], "a": 1},
+    {"audio": "Chroniqueuse: Ce roman n'a rien de spectaculaire : pas d'intrigue haletante, pas de rebondissements. Et pourtant, on le referme bouleversé. C'est toute la force de cette écriture dépouillée, qui dit l'essentiel par petites touches.", "q": "Quelle est l'opinion de la chroniqueuse sur le roman ?", "options": ["Elle le trouve ennuyeux.", "Elle regrette l'absence d'intrigue.", "Elle admire sa sobriété émouvante."], "a": 2},
+    {"audio": "Scientifique: Contrairement à une idée reçue, le cerveau ne se fige pas à l'âge adulte. Il continue à créer de nouvelles connexions tout au long de la vie, à condition d'être stimulé. Apprendre une langue à soixante ans est donc parfaitement possible.", "q": "Quelle idée reçue le scientifique conteste-t-il ?", "options": ["Le cerveau adulte ne change plus.", "Les langues sont difficiles à apprendre.", "Les enfants apprennent plus lentement."], "a": 0},
+    {"audio": "Économiste: L'augmentation du prix de l'immobilier dans les grandes villes pousse les jeunes actifs vers la périphérie. Résultat : des trajets plus longs, plus de voitures, et paradoxalement un bilan écologique dégradé, alors même que les villes se veulent plus vertes.", "q": "Quel paradoxe l'économiste souligne-t-il ?", "options": ["Les loyers baissent mais les gens partent.", "Les villes vertes provoquent indirectement plus de pollution.", "Les jeunes préfèrent la voiture au train."], "a": 1},
+    {"audio": "Journaliste: Le festival a battu cette année son record de fréquentation, avec plus de cent mille spectateurs. Mais les organisateurs restent prudents : la hausse des coûts de sécurité et la baisse des subventions menacent l'équilibre financier de l'événement.", "q": "Pourquoi les organisateurs sont-ils prudents ?", "options": ["Le nombre de spectateurs a baissé.", "Les artistes ont annulé leurs concerts.", "Les finances du festival sont fragiles."], "a": 2}
+   ]
+  }
+ ],
+ "lesen": [
+  {
+   "title": "Compréhension écrite – Texte d'idées",
+   "task": "Lisez ce texte et choisissez la bonne réponse a, b ou c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "La tyrannie de la productivité",
+     "body": "Il fut un temps où l'on mesurait la valeur d'une journée à ce qu'on y avait vécu. Nous la mesurons désormais à ce que nous y avons accompli. Applications de suivi, listes de tâches, montres connectées comptant nos pas et notre sommeil : jamais nous n'avons disposé d'autant d'outils pour optimiser notre existence, et jamais, semble-t-il, nous ne nous sommes sentis aussi pressés.\n\nCe paradoxe n'a rien d'accidentel. Comme l'avait pressenti le sociologue Hartmut Rosa, l'accélération technique, qui devrait en théorie nous libérer du temps, s'accompagne d'une accélération du rythme de vie. Le courriel, plus rapide que la lettre, aurait dû nous faire gagner des heures ; il a surtout multiplié le nombre de messages auxquels nous devons répondre. Chaque gain d'efficacité est aussitôt réinvesti dans de nouvelles tâches.\n\nLa productivité a par ailleurs quitté la sphère du travail pour coloniser nos loisirs. On ne lit plus un roman, on « avance » dans sa liste de lecture ; on ne se promène plus, on accumule des kilomètres. Même le repos est devenu une performance : il faut « optimiser » son sommeil, « recharger ses batteries » pour être plus efficace le lendemain. Le temps libre n'est plus une fin en soi, mais un moyen au service de la productivité.\n\nIl serait toutefois réducteur d'y voir une simple aliénation imposée de l'extérieur. Beaucoup d'entre nous trouvent une satisfaction réelle à cocher des cases, à voir des progrès mesurables. Le problème n'est pas l'efficacité en soi, mais son extension illimitée, qui finit par rendre suspect tout moment improductif. Celui qui ne fait « rien » se sent coupable.\n\nFaut-il alors prôner la paresse ? Pas nécessairement. Il s'agit plutôt de réapprendre à distinguer ce qui relève de l'utile et ce qui relève du sens. Certaines activités – une conversation, une flânerie, la contemplation d'un paysage – n'ont pas d'objectif, et c'est précisément ce qui fait leur valeur. Les soumettre à une logique de rendement revient à les vider de leur substance. Défendre ces moments gratuits n'est pas un luxe de privilégiés : c'est peut-être la condition d'une vie qui ne se réduise pas à une suite de tâches accomplies."
+    }
+   ],
+   "items": [
+    {"q": "Selon le premier paragraphe, nous jugeons aujourd'hui une journée…", "options": ["à ce que nous y avons ressenti.", "à ce que nous y avons réalisé.", "au temps passé avec nos proches."], "a": 1},
+    {"q": "Le paradoxe évoqué au premier paragraphe est que…", "options": ["nous avons plus d'outils mais nous nous sentons plus pressés.", "les outils numériques ne fonctionnent pas.", "nous travaillons moins qu'avant."], "a": 0},
+    {"q": "Quel exemple illustre l'idée que l'accélération technique ne libère pas de temps ?", "options": ["la montre connectée", "le roman", "le courriel"], "a": 2},
+    {"q": "Selon l'auteur, les gains d'efficacité…", "options": ["nous permettent de nous reposer davantage.", "sont immédiatement utilisés pour faire d'autres tâches.", "sont rarement mesurés."], "a": 1},
+    {"q": "Que signifie l'expression « coloniser nos loisirs » ?", "options": ["La logique de productivité envahit le temps libre.", "Les loisirs coûtent de plus en plus cher.", "Les entreprises organisent nos loisirs."], "a": 0},
+    {"q": "D'après le texte, le repos est aujourd'hui souvent considéré comme…", "options": ["une perte de temps.", "une fin en soi.", "un moyen d'être plus efficace ensuite."], "a": 2},
+    {"q": "Dans le quatrième paragraphe, l'auteur nuance son propos en reconnaissant que…", "options": ["la productivité est imposée uniquement par les entreprises.", "beaucoup de gens aiment voir leurs progrès.", "la technologie est inutile."], "a": 1},
+    {"q": "Selon l'auteur, le véritable problème est…", "options": ["l'efficacité en elle-même.", "le manque d'outils de mesure.", "l'extension sans limite de la logique d'efficacité."], "a": 2},
+    {"q": "Quelle position l'auteur adopte-t-il dans le dernier paragraphe ?", "options": ["Il défend les activités sans objectif utile.", "Il encourage la paresse.", "Il recommande de nouvelles applications."], "a": 0},
+    {"q": "Pour l'auteur, défendre les « moments gratuits »…", "options": ["est réservé aux plus riches.", "est nécessaire pour une vie qui ait du sens.", "nuit à l'économie."], "a": 1}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Production écrite – Synthèse",
+   "task": "Vous avez lu deux documents. Le premier présente le télétravail comme une liberté nouvelle qui améliore l'équilibre entre vie privée et vie professionnelle. Le second souligne l'isolement des salariés, l'effacement des frontières entre travail et domicile et l'affaiblissement du collectif.",
+   "prompt": "Rédigez une synthèse objective de ces deux documents (environ 220 mots), sans donner votre opinion. Mettez en relation les idées des deux textes et organisez-les selon un plan clair.",
+   "points": ["un titre", "les avantages présentés", "les risques présentés", "un plan thématique", "aucune opinion personnelle"],
+   "words": 220,
+   "sample": "Le télétravail : entre autonomie et isolement\n\nDepuis quelques années, le télétravail s'est largement répandu. Les deux documents s'accordent sur l'ampleur du phénomène, mais en proposent des lectures contrastées.\n\nD'une part, le premier texte le présente comme une conquête. En supprimant les trajets quotidiens, il ferait gagner un temps précieux, que les salariés peuvent consacrer à leur famille ou à leurs loisirs. Il offrirait en outre une plus grande autonomie dans l'organisation des journées, source de satisfaction et, selon certaines études citées, de productivité accrue.\n\nD'autre part, le second document met en garde contre ses effets moins visibles. L'absence de contacts directs avec les collègues engendrerait chez certains un sentiment d'isolement. Par ailleurs, la frontière entre vie privée et vie professionnelle tendrait à s'estomper : le domicile devient un bureau et les sollicitations se prolongent tard le soir.\n\nEnfin, les deux textes abordent la dimension collective. Si le premier y voit l'occasion de repenser le management sur la base de la confiance, le second redoute un affaiblissement du collectif de travail et de la transmission informelle des savoirs entre collègues.\n\nAinsi, le télétravail apparaît comme une pratique ambivalente, dont les bénéfices dépendent largement des conditions dans lesquelles elle est organisée."
+  },
+  {
+   "title": "Production écrite – Essai argumenté",
+   "task": "Le journal de votre ville ouvre une rubrique sur l'avenir du travail. Vous y publiez un article.",
+   "prompt": "Dans un texte argumenté d'environ 250 mots, répondez à la question : « Le télétravail doit-il devenir un droit pour tous les salariés dont le poste le permet ? »",
+   "points": ["une prise de position claire", "des arguments développés", "des exemples", "une prise en compte des objections", "une conclusion"],
+   "words": 250,
+   "sample": "Le télétravail, un droit à encadrer\n\nLongtemps considéré comme un privilège réservé à quelques cadres, le télétravail s'est imposé dans de nombreuses entreprises. Faut-il pour autant en faire un droit pour tous les salariés dont le poste le permet ? Je le pense, à condition de l'encadrer strictement.\n\nReconnaître ce droit permettrait d'abord de réduire les inégalités entre salariés. Aujourd'hui, l'accès au télétravail dépend largement du bon vouloir d'un manager. Deux employés exerçant le même métier peuvent ainsi être traités très différemment. Un droit clairement défini garantirait l'équité.\n\nEnsuite, les bénéfices sont considérables, tant pour les individus que pour la société. Moins de trajets, c'est moins de fatigue, moins de pollution et des routes moins saturées. Pour les parents ou les personnes vivant loin des centres urbains, c'est souvent la condition d'une vie plus équilibrée.\n\nOn objectera que le télétravail isole et affaiblit le collectif. Ce risque est réel, mais il plaide pour un encadrement, non pour un refus. Un droit au télétravail n'implique pas un télétravail permanent : on peut prévoir une limite de deux ou trois jours par semaine, ainsi qu'un droit à la déconnexion pour éviter que le domicile ne devienne un bureau ouvert jour et nuit.\n\nEn définitive, faire du télétravail un droit ne signifie pas abandonner le bureau, mais offrir à chacun la possibilité de choisir une organisation adaptée à sa vie. C'est une manière de moderniser le travail sans sacrifier ce qui fait sa dimension humaine."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Partie 1 – Exposé",
+   "task": "À partir de documents sur le thème « Le tourisme de masse : faut-il limiter l'accès aux sites les plus visités ? », préparez un exposé structuré avec une problématique et un plan. Parlez pendant environ huit minutes.",
+   "cards": ["introduction et problématique", "plan annoncé", "première partie", "deuxième partie", "conclusion et ouverture"],
+   "phrases": ["Le thème qui nous occupe est …", "On peut se demander si …", "Dans un premier temps, … ; dans un second temps, …", "Il convient toutefois de nuancer …", "En guise de conclusion, …"],
+   "sample": "Le thème qui nous occupe est celui du tourisme de masse. À Venise, à Barcelone ou au Mont-Saint-Michel, l'afflux de visiteurs atteint des niveaux qui menacent à la fois les sites et la vie des habitants. On peut donc se demander s'il est légitime de limiter l'accès à ces lieux. Dans un premier temps, j'examinerai les raisons qui justifient une régulation ; dans un second temps, j'en montrerai les limites.\n\nD'abord, la surfréquentation dégrade le patrimoine naturel et culturel et chasse les habitants, remplacés par des locations touristiques. Des mesures comme les quotas ou les réservations obligatoires ont déjà montré leur efficacité, par exemple dans certaines calanques de Marseille.\n\nIl convient toutefois de nuancer : limiter l'accès risque de transformer ces sites en privilèges réservés à ceux qui peuvent payer ou réserver longtemps à l'avance. Par ailleurs, de nombreuses économies locales dépendent du tourisme.\n\nEn guise de conclusion, la régulation me paraît nécessaire, mais elle doit s'accompagner d'une meilleure répartition des flux vers des destinations moins connues. Cela pose plus largement la question de notre manière de voyager."
+  },
+  {
+   "title": "Partie 2 – Entretien avec le jury",
+   "task": "Le jury vous pose des questions sur votre exposé, vous demande de préciser certains points et conteste certaines de vos positions. Défendez et nuancez vos idées.",
+   "cards": ["préciser", "justifier", "nuancer", "répondre à une objection"],
+   "phrases": ["Si je vous comprends bien, vous voulez dire que …", "Permettez-moi de préciser ma pensée : …", "C'est un argument recevable ; néanmoins …", "Je maintiens que …"],
+   "sample": "Si je vous comprends bien, vous estimez que les quotas sont une atteinte à la liberté de circuler. C'est un argument recevable ; néanmoins, la liberté de visiter un lieu n'a de sens que si ce lieu continue d'exister. Permettez-moi de préciser ma pensée : je ne propose pas de fermer les sites, mais de répartir les visites dans le temps, par exemple grâce à des créneaux horaires gratuits. Je maintiens que, sans régulation, ce sont les habitants qui paient le prix le plus élevé, puisque certains quartiers historiques se vident de leur population."
+  }
+ ]
+}

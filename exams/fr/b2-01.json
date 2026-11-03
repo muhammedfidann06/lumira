@@ -1,0 +1,110 @@
+{
+ "id": "fr-B2-01",
+ "level": "B2",
+ "lang": "fr",
+ "title": "Épreuve d'entraînement 1",
+ "hoeren": [
+  {
+   "title": "Exercice 1 – Un entretien",
+   "task": "Vous allez entendre un entretien. Lisez les questions, écoutez le document et choisissez la bonne réponse a, b ou c. Vous allez entendre le document une seule fois.",
+   "type": "abc",
+   "plays": 1,
+   "audio": "Journaliste: Vous êtes à la tête d'une entreprise qui a adopté la semaine de quatre jours il y a deux ans. Pourquoi ce choix ?\nDirectrice: Au départ, c'était presque une nécessité. Nous avions beaucoup de mal à recruter des développeurs : les grandes entreprises proposaient des salaires que nous ne pouvions pas égaler. Il fallait trouver un autre argument.\nJournaliste: Et les salaires n'ont pas baissé ?\nDirectrice: Non, c'était essentiel. Nous travaillons trente-deux heures, payées trente-cinq. Beaucoup pensaient que nous allions perdre de l'argent.\nJournaliste: Ce n'est pas le cas ?\nDirectrice: Au contraire, notre chiffre d'affaires a progressé de douze pour cent. Les gens sont plus concentrés. Nous avons aussi réduit le nombre de réunions de moitié, ce qui libère énormément de temps.\nJournaliste: Il y a quand même des difficultés ?\nDirectrice: Bien sûr. Certains clients s'inquiétaient de ne pas pouvoir nous joindre le vendredi. Nous avons donc organisé une permanence : chaque semaine, deux personnes travaillent le vendredi et prennent leur jour de repos le lundi. Et puis, pour quelques salariés, la pression est plus forte : il faut faire le même travail en moins de temps.\nJournaliste: Recommanderiez-vous ce modèle à d'autres ?\nDirectrice: Oui, mais pas comme une recette miracle. Cela fonctionne si on repense vraiment l'organisation du travail, pas si on se contente de supprimer un jour.",
+   "items": [
+    {"q": "Pourquoi l'entreprise a-t-elle choisi la semaine de quatre jours ?", "options": ["pour attirer de nouveaux employés", "pour réduire ses coûts", "à la demande des clients"], "a": 0},
+    {"q": "Avec ce nouveau système, les salariés…", "options": ["gagnent moins qu'avant.", "travaillent trente-cinq heures.", "ont gardé le même salaire."], "a": 2},
+    {"q": "Quelle a été la conséquence sur le chiffre d'affaires ?", "options": ["Il a baissé.", "Il a augmenté.", "Il n'a pas changé."], "a": 1},
+    {"q": "Qu'est-ce qui a permis de gagner du temps ?", "options": ["la réduction du nombre de réunions", "l'embauche de nouveaux salariés", "l'utilisation de nouveaux logiciels"], "a": 0},
+    {"q": "Comment l'entreprise a-t-elle répondu à l'inquiétude des clients ?", "options": ["Elle a ouvert le samedi.", "Elle a créé un service téléphonique automatique.", "Une petite équipe travaille le vendredi."], "a": 2},
+    {"q": "Selon la directrice, la semaine de quatre jours…", "options": ["convient à toutes les entreprises.", "exige de réorganiser le travail en profondeur.", "devrait être obligatoire."], "a": 1}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Une conférence",
+   "task": "Vous allez entendre un extrait de conférence. Lisez les questions, écoutez le document et choisissez la bonne réponse a, b ou c. Vous allez entendre le document deux fois.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Conférencier: Mesdames et messieurs, je voudrais vous parler ce soir d'un phénomène que nous connaissons tous sans toujours le remarquer : la disparition du silence. Selon l'Organisation mondiale de la santé, le bruit est le deuxième facteur environnemental de risque pour la santé en Europe, juste après la pollution de l'air. En France, près de neuf millions de personnes sont exposées à des niveaux sonores jugés dangereux, principalement à cause du trafic routier.\nLes effets ne se limitent pas à l'audition. Le bruit perturbe le sommeil, même lorsque nous ne nous réveillons pas : notre cœur accélère à chaque passage de camion. À long terme, cela augmente le risque de maladies cardiovasculaires. Chez les enfants, des études ont montré que les élèves dont l'école est située près d'un aéroport apprennent à lire plus lentement.\nQue faire ? Certaines solutions sont techniques : revêtements de route silencieux, murs anti-bruit, meilleure isolation des logements. D'autres sont politiques : limiter la vitesse en ville à trente kilomètres heure réduit le bruit de moitié environ. Mais je crois que nous devons aussi changer notre rapport au silence. Nous avons pris l'habitude de remplir chaque instant de musique, de podcasts, de notifications. Or le silence n'est pas un vide : c'est une condition de la concentration, de la créativité et du repos. Quelques villes l'ont compris et créent des « zones calmes », des parcs où les haut-parleurs et les téléphones sonores sont interdits. C'est peut-être un luxe aujourd'hui ; ce devrait être un droit.",
+   "items": [
+    {"q": "Selon l'OMS, en Europe, le bruit est…", "options": ["le premier risque environnemental pour la santé.", "le deuxième risque environnemental pour la santé.", "un risque mineur."], "a": 1},
+    {"q": "En France, la principale source de bruit dangereux est…", "options": ["le trafic routier.", "les avions.", "les chantiers."], "a": 0},
+    {"q": "Que se passe-t-il pendant le sommeil quand il y a du bruit ?", "options": ["On se réveille toujours.", "On rêve davantage.", "Le cœur accélère, même sans réveil."], "a": 2},
+    {"q": "Quel effet a été observé chez les enfants qui vont à l'école près d'un aéroport ?", "options": ["Ils sont plus souvent malades.", "Ils apprennent à lire plus lentement.", "Ils dorment moins."], "a": 1},
+    {"q": "Limiter la vitesse à 30 km/h en ville permet de…", "options": ["réduire le bruit d'environ moitié.", "supprimer complètement le bruit.", "réduire le nombre de voitures."], "a": 0},
+    {"q": "Selon le conférencier, nous avons l'habitude de…", "options": ["rechercher le silence.", "vivre à la campagne.", "remplir chaque moment de sons."], "a": 2},
+    {"q": "Pour le conférencier, le silence est…", "options": ["un vide inutile.", "nécessaire pour se concentrer et créer.", "ennuyeux pour les jeunes."], "a": 1},
+    {"q": "Quelle est sa conclusion sur les « zones calmes » ?", "options": ["Elles coûtent trop cher.", "Elles sont inutiles.", "L'accès au calme devrait être un droit."], "a": 2}
+   ]
+  }
+ ],
+ "lesen": [
+  {
+   "title": "Exercice 1 – Texte informatif",
+   "task": "Lisez cet article et choisissez la bonne réponse a, b ou c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Réparer plutôt que jeter : l'essor des « repair cafés »",
+     "body": "Un grille-pain qui ne chauffe plus, une lampe dont l'interrupteur est cassé, un pantalon déchiré : autrefois, ces objets finissaient souvent à la poubelle. Aujourd'hui, de plus en plus de Français les apportent dans un « repair café ». Le principe, né aux Pays-Bas en 2009, est simple : une fois par mois, dans une salle municipale ou un café associatif, des bénévoles bricoleurs aident gratuitement les habitants à réparer leurs objets.\n\nOn compte désormais plus de 400 repair cafés en France. Leur succès s'explique d'abord par des raisons économiques : réparer coûte souvent beaucoup moins cher que racheter. Mais la motivation écologique est tout aussi importante. Selon l'Agence de la transition écologique, la fabrication d'un appareil électronique représente l'essentiel de son impact sur l'environnement, bien plus que son utilisation.\n\nLes organisateurs insistent toutefois sur un point : un repair café n'est pas un service de réparation. « Nous ne réparons pas à la place des gens, nous réparons avec eux », explique Gilles, électricien retraité et bénévole à Rennes. L'objectif est de transmettre des savoir-faire et de redonner confiance à ceux qui pensent ne pas savoir bricoler.\n\nCertaines réparations restent pourtant impossibles. Les fabricants utilisent des vis spéciales, collent les batteries ou refusent de vendre des pièces détachées. Depuis 2021, un « indice de réparabilité », noté sur dix, doit être affiché sur certains produits comme les téléphones ou les lave-linge. Une avancée, selon les associations, qui réclament cependant des mesures plus contraignantes, comme l'obligation de fournir des pièces pendant au moins dix ans."
+    }
+   ],
+   "items": [
+    {"q": "Le concept des repair cafés est né…", "options": ["en France.", "aux Pays-Bas.", "en Allemagne."], "a": 1},
+    {"q": "Dans un repair café, les réparations sont…", "options": ["gratuites.", "payantes, mais bon marché.", "faites par des professionnels."], "a": 0},
+    {"q": "Selon l'article, l'impact écologique d'un appareil électronique vient surtout…", "options": ["de son utilisation.", "de son recyclage.", "de sa fabrication."], "a": 2},
+    {"q": "Que veut dire Gilles quand il dit « nous réparons avec eux » ?", "options": ["Les bénévoles travaillent en équipe.", "Les visiteurs participent à la réparation et apprennent.", "Les bénévoles réparent seulement les objets simples."], "a": 1},
+    {"q": "L'un des objectifs des repair cafés est de…", "options": ["vendre des objets d'occasion.", "former des électriciens professionnels.", "redonner confiance aux personnes."], "a": 2},
+    {"q": "Pourquoi certaines réparations sont-elles impossibles ?", "options": ["à cause des choix techniques des fabricants", "parce que les bénévoles manquent de temps", "parce que les objets sont trop anciens"], "a": 0},
+    {"q": "L'indice de réparabilité…", "options": ["est facultatif pour tous les produits.", "doit être affiché sur certains produits.", "a été supprimé en 2021."], "a": 1},
+    {"q": "Que demandent les associations ?", "options": ["la suppression de l'indice", "des subventions pour les repair cafés", "des obligations plus fortes pour les fabricants"], "a": 2}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Texte argumentatif",
+   "task": "Lisez ce texte et choisissez la bonne réponse a, b ou c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Tribune : Rendons l'ennui aux enfants",
+     "body": "Cours de piano le lundi, judo le mardi, anglais le mercredi, natation le samedi : l'agenda de nombreux enfants ressemble aujourd'hui à celui d'un ministre. Les parents, animés des meilleures intentions, veulent offrir à leur progéniture toutes les chances de réussir. Mais à force de remplir chaque heure libre, ne risquons-nous pas de les priver de quelque chose d'essentiel : le temps de s'ennuyer ?\n\nL'ennui a mauvaise réputation. Nous le considérons comme un moment perdu, voire un signe d'échec éducatif. Pourtant, de nombreux psychologues affirment le contraire. C'est souvent lorsqu'un enfant ne sait pas quoi faire qu'il invente un jeu, construit une cabane ou se met à dessiner. L'ennui oblige à puiser en soi-même ses propres ressources ; il est le terreau de l'imagination.\n\nOn objectera que les activités organisées développent des compétences précieuses : la discipline, le travail en équipe, la persévérance. C'est indéniable, et il ne s'agit pas de les supprimer. Mais un enfant dont tout le temps est planifié par des adultes apprend surtout à suivre des consignes. Il lui manque l'occasion de décider seul de ce qu'il veut faire, de se tromper, de recommencer.\n\nLe problème est aggravé par les écrans, qui offrent un remède immédiat au moindre instant de vide. Dès qu'il s'ennuie, l'enfant attrape une tablette. L'ennui n'a plus le temps de devenir créatif.\n\nIl ne s'agit pas de culpabiliser les parents, souvent pris eux-mêmes dans un rythme effréné. Il s'agit plutôt de réhabiliter les après-midis sans programme, les dimanches où « il n'y a rien à faire ». Laissons nos enfants regarder par la fenêtre. Ce n'est pas du temps perdu : c'est peut-être là que naissent leurs plus belles idées."
+    }
+   ],
+   "items": [
+    {"q": "Dans le premier paragraphe, l'auteur compare l'agenda des enfants à celui d'un ministre pour souligner…", "options": ["qu'il est très chargé.", "que les enfants ont des responsabilités.", "que les enfants s'intéressent à la politique."], "a": 0},
+    {"q": "Selon l'auteur, les parents inscrivent leurs enfants à de nombreuses activités…", "options": ["pour avoir du temps libre.", "parce que l'école l'exige.", "pour leur donner toutes les chances de réussir."], "a": 2},
+    {"q": "D'après les psychologues cités, l'ennui…", "options": ["est un signe d'échec éducatif.", "favorise l'imagination.", "rend les enfants agressifs."], "a": 1},
+    {"q": "Que reconnaît l'auteur à propos des activités organisées ?", "options": ["Elles développent des qualités utiles.", "Elles sont inutiles.", "Elles coûtent trop cher."], "a": 0},
+    {"q": "Selon l'auteur, un enfant dont tout le temps est planifié apprend surtout à…", "options": ["prendre des initiatives.", "suivre des consignes.", "travailler seul."], "a": 1},
+    {"q": "Quel rôle jouent les écrans selon le texte ?", "options": ["Ils rendent l'ennui plus créatif.", "Ils aident les enfants à apprendre.", "Ils empêchent l'ennui de devenir créatif."], "a": 2},
+    {"q": "Quelle est l'attitude de l'auteur envers les parents ?", "options": ["Il les accuse sévèrement.", "Il ne veut pas les culpabiliser.", "Il les ignore."], "a": 1},
+    {"q": "Quelle est la proposition principale de l'auteur ?", "options": ["laisser aux enfants des moments sans programme", "interdire les activités extrascolaires", "remplacer les écrans par des livres"], "a": 0}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Production écrite – Lettre argumentée",
+   "task": "La mairie de votre ville envisage de transformer le grand parc du centre en parking pour faciliter l'accès aux commerces. Vous écrivez au maire pour donner votre avis.",
+   "prompt": "Écrivez une lettre formelle argumentée de 250 mots minimum. Présentez clairement votre position, développez des arguments précis et proposez une solution.",
+   "points": ["votre position", "des arguments développés", "des exemples", "une proposition", "formules de politesse"],
+   "words": 250,
+   "sample": "Monsieur le Maire,\n\nJ'ai appris par la presse locale que la municipalité envisageait de transformer le parc central en parking. En tant qu'habitante du quartier depuis dix ans, je tiens à vous faire part de mon profond désaccord avec ce projet.\n\nTout d'abord, ce parc est l'un des seuls espaces verts du centre-ville. Il est fréquenté chaque jour par des familles, des personnes âgées et des sportifs. Le supprimer reviendrait à priver des milliers d'habitants d'un lieu de détente et de rencontre essentiel à la qualité de vie.\n\nEnsuite, sur le plan environnemental, les arbres du parc jouent un rôle important : ils rafraîchissent l'air pendant les vagues de chaleur, de plus en plus fréquentes, et absorbent une partie de la pollution. Les remplacer par du béton aggraverait ces problèmes.\n\nEnfin, je ne suis pas convaincue qu'un parking supplémentaire suffise à redynamiser les commerces. De nombreuses villes ont au contraire constaté que les rues piétonnes et les espaces agréables attirent davantage de clients.\n\nJe comprends cependant les difficultés des commerçants. C'est pourquoi je vous propose plutôt de renforcer les transports en commun, par exemple avec une navette gratuite le samedi depuis les parkings situés à l'entrée de la ville, et de développer des places réservées aux livraisons.\n\nJe reste à votre disposition pour participer à une réunion de concertation avec les habitants.\n\nJe vous prie d'agréer, Monsieur le Maire, l'expression de mes salutations distinguées.\n\nAylin Demir"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Partie 1 – Présentation d'un point de vue",
+   "task": "Lisez ce document : « Faut-il rendre le service civique obligatoire pour tous les jeunes de 18 à 25 ans ? » Dégagez le problème soulevé, puis présentez votre opinion de manière argumentée pendant environ trois minutes.",
+   "cards": ["le problème soulevé", "arguments pour", "arguments contre", "votre opinion", "des exemples"],
+   "phrases": ["Ce document soulève la question de …", "Les partisans de cette mesure affirment que …", "En revanche, on peut objecter que …", "Pour ma part, je suis convaincu(e) que …", "Prenons l'exemple de …"],
+   "sample": "Ce document soulève la question de l'obligation, pour tous les jeunes, d'effectuer un service civique, c'est-à-dire une mission d'intérêt général de plusieurs mois. Les partisans de cette mesure affirment qu'elle renforcerait la cohésion sociale, puisque des jeunes de milieux différents travailleraient ensemble, et qu'elle leur permettrait d'acquérir une première expérience professionnelle. En revanche, on peut objecter qu'un engagement imposé perd une partie de son sens : le bénévolat repose justement sur la volonté. De plus, cela retarderait l'entrée dans les études ou dans la vie active. Pour ma part, je suis convaincue qu'il vaut mieux encourager le service civique que l'imposer, par exemple en le valorisant dans les candidatures universitaires. Prenons l'exemple de mon cousin : il a fait une mission volontaire dans une association d'aide aux personnes âgées et cela a complètement changé son orientation."
+  },
+  {
+   "title": "Partie 2 – Débat avec l'examinateur",
+   "task": "L'examinateur réagit à votre présentation et défend un point de vue opposé. Défendez votre position, nuancez vos propos et répondez à ses arguments.",
+   "cards": ["défendre votre position", "nuancer", "répondre aux objections", "proposer un compromis"],
+   "phrases": ["Je comprends votre point de vue, mais …", "C'est vrai dans certains cas, cependant …", "Je ne suis pas tout à fait d'accord, car …", "On pourrait envisager un compromis : …"],
+   "sample": "Je comprends votre point de vue : une obligation garantirait que tous les jeunes participent, et pas seulement ceux qui sont déjà engagés. C'est vrai dans certains cas, cependant je crains que les jeunes qui ne veulent pas s'investir fassent le minimum, ce qui ne servirait ni les associations ni eux-mêmes. Je ne suis pas tout à fait d'accord non plus avec l'idée que cela coûterait peu à l'État : encadrer des centaines de milliers de jeunes demanderait beaucoup de moyens. On pourrait envisager un compromis : une courte période obligatoire de découverte, par exemple deux semaines, suivie d'un engagement plus long sur la base du volontariat."
+  }
+ ]
+}

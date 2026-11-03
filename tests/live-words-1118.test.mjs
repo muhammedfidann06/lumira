@@ -44,7 +44,8 @@ test('words are saved through the existing My Notes function only',async()=>{
  const source=await read('live-conversation.js');
  assert(source.includes('root.NB_saveFavorite({lang:st.learn,meaningLang:native,w,tr:r.meaning.value.trim(),ex:r.item.ex||\'\',exTr:r.item.exTr||\'\''),'saves word, meaning and the example sentence');
  assert(!/firebase[^\n]*\.ref\(/.test(source)&&!source.includes("db.ref('progress/"),'no direct database writes');
- assert(source.includes("error?.message==='nb_fav_login_required'?T('wordsLogin')"),'signed-out users are asked to sign in');
+ assert(source.includes("code==='nb_fav_login_required'?T('wordsLogin')"),'signed-out users are asked to sign in');
+ assert(source.includes("root.LUMIRA_LIMITS?.ERRORS.includes(code)"),'a notebook limit is explained instead of a generic failure');
  assert(source.includes('const WORDS_MAX=20'),'at most 20 words per save');
  const app=await read('app-main.js');
  assert(app.includes('window.NB_saveFavorite=word=>nbSetFavorite(word,true);'),'My Notes still exposes the save function');

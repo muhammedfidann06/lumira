@@ -13,10 +13,11 @@ test('the Live tab opens a chooser in front of the unchanged live translation sc
  assert(/<script src="live-translate\.js\?v=[\d.]+"><\/script>\s*<script src="live-conversation\.js\?v=[\d.]+"><\/script>/.test(html));
  assert(/live-conversation\.css\?v=/.test(html)&&sw.includes("'./live-conversation.js'")&&sw.includes("'./live-conversation.css'"));
 });
-test('face-to-face translation uses the same server session, quota and speech token rules',async()=>{
+test('face-to-face translation uses the server session and speech token rules with its own equal-sized pool',async()=>{
  const source=await read('live-conversation.js');
- for(const action of["'liveStart',{id,provider:'local'}","'liveRenew',{id,provider:'local'}","'liveStop',{id}","'liveConnect',{id:s.sessionId,provider:'azure'"])assert(source.includes(action),action);
- assert(source.includes("open('live_limit')"),'an exhausted allowance opens the badge screen');
+ for(const action of["'liveStart',{id,provider:'local',pool:'convo'}","'liveRenew',{id,provider:'local',pool:'convo'}","'liveStop',{id,pool:'convo'}","'liveConnect',{id:s.sessionId,provider:'azure'"])assert(source.includes(action),action);
+ assert(source.includes("if(message==='live_limit'||message==='convo_limit')root.LUMIRA_ACCESS?.open(message);"),'an exhausted allowance opens the badge screen');
+ assert(source.includes("data.quota?.convo?.remainingSeconds"),'the lease follows the face-to-face pool');
  assert(source.includes('AutoDetectSourceLanguageConfig.fromLanguages([LOCALES[s.pair.top],LOCALES[s.pair.bottom]])'),'automatic mode only listens for the two chosen languages');
  assert(source.includes('config.speechRecognitionLanguage=LOCALES[from];config.addTargetLanguage(azureTarget(to));'),'manual mode translates each side into the other');
  assert(source.includes('s.mutedUntil=Infinity'),'translations read aloud are not re-recognised');

@@ -1,0 +1,114 @@
+{
+ "id": "fr-B1-01",
+ "level": "B1",
+ "lang": "fr",
+ "title": "Épreuve d'entraînement 1",
+ "hoeren": [
+  {
+   "title": "Exercice 1 – Une conversation",
+   "task": "Vous allez entendre une conversation entre deux collègues. Lisez les questions, écoutez le document et choisissez la bonne réponse a, b ou c. Vous allez entendre le document deux fois.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Karim: Dis, Émilie, tu as vu le message de la direction ? À partir de septembre, on pourra travailler deux jours par semaine à la maison.\nÉmilie: Oui, je l'ai lu ce matin. Franchement, je ne sais pas si c'est une bonne nouvelle pour moi.\nKarim: Ah bon ? Moi, je suis ravi ! J'habite à une heure et demie d'ici, alors je vais gagner trois heures par jour.\nÉmilie: Je comprends. Mais moi, j'habite à dix minutes à pied, et mon appartement est tout petit. Je n'ai même pas de bureau.\nKarim: L'entreprise donne une aide pour acheter du matériel, non ?\nÉmilie: Oui, deux cents euros. Mais le problème, ce n'est pas seulement le matériel. Ce qui me plaît ici, ce sont les pauses avec l'équipe, les discussions…\nKarim: Ce n'est pas obligatoire, tu sais. Tu peux continuer à venir tous les jours si tu veux.\nÉmilie: C'est vrai. Je vais peut-être essayer un jour par semaine et voir.",
+   "items": [
+    {"q": "Selon le message de la direction, à partir de septembre, les employés…", "options": ["pourront travailler deux jours par semaine chez eux.", "devront venir tous les jours.", "auront des horaires plus courts."], "a": 0},
+    {"q": "Pourquoi Karim est-il content ?", "options": ["Il aime travailler seul.", "Il va gagner beaucoup de temps de transport.", "Il a un grand bureau chez lui."], "a": 1},
+    {"q": "Combien de temps faut-il à Émilie pour venir au travail ?", "options": ["une heure et demie", "trente minutes", "dix minutes"], "a": 2},
+    {"q": "Quel problème Émilie a-t-elle chez elle ?", "options": ["Son appartement est trop petit.", "Elle n'a pas internet.", "Ses voisins sont bruyants."], "a": 0},
+    {"q": "Qu'est-ce qu'Émilie aime au bureau ?", "options": ["le calme", "les moments avec ses collègues", "la cantine"], "a": 1},
+    {"q": "Finalement, Émilie décide de…", "options": ["refuser complètement le télétravail.", "travailler chez elle deux jours.", "essayer un jour par semaine."], "a": 2}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Une émission de radio",
+   "task": "Vous allez entendre une émission de radio. Lisez les questions, écoutez le document et choisissez la bonne réponse a, b ou c. Vous allez entendre le document deux fois.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Journaliste: Bonjour à tous. Aujourd'hui, nous parlons des jardins partagés avec Jeanne Morel, qui a créé l'un de ces jardins à Lille il y a cinq ans. Jeanne, qu'est-ce qu'un jardin partagé ?\nJeanne: C'est un terrain en ville que les habitants d'un quartier cultivent ensemble. Chez nous, il y a des légumes, des fleurs et quelques arbres fruitiers.\nJournaliste: Comment l'idée est-elle née ?\nJeanne: Il y avait un terrain abandonné derrière mon immeuble. Il était plein de déchets. Avec quelques voisins, nous avons demandé à la mairie l'autorisation de le nettoyer et de le transformer.\nJournaliste: Et aujourd'hui, combien de personnes participent ?\nJeanne: Une quarantaine, de tous les âges. Le plus jeune a quatre ans, la plus âgée quatre-vingt-sept !\nJournaliste: Qu'est-ce que le jardin a changé dans le quartier ?\nJeanne: Les gens se parlent beaucoup plus. Avant, on ne connaissait pas ses voisins. Maintenant, on organise des repas avec les légumes du jardin et des ateliers pour les enfants des écoles.\nJournaliste: Un conseil pour ceux qui veulent se lancer ?\nJeanne: Soyez patients ! Il faut du temps pour réunir des gens et pour que les plantes poussent.",
+   "items": [
+    {"q": "Jeanne a créé son jardin il y a…", "options": ["deux ans.", "cinq ans.", "dix ans."], "a": 1},
+    {"q": "Avant le jardin, le terrain était…", "options": ["un parking.", "un terrain de sport.", "abandonné et sale."], "a": 2},
+    {"q": "Pour créer le jardin, Jeanne et ses voisins ont…", "options": ["demandé l'autorisation à la mairie.", "acheté le terrain.", "reçu de l'argent d'une entreprise."], "a": 0},
+    {"q": "Qui participe au jardin ?", "options": ["surtout des retraités", "des personnes de tous les âges", "seulement des familles"], "a": 1},
+    {"q": "Selon Jeanne, le jardin a permis…", "options": ["de vendre des légumes.", "de baisser les loyers.", "aux voisins de mieux se connaître."], "a": 2},
+    {"q": "Quel conseil donne Jeanne ?", "options": ["être patient", "commencer petit", "demander de l'aide à des professionnels"], "a": 0}
+   ]
+  }
+ ],
+ "lesen": [
+  {
+   "title": "Exercice 1 – Choisir une formation",
+   "task": "Cinq personnes cherchent un stage d'été. Lisez les annonces a–f et choisissez l'annonce qui convient à chaque personne. Il y a une annonce de trop.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Stage de photographie à Annecy – une semaine en juillet, pour débutants. Sorties en montagne tous les jours. Appareil photo prêté. Hébergement en auberge de jeunesse."},
+    {"key": "b", "text": "Cours de cuisine provençale à Avignon – cinq après-midis en août. Marché le matin avec le chef, préparation et dégustation l'après-midi. Le matin reste libre."},
+    {"key": "c", "text": "Atelier théâtre pour adolescents (13–17 ans) à Paris – deux semaines, spectacle final devant les familles. Aucune expérience nécessaire."},
+    {"key": "d", "text": "Stage de voile en Bretagne – niveau confirmé uniquement. Navigation en mer pendant six jours, nuits sur le bateau."},
+    {"key": "e", "text": "Écriture de roman en ligne – huit séances le soir, depuis chez vous. Un écrivain lit et commente vos textes."},
+    {"key": "f", "text": "Initiation à la voile au lac d'Annecy – pour débutants, trois jours, le matin seulement. Le reste de la journée est libre."}
+   ],
+   "items": [
+    {"q": "Camille, 15 ans, est timide. Ses parents voudraient qu'elle prenne confiance en elle en participant à une activité de groupe.", "a": "c"},
+    {"q": "Thomas adore la nature et veut apprendre à faire de belles photos de paysages, mais il n'a pas d'appareil.", "a": "a"},
+    {"q": "Nadia n'a jamais fait de bateau. Elle veut essayer un sport nautique, mais garder ses après-midis pour se reposer.", "a": "f"},
+    {"q": "Paul aime manger et découvrir les produits régionaux. Il veut apprendre à préparer des plats du Sud.", "a": "b"},
+    {"q": "Hélène travaille toute la journée et ne peut pas partir en vacances. Elle rêve d'écrire un livre.", "a": "e"}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Un article",
+   "task": "Lisez cet article et choisissez la bonne réponse a, b ou c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Les jeunes et la lecture : la fin d'un cliché ?",
+     "body": "On entend souvent dire que les jeunes ne lisent plus. Pourtant, une étude récente du Centre national du livre montre une réalité plus nuancée. Parmi les 15–25 ans, 81 % déclarent avoir lu au moins un livre au cours de l'année, un chiffre stable depuis dix ans.\n\nCe qui a changé, ce sont surtout les genres et les manières de lire. Les mangas et les romans « young adult » connaissent un succès énorme : leurs ventes ont doublé en cinq ans. Les réseaux sociaux jouent un rôle important dans ce phénomène. Sur certaines plateformes vidéo, des jeunes présentent leurs lectures préférées à des millions d'abonnés, et un livre recommandé peut devenir un best-seller en quelques semaines.\n\nEn revanche, le temps consacré à la lecture diminue. Les jeunes lisent en moyenne trois heures par semaine, contre cinq heures il y a vingt ans. « La lecture est en concurrence avec les séries, les jeux vidéo et les réseaux sociaux », explique la sociologue Marie Lemaire. « Les jeunes lisent toujours, mais par petits moments, souvent sur leur téléphone. »\n\nLes bibliothèques s'adaptent à ces nouvelles habitudes. Beaucoup ont créé des espaces dédiés aux mangas, organisent des clubs de lecture ou invitent des créateurs de contenu. Pour Marie Lemaire, il ne faut pas opposer écrans et livres : « Les écrans peuvent aussi donner envie de lire. L'essentiel est que les jeunes trouvent du plaisir dans la lecture. »"
+    }
+   ],
+   "items": [
+    {"q": "Selon l'étude, le pourcentage de jeunes qui lisent au moins un livre par an…", "options": ["a beaucoup baissé.", "est resté stable.", "a fortement augmenté."], "a": 1},
+    {"q": "Quels genres ont beaucoup de succès auprès des jeunes ?", "options": ["les mangas et les romans « young adult »", "les romans policiers", "les livres d'histoire"], "a": 0},
+    {"q": "Quel rôle jouent les réseaux sociaux ?", "options": ["Ils empêchent les jeunes de lire.", "Ils vendent des livres numériques.", "Ils peuvent rendre un livre très populaire."], "a": 2},
+    {"q": "Aujourd'hui, les jeunes lisent en moyenne…", "options": ["trois heures par semaine.", "cinq heures par semaine.", "une heure par jour."], "a": 0},
+    {"q": "Selon Marie Lemaire, la lecture est en concurrence avec…", "options": ["le sport et la musique.", "les études.", "les séries, les jeux et les réseaux sociaux."], "a": 2},
+    {"q": "D'après la sociologue, les jeunes lisent souvent…", "options": ["le soir avant de dormir.", "par petits moments, sur leur téléphone.", "uniquement pendant les vacances."], "a": 1},
+    {"q": "Comment les bibliothèques réagissent-elles ?", "options": ["Elles réduisent leurs horaires.", "Elles interdisent les téléphones.", "Elles proposent de nouveaux espaces et activités."], "a": 2},
+    {"q": "Quelle est l'opinion de Marie Lemaire sur les écrans ?", "options": ["Ils peuvent encourager la lecture.", "Ils sont dangereux pour les jeunes.", "Ils vont remplacer les livres."], "a": 0}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Production écrite – Essai",
+   "task": "Vous lisez sur un forum la question suivante : « Faut-il interdire les téléphones portables à l'école ? » Vous répondez sur le forum.",
+   "prompt": "Écrivez un texte de 160 mots minimum. Donnez votre opinion et justifiez-la avec des arguments et des exemples.",
+   "points": ["votre opinion", "au moins deux arguments", "des exemples", "une conclusion"],
+   "words": 160,
+   "sample": "À mon avis, il faut limiter l'usage des téléphones portables à l'école, mais pas les interdire complètement.\n\nD'abord, il est vrai que les téléphones posent des problèmes. Pendant les cours, beaucoup d'élèves regardent leurs messages au lieu d'écouter le professeur. De plus, pendant les récréations, ils restent sur leur écran et ne jouent plus ensemble. Dans mon ancien collège, certains élèves ne parlaient presque plus à leurs camarades.\n\nCependant, le téléphone peut aussi être un outil utile. Par exemple, on peut l'utiliser pour chercher une information, consulter un dictionnaire ou faire des exercices en ligne. En cas de problème, il permet aussi aux parents de contacter leurs enfants.\n\nC'est pourquoi je pense que la meilleure solution est de fixer des règles claires : les téléphones doivent rester éteints dans le sac pendant les cours, sauf si le professeur demande de les utiliser. Ainsi, les élèves apprennent à s'en servir de manière responsable."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Partie 1 – Entretien dirigé",
+   "task": "Parlez de vous, de vos activités, de vos centres d'intérêt, de votre passé, de votre présent et de vos projets. L'examinateur vous pose des questions.",
+   "cards": ["votre parcours", "votre travail ou vos études", "vos centres d'intérêt", "vos projets"],
+   "phrases": ["Je suis né(e) à …", "Depuis deux ans, je …", "Ce qui me passionne, c'est …", "Plus tard, j'aimerais …"],
+   "sample": "Je suis née à Izmir, au bord de la mer, et j'habite à Ankara depuis cinq ans. J'ai fait des études d'économie et je travaille maintenant dans une banque. Ce qui me passionne, c'est la photographie : je prends des photos de rue le week-end. J'apprends le français parce que j'aimerais faire un master en France dans deux ans."
+  },
+  {
+   "title": "Partie 2 – Exercice en interaction",
+   "task": "Vous avez acheté un manteau dans un magasin, mais une fermeture est cassée. Vous retournez au magasin pour l'échanger ou vous faire rembourser. Le vendeur fait des difficultés. L'examinateur joue le rôle du vendeur.",
+   "cards": ["expliquer le problème", "montrer le ticket", "demander un échange", "insister poliment", "trouver une solution"],
+   "phrases": ["J'ai un problème avec …", "Je l'ai acheté il y a …", "Je voudrais l'échanger ou être remboursé(e).", "Je comprends, mais …", "Est-ce qu'il serait possible de …?"],
+   "sample": "Bonjour monsieur. J'ai acheté ce manteau samedi dernier, mais la fermeture est cassée. Je l'ai porté une seule fois. Voici mon ticket de caisse. Je voudrais l'échanger, s'il vous plaît. Vous n'avez plus ma taille ? Dans ce cas, je préfère être remboursée. Je comprends que ce n'est pas votre faute, mais le produit était défectueux. Est-ce qu'il serait possible de parler au responsable ? Un avoir ? D'accord, j'accepte si je peux l'utiliser pendant six mois."
+  },
+  {
+   "title": "Partie 3 – Expression d'un point de vue",
+   "task": "Lisez ce document et présentez votre opinion : « De plus en plus de villes interdisent les voitures dans le centre-ville. » Dégagez le thème, donnez votre point de vue et des exemples.",
+   "cards": ["le thème", "les avantages", "les inconvénients", "votre opinion", "un exemple"],
+   "phrases": ["Ce document parle de …", "D'un côté, …", "De l'autre côté, …", "Personnellement, je pense que …", "Par exemple, dans ma ville, …"],
+   "sample": "Ce document parle de la décision de certaines villes de fermer leur centre aux voitures. D'un côté, c'est une bonne idée parce que l'air devient moins pollué et les rues sont plus calmes et plus agréables pour les piétons. De l'autre côté, cela peut poser des problèmes pour les personnes âgées ou les commerçants qui doivent livrer des marchandises. Personnellement, je pense que c'est une bonne mesure si les transports en commun sont efficaces. Par exemple, dans ma ville, une grande rue est devenue piétonne et maintenant, il y a beaucoup plus de cafés et de familles."
+  }
+ ]
+}

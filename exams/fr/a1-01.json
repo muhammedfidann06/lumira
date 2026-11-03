@@ -1,0 +1,120 @@
+{
+ "id": "fr-A1-01",
+ "level": "A1",
+ "lang": "fr",
+ "title": "Épreuve d'entraînement 1",
+ "hoeren": [
+  {
+   "title": "Exercice 1 – Message sur un répondeur",
+   "task": "Vous allez entendre un message sur votre répondeur. Lisez les questions, écoutez le document et choisissez la bonne réponse a, b ou c. Vous allez entendre le document deux fois.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Claire: Salut, c'est Claire ! Samedi, c'est mon anniversaire. Je fais une petite fête chez moi, à partir de dix-neuf heures. Mon adresse, c'est 12, rue des Lilas, au troisième étage. Tu peux apporter une boisson ? Moi, je prépare un gâteau au chocolat. Prends le bus numéro 8 et descends à l'arrêt Mairie. Appelle-moi avant jeudi, s'il te plaît. Mon numéro, c'est le 06 45 21 38 90. À samedi !",
+   "items": [
+    {"q": "Claire organise une fête pour…", "options": ["son anniversaire.", "son nouveau travail.", "la fin des examens."], "a": 0},
+    {"q": "La fête commence à…", "options": ["17 heures.", "19 heures.", "21 heures."], "a": 1},
+    {"q": "Claire habite…", "options": ["au premier étage.", "au deuxième étage.", "au troisième étage."], "a": 2},
+    {"q": "Qu'est-ce que vous devez apporter ?", "options": ["un gâteau", "une boisson", "un cadeau"], "a": 1},
+    {"q": "Pour aller chez Claire, vous prenez…", "options": ["le bus numéro 8.", "le métro.", "le train."], "a": 0},
+    {"q": "Vous devez appeler Claire avant…", "options": ["mardi.", "samedi.", "jeudi."], "a": 2}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Annonces",
+   "task": "Vous allez entendre quatre courtes annonces. Pour chaque annonce, choisissez la bonne réponse a, b ou c. Vous allez entendre chaque annonce deux fois.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Annonce: Mesdames et messieurs, le train à destination de Lyon partira du quai numéro 4. Départ prévu à 10 h 15.", "q": "Le train pour Lyon part de quel quai ?", "options": ["quai 2", "quai 4", "quai 14"], "a": 1},
+    {"audio": "Annonce: Chers clients, aujourd'hui, toutes les pommes sont à un euro le kilo au rayon fruits et légumes.", "q": "Qu'est-ce qui est en promotion ?", "options": ["les pommes", "les tomates", "le pain"], "a": 0},
+    {"audio": "Annonce: Le musée ferme dans quinze minutes. Merci de vous diriger vers la sortie.", "q": "Le musée ferme dans…", "options": ["cinq minutes.", "une heure.", "quinze minutes."], "a": 2},
+    {"audio": "Annonce: Attention, le cours de yoga de ce soir n'a pas lieu dans la salle 3, mais dans la salle 7, au premier étage.", "q": "Où a lieu le cours de yoga ce soir ?", "options": ["dans la salle 3", "dans la salle 7", "dans le jardin"], "a": 1}
+   ]
+  }
+ ],
+ "lesen": [
+  {
+   "title": "Exercice 1 – Un courriel",
+   "task": "Vous recevez ce courriel d'une amie. Lisez le document et choisissez la bonne réponse a, b ou c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "De : Sophie – Objet : Mes vacances",
+     "body": "Bonjour !\n\nJe suis en vacances à Nice avec ma sœur depuis lundi. Il fait très beau et chaud. Nous logeons dans un petit hôtel près de la plage. Le matin, nous allons à la mer et l'après-midi, nous visitons la vieille ville. Hier, nous avons mangé dans un restaurant italien : c'était délicieux !\n\nNous rentrons à Paris dimanche, en train. Tu veux venir au cinéma avec moi mardi soir ?\n\nBises,\nSophie"
+    }
+   ],
+   "items": [
+    {"q": "Sophie est en vacances avec…", "options": ["sa sœur.", "sa mère.", "son ami."], "a": 0},
+    {"q": "Quel temps fait-il à Nice ?", "options": ["Il pleut.", "Il fait froid.", "Il fait beau."], "a": 2},
+    {"q": "Le matin, Sophie…", "options": ["visite la ville.", "va à la mer.", "fait les magasins."], "a": 1},
+    {"q": "Sophie rentre à Paris…", "options": ["en train.", "en avion.", "en voiture."], "a": 0},
+    {"q": "Qu'est-ce que Sophie vous propose ?", "options": ["un restaurant", "une promenade", "le cinéma"], "a": 2}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Une annonce",
+   "task": "Vous lisez cette annonce dans votre quartier. Lisez le document et choisissez la bonne réponse a, b ou c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Bibliothèque municipale – Nouveaux horaires",
+     "body": "À partir du 1er mars, la bibliothèque est ouverte du mardi au samedi, de 10 heures à 18 heures. Elle est fermée le dimanche et le lundi.\n\nL'inscription est gratuite pour les enfants et coûte 10 euros par an pour les adultes. Vous pouvez emprunter cinq livres pendant trois semaines.\n\nNouveau : atelier de lecture pour les enfants tous les mercredis à 15 heures.\n\nPour vous inscrire, apportez une pièce d'identité et une photo."
+    }
+   ],
+   "items": [
+    {"q": "La bibliothèque est fermée…", "options": ["le mardi.", "le lundi.", "le samedi."], "a": 1},
+    {"q": "Pour les adultes, l'inscription coûte…", "options": ["10 euros par an.", "5 euros par mois.", "rien."], "a": 0},
+    {"q": "Combien de livres pouvez-vous emprunter ?", "options": ["trois", "dix", "cinq"], "a": 2},
+    {"q": "L'atelier de lecture est pour…", "options": ["les adultes.", "les enfants.", "les étudiants."], "a": 1},
+    {"q": "Pour vous inscrire, vous apportez…", "options": ["une pièce d'identité et une photo.", "un livre.", "10 euros et une lettre."], "a": 0}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Exercice 1 – Remplir une fiche",
+   "task": "Vous vous inscrivez à un cours de français. Lisez la situation et complétez la fiche d'inscription.",
+   "situation": "Vous êtes Marco Rossi. Vous êtes italien. Vous avez 28 ans. Vous habitez 5, avenue Victor Hugo, à Lyon. Vous êtes informaticien. Vous voulez suivre le cours du soir, le mardi.",
+   "form": [
+    {"label": "Nom", "a": "Rossi"},
+    {"label": "Prénom", "a": "Marco"},
+    {"label": "Nationalité", "a": "italienne", "alt": ["italien"]},
+    {"label": "Âge", "a": "28", "alt": ["28 ans"]},
+    {"label": "Ville", "a": "Lyon"},
+    {"label": "Profession", "a": "informaticien"},
+    {"label": "Jour du cours", "a": "mardi"}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Écrire un message",
+   "task": "Vous êtes en vacances. Vous écrivez une carte postale à un ami français.",
+   "prompt": "Écrivez une carte postale (40 à 50 mots) à votre ami Thomas. Dites où vous êtes, avec qui, quel temps il fait et ce que vous faites.",
+   "points": ["où vous êtes", "avec qui", "le temps", "vos activités"],
+   "words": 45,
+   "sample": "Cher Thomas,\n\nJe suis à Barcelone avec mes parents pour une semaine. Il fait très chaud et le ciel est bleu. Le matin, nous visitons la ville et l'après-midi, nous allons à la plage. Le soir, nous mangeons des tapas. C'est super !\n\nÀ bientôt,\nAnna"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Partie 1 – Entretien dirigé",
+   "task": "Présentez-vous et répondez aux questions de l'examinateur : votre nom, votre âge, votre pays, votre famille, votre travail ou vos études, vos loisirs.",
+   "cards": ["nom", "âge", "pays", "famille", "travail / études", "loisirs"],
+   "phrases": ["Je m'appelle …", "J'ai … ans.", "Je viens de …", "J'habite à …", "J'aime …"],
+   "sample": "Bonjour ! Je m'appelle Elif. J'ai vingt-quatre ans et je viens de Turquie. J'habite à Istanbul avec ma famille. J'ai un frère et une sœur. Je suis étudiante en architecture. Le week-end, j'aime faire du vélo et lire des romans."
+  },
+  {
+   "title": "Partie 2 – Échange d'informations",
+   "task": "Vous avez des cartes avec des mots. Posez des questions à l'examinateur avec chaque mot.",
+   "cards": ["sport ?", "petit-déjeuner ?", "vacances ?", "animal ?", "musique ?", "week-end ?"],
+   "phrases": ["Est-ce que vous …?", "Qu'est-ce que vous …?", "Où est-ce que vous …?", "Vous aimez …?"],
+   "sample": "Est-ce que vous faites du sport ? Qu'est-ce que vous mangez au petit-déjeuner ? Où est-ce que vous partez en vacances ? Vous avez un animal ? Quelle musique est-ce que vous aimez ? Qu'est-ce que vous faites le week-end ?"
+  },
+  {
+   "title": "Partie 3 – Dialogue simulé",
+   "task": "Vous êtes dans une boulangerie. Vous achetez du pain et des gâteaux pour un repas avec des amis. Vous demandez les prix et vous payez. L'examinateur joue le rôle du vendeur.",
+   "cards": ["une baguette", "des croissants", "une tarte", "le prix", "payer"],
+   "phrases": ["Bonjour, je voudrais …", "C'est combien ?", "Je prends …", "Ça fait combien en tout ?", "Je peux payer par carte ?"],
+   "sample": "Bonjour madame ! Je voudrais deux baguettes, s'il vous plaît. Et vous avez des croissants ? Je prends six croissants. Cette tarte aux pommes, c'est combien ? Douze euros ? D'accord, je la prends aussi. Ça fait combien en tout ? Je peux payer par carte ? Merci beaucoup, bonne journée !"
+  }
+ ]
+}

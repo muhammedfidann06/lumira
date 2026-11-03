@@ -1,0 +1,188 @@
+{
+ "id": "en-C1-01",
+ "level": "C1",
+ "lang": "en",
+ "title": "Practice Test 1",
+ "lesen": [
+  {
+   "title": "Part 1 – Use of English",
+   "task": "Read the text and decide which answer a, b or c best fits each gap.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Letting the city grow wild",
+     "body": "In recent years, a growing number of cities have begun to [1] the idea of 'rewilding' – allowing parts of the urban landscape to return to a more natural state. Rather than mowing every patch of grass, councils are leaving verges and parks to grow wild, [2] wildflowers and the insects that depend on them to flourish.\n\nThe approach is not without its critics. Some residents complain that unmown areas look neglected, and councils have had to work hard to [3] the public that the change is deliberate rather than a sign of budget cuts. Small signs explaining the purpose of the long grass have proved surprisingly effective in [4] complaints.\n\nSupporters argue that the benefits far [5] the drawbacks. Wilder spaces absorb rainwater more efficiently, reducing the risk of flooding, and they provide much-needed habitats for bees and butterflies, whose numbers have been in sharp [6] for decades. There is also growing evidence that contact with nature has a positive [7] on mental health.\n\nUltimately, rewilding asks city dwellers to rethink what a well-kept space looks like – and to accept that a little untidiness may be a price [8] paying."
+    }
+   ],
+   "items": [
+    {"q": "Gap 1", "options": ["embrace", "grasp", "hold"], "a": 0},
+    {"q": "Gap 2", "options": ["letting", "enabling", "making"], "a": 1},
+    {"q": "Gap 3", "options": ["prove", "claim", "persuade"], "a": 2},
+    {"q": "Gap 4", "options": ["reducing", "declining", "falling"], "a": 0},
+    {"q": "Gap 5", "options": ["overcome", "outweigh", "outnumber"], "a": 1},
+    {"q": "Gap 6", "options": ["descent", "drop", "decline"], "a": 2},
+    {"q": "Gap 7", "options": ["effect", "affect", "result"], "a": 0},
+    {"q": "Gap 8", "options": ["well", "worth", "deserving"], "a": 1}
+   ]
+  },
+  {
+   "title": "Part 2 – Reading",
+   "task": "Read the article and choose the answer a, b or c which you think fits best according to the text.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Should we bring back the mammoth?",
+     "body": "In a laboratory in Texas, scientists are attempting something that until recently belonged firmly to the world of science fiction: bringing back the woolly mammoth. Using DNA recovered from frozen remains in Siberia and gene-editing techniques, a private company hopes to produce an elephant-mammoth hybrid capable of surviving in the Arctic within the next decade.\n\nSupporters of the project present it as more than a spectacular feat of engineering. They argue that herds of mammoth-like animals could help restore the Arctic grasslands that disappeared after the last Ice Age. By trampling snow and knocking down trees, the animals would, in theory, keep the ground colder and slow the thawing of permafrost, which releases vast quantities of greenhouse gases. In this view, de-extinction is not nostalgia but a tool in the fight against climate change.\n\nCritics are unconvinced. Some question the science itself: even if a healthy hybrid could be created, it would take decades to breed enough animals to have any measurable impact on a landscape the size of Siberia. Others raise ethical concerns. Elephants are highly social, intelligent animals, and the first hybrid calves would be born to surrogate elephant mothers and raised without a herd of their own kind. 'We would be creating a creature whose needs we barely understand,' one biologist warned, 'purely to satisfy our own curiosity.'\n\nThere is also the question of priorities. Conservation budgets are limited, and every dollar spent reviving an extinct species is, arguably, a dollar not spent protecting the thousands of species currently on the brink of extinction. The northern white rhinoceros, for example, has only two surviving members, both female. Some scientists argue that the same genetic technologies being developed for the mammoth could help save such species, and that this, rather than resurrection, is where the real value lies.\n\nInterestingly, this argument has partly won over the company itself, which now emphasises the benefits of its research for living animals, including work on a vaccine against a virus that kills young elephants. Whether this reflects a genuine change in direction or a clever response to criticism is hard to say.\n\nWhat is clear is that de-extinction forces us to confront uncomfortable questions about our relationship with nature. If we have the power to undo extinctions we caused, do we also have the responsibility to do so? Or should we accept that some losses are permanent, and concentrate on preventing new ones? There are no easy answers – but the fact that we are asking these questions at all shows how dramatically science has changed what is possible."
+    }
+   ],
+   "items": [
+    {"q": "The company working on the mammoth project aims to…", "options": ["clone an exact copy of a woolly mammoth.", "create an animal similar to a mammoth that can live in cold regions.", "study mammoth remains to understand the Ice Age."], "a": 1},
+    {"q": "According to supporters, mammoth-like animals could…", "options": ["help slow down the release of greenhouse gases.", "replace elephants in the wild.", "attract tourists to the Arctic."], "a": 0},
+    {"q": "One scientific objection mentioned in the third paragraph is that…", "options": ["hybrids would be unable to survive the cold.", "the DNA is too damaged to use.", "it would take too long to make a real difference."], "a": 2},
+    {"q": "The biologist quoted in the text is mainly concerned about…", "options": ["the welfare of the animals created.", "the cost of the project.", "the danger to other species."], "a": 0},
+    {"q": "What point is made about the northern white rhinoceros?", "options": ["It shows that de-extinction has already succeeded.", "It illustrates a better use for genetic technology.", "It proves that conservation funding has increased."], "a": 1},
+    {"q": "How does the writer view the company's new emphasis on benefits for living animals?", "options": ["as clear evidence of a change of heart", "as a mistake that will harm the project", "with some uncertainty about its motives"], "a": 2}
+   ]
+  },
+  {
+   "title": "Part 3 – Gapped text",
+   "task": "Six sentences have been removed from the article. Choose from the sentences a–g the one which fits each gap. There is one extra sentence which you do not need to use.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "The piano in the barn",
+     "body": "When my grandmother died, she left me a piano that had spent the last twenty years in a damp barn. Most people advised me to take it straight to the tip. [1]\n\nI found a restorer, Alan, who agreed to let me help with the work in return for a reduced fee. On my first visit to his workshop, he lifted the lid, peered inside and sighed. [2]\n\nThe first task was to remove the keys, all eighty-eight of them, and clean each one by hand. [3] Alan, however, insisted that rushing was the surest way to ruin an instrument.\n\nOver the following months, I learned more than I ever expected about wood, felt and wire. [4] When an original part was too damaged to save, we made a new one, copying the old design as closely as possible.\n\nThe most nerve-racking moment came when we fitted the new strings. [5] Alan tightened each one gradually, over several days, checking and rechecking the tension.\n\nFinally, after almost a year, the piano was ready. [6] As I played the first notes of a piece my grandmother used to love, I realised that the instrument had been given a second life – and so, in a way, had my memories of her."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Mice had built a nest among the strings, and several of the hammers had been chewed almost beyond recognition."},
+    {"key": "b", "text": "It was slow, repetitive work, and after the first afternoon I began to wonder whether I had made a terrible mistake."},
+    {"key": "c", "text": "Alan's philosophy was to keep as much of the original instrument as possible."},
+    {"key": "d", "text": "Together, they exert a force of several tonnes on the frame, and a single crack could have destroyed months of work."},
+    {"key": "e", "text": "But I could still remember sitting beside her as a child while she played, and I couldn't bring myself to throw it away."},
+    {"key": "f", "text": "We moved it into my living room, and I sat down to play it for the first time."},
+    {"key": "g", "text": "Pianos were first built in Italy at the beginning of the eighteenth century."}
+   ],
+   "items": [
+    {"q": "Gap 1", "a": "e"},
+    {"q": "Gap 2", "a": "a"},
+    {"q": "Gap 3", "a": "b"},
+    {"q": "Gap 4", "a": "c"},
+    {"q": "Gap 5", "a": "d"},
+    {"q": "Gap 6", "a": "f"}
+   ]
+  },
+  {
+   "title": "Part 4 – Multiple matching",
+   "task": "Four reviewers comment on a book called 'The Age of Distraction'. For questions 1–10, choose from the reviewers a–d. The reviewers may be chosen more than once.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Reviewer A: The author's central claim – that constant digital interruption is eroding our capacity for deep thought – is hardly new, but she argues it with unusual clarity and an impressive range of evidence. Particularly persuasive is the chapter on schools, where she shows how attention spans have been shaped by classroom technology. My only reservation is the final section, where her practical advice feels rushed and somewhat simplistic compared with the careful analysis that precedes it."},
+    {"key": "b", "text": "Reviewer B: I approached this book expecting yet another lament about smartphones, and in places that is exactly what it is. The author too often relies on anecdotes from her own life rather than solid research, and her tone can be preachy. That said, the historical chapters, which trace anxieties about new technology back to the invention of printing, are genuinely illuminating and worth the price of the book alone."},
+    {"key": "c", "text": "Reviewer C: What distinguishes this book from others on the subject is its refusal to blame individuals. The author convincingly argues that apps are deliberately designed to capture attention and that expecting people to resist through willpower alone is unrealistic. Her call for regulation of design practices will strike some as radical, but I found it the most original contribution of the book."},
+    {"key": "d", "text": "Reviewer D: Beautifully written, this is a book that practises what it preaches: its chapters are short, focused and free of unnecessary detail. I particularly appreciated the practical suggestions at the end, which are modest but achievable – I have already started leaving my phone in another room while I work. Readers looking for a thorough academic treatment may be disappointed, but as an introduction to the topic it is hard to beat."}
+   ],
+   "items": [
+    {"q": "Which reviewer criticises the author's use of personal stories as evidence?", "a": "b"},
+    {"q": "Which reviewer has changed their own behaviour after reading the book?", "a": "d"},
+    {"q": "Which reviewer praises the argument that individuals are not to blame?", "a": "c"},
+    {"q": "Which reviewer finds the end of the book weaker than the rest?", "a": "a"},
+    {"q": "Which reviewer recommends the book mainly to newcomers to the subject?", "a": "d"},
+    {"q": "Which reviewer singles out the book's historical perspective?", "a": "b"},
+    {"q": "Which reviewer highlights the evidence about education?", "a": "a"},
+    {"q": "Which reviewer expects some readers to find one proposal extreme?", "a": "c"},
+    {"q": "Which reviewer comments that the book's style reflects its message?", "a": "d"},
+    {"q": "Which reviewer says the main idea is familiar but well argued?", "a": "a"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Part 1",
+   "task": "You will hear six short extracts. For each question, choose the answer a, b or c which fits best according to what you hear. You will hear each extract twice.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Woman: What fascinates me is not that octopuses are clever – we've known that for a while – but how differently their intelligence is organised. Two-thirds of their neurons are in their arms, which means each arm can, to some extent, make its own decisions.", "q": "You hear a scientist talking about octopuses. What does she find most interesting?", "options": ["that octopuses can solve problems", "the way octopus intelligence is distributed", "how quickly octopuses learn"], "a": 1},
+    {"audio": "Man: Critics called it ugly when it opened, and to be fair, from the outside it isn't pretty. But step inside and you understand. Every room is flooded with natural light, and the building uses forty per cent less energy than its neighbours. Form, in this case, really did follow function.", "q": "You hear an architect discussing a building. What is his view of it?", "options": ["Its practical qualities justify its appearance.", "It should never have been built.", "It is beautiful both inside and outside."], "a": 0},
+    {"audio": "Woman: People assume I plan everything before I start, but I never know how a book will end. I begin with a character in a difficult situation and follow them. If I knew the ending, I'd lose interest – and I suspect the reader would too.", "q": "You hear a novelist. How does she approach writing a book?", "options": ["She plans the plot in detail.", "She starts with the ending.", "She discovers the story as she writes."], "a": 2},
+    {"audio": "Man: Leaving banking to become a teacher meant halving my salary, and some friends thought I'd lost my mind. Do I regret it? Not for a second. The money was never what motivated me; it just took me fifteen years to admit it.", "q": "You hear a man talking about a career change. How does he feel about it?", "options": ["He has some doubts about it.", "He is completely satisfied with it.", "He wishes he had earned more."], "a": 1},
+    {"audio": "Presenter: Tonight we're asking a question that divides economists: does tourism really benefit local communities, or do most of the profits end up with international companies? We'll hear from hotel owners, residents and researchers – and we want to hear from you too.", "q": "You hear a radio presenter. What is the main purpose of the programme?", "options": ["to promote tourism in a region", "to report on new economic data", "to explore a controversial issue"], "a": 2},
+    {"audio": "Doctor: The headlines claimed that coffee prevents heart disease, but that's not what the study showed. It found an association between moderate coffee drinking and lower risk – which could well be explained by other factors, such as lifestyle. We need to be very careful about confusing correlation with cause.", "q": "You hear a doctor discussing a study. What point does she make?", "options": ["Its findings were misreported.", "It was poorly designed.", "It proved coffee is harmful."], "a": 0}
+   ]
+  },
+  {
+   "title": "Part 2",
+   "task": "You will hear an interview with Hannah Lewis, who rowed alone across the Atlantic. For each question, choose the answer a, b or c which fits best. You will hear the interview twice.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Interviewer: Last year, Hannah Lewis became one of the youngest women to row solo across the Atlantic. Hannah, what made you want to attempt something so extreme?\nHannah: People expect a dramatic answer, but honestly, it started with a book. I read an account of a solo crossing when I was fifteen and simply couldn't stop thinking about it. It took me another ten years to feel ready.\nInterviewer: How did you prepare?\nHannah: Physically, of course – long hours on the rowing machine and at sea. But the mental preparation was harder. I worked with a sports psychologist, mainly on how to cope with fear and isolation. We practised breaking every problem into small, manageable steps, which turned out to be the most useful thing I learned.\nInterviewer: What was the worst moment of the crossing?\nHannah: Most people assume it was the storms, and they were frightening. But the lowest point was actually a week of complete calm in the middle of the ocean. There was no wind, the sea was like glass, and I was making almost no progress. I felt utterly powerless, and that was far harder to deal with than danger.\nInterviewer: Did you ever consider giving up?\nHannah: Once, very briefly, after my water-making machine broke. But I had a manual backup, and once I'd fixed things, the thought disappeared. Quitting would have meant being rescued, and I'd promised myself I'd only accept that if my life was at risk.\nInterviewer: How has the experience changed you?\nHannah: I'm much more patient. At sea, you can't hurry the ocean, so you learn to accept what you can't control. And I appreciate small things – a hot shower, a conversation – in a way I never did before.\nInterviewer: What's next?\nHannah: I'm writing a book, and I'm visiting schools to talk about resilience. I'd like young people to know that you don't have to be fearless to do difficult things – you just have to keep going when you're afraid.",
+   "items": [
+    {"q": "What first inspired Hannah to row across the Atlantic?", "options": ["a documentary film", "a book she read as a teenager", "a friend who had done it"], "a": 1},
+    {"q": "According to Hannah, the most useful part of her preparation was learning to…", "options": ["deal with problems one step at a time.", "row for long hours.", "repair her equipment."], "a": 0},
+    {"q": "Hannah found the period of calm weather difficult because…", "options": ["it was dangerous.", "she ran out of food.", "she felt she had no control."], "a": 2},
+    {"q": "Why did Hannah not give up when her water machine broke?", "options": ["She was rescued.", "She had an alternative way to make water.", "She was close to the end."], "a": 1},
+    {"q": "How has the experience changed Hannah?", "options": ["She has become more patient.", "She is no longer afraid of anything.", "She wants to live by the sea."], "a": 0},
+    {"q": "What message does Hannah want to give young people?", "options": ["They should avoid taking risks.", "Only fearless people succeed.", "Being afraid need not stop them."], "a": 2}
+   ]
+  },
+  {
+   "title": "Part 3",
+   "task": "You will hear five short extracts in which people talk about something they learned from a job interview. For each speaker, choose from the list a–h what they learned. There are three extra letters which you do not need to use. You will hear the recording twice.",
+   "type": "match",
+   "plays": 2,
+   "audio": "Speaker 1: I'd prepared answers to every possible question, but they asked me to solve a practical problem on the spot. I froze. Since then, I spend less time memorising answers and more time practising thinking aloud.\nSpeaker 2: I was so focused on impressing them that I forgot to find out whether I actually wanted the job. When I started, I realised the company culture wasn't for me. Now I always ask about the team and the working environment.\nSpeaker 3: I arrived forty minutes early and sat in reception getting more and more nervous. These days I time it so I arrive ten minutes before – enough to be relaxed, not enough to panic.\nSpeaker 4: I didn't get the job, so I emailed to ask why. The manager phoned me and gave me really detailed advice. I'd never have improved without that, so I always ask for feedback now.\nSpeaker 5: I thought I'd done badly because the interviewers barely smiled. It turned out that was just their style, and I got the job. I've learned not to read too much into people's expressions.",
+   "choices": [
+    {"key": "a", "text": "to ask for feedback after an unsuccessful interview"},
+    {"key": "b", "text": "not to judge an interview by the interviewers' manner"},
+    {"key": "c", "text": "to practise solving problems rather than learning answers"},
+    {"key": "d", "text": "to research the salary before the interview"},
+    {"key": "e", "text": "to find out whether the workplace suits them"},
+    {"key": "f", "text": "to arrive at the right time"},
+    {"key": "g", "text": "to dress more formally"},
+    {"key": "h", "text": "to bring examples of previous work"}
+   ],
+   "items": [
+    {"q": "Speaker 1", "a": "c"},
+    {"q": "Speaker 2", "a": "e"},
+    {"q": "Speaker 3", "a": "f"},
+    {"q": "Speaker 4", "a": "a"},
+    {"q": "Speaker 5", "a": "b"}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Part 1 – Essay",
+   "task": "Your class has attended a panel discussion on how governments can encourage people to lead healthier lives. You have made notes on three methods: taxes on unhealthy food, free sports facilities and health education in schools.",
+   "prompt": "Write an essay discussing two of the methods in your notes. Explain which method you think is more effective, giving reasons to support your opinion. Write 220–260 words.",
+   "points": ["taxes on unhealthy food", "free sports facilities", "health education in schools"],
+   "words": 240,
+   "sample": "Rising rates of obesity and related illnesses have put pressure on governments to take action. Two commonly proposed approaches are taxing unhealthy food and providing health education in schools. While both have merit, I would argue that education offers the more lasting solution.\n\nTaxes on products high in sugar or fat have an immediate and measurable effect. When prices rise, consumption tends to fall, and the revenue can be invested in health services. However, such taxes are often criticised as unfair, since they hit low-income households hardest. Moreover, they treat the symptom rather than the cause: people may simply switch to other cheap but unhealthy products.\n\nHealth education, by contrast, aims to change attitudes from an early age. If children learn how to cook simple, nutritious meals and understand how their bodies work, they are more likely to make healthy choices throughout their lives. The main drawback is that results take years to appear, which makes this approach less attractive to politicians seeking quick results.\n\nOn balance, I believe education is the more effective method. Taxes may produce short-term improvements, but genuine change depends on people understanding why healthy habits matter and having the skills to adopt them. Ideally, of course, governments would combine both approaches, using tax revenue to fund high-quality health education. Nevertheless, if forced to choose, investing in young people's knowledge would bring the greatest long-term benefit to society."
+  },
+  {
+   "title": "Part 2 – Proposal",
+   "task": "The manager of the language school you attend wants to improve the school's study centre and has asked students to submit proposals.",
+   "prompt": "Write a proposal describing the current situation, suggesting improvements and explaining how they would benefit students. Write 220–260 words.",
+   "points": ["the current situation", "suggested improvements", "benefits for students"],
+   "words": 240,
+   "sample": "Proposal: Improving the study centre\n\nIntroduction\nThe aim of this proposal is to outline the main weaknesses of the current study centre and to recommend changes that would make it more useful for students.\n\nThe current situation\nAlthough the study centre is popular, it suffers from several problems. Firstly, it is often too noisy to concentrate, as the same room is used for group work and silent study. Secondly, many of the books and course materials are out of date. Finally, the centre closes at 5 pm, which is inconvenient for students who attend evening classes or work during the day.\n\nSuggested improvements\nI would recommend dividing the centre into two areas: a silent zone for individual study and a separate space for group discussions. In addition, the school could replace some printed materials with access to online resources, such as digital dictionaries and graded readers. It would also be helpful to extend the opening hours until at least 8 pm on weekdays.\n\nBenefits for students\nThese changes would allow students to choose an environment that suits their way of learning. Up-to-date resources would make self-study more effective and motivating, while longer opening hours would give working students a fair chance to use the facilities.\n\nConclusion\nIn my view, these relatively inexpensive changes would significantly improve the study centre and increase the number of students who use it regularly. I hope the management will consider them."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Part 1 – Long turn",
+   "task": "Imagine three photos of people learning new skills: an older man learning to use a computer, a child learning to swim and a woman at a cooking class. Choose two of them. Talk about why the people might be learning these skills and how they might be feeling. Speak for about one minute.",
+   "cards": ["why the people are learning", "how they might be feeling", "differences between the situations", "your own view"],
+   "phrases": ["I'd like to talk about … and …", "He might be learning this because …", "She looks as if she …", "It's quite likely that …", "What the two situations have in common is …"],
+   "sample": "I'd like to talk about the older man learning to use a computer and the child learning to swim. The man might be learning because he wants to stay in touch with his grandchildren through video calls, or perhaps he needs to manage his bank account online. He looks a little nervous, as if he's worried about making a mistake, but also quite determined.\n\nThe child, on the other hand, is probably learning to swim because her parents think it's an important safety skill. She looks excited but slightly frightened of the water – she's holding on tightly to the instructor's hands.\n\nWhat the two situations have in common is that both people are stepping outside their comfort zone. It's quite likely that, in a few weeks, they'll both feel proud of what they've achieved. Personally, I think it's never too early – or too late – to learn something new."
+  },
+  {
+   "title": "Part 2 – Collaborative task and discussion",
+   "task": "Talk together about how these factors might affect people's happiness at work: salary, relationships with colleagues, flexible working hours, opportunities to learn and meaningful tasks. Then decide which factor is the most important.",
+   "cards": ["salary", "relationships with colleagues", "flexible hours", "opportunities to learn", "meaningful tasks"],
+   "phrases": ["Shall we begin with …?", "I'd go along with that, up to a point.", "That's a fair point, although …", "It depends to some extent on …", "So are we agreed that …?"],
+   "sample": "A: Shall we begin with salary? Obviously everyone needs to earn enough, but I'm not sure money alone makes people happy.\nB: I'd go along with that, up to a point. Research suggests that once people earn enough to live comfortably, more money doesn't make a huge difference.\nA: Relationships with colleagues seem more important to me. If you dread seeing the people you work with, nothing else really compensates.\nB: That's a fair point, although flexible hours can make a big difference too, especially for parents.\nA: True. And what about meaningful tasks? I think people want to feel that what they do matters.\nB: It depends to some extent on the person, but I agree – doing something pointless every day must be very demotivating.\nA: So which do we choose? I'd say relationships with colleagues.\nB: I was thinking meaningful tasks, but you've convinced me – good colleagues can make even a difficult job enjoyable. So are we agreed on relationships?\nA: Agreed."
+  }
+ ]
+}

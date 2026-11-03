@@ -25,11 +25,12 @@ test('all seven native languages can read prepared stories with only fifty learn
  for(const language of languages)for(const native of languages.filter(value=>value!==language)){const pool=bank(firstFifty(language),language,native);for(const genre of genres)for(const level of[0,1,2,3])assert(knownStory(pool,{...options(language,native,level,genre),plan:storyPlan(genre,0)}),[language,native,genre,level].join('/'));}
 });
 test('production requests persist a full 100-story cycle while preserving idempotency and writing quota',async()=>{
- let now=1800000000000;const database=memoryDb({progress:{alice:firstFifty('en')},serverFeatureUsage:{alice:{writing:{count:7}}}}),handler=createStoriesHandler({identity:async()=>({uid:'alice',db:database.db}),wordPool:bank,generateStory:(pool,config)=>generateStory(pool,config,{env:{}})},()=>now),texts=new Set();
+ // A King account: 30 stories per 24 hours and up to 100 saved stories.
+ let now=1800000000000;const database=memoryDb({progress:{alice:firstFifty('en')},serverFeatureUsage:{alice:{writing:{count:7}}}}),handler=createStoriesHandler({identity:async()=>({uid:'alice',db:database.db,tier:{amount:100}}),wordPool:bank,generateStory:(pool,config)=>generateStory(pool,config,{env:{}})},()=>now),texts=new Set();
  for(let index=0;index<100;index++){
-  const body={action:'generate',id:'prepared-production-1114-'+index,...options('en'),engine:'reviewed'},request=()=>new Request('https://lumira-tr.com/.netlify/functions/stories',{method:'POST',body:JSON.stringify(body)}),response=await handler(request());assert.equal(response.status,200,await response.clone().text());const result=(await response.json()).story;texts.add(result.sentences.map(row=>row.text).join('\n'));assert.match(result.coverId,/^daily-\d{3}$/);assert.equal((await(await handler(request())).json()).story.id,result.id);now+=61000;
+  const body={action:'generate',id:'prepared-production-1114-'+index,...options('en'),engine:'reviewed'},request=()=>new Request('https://lumira-tr.com/.netlify/functions/stories',{method:'POST',body:JSON.stringify(body)}),response=await handler(request());assert.equal(response.status,200,await response.clone().text());const result=(await response.json()).story;texts.add(result.sentences.map(row=>row.text).join('\n'));assert.match(result.coverId,/^daily-\d{3}$/);assert.equal((await(await handler(request())).json()).story.id,result.id);now+=61000+(index%25===24?86400000:0);
  }
- assert.equal(texts.size,100);assert.equal(Object.keys(database.get('serverStoryIndex/alice')).length,20);assert.equal(database.get('serverFeatureUsage/alice/writing/count'),7);
+ assert.equal(texts.size,100);assert.equal(Object.keys(database.get('serverStoryIndex/alice')).length,100);assert.equal(database.get('serverFeatureUsage/alice/writing/count'),7);
 });
 test('a repeated AI draft is repaired or replaced with the new planned reading',async()=>{
  const draft=dataFor('en'),fingerprint=createHash('sha256').update(draft.sentences.map(row=>row.text).join('\n')).digest('hex');let calls=0;

@@ -1,0 +1,167 @@
+{
+ "id": "es-C1-01",
+ "level": "C1",
+ "lang": "es",
+ "title": "Examen de práctica 1",
+ "lesen": [
+  {
+   "title": "Tarea 1 – Texto expositivo",
+   "task": "Lea el texto y conteste las preguntas. Seleccione la opción correcta: a, b o c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "La memoria, esa narradora poco fiable",
+     "body": "Solemos imaginar la memoria como un archivo en el que los recuerdos se guardan intactos, a la espera de ser consultados. Nada más lejos de la realidad. Las investigaciones de las últimas décadas han demostrado que recordar no consiste en recuperar una copia fiel del pasado, sino en reconstruirlo cada vez, con los materiales disponibles en el presente.\n\nLa psicóloga estadounidense Elizabeth Loftus fue pionera en este campo. En uno de sus experimentos más conocidos, logró que una cuarta parte de los participantes «recordara» haberse perdido en un centro comercial durante su infancia, un episodio que nunca había ocurrido. Bastó con que un familiar les contara la historia como si fuera cierta. Muchos llegaron incluso a añadir detalles por su cuenta: el color de la ropa de la persona que los encontró, el miedo que sintieron.\n\nEstos hallazgos tienen consecuencias que van mucho más allá del laboratorio. En los tribunales, el testimonio de un testigo presencial ha sido tradicionalmente una de las pruebas más valoradas por los jurados. Sin embargo, numerosos casos de condenas erróneas, revisadas posteriormente gracias a pruebas de ADN, se basaban precisamente en identificaciones realizadas por testigos convencidos de su versión.\n\nAhora bien, sería un error concluir que la memoria es simplemente defectuosa. Su plasticidad cumple una función adaptativa: nos permite integrar nueva información, dar coherencia a nuestra historia personal y, en cierto modo, imaginar el futuro, pues las mismas regiones cerebrales intervienen en ambos procesos. Una memoria rígida, incapaz de modificarse, nos sería probablemente menos útil.\n\nLa lección, en definitiva, no es desconfiar de todos nuestros recuerdos, sino asumir con humildad que la seguridad con la que recordamos algo no garantiza su exactitud."
+    }
+   ],
+   "items": [
+    {"q": "Según el primer párrafo, recordar consiste en…", "options": ["recuperar una copia exacta del pasado.", "reconstruir el pasado desde el presente.", "consultar un archivo ordenado."], "a": 1},
+    {"q": "En el experimento de Loftus, algunos participantes…", "options": ["llegaron a recordar un hecho inventado.", "olvidaron episodios reales de su infancia.", "se negaron a participar."], "a": 0},
+    {"q": "Los detalles añadidos por los participantes demuestran que…", "options": ["el episodio era real.", "sus familiares mentían.", "la mente completa los falsos recuerdos."], "a": 2},
+    {"q": "¿Qué relación establece el texto con los tribunales?", "options": ["Los jurados desconfían de los testigos.", "Algunos testigos sinceros han provocado condenas injustas.", "Las pruebas de ADN son poco fiables."], "a": 1},
+    {"q": "Según el cuarto párrafo, la plasticidad de la memoria…", "options": ["tiene una función útil.", "es un defecto que hay que corregir.", "solo afecta a las personas mayores."], "a": 0},
+    {"q": "¿Cuál es la conclusión del autor?", "options": ["No debemos fiarnos de ningún recuerdo.", "La memoria funciona como un archivo.", "Estar seguro de un recuerdo no significa que sea exacto."], "a": 2}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Texto con fragmentos",
+   "task": "Lea el texto. Faltan seis fragmentos. Elija entre los fragmentos a–g el que corresponde a cada hueco. Hay un fragmento que no tiene que elegir.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "El regreso del vinilo",
+     "body": "Hace apenas veinte años, el disco de vinilo parecía condenado a desaparecer, relegado a las tiendas de segunda mano y a las colecciones de algunos nostálgicos. [1] En España, las ventas se han multiplicado por diez en la última década.\n\nLo sorprendente es que buena parte de los compradores son jóvenes que crecieron con la música digital. [2] Para muchos de ellos, el vinilo no es una forma de escuchar música, sino un objeto que se colecciona, se regala y se exhibe.\n\nLos expertos ofrecen varias explicaciones. [3] Frente a la abundancia infinita de las plataformas, donde todo está disponible y nada parece especial, el disco obliga a elegir y a escuchar un álbum entero, en el orden pensado por el artista.\n\n[4] Para los músicos, que apenas ganan unos céntimos por cada reproducción en las plataformas, la venta de discos en los conciertos se ha convertido en una fuente de ingresos fundamental.\n\nEl fenómeno, sin embargo, tiene también su lado menos amable. [5] Las pocas fábricas que existen en el mundo no dan abasto, y los plazos de producción pueden superar los seis meses, lo que perjudica sobre todo a los artistas independientes.\n\n[6] Quizá, en una época de consumo acelerado, lo que buscamos no es solo música, sino una manera más pausada de relacionarnos con ella."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Hoy, contra todo pronóstico, vive un auténtico renacimiento."},
+    {"key": "b", "text": "La primera tiene que ver con la experiencia de escucha."},
+    {"key": "c", "text": "El aumento de la demanda ha provocado un cuello de botella en la producción."},
+    {"key": "d", "text": "Algunos ni siquiera tienen un tocadiscos en casa."},
+    {"key": "e", "text": "Más allá de la nostalgia, el vinilo dice mucho de nuestra relación con la cultura."},
+    {"key": "f", "text": "El aspecto económico tampoco es menor."},
+    {"key": "g", "text": "El casete, en cambio, nunca llegó a ser popular en España."}
+   ],
+   "items": [
+    {"q": "Hueco 1", "a": "a"},
+    {"q": "Hueco 2", "a": "d"},
+    {"q": "Hueco 3", "a": "b"},
+    {"q": "Hueco 4", "a": "f"},
+    {"q": "Hueco 5", "a": "c"},
+    {"q": "Hueco 6", "a": "e"}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Uso de la lengua",
+   "task": "Lea el texto y elija la opción correcta para cada hueco.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Reseña: «La ciudad de los espejos»",
+     "body": "Pocas novelas consiguen, como esta, [1] al lector desde la primera página. La autora, que ya había demostrado su talento en sus relatos, [2] aquí un paso más allá con una historia ambientada en la Lisboa de los años setenta.\n\nLa trama, que [3] a primera vista sencilla, esconde una compleja reflexión sobre la identidad. A [4] de que el ritmo decae ligeramente en la parte central, la tensión no se pierde en ningún momento. Lo más [5] es, sin duda, la construcción de los personajes secundarios, a [6] la autora dota de una profundidad poco habitual.\n\nSi [7] que poner un pero, sería el desenlace, algo precipitado. Con todo, se trata de una obra que [8] la pena leer."
+    }
+   ],
+   "items": [
+    {"q": "Hueco 1", "options": ["atrapar", "atrapando", "atrapa"], "a": 0},
+    {"q": "Hueco 2", "options": ["hace", "da", "pone"], "a": 1},
+    {"q": "Hueco 3", "options": ["pareciendo", "parecida", "pudiera parecer"], "a": 2},
+    {"q": "Hueco 4", "options": ["pesar", "causa", "fuerza"], "a": 0},
+    {"q": "Hueco 5", "options": ["logro", "logrado", "lograr"], "a": 1},
+    {"q": "Hueco 6", "options": ["que", "cuales", "los que"], "a": 2},
+    {"q": "Hueco 7", "options": ["hubiera", "habría", "haya"], "a": 0},
+    {"q": "Hueco 8", "options": ["hace", "vale", "cuesta"], "a": 1}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Tarea 1 – Conferencia",
+   "task": "Va a escuchar un fragmento de una conferencia sobre urbanismo. Seleccione la opción correcta: a, b o c. Escuchará la conferencia dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Conferenciante: Buenas tardes. Hoy quiero hablarles de un concepto que ha ganado popularidad en los últimos años: la ciudad de los quince minutos. La idea, formulada por el urbanista Carlos Moreno, es sencilla: cualquier habitante debería poder acceder a pie o en bicicleta, en un cuarto de hora, a los servicios esenciales: trabajo, comercio, salud, educación y ocio.\nEsta propuesta supone una ruptura con el modelo que dominó el siglo veinte, en el que las ciudades se organizaban por funciones separadas: barrios residenciales por un lado, zonas de oficinas por otro, centros comerciales en las afueras. Ese modelo convirtió el coche en imprescindible y multiplicó los desplazamientos.\nParís ha sido una de las primeras capitales en adoptar esta filosofía. Se han transformado patios de colegio en espacios abiertos al vecindario los fines de semana y se han eliminado miles de plazas de aparcamiento para crear carriles bici.\nNo obstante, la idea no está exenta de críticas. Algunos señalan el riesgo de que los barrios bien equipados se encarezcan y expulsen a los vecinos con menos recursos. Otros recuerdan que muchas personas no pueden elegir trabajar cerca de casa. Y en internet han circulado teorías absurdas según las cuales se trataría de encerrar a la población en sus barrios.\nEn mi opinión, la ciudad de los quince minutos no es una receta universal, sino una brújula: una forma de recordar que la ciudad debe pensarse a escala humana.",
+   "items": [
+    {"q": "La ciudad de los quince minutos propone que…", "options": ["los ciudadanos trabajen solo quince minutos.", "los servicios básicos estén a poca distancia.", "los coches circulen más rápido."], "a": 1},
+    {"q": "El modelo urbano del siglo XX se caracterizaba por…", "options": ["separar las funciones en distintas zonas.", "mezclar viviendas y oficinas.", "prohibir el coche."], "a": 0},
+    {"q": "¿Qué ha hecho París?", "options": ["construir nuevos aparcamientos", "cerrar los colegios los fines de semana", "abrir patios escolares al barrio"], "a": 2},
+    {"q": "Una de las críticas mencionadas es que…", "options": ["los barrios mejorados pueden encarecerse.", "las bicicletas son peligrosas.", "es demasiado caro para los ayuntamientos."], "a": 0},
+    {"q": "¿Cómo califica el conferenciante ciertas teorías de internet?", "options": ["interesantes", "absurdas", "preocupantes pero ciertas"], "a": 1},
+    {"q": "Para el conferenciante, este modelo es…", "options": ["una solución válida para cualquier ciudad.", "una moda pasajera.", "una orientación general."], "a": 2}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Seis opiniones",
+   "task": "Va a escuchar a seis personas que opinan sobre la inteligencia artificial en la educación. Relacione a cada persona con un enunciado a–i. Hay tres enunciados que no tiene que seleccionar. Escuchará cada audio dos veces.",
+   "type": "match",
+   "plays": 2,
+   "choices": [
+    {"key": "a", "text": "Cree que obliga a cambiar la manera de evaluar."},
+    {"key": "b", "text": "Teme que los alumnos dejen de esforzarse."},
+    {"key": "c", "text": "La usa para adaptar las tareas a cada alumno."},
+    {"key": "d", "text": "Considera que debe prohibirse en las aulas."},
+    {"key": "e", "text": "Destaca su utilidad para estudiantes con dificultades."},
+    {"key": "f", "text": "Exige formación para el profesorado."},
+    {"key": "g", "text": "Le preocupa la privacidad de los datos."},
+    {"key": "h", "text": "Piensa que sustituirá a los profesores."},
+    {"key": "i", "text": "Opina que los alumnos saben usarla mejor que los adultos."}
+   ],
+   "items": [
+    {"audio": "Persona 1: Si cualquier alumno puede generar una redacción en segundos, ya no tiene sentido mandar redacciones para casa y ponerles nota. Hay que evaluar en clase, de forma oral, valorando el proceso.", "q": "Persona 1", "a": "a"},
+    {"audio": "Persona 2: Mi hijo tiene dislexia y estas herramientas le han cambiado la vida: le leen los textos, le ayudan a organizar las ideas. Por primera vez no se siente atrás.", "q": "Persona 2", "a": "e"},
+    {"audio": "Persona 3: Lo que me inquieta es adónde van todas las conversaciones de los niños con estas aplicaciones. ¿Quién las guarda? ¿Para qué se usan? Nadie nos lo explica.", "q": "Persona 3", "a": "g"},
+    {"audio": "Persona 4: Yo preparo con ella tres versiones del mismo ejercicio, según el nivel de cada grupo. Antes me llevaba horas; ahora puedo dedicar ese tiempo a atender a los alumnos.", "q": "Persona 4", "a": "c"},
+    {"audio": "Persona 5: Nos piden que la integremos en el aula, pero nadie nos ha enseñado a hacerlo. Sin cursos serios para los docentes, cada uno hace lo que puede.", "q": "Persona 5", "a": "f"},
+    {"audio": "Persona 6: Aprender cuesta, y ese esfuerzo es parte del aprendizaje. Si la máquina lo resuelve todo, me temo que los chicos dejarán de intentarlo por sí mismos.", "q": "Persona 6", "a": "b"}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Entrevista",
+   "task": "Va a escuchar una entrevista a un traductor literario. Seleccione la opción correcta: a, b o c. Escuchará la entrevista dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Periodista: Andrés Molina ha traducido al español a algunos de los grandes autores rusos del siglo veinte. Andrés, ¿cómo llegó usted a la traducción?\nAndrés: Por casualidad. Estudiaba Física en Moscú con una beca y empecé a leer novelas para mejorar el idioma. Un día, un amigo editor me pidió que le resumiera un libro que nadie había traducido. Le escribí un informe tan entusiasta que acabó encargándome la traducción.\nPeriodista: ¿Qué es lo más difícil de traducir?\nAndrés: No son las palabras difíciles, que para eso están los diccionarios, sino el tono. El humor, sobre todo. Un chiste que en ruso es sutil puede resultar grosero o incomprensible en español si se traduce literalmente.\nPeriodista: ¿Se considera usted coautor de los libros que traduce?\nAndrés: No me gusta esa palabra. El autor es quien inventa el mundo; yo intento que ese mundo se pueda habitar en otra lengua. Pero sí reivindico que el nombre del traductor aparezca en la portada. Durante décadas, éramos invisibles.\nPeriodista: ¿Le preocupa la traducción automática?\nAndrés: Me preocupa más que se use para abaratar costes que la herramienta en sí. Una máquina puede ofrecer un borrador aceptable de un manual, pero una novela no es una suma de frases.\nPeriodista: ¿Está trabajando en algo ahora?\nAndrés: Sí, en una nueva traducción de un clásico que ya existía en español. Las traducciones envejecen mucho antes que los originales.",
+   "items": [
+    {"q": "¿Cómo empezó Andrés a traducir?", "options": ["Estudió traducción en Moscú.", "Un editor le encargó una traducción tras leer su informe.", "Ganó un concurso de traducción."], "a": 1},
+    {"q": "Según Andrés, lo más difícil de traducir es…", "options": ["el tono, especialmente el humor.", "el vocabulario técnico.", "los nombres propios."], "a": 0},
+    {"q": "¿Qué opina Andrés sobre ser considerado coautor?", "options": ["Le parece justo.", "Le resulta indiferente.", "No le gusta el término."], "a": 2},
+    {"q": "¿Qué reivindica Andrés para los traductores?", "options": ["mejores salarios", "que su nombre figure en la portada", "más tiempo para traducir"], "a": 1},
+    {"q": "Sobre la traducción automática, a Andrés le preocupa sobre todo…", "options": ["su uso para reducir costes.", "que traduzca mejor que él.", "que cometa errores en los manuales."], "a": 0},
+    {"q": "¿Por qué hace una nueva traducción de un clásico?", "options": ["Porque no existía en español.", "Porque el original ha cambiado.", "Porque las traducciones envejecen."], "a": 2}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Tarea 1 – Informe a partir de una conferencia",
+   "task": "Usted ha asistido a una conferencia sobre el desperdicio de alimentos. Según los datos presentados, un tercio de los alimentos producidos en el mundo se tira; en los hogares, la principal causa es la mala planificación de la compra; algunos supermercados donan sus excedentes a bancos de alimentos.",
+   "prompt": "Escriba un informe (entre 220 y 250 palabras) para la asociación de vecinos de su barrio en el que resuma la información de la conferencia y proponga medidas concretas para reducir el desperdicio en el barrio.",
+   "points": ["resumen de los datos", "causas principales", "iniciativas existentes", "propuestas concretas"],
+   "words": 235,
+   "sample": "Informe: el desperdicio de alimentos y cómo reducirlo en nuestro barrio\n\nEl pasado jueves asistí a una conferencia organizada por la universidad sobre el desperdicio de alimentos. A continuación resumo los datos principales y propongo algunas medidas para nuestro barrio.\n\nSegún los datos presentados, aproximadamente un tercio de los alimentos que se producen en el mundo acaba en la basura. Aunque una parte se pierde durante la producción y el transporte, los hogares son responsables de un porcentaje muy significativo. La causa principal es la mala planificación de la compra: adquirimos más de lo que necesitamos, no revisamos lo que tenemos en casa y confundimos la fecha de consumo preferente con la de caducidad.\n\nLa conferenciante mencionó también algunas iniciativas positivas. Varios supermercados donan sus excedentes a bancos de alimentos y algunas aplicaciones permiten comprar a precio reducido la comida que los restaurantes no han vendido.\n\nTeniendo en cuenta esta información, propongo a la asociación tres medidas. En primer lugar, organizar un taller gratuito sobre planificación de menús y conservación de alimentos. En segundo lugar, instalar en el centro cívico una «nevera solidaria» donde los vecinos puedan dejar alimentos que no vayan a consumir. Por último, contactar con los comercios del barrio para que se sumen a la donación de excedentes.\n\nEstoy convencido de que, con pequeños gestos, podemos contribuir a resolver un problema que tiene graves consecuencias económicas, sociales y medioambientales."
+  },
+  {
+   "title": "Tarea 2 – Texto argumentativo",
+   "task": "Un periódico digital invita a sus lectores a participar en un debate: «¿Debería reducirse la jornada laboral a cuatro días por semana?»",
+   "prompt": "Escriba un artículo de opinión (entre 220 y 250 palabras). Exponga su postura con argumentos sólidos, refute los argumentos contrarios y concluya con una reflexión personal.",
+   "points": ["tesis", "argumentos", "refutación", "conclusión"],
+   "words": 235,
+   "sample": "Cuatro días: una utopía razonable\n\nLa propuesta de reducir la jornada laboral a cuatro días suele despertar reacciones apasionadas. Para unos, es una conquista social largamente esperada; para otros, una amenaza para la productividad. Personalmente, considero que, aplicada con flexibilidad, puede beneficiar tanto a los trabajadores como a las empresas.\n\nEn primer lugar, las experiencias piloto realizadas en varios países europeos muestran resultados alentadores: la productividad se mantiene o incluso mejora, mientras que disminuyen las bajas por estrés y ansiedad. Un trabajador descansado rinde más y comete menos errores.\n\nEn segundo lugar, un día libre adicional permitiría conciliar mejor la vida laboral y familiar, y dedicar tiempo a la formación, al voluntariado o al cuidado de la salud, con beneficios evidentes para la sociedad en su conjunto.\n\nSe argumenta, con razón, que no todos los sectores pueden adoptar este modelo del mismo modo: un hospital o un supermercado no pueden cerrar un día más. Sin embargo, la reducción de jornada no implica necesariamente cerrar, sino reorganizar turnos. Tampoco es cierto que suponga un coste inasumible: buena parte de la inversión se compensa con la reducción del absentismo y de la rotación de personal.\n\nEn definitiva, la semana de cuatro días no es una solución mágica, pero sí una oportunidad para replantear una organización del trabajo heredada del siglo pasado. Quizá dentro de unas décadas nos preguntemos cómo pudimos trabajar cinco días durante tanto tiempo."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Tarea 1 – Exposición",
+   "task": "A partir de varios textos sobre el tema «El turismo masivo en las ciudades históricas», prepare una exposición de tres a cinco minutos en la que presente las distintas posturas y su propia opinión.",
+   "cards": ["introducción del tema", "posturas a favor", "posturas en contra", "su opinión", "conclusión"],
+   "phrases": ["El tema que voy a tratar es …", "Por un lado, hay quienes sostienen que …", "Por otro, se argumenta que …", "Desde mi punto de vista, …", "En resumen, …"],
+   "sample": "El tema que voy a tratar es el impacto del turismo masivo en ciudades históricas como Venecia, Barcelona o Toledo. Por un lado, hay quienes sostienen que el turismo es imprescindible para la economía: genera empleo, mantiene vivos los comercios y financia la conservación del patrimonio. Por otro, se argumenta que la llegada masiva de visitantes ha encarecido la vivienda, ha transformado los barrios en decorados y ha expulsado a los residentes. Algunos textos proponen limitar el número de visitantes o establecer tasas turísticas más altas. Desde mi punto de vista, el problema no es el turismo en sí, sino su concentración en unos pocos lugares y fechas. Sería conveniente promover destinos alternativos y regular los pisos turísticos. En resumen, se trata de encontrar un equilibrio entre la acogida al visitante y el derecho de los vecinos a vivir en su ciudad."
+  },
+  {
+   "title": "Tarea 2 – Conversación con el examinador",
+   "task": "El examinador le hace preguntas sobre su exposición, le pide que precise algunas ideas y le plantea objeciones. Defienda y matice su postura.",
+   "cards": ["precisar", "matizar", "rebatir", "ejemplificar"],
+   "phrases": ["Lo que quería decir es que …", "Hasta cierto punto tiene razón, pero …", "No lo veo así, porque …", "Pongamos por caso …"],
+   "sample": "Hasta cierto punto tiene razón: las tasas turísticas pueden parecer una forma de castigar al visitante. Pero lo que quería decir es que esos ingresos deberían destinarse a compensar los efectos negativos del turismo, por ejemplo, a mejorar la limpieza o a construir vivienda asequible. No lo veo como un castigo, sino como una contribución. Pongamos por caso Ámsterdam: allí la tasa ha permitido financiar servicios para los residentes sin que el número de visitantes haya descendido de forma significativa."
+  }
+ ]
+}

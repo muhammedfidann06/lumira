@@ -1,0 +1,164 @@
+{
+ "id": "en-A2-01",
+ "level": "A2",
+ "lang": "en",
+ "title": "Practice Test 1",
+ "lesen": [
+  {
+   "title": "Part 1",
+   "task": "For each question, read the text and choose the correct answer a, b or c.",
+   "type": "abc",
+   "items": [
+    {"text": "SWIMMING POOL\nChildren under 8 must be with an adult at all times.", "options": ["Children under 8 cannot use the pool.", "Young children need an adult with them.", "Adults cannot swim when children are in the pool."], "a": 1},
+    {"text": "Hi Tom, the football match is cancelled because of the rain. We'll play next Saturday instead. Sam", "options": ["Sam wants to play football in the rain.", "Sam cannot play next Saturday.", "The match will happen on a different day."], "a": 2},
+    {"text": "CITY LIBRARY\nBooks must be returned within 3 weeks. You can renew them online.", "options": ["You can keep books for longer if you go online.", "You must bring books back in person after 3 weeks.", "The library is closed for 3 weeks."], "a": 0},
+    {"text": "Mum, I've taken the bus to Grandma's. Dad said he'd pick me up at 6. Lucy", "options": ["Lucy will travel home by bus.", "Lucy's father will collect her later.", "Lucy's grandmother is coming at 6."], "a": 1},
+    {"text": "SALE – Today only!\nAll shoes half price. Bags 20% off.", "options": ["Everything in the shop is half price.", "The sale continues until next week.", "Shoes are cheaper today than usual."], "a": 2},
+    {"text": "Café Rosa\nWe close at 3 pm on Sundays. Last orders 2.30 pm.", "options": ["On Sundays, you must order by 2.30 pm.", "You can order food at 2.45 pm on Sundays.", "The café opens at 3 pm on Sundays."], "a": 0}
+   ]
+  },
+  {
+   "title": "Part 2",
+   "task": "Three young people talk about their weekend jobs. For each question, choose the correct person a, b or c. You can choose each person more than once.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Emma: I work in a small bookshop on Saturdays. I usually help customers find books and sometimes I put new books on the shelves. It's quiet, so I can read in the afternoons. The money isn't great, but I get a discount on books, which I love."},
+    {"key": "b", "text": "Daniel: On Sundays I help at my uncle's restaurant. I wash the dishes and sometimes I carry food to the tables. It's very busy and I'm always tired when I get home, but the other workers are really friendly and the pay is good."},
+    {"key": "c", "text": "Mia: I look after two dogs for a family who live near me. I walk them in the park every Saturday and Sunday morning. I'm outside in all weather, even when it rains! It's only two hours a day, so I still have time for my homework."}
+   ],
+   "items": [
+    {"q": "Who gets cheaper things at work?", "a": "a"},
+    {"q": "Who works on both days of the weekend?", "a": "c"},
+    {"q": "Who earns quite a lot of money?", "a": "b"},
+    {"q": "Who sometimes has time to read at work?", "a": "a"},
+    {"q": "Who often feels very tired after work?", "a": "b"},
+    {"q": "Who got the job from a family member?", "a": "b"},
+    {"q": "Who works outdoors?", "a": "c"}
+   ]
+  },
+  {
+   "title": "Part 3",
+   "task": "Read the text and choose the correct answer a, b or c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "My first month in London",
+     "body": "When I arrived in London last September, I didn't know anyone. I had a job at a hotel, but I was nervous because my English wasn't very good. My first week was difficult. I didn't understand the other workers when they spoke quickly, and I got lost on the Underground twice!\n\nThen my manager, Helen, suggested that I join an English class at the community centre near the hotel. The classes were in the evening and they were free. I met people from Spain, Brazil and Poland there, and we often went to a café together after the lessons.\n\nAfter a few weeks, I felt much more confident. I started to understand people at work and I even made some jokes in English. Now I take the bus instead of the Underground because I can see the city from the window.\n\nNext month my sister is coming to visit me. I'm going to show her the markets and the parks. I think she'll love London as much as I do.\n\nCarlos"
+    }
+   ],
+   "items": [
+    {"q": "How did Carlos feel when he started his job?", "options": ["excited", "worried", "bored"], "a": 1},
+    {"q": "What problem did Carlos have in his first week?", "options": ["He found it hard to understand his colleagues.", "He arrived late at the hotel.", "He lost his bag on the Underground."], "a": 0},
+    {"q": "The English classes were…", "options": ["expensive.", "in the morning.", "close to his work."], "a": 2},
+    {"q": "Why does Carlos prefer the bus now?", "options": ["It is cheaper.", "He can look at the city.", "It is faster."], "a": 1},
+    {"q": "What is Carlos going to do next month?", "options": ["Visit his family at home.", "Start a new job.", "Show his sister around London."], "a": 2}
+   ]
+  },
+  {
+   "title": "Part 4",
+   "task": "Read the text and choose the correct word a, b or c for each gap.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "The history of chocolate",
+     "body": "People have enjoyed chocolate for more [1] 3,000 years. The first chocolate drinks were made in Central America, where people [2] cocoa beans with water and spices. These drinks were not sweet – they were bitter and quite strong.\n\nIn the 16th century, Spanish travellers [3] cocoa beans back to Europe. Europeans added sugar, and soon the drink became very [4] with rich people. Chocolate bars, the kind we eat today, did not [5] until the 19th century. Today, most of the world's cocoa [6] grown in West Africa."
+    }
+   ],
+   "items": [
+    {"q": "Gap 1", "options": ["that", "than", "then"], "a": 1},
+    {"q": "Gap 2", "options": ["mixed", "joined", "added"], "a": 0},
+    {"q": "Gap 3", "options": ["went", "brought", "gave"], "a": 1},
+    {"q": "Gap 4", "options": ["famous", "favourite", "popular"], "a": 2},
+    {"q": "Gap 5", "options": ["appear", "happen", "become"], "a": 0},
+    {"q": "Gap 6", "options": ["are", "is", "has"], "a": 1}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Part 1",
+   "task": "For each question, listen and choose the correct answer a, b or c. You will hear each conversation twice.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Woman: Hi, I'd like to book a table for tonight, please.\nMan: Certainly. For how many people?\nWoman: Four. At half past seven, if possible.\nMan: I'm sorry, we're full at seven thirty. Is eight o'clock OK?\nWoman: Yes, that's fine.", "q": "What time will the woman eat?", "options": ["at 7.00", "at 7.30", "at 8.00"], "a": 2},
+    {"audio": "Boy: Mum, have you seen my sports bag?\nMother: Is it under your bed?\nBoy: No, I've looked there.\nMother: What about the car? You had it on Tuesday after football.\nBoy: Oh yes, you're right!", "q": "Where is the boy's sports bag?", "options": ["under his bed", "in the car", "at school"], "a": 1},
+    {"audio": "Man: How was your holiday in Scotland?\nWoman: Great, thanks. The weather wasn't very good – it rained almost every day – but the hotel was lovely and the food was excellent.\nMan: Did you go walking?\nWoman: Only once, because of the rain.", "q": "What did the woman not like about her holiday?", "options": ["the weather", "the hotel", "the food"], "a": 0},
+    {"audio": "Girl: I need a present for my brother. He's twelve.\nShop assistant: What does he like? We've got some great computer games.\nGirl: He's got lots of games. He loves reading, though.\nShop assistant: Then how about this book about space?\nGirl: Perfect, I'll take it.", "q": "What does the girl buy?", "options": ["a computer game", "a book", "a football"], "a": 1},
+    {"audio": "Woman: Excuse me, how do I get to the train station?\nMan: Go straight on until you get to the bank, then turn left. The station is opposite the supermarket.\nWoman: Thanks. Is it far?\nMan: About ten minutes on foot.", "q": "Where is the station?", "options": ["next to the bank", "behind the supermarket", "opposite the supermarket"], "a": 2}
+   ]
+  },
+  {
+   "title": "Part 2",
+   "task": "You will hear a recorded message about a summer course. For each question, choose the correct answer a, b or c. You will hear the message twice.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Hello, and welcome to the Riverside Arts Centre information line. This summer we are running a painting course for young people aged between twelve and sixteen. The course starts on Monday the fourteenth of July and lasts for two weeks. Classes are in the mornings, from nine thirty until twelve thirty, so you have your afternoons free. The teacher is the artist Rachel Green, who has painted pictures for many famous books. The course costs eighty pounds, and that includes all the paints and paper you need. Please bring a packed lunch on Fridays, because on those days we will paint outside in Hill Park. To book a place, visit our website or come to the centre's reception. The course is very popular, so please book soon!",
+   "items": [
+    {"q": "The course is for people aged…", "options": ["10 to 14.", "12 to 16.", "14 to 18."], "a": 1},
+    {"q": "How long is the course?", "options": ["two weeks", "one week", "four weeks"], "a": 0},
+    {"q": "Classes finish at…", "options": ["9.30.", "12.00.", "12.30."], "a": 2},
+    {"q": "The price includes…", "options": ["lunch.", "materials.", "a book."], "a": 1},
+    {"q": "On Fridays, students…", "options": ["paint in a park.", "visit a museum.", "stay at home."], "a": 0}
+   ]
+  },
+  {
+   "title": "Part 3",
+   "task": "You will hear Jack talking to his friend Anna about his birthday presents. What present did each person give him? For each person, choose the correct answer a–h. You will hear the conversation twice.",
+   "type": "match",
+   "plays": 2,
+   "audio": "Anna: So, Jack, did you get nice presents for your birthday?\nJack: Yes, lots! My mum gave me a watch. I really needed one because I'm always late for school.\nAnna: And your dad?\nJack: Dad bought me a guitar. He wants me to start lessons next month.\nAnna: Cool! What about your sister, Kate?\nJack: Kate made me a cake – chocolate, my favourite. It was delicious.\nAnna: Your grandparents always give you money, don't they?\nJack: Not this year! My grandma knitted me a scarf. It's blue and really warm.\nAnna: And your best friend, Leo?\nJack: Leo gave me a ticket for a football match. We're going together on Saturday.",
+   "choices": [
+    {"key": "a", "text": "a scarf"},
+    {"key": "b", "text": "a book"},
+    {"key": "c", "text": "a guitar"},
+    {"key": "d", "text": "a watch"},
+    {"key": "e", "text": "money"},
+    {"key": "f", "text": "a cake"},
+    {"key": "g", "text": "a football ticket"},
+    {"key": "h", "text": "a video game"}
+   ],
+   "items": [
+    {"q": "Jack's mother", "a": "d"},
+    {"q": "Jack's father", "a": "c"},
+    {"q": "Jack's sister Kate", "a": "f"},
+    {"q": "Jack's grandmother", "a": "a"},
+    {"q": "Jack's friend Leo", "a": "g"}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Part 1 – Email",
+   "task": "You want to go to the cinema with your English friend Alex on Saturday. Write an email to Alex.",
+   "prompt": "Write 25 words or more. In your email, say:",
+   "points": ["which film you want to see", "what time you want to meet", "where you want to meet"],
+   "words": 25,
+   "sample": "Hi Alex,\n\nDo you want to go to the cinema on Saturday? I'd like to see the new adventure film with the talking robot. Let's meet at 6 o'clock outside the cinema on King Street. See you!\n\nMarta"
+  },
+  {
+   "title": "Part 2 – Story",
+   "task": "Write a short story about a day when you found something interesting in the park.",
+   "prompt": "Write 35 words or more. In your story, say:",
+   "points": ["what you found", "what you did", "how the day ended"],
+   "words": 35,
+   "sample": "Last Sunday I was walking in the park when I saw a small black bag under a tree. Inside there was a phone and a wallet. I called a number on a card and a woman answered. She came to the park an hour later and she was very happy. She gave me a big box of chocolates!"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Part 1 – Interview",
+   "task": "The examiner asks you some questions about yourself. Answer each question with one or two sentences.",
+   "cards": ["What's your name? Where do you live?", "Do you work or study?", "What do you like doing in your free time?", "Tell me about your favourite place in your town."],
+   "phrases": ["My name is … and I live in …", "I'm a student at … / I work as …", "In my free time I like …", "My favourite place is … because …"],
+   "sample": "My name is Ayşe and I live in Izmir, in the west of Turkey. I'm a student at a high school near my home. In my free time I like playing volleyball and watching films with my friends. My favourite place in my town is the seaside. I often walk there in the evening because it's quiet and beautiful."
+  },
+  {
+   "title": "Part 2 – Discussion",
+   "task": "You and your partner are planning a day out for your class. Talk together about these ideas and decide which one is best: a museum, a picnic in the park, the cinema, a bowling alley or a boat trip.",
+   "cards": ["museum", "picnic in the park", "cinema", "bowling", "boat trip"],
+   "phrases": ["What do you think about …?", "I think … is a good idea because …", "I'm not sure. Maybe …", "Let's choose …"],
+   "sample": "A: What do you think about the museum?\nB: It's interesting, but some students don't like museums. How about a picnic in the park?\nA: That's a good idea if the weather is nice. But it can rain.\nB: You're right. What about a boat trip? It's fun and everyone can talk together.\nA: Yes, I like that. It isn't very expensive, and we can see the river.\nB: OK, let's choose the boat trip."
+  }
+ ]
+}

@@ -1,0 +1,186 @@
+{
+ "id": "es-B1-01",
+ "level": "B1",
+ "lang": "es",
+ "title": "Examen de práctica 1",
+ "lesen": [
+  {
+   "title": "Tarea 1 – Elegir un libro",
+   "task": "Lea lo que dicen seis personas sobre los libros que buscan y los textos a–j. Relacione cada persona con un texto. Hay cuatro textos que no tiene que seleccionar.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Guía de senderismo por los Pirineos: cincuenta rutas con mapas y fotos, para todos los niveles."},
+    {"key": "b", "text": "Cocina sin tiempo: recetas sanas que se preparan en menos de veinte minutos."},
+    {"key": "c", "text": "La casa del faro: novela de misterio ambientada en un pueblo gallego en los años cincuenta."},
+    {"key": "d", "text": "Aprende a programar: manual para principiantes con ejercicios prácticos."},
+    {"key": "e", "text": "Cartas a mi hija: recuerdos de una mujer que emigró a Argentina en 1960."},
+    {"key": "f", "text": "El pequeño jardinero: libro ilustrado para que los niños aprendan a cuidar plantas."},
+    {"key": "g", "text": "Historia del flamenco: orígenes, artistas y estilos, con un código para escuchar canciones."},
+    {"key": "h", "text": "Ahorra sin sufrir: consejos prácticos para organizar el dinero familiar."},
+    {"key": "i", "text": "Viajar solo: experiencias y consejos de una mujer que ha visitado cuarenta países."},
+    {"key": "j", "text": "Yoga en casa: ejercicios sencillos para empezar el día con energía."}
+   ],
+   "items": [
+    {"q": "Elena trabaja muchas horas y llega tarde a casa, pero quiere comer mejor.", "a": "b"},
+    {"q": "A Tomás le encantan las historias de suspense y quiere una novela para las vacaciones en la playa.", "a": "c"},
+    {"q": "Marta quiere hacer su primer viaje sin compañía y busca ideas de alguien con experiencia.", "a": "i"},
+    {"q": "Luis quiere regalar algo a su sobrino de seis años, al que le gusta la naturaleza.", "a": "f"},
+    {"q": "Pilar se interesa por la música española y quiere conocer su historia.", "a": "g"},
+    {"q": "Andrés gasta demasiado cada mes y quiere aprender a controlar sus gastos.", "a": "h"}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Un artículo",
+   "task": "Lea el texto y conteste las preguntas. Seleccione la opción correcta: a, b o c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Volver al pueblo",
+     "body": "Durante décadas, miles de jóvenes españoles abandonaron los pueblos para buscar trabajo en las ciudades. Hoy, sin embargo, empieza a verse el movimiento contrario. Raquel Gómez, diseñadora gráfica de treinta y cuatro años, dejó Madrid hace dos años para instalarse en un pueblo de Soria de apenas doscientos habitantes.\n\n«En la ciudad pagaba casi mil euros por un piso pequeño y pasaba dos horas al día en el metro», cuenta. «Ahora vivo en una casa con jardín que me cuesta trescientos euros y trabajo desde casa para clientes de toda España». Para ella, la clave ha sido la llegada de internet de alta velocidad, que el ayuntamiento consiguió hace tres años.\n\nNo todo es fácil. El médico solo pasa consulta dos días a la semana y el supermercado más cercano está a quince kilómetros. «Hay que organizarse mucho más», reconoce Raquel. Además, el invierno es duro y algunos vecinos mayores todavía miran con desconfianza a los recién llegados.\n\nAun así, la experiencia está teniendo efectos positivos. Gracias a la llegada de varias familias jóvenes, el pueblo ha podido reabrir la escuela, que llevaba diez años cerrada. Raquel organiza además talleres de diseño para los niños de la zona. «Al principio pensé que iba a sentirme sola», dice. «Pero aquí conozco a todos mis vecinos, algo que en Madrid nunca me pasó»."
+    }
+   ],
+   "items": [
+    {"q": "Según el texto, en las últimas décadas muchos jóvenes…", "options": ["se fueron de los pueblos a las ciudades.", "volvieron a los pueblos.", "emigraron a otros países."], "a": 0},
+    {"q": "¿Por qué dejó Raquel Madrid?", "options": ["Perdió su trabajo.", "La vivienda era cara y perdía mucho tiempo en transporte.", "Quería estar cerca de su familia."], "a": 1},
+    {"q": "¿Qué ha hecho posible que Raquel trabaje desde el pueblo?", "options": ["un nuevo tren", "una ayuda económica", "la conexión a internet rápida"], "a": 2},
+    {"q": "¿Qué dificultad menciona el texto?", "options": ["Hay pocos servicios cerca.", "No hay trabajo en el pueblo.", "Las casas son muy caras."], "a": 0},
+    {"q": "Gracias a las nuevas familias, el pueblo…", "options": ["tiene un nuevo supermercado.", "ha vuelto a abrir la escuela.", "tiene médico todos los días."], "a": 1},
+    {"q": "¿Qué ha descubierto Raquel en el pueblo?", "options": ["que prefiere vivir sola", "que echa de menos Madrid", "que conoce a sus vecinos"], "a": 2}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Tres testimonios",
+   "task": "Lea los textos de tres personas que cuentan cómo aprendieron un idioma. Conteste las preguntas indicando a qué persona se refiere cada una: a, b o c.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Carmen: Aprendí alemán cuando me fui a trabajar a Múnich. Al principio no entendía nada y me sentía muy frustrada. Lo que más me ayudó fue compartir piso con dos estudiantes alemanes: hablábamos durante las cenas y me corregían con mucha paciencia. Nunca fui a una academia."},
+    {"key": "b", "text": "Hugo: Yo empecé a estudiar japonés porque me encantan los cómics y las películas de animación. Estudié sobre todo con aplicaciones del móvil, quince minutos cada día, en el autobús. Después de tres años, hice un viaje a Tokio y me sorprendió lo mucho que entendía."},
+    {"key": "c", "text": "Inés: Necesitaba el inglés para conseguir un ascenso en mi empresa. Me apunté a un curso intensivo en una academia, tres tardes por semana, y preparé un examen oficial. Fue duro combinarlo con el trabajo, pero aprobé y conseguí el puesto."}
+   ],
+   "items": [
+    {"q": "¿Quién aprendió el idioma por motivos profesionales?", "a": "c"},
+    {"q": "¿Quién aprendió gracias a las personas con las que vivía?", "a": "a"},
+    {"q": "¿Quién estudiaba en pequeños momentos del día?", "a": "b"},
+    {"q": "¿Quién obtuvo un título oficial?", "a": "c"},
+    {"q": "¿Quién se sintió mal al principio?", "a": "a"},
+    {"q": "¿Quién empezó por una afición?", "a": "b"}
+   ]
+  },
+  {
+   "title": "Tarea 4 – Completar un texto",
+   "task": "Lea el texto y elija la opción correcta para completar cada hueco.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Queridos vecinos:",
+     "body": "Queridos vecinos:\n\nComo [1] sabéis, el próximo sábado celebramos la fiesta del barrio. Este año la organizamos en la plaza, [2] el parque está en obras. Habrá música, juegos para los niños y una comida popular. Os pedimos que cada familia [3] un plato para compartir.\n\nSi alguien quiere ayudar a preparar las mesas, puede venir a las diez de la mañana. [4] llueve, la fiesta se celebrará en el polideportivo.\n\nEsperamos que [5] muchos. ¡Será un día estupendo!\n\nUn saludo,\nLa asociación de vecinos"
+    }
+   ],
+   "items": [
+    {"q": "Hueco 1", "options": ["ya", "aún", "todavía"], "a": 0},
+    {"q": "Hueco 2", "options": ["aunque", "porque", "para que"], "a": 1},
+    {"q": "Hueco 3", "options": ["trae", "traerá", "traiga"], "a": 2},
+    {"q": "Hueco 4", "options": ["Si", "Cuando", "Aunque"], "a": 0},
+    {"q": "Hueco 5", "options": ["venís", "vengáis", "vendréis"], "a": 1},
+    {"q": "¿Dónde se celebrará la fiesta si hace buen tiempo?", "options": ["en el parque", "en el polideportivo", "en la plaza"], "a": 2}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Tarea 1 – Mensajes breves",
+   "task": "Va a escuchar seis mensajes breves. Para cada uno, seleccione la opción correcta: a, b o c. Escuchará cada mensaje dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Mujer: Hola, Jaime, soy Beatriz. Al final no puedo ir a la reunión de las cinco porque tengo que recoger a mi hijo. ¿Puedes contarme mañana lo que decidís? Gracias.", "q": "¿Para qué llama Beatriz?", "options": ["para cambiar la hora de la reunión", "para decir que no irá a la reunión", "para invitar a Jaime"], "a": 1},
+    {"audio": "Hombre: Atención, señores pasajeros: el tren con destino a Barcelona saldrá con un retraso de veinte minutos debido a una avería en la vía.", "q": "¿Qué le pasa al tren?", "options": ["Sale con retraso.", "Está cancelado.", "Cambia de destino."], "a": 0},
+    {"audio": "Mujer: Buenos días, le llamamos de la tienda de muebles. Su sofá llegará el jueves entre las nueve y las dos. Si no puede estar en casa, llámenos para cambiar el día.", "q": "¿Qué tiene que hacer el cliente si no está en casa el jueves?", "options": ["ir a la tienda", "pagar más", "llamar a la tienda"], "a": 2},
+    {"audio": "Hombre: Hola, cariño. He visto un piso muy bonito cerca del parque, pero solo tiene un dormitorio. Creo que es demasiado pequeño para nosotros. Seguiré buscando.", "q": "¿Qué opina el hombre del piso?", "options": ["Es demasiado caro.", "Es demasiado pequeño.", "Está muy lejos."], "a": 1},
+    {"audio": "Mujer: Recordamos a todos los socios que la piscina permanecerá cerrada durante el mes de agosto por trabajos de limpieza. El gimnasio seguirá abierto en horario normal.", "q": "¿Qué estará cerrado en agosto?", "options": ["el gimnasio", "todo el club", "la piscina"], "a": 2},
+    {"audio": "Hombre: Hola, Lucía. Ya tengo las entradas para el teatro. Al final no son para el viernes sino para el sábado, porque el viernes estaba todo vendido.", "q": "¿Cuándo van al teatro?", "options": ["el sábado", "el viernes", "el domingo"], "a": 0}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Una conversación",
+   "task": "Va a escuchar una conversación entre dos amigos. Seleccione la opción correcta: a, b o c. Escuchará la conversación dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Sergio: ¡Nuria! ¡Cuánto tiempo! ¿Qué tal te va en el nuevo trabajo?\nNuria: Pues bastante bien, aunque al principio fue difícil. Es una empresa mucho más grande que la anterior y me costó acostumbrarme.\nSergio: ¿Sigues haciendo lo mismo?\nNuria: No exactamente. Antes era diseñadora; ahora coordino un equipo de cinco personas. Tengo más responsabilidad, y eso me gusta, aunque paso muchas horas en reuniones.\nSergio: ¿Y el horario?\nNuria: Esa es la mejor parte: tenemos horario flexible y puedo trabajar desde casa los viernes.\nSergio: ¡Qué suerte! Yo sigo en la misma oficina de siempre. Estoy pensando en cambiar, pero me da miedo.\nNuria: Te entiendo. Yo tardé un año en decidirme. Lo que me ayudó fue hablar con gente que ya trabajaba en la empresa.\nSergio: Es buena idea. Oye, ¿quedamos el domingo para comer y me cuentas más?\nNuria: El domingo voy a casa de mis padres, pero el sábado me viene bien.",
+   "items": [
+    {"q": "¿Qué le resultó difícil a Nuria al principio?", "options": ["el idioma", "adaptarse a una empresa más grande", "sus compañeros"], "a": 1},
+    {"q": "¿Qué hace Nuria ahora en su trabajo?", "options": ["dirige un equipo", "diseña páginas web", "trabaja sola"], "a": 0},
+    {"q": "¿Qué es lo que menos le gusta, según parece?", "options": ["el sueldo", "la responsabilidad", "las muchas reuniones"], "a": 2},
+    {"q": "Según Nuria, lo mejor del trabajo es…", "options": ["el sueldo.", "el horario flexible.", "la oficina."], "a": 1},
+    {"q": "¿Qué le ayudó a Nuria a tomar la decisión de cambiar?", "options": ["hablar con empleados de la empresa", "leer opiniones en internet", "el consejo de sus padres"], "a": 0},
+    {"q": "¿Cuándo van a quedar para comer?", "options": ["el domingo", "el viernes", "el sábado"], "a": 2}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Seis personas",
+   "task": "Va a escuchar a seis personas hablando de sus vacaciones. Relacione a cada persona con un enunciado a–i. Hay tres enunciados que no tiene que seleccionar. Escuchará cada audio dos veces.",
+   "type": "match",
+   "plays": 2,
+   "choices": [
+    {"key": "a", "text": "Tuvo problemas con su equipaje."},
+    {"key": "b", "text": "Prefiere quedarse en su ciudad."},
+    {"key": "c", "text": "Hizo un curso durante las vacaciones."},
+    {"key": "d", "text": "Viajó con su mascota."},
+    {"key": "e", "text": "Se gastó más dinero del previsto."},
+    {"key": "f", "text": "Trabajó como voluntario."},
+    {"key": "g", "text": "Estuvo enfermo durante el viaje."},
+    {"key": "h", "text": "Conoció a su pareja en el viaje."},
+    {"key": "i", "text": "Fue a un lugar sin conexión a internet."}
+   ],
+   "items": [
+    {"audio": "Persona 1: Este verano pasé tres semanas en un pueblo de Perú ayudando a construir una escuela. No cobramos nada, pero fue la experiencia más bonita de mi vida.", "q": "Persona 1", "a": "f"},
+    {"audio": "Persona 2: Cuando llegamos a Roma, mi maleta no estaba. La compañía tardó cuatro días en encontrarla y tuve que comprarme ropa nueva.", "q": "Persona 2", "a": "a"},
+    {"audio": "Persona 3: Fuimos a una cabaña en las montañas de Asturias. No había cobertura ni wifi, así que estuvimos una semana sin mirar el móvil. ¡Qué tranquilidad!", "q": "Persona 3", "a": "i"},
+    {"audio": "Persona 4: Yo no viajo nunca en agosto. Todo está lleno y es carísimo. Me quedo en Madrid, que está vacía, y voy a museos y terrazas sin colas.", "q": "Persona 4", "a": "b"},
+    {"audio": "Persona 5: Aproveché las vacaciones para aprender a hacer surf en Cantabria. Tenía clases todas las mañanas y por la tarde descansaba en la playa.", "q": "Persona 5", "a": "c"},
+    {"audio": "Persona 6: Llevé a mi perra Lola a Galicia. Buscamos alojamientos donde aceptaban animales y ella disfrutó muchísimo de la playa.", "q": "Persona 6", "a": "d"}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Tarea 1 – Correo electrónico",
+   "task": "Usted compró por internet un abrigo que llegó con un defecto. Escriba un correo a la tienda.",
+   "prompt": "Escriba un correo (entre 100 y 120 palabras). Explique qué compró y cuándo, describa el problema, diga cómo se siente y qué solución quiere.",
+   "points": ["qué compró y cuándo", "el problema", "cómo se siente", "la solución que pide"],
+   "words": 110,
+   "sample": "Estimados señores:\n\nLes escribo porque el pasado 3 de noviembre compré en su página web un abrigo negro de la talla M, con número de pedido 45872. El paquete llegó ayer, pero al abrirlo vi que una de las mangas tenía un agujero y que faltaban dos botones.\n\nEstoy bastante decepcionada, porque siempre he estado contenta con sus productos y necesitaba el abrigo para un viaje la semana que viene.\n\nPor eso, les pido que me envíen otro abrigo igual lo antes posible. Si no es posible, prefiero que me devuelvan el dinero. Les adjunto unas fotos del defecto.\n\nQuedo a la espera de su respuesta.\n\nAtentamente,\nMelis Arslan"
+  },
+  {
+   "title": "Tarea 2 – Texto personal",
+   "task": "Una revista pregunta a sus lectores: «¿Qué persona ha sido importante en tu vida?»",
+   "prompt": "Escriba un texto (entre 130 y 150 palabras). Diga quién es esa persona, cómo la conoció, qué recuerdos tiene con ella y por qué ha sido importante.",
+   "points": ["quién es", "cómo la conoció", "recuerdos", "por qué es importante"],
+   "words": 140,
+   "sample": "Una persona muy importante en mi vida ha sido mi profesor de música del instituto, don Ricardo. Lo conocí cuando tenía catorce años, en una época en la que no me interesaba nada y sacaba malas notas.\n\nDon Ricardo se dio cuenta de que me gustaba la guitarra y me propuso quedarme después de clase para tocar con otros alumnos. Al principio no quería, pero poco a poco empecé a ir todos los días. Recuerdo especialmente el primer concierto que dimos en el instituto: estaba muy nervioso, pero cuando terminamos, todo el mundo aplaudió.\n\nGracias a él, descubrí algo que me apasionaba y aprendí que con esfuerzo se pueden conseguir cosas. También mejoraron mis notas en las otras asignaturas. Hoy sigo tocando en un grupo con mis amigos y, cada vez que subo a un escenario, me acuerdo de él."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Tarea 1 – Presentación de un tema",
+   "task": "Hable durante dos o tres minutos sobre el tema «Una fiesta o celebración importante en mi país»: en qué consiste, cuándo se celebra, qué se hace y qué significa para usted.",
+   "cards": ["qué es", "cuándo se celebra", "qué se hace", "su experiencia personal"],
+   "phrases": ["Voy a hablar de …", "Se celebra en …", "Es costumbre …", "Para mí, esta fiesta significa …"],
+   "sample": "Voy a hablar de la Fiesta del Azúcar, que se celebra en Turquía al final del Ramadán. Dura tres días y es una de las celebraciones más importantes del año. Es costumbre visitar a los familiares mayores, besarles la mano y recibir su bendición. Los niños van de casa en casa y reciben caramelos o un poco de dinero. Para mí, esta fiesta significa reunirme con toda mi familia, porque muchos vivimos en ciudades diferentes y es una de las pocas ocasiones en que estamos todos juntos."
+  },
+  {
+   "title": "Tarea 2 – Conversación sobre el tema",
+   "task": "El examinador le hace preguntas sobre su presentación: ¿Ha cambiado esta fiesta con los años? ¿Cómo la celebraba de niño? ¿Conoce fiestas de otros países?",
+   "cards": ["cambios", "su infancia", "otras culturas"],
+   "phrases": ["Antes … y ahora …", "Cuando era pequeño/a, …", "Me parece que …", "He oído que en … se celebra …"],
+   "sample": "Sí, creo que ha cambiado bastante. Antes toda la familia se quedaba en casa los tres días; ahora mucha gente aprovecha para irse de vacaciones. Cuando era pequeña, me encantaba ponerme ropa nueva y competir con mis primos por quién recibía más caramelos. Me parece que se ha perdido un poco el espíritu familiar. Sobre otras culturas, he oído que en México se celebra el Día de Muertos, que también reúne a la familia de una forma muy especial."
+  },
+  {
+   "title": "Tarea 3 – Situación simulada",
+   "task": "Usted quiere apuntarse a un gimnasio. Hable con el recepcionista: pregunte por los horarios, las actividades, los precios y las condiciones de la matrícula. El examinador es el recepcionista.",
+   "cards": ["horarios", "actividades", "precios", "matrícula", "decidir"],
+   "phrases": ["Me gustaría información sobre …", "¿Qué tipo de clases tienen?", "¿Hay algún descuento para …?", "¿Qué pasa si quiero darme de baja?", "Me lo voy a pensar."],
+   "sample": "Buenas tardes. Me gustaría información para apuntarme al gimnasio. ¿Qué horario tienen? ¿Abren también los domingos? ¿Qué tipo de clases tienen? Me interesan el yoga y la natación. ¿Cuánto cuesta la cuota mensual? ¿Hay algún descuento si pago un año entero? ¿Y hay que pagar matrícula? ¿Qué pasa si quiero darme de baja dentro de unos meses? Muy bien, me lo voy a pensar y vuelvo mañana."
+  }
+ ]
+}

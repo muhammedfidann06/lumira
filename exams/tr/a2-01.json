@@ -1,0 +1,128 @@
+{
+ "id": "tr-A2-01",
+ "level": "A2",
+ "lang": "tr",
+ "title": "Deneme Sınavı 1",
+ "lesen": [
+  {
+   "title": "1. Bölüm – E-posta",
+   "task": "E-postayı okuyun ve doğru cevabı seçin.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Kimden: Deniz – Konu: Yeni işim",
+     "body": "Sevgili Selin,\n\nNasılsın? Sana güzel bir haberim var: Geçen hafta İzmir'de bir turizm şirketinde çalışmaya başladım. Rezervasyon bölümündeyim, her gün farklı ülkelerden turistlerle konuşuyorum. İş biraz yorucu ama çok eğlenceli.\n\nSabah sekizde işe başlıyorum, akşam beşte bitiriyorum. İşe metroyla gidiyorum çünkü hem hızlı hem ucuz. İş arkadaşlarım çok sıcakkanlı, öğle yemeğini hep birlikte yiyoruz.\n\nHafta sonu Kordon'da bisiklete binmek istiyorum. Gelecek ay beni ziyarete gelir misin?\n\nSevgiyle,\nDeniz"
+    }
+   ],
+   "items": [
+    {"q": "Deniz yeni işine ne zaman başladı?", "options": ["geçen hafta", "geçen ay", "dün"], "a": 0},
+    {"q": "Deniz hangi bölümde çalışıyor?", "options": ["muhasebe", "rezervasyon", "reklam"], "a": 1},
+    {"q": "Deniz işe nasıl gidiyor?", "options": ["arabayla", "otobüsle", "metroyla"], "a": 2},
+    {"q": "Neden metroyu tercih ediyor?", "options": ["hızlı ve ucuz olduğu için", "arabası olmadığı için", "şirket yakın olduğu için"], "a": 0},
+    {"q": "Deniz hafta sonu ne yapmak istiyor?", "options": ["müzeye gitmek", "bisiklete binmek", "denize girmek"], "a": 1}
+   ]
+  },
+  {
+   "title": "2. Bölüm – İlanlar",
+   "task": "Beş kişinin ne aradığını okuyun ve her kişi için uygun ilanı seçin (a–g). İki ilan fazladır.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Yeni başlayanlar için yemek kursu: Türk mutfağının sırları, her cumartesi."},
+    {"key": "b", "text": "Kiralık daire: 1+1, üniversiteye yürüme mesafesinde, öğrencilere uygun fiyat."},
+    {"key": "c", "text": "Yüzme kulübü: 5 yaşından büyük çocuklar için dersler."},
+    {"key": "d", "text": "Şehir kütüphanesi: Türkçe ve yabancı kitaplar, ödünç alma ücretsiz."},
+    {"key": "e", "text": "Akşamları paket servis için motorlu kurye aranıyor."},
+    {"key": "f", "text": "Efes antik kentine günübirlik tur: ulaşım ve öğle yemeği dahil."},
+    {"key": "g", "text": "Telefon tamircisi: bir saat içinde hızlı servis."}
+   ],
+   "items": [
+    {"q": "Ece yeni bir öğrenci ve okula yakın bir ev arıyor.", "a": "b"},
+    {"q": "Murat'ın oğlu altı yaşında ve yüzme öğrenmek istiyor.", "a": "c"},
+    {"q": "Yasemin'in telefonu bozuldu ve bugün ona ihtiyacı var.", "a": "g"},
+    {"q": "Ferhat tarihi yerleri seviyor ve bir gezi yapmak istiyor.", "a": "f"},
+    {"q": "Melis hafta sonu yemek yapmayı öğrenmek istiyor.", "a": "a"}
+   ]
+  },
+  {
+   "title": "3. Bölüm – Kısa metin",
+   "task": "Metni okuyun. Cümleler doğru mu, yanlış mı?",
+   "type": "rf",
+   "texts": [
+    {
+     "title": "Bir çiftçinin günü",
+     "body": "Hasan Amca her gün güneş doğmadan kalkar. Bir bardak çay içer, sonra köyün dışındaki küçük tarlasına gider. Hasan Amca domates, salatalık ve zeytin yetiştirir. Yazın öğlen hava çok sıcak olduğu için sadece sabah erken saatlerde çalışır.\n\nHasan Amca sebzelerini perşembe günleri şehirdeki pazarda satar. Büyük oğlu ona yardım ediyor, kızı ise üniversitede tıp okuyor. Hasan Amca şöyle diyor: «Köy hayatı sakin, şehrin gürültüsünü hiç sevmiyorum.»"
+    }
+   ],
+   "items": [
+    {"q": "Hasan Amca geç kalkar.", "a": false},
+    {"q": "Hasan Amca zeytin yetiştirir.", "a": true},
+    {"q": "Yazın öğlen saatlerinde çalışır.", "a": false},
+    {"q": "Sebzelerini perşembe günü satar.", "a": true},
+    {"q": "Hasan Amca'nın kızı tıp okuyor.", "a": true}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "1. Bölüm – Konuşmalar",
+   "task": "Konuşmaları dinleyin ve doğru cevabı seçin. Her konuşmayı iki kez dinleyeceksiniz.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Kadın: Dün neden derse gelmedin?\nErkek: Hastaydım, doktora gittim.", "q": "Erkek neden derse gelmedi?", "options": ["Yolculuktaydı.", "Hastaydı.", "Çalışıyordu."], "a": 1},
+    {"audio": "Erkek: Tren Eskişehir'e saat kaçta varıyor?\nKadın: Üçe çeyrek kala varıyor.", "q": "Tren saat kaçta varıyor?", "options": ["14.45'te", "15.15'te", "15.00'te"], "a": 0},
+    {"audio": "Kadın: Anneler Günü'nde anneme ne alalım?\nErkek: Çiçekleri çok seviyor. Bir de kitap mı alsak?\nKadın: Yok, çiçek yeter.", "q": "Anneye ne alacaklar?", "options": ["kitap", "kitap ve çiçek", "çiçek"], "a": 2},
+    {"audio": "Erkek: Üç gece için iki kişilik bir oda istiyorum.\nKadın: Deniz manzaralı bir odamız var.", "q": "Erkek kaç gece kalacak?", "options": ["iki gece", "üç gece", "bir hafta"], "a": 1},
+    {"audio": "Kadın: Erzurum'da hava nasıldı?\nErkek: Bütün hafta soğuk ve karlıydı.", "q": "Erzurum'da hava nasıldı?", "options": ["soğuk ve karlı", "sıcak ve güneşli", "ılık"], "a": 0}
+   ]
+  },
+  {
+   "title": "2. Bölüm – Radyo duyurusu",
+   "task": "Duyuruyu dinleyin. Cümleler doğru mu, yanlış mı? Duyuruyu iki kez dinleyeceksiniz.",
+   "type": "rf",
+   "plays": 2,
+   "audio": "Spiker: Sevgili dinleyiciler, yıllık kitap fuarı önümüzdeki pazar günü fuar merkezinde açılıyor. Fuar on gün sürecek ve her gün sabah ondan akşam ona kadar açık olacak. Öğrenciler için giriş ücretsiz, yetişkinler için bilet fiyatı yüz lira. Fuarda yirmi ülkeden beş yüzden fazla yayınevi var. Ayrıca çocuk kitapları için özel bir bölüm de bulunuyor.",
+   "items": [
+    {"q": "Fuar önümüzdeki pazar başlıyor.", "a": true},
+    {"q": "Fuar bir hafta sürüyor.", "a": false},
+    {"q": "Fuar sabah saat onda açılıyor.", "a": true},
+    {"q": "Öğrenciler yüz lira ödüyor.", "a": false},
+    {"q": "Fuarda çocuk kitapları bölümü var.", "a": true}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "1. Görev – Arkadaşa mektup",
+   "task": "Yeni bir eve taşındınız. Arkadaşınıza bir mektup yazın.",
+   "prompt": "Mektup yazın (50–70 kelime): Ev nerede? Nasıl bir ev? Mahalle nasıl? Arkadaşınızı davet edin.",
+   "points": ["evin yeri", "evin özellikleri", "mahalle", "davet"],
+   "words": 60,
+   "sample": "Sevgili Burak,\n\nNasılsın? Geçen hafta yeni bir eve taşındım. Ev, şehir merkezine yakın, sessiz bir mahallede. Çok büyük değil ama güneşli ve rahat. İki yatak odası, bir salon, bir mutfak ve küçük bir balkonu var. Mahallede bir pazar, bir park ve güzel bir fırın var. Komşularım da çok nazik. Gelecek cumartesi akşam yemeğine gel, yeni evimi göstereyim!\n\nSevgiler,\nPeter"
+  },
+  {
+   "title": "2. Görev – Bir günü anlatma",
+   "task": "En sevdiğiniz tatil gününü anlatın.",
+   "prompt": "Bir metin yazın (50–70 kelime): Kaçta kalkarsınız? Sabah ve akşam ne yaparsınız? Kiminle vakit geçirirsiniz? Bu günü neden seversiniz?",
+   "points": ["sabah", "akşam", "kiminle", "neden"],
+   "words": 60,
+   "sample": "En sevdiğim gün pazar. O gün geç kalkarım, saat dokuz gibi. Ailemle birlikte büyük bir kahvaltı yaparız: peynir, zeytin, yumurta ve sıcak simit. Kahvaltıdan sonra arkadaşlarımla sahilde yürüyüş yaparım. Akşam babaannemi ziyaret ederiz, o bize en güzel yemekleri pişirir. Sonra bir film izlerim ya da kitap okurum. Pazarı seviyorum çünkü dinleniyorum ve sevdiğim insanlarla zaman geçiriyorum."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "1. Görev – Bir konu hakkında konuşma",
+   "task": "İki dakika şehriniz hakkında konuşun: Nerede? Nasıl bir şehir? Ziyaretçiler orada ne yapabilir? Şehrinizin neyini seviyorsunuz?",
+   "cards": ["konum", "şehrin özellikleri", "gezilecek yerler", "sevdiğiniz şeyler"],
+   "phrases": ["Benim şehrim …", "… bulunuyor.", "Şehirde … var.", "Şehrimi seviyorum çünkü …"],
+   "sample": "Benim şehrim Hamburg, Almanya'nın kuzeyinde bulunuyor. Büyük ve canlı bir liman şehri. Şehirde güzel bir göl, birçok müze ve büyük bir liman var. Ziyaretçiler tekneyle limanı gezebilir ya da eski depolar bölgesinde yürüyebilir. Şehrimi seviyorum çünkü çok yeşil, insanlar rahat ve her zaman yapacak bir şey var."
+  },
+  {
+   "title": "2. Görev – Diyalog",
+   "task": "Bir spor salonuna kaydolmak istiyorsunuz. Görevliye etkinlikleri, saatleri ve fiyatları sorun. Sınav görevlisi spor salonu çalışanıdır.",
+   "cards": ["etkinlikler", "açılış saatleri", "aylık ücret", "kayıt"],
+   "phrases": ["… kaydolmak istiyorum.", "Hangi etkinlikler var?", "Spor salonu kaçta açılıyor?", "Aylık üyelik ne kadar?", "Kayıt için ne gerekiyor?"],
+   "sample": "İyi akşamlar. Spor salonuna kaydolmak istiyorum. Hangi etkinlikleriniz var? Yüzme dersleri de var mı? Spor salonu kaçta açılıyor? Hafta sonu da açık mı? Aylık üyelik ne kadar? Öğrenci indirimi var mı? Kayıt için ne gerekiyor? Fotoğraf ve kimlik, tamam. Çok teşekkür ederim."
+  }
+ ]
+}

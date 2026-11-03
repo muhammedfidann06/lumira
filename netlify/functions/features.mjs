@@ -1,14 +1,14 @@
 import { changeUsage, summary, fault } from './_shared/feature-core.mjs';
 import { identity, liveIdentity, speechToken, checkWriting, verifyPlayPurchase, sha256 } from './_shared/feature-services.mjs';
 import { configuredProviders, connectProvider, translateText, CONVERSATION_LANGUAGES } from './_shared/live-providers.mjs';
-import { scoreGoethe, LEVELS as GOETHE_LEVELS } from './_shared/goethe-ai.mjs';
+import { scoreGoethe, LEVELS as GOETHE_LEVELS, EXAMS as GOETHE_EXAMS } from './_shared/goethe-ai.mjs';
 import { withCors } from './_shared/cors.mjs';
 import {welcomeGift} from './_shared/welcome-gift.mjs';
 import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 import {playCatalog} from './_shared/play-catalog.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.18' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.20' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
@@ -99,12 +99,13 @@ export function createHandler(services = { identity, liveIdentity, speechToken, 
       // writing checker: reserved first, refunded when no provider answers.
       if (body.action === 'goetheScore') {
         const task = typeof body.task === 'string' ? body.task.trim() : '', text = typeof body.text === 'string' ? body.text.trim() : '';
-        if (!GOETHE_LEVELS.includes(body.level) || !['schreiben','sprechen'].includes(body.module) || !task || task.length > 3000 || !text || text.length > 4000) throw fault('invalid_input', 422);
-        const params = { id: body.id, hash: services.sha256('goethe\n' + body.level + '\n' + body.module + '\n' + task + '\n' + text) };
+        const exam = body.exam === undefined ? 'goethe' : body.exam;
+        if (!Object.hasOwn(GOETHE_EXAMS, exam) || !GOETHE_LEVELS.includes(body.level) || !['schreiben','sprechen'].includes(body.module) || !task || task.length > 3000 || !text || text.length > 4000) throw fault('invalid_input', 422);
+        const params = { id: body.id, hash: services.sha256(exam + '\n' + body.level + '\n' + body.module + '\n' + task + '\n' + text) };
         await mutate('writingBegin', params);
         try {
           const uiLanguage = ['tr','en','de','ar','fr','es','ru'].includes(body.uiLanguage) ? body.uiLanguage : 'tr';
-          const assessment = await (services.scoreGoethe || scoreGoethe)({ level: body.level, module: body.module, task, text, uiLanguage });
+          const assessment = await (services.scoreGoethe || scoreGoethe)({ level: body.level, module: body.module, task, text, uiLanguage, exam });
           const value = await mutate('writingCommit', params);
           return reply({ assessment, quota: quota(value) });
         } catch (error) {
@@ -116,15 +117,16 @@ export function createHandler(services = { identity, liveIdentity, speechToken, 
       // service never charges a session that cannot start.
       if (body.provider !== undefined && !['azure', 'local'].includes(body.provider)) throw fault('invalid_input');
       const speech = body.provider !== 'local' && (body.action === 'liveStart' || (body.action === 'liveRenew' && body.refreshToken)) ? await services.speechToken() : null;
-      const value = await mutate(body.action, { id: body.id });
-      return reply({ quota: quota(value), session: value.live?.session || null, ...(speech ? { speech } : {}), ...(body.provider === 'local' ? { provider: 'local' } : {}) });
+      const pool = body.pool === 'convo' ? 'convo' : null;
+      const value = await mutate(body.action, { id: body.id, ...(pool ? { pool } : {}) });
+      return reply({ quota: quota(value), session: value[pool || 'live']?.session || null, ...(speech ? { speech } : {}), ...(body.provider === 'local' ? { provider: 'local' } : {}) });
     } catch (e) {
       const code = e.code || 'usage_unavailable';
       const status = e.status || 503;
       // Never log credentials, request bodies, speech or learners' writing.
       console.error('[Lumira features]', code);
       let quota;
-      if (ctx && ref && ['writing_limit','live_limit','pdf_limit','pdf_badge_required'].includes(code)) {
+      if (ctx && ref && ['writing_limit','live_limit','convo_limit','pdf_limit','pdf_badge_required'].includes(code)) {
         try { quota = summary((await ref.get()).val(), ctx.tier, clock(), zone); } catch {}
       }
       return reply({ error: code, ...(quota ? { quota } : {}) }, status);

@@ -1,0 +1,187 @@
+{
+ "id": "es-B2-01",
+ "level": "B2",
+ "lang": "es",
+ "title": "Examen de práctica 1",
+ "lesen": [
+  {
+   "title": "Tarea 1 – Texto informativo",
+   "task": "Lea el texto y conteste las preguntas. Seleccione la opción correcta: a, b o c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "El auge de la economía colaborativa",
+     "body": "Compartir coche para un viaje, alquilar la habitación libre a un turista o pedir prestada una taladradora a un vecino a través de una aplicación: la llamada economía colaborativa se ha convertido en pocos años en un fenómeno masivo. Sus defensores la presentan como un modelo más sostenible, basado en aprovechar mejor los recursos que ya existen en lugar de producir más.\n\nSin embargo, el término ha empezado a generar polémica. Lo que nació como un intercambio entre particulares se ha transformado, en muchos casos, en un negocio dominado por grandes plataformas internacionales. En ciudades como Barcelona o Palma, una parte importante de los pisos que se alquilan a turistas pertenece a propietarios que gestionan decenas de viviendas. Los vecinos denuncian que esta situación encarece los alquileres y expulsa a los residentes de los barrios céntricos.\n\nTambién se cuestionan las condiciones laborales. Los repartidores y conductores que trabajan para algunas plataformas son considerados trabajadores autónomos, lo que les obliga a pagar su propia seguridad social y les priva de vacaciones pagadas. Tras varias sentencias judiciales, España aprobó en 2021 una ley que obliga a contratar como asalariados a los repartidores.\n\nPara la economista Laura Ferrer, el problema no es la idea de compartir, sino la falta de regulación: «La tecnología ha ido más rápido que las leyes. Hay que distinguir entre quien comparte de manera ocasional y quien ha montado una empresa. Ambos no pueden tener las mismas reglas»."
+    }
+   ],
+   "items": [
+    {"q": "Según sus defensores, la economía colaborativa…", "options": ["permite aprovechar mejor recursos existentes.", "crea muchos productos nuevos.", "es exclusiva de los jóvenes."], "a": 0},
+    {"q": "¿Qué crítica se hace en el segundo párrafo?", "options": ["Las aplicaciones son difíciles de usar.", "Se ha convertido en un negocio de grandes empresas y propietarios.", "Los turistas no respetan a los vecinos."], "a": 1},
+    {"q": "Según los vecinos de algunas ciudades, los pisos turísticos…", "options": ["mejoran la economía del barrio.", "están vacíos la mayor parte del año.", "hacen subir el precio del alquiler."], "a": 2},
+    {"q": "¿Cuál es el problema de algunos repartidores?", "options": ["No tienen derechos de los asalariados.", "Ganan más que otros trabajadores.", "Trabajan solo en verano."], "a": 0},
+    {"q": "La ley aprobada en 2021…", "options": ["prohíbe las plataformas de reparto.", "obliga a contratar a los repartidores.", "reduce los impuestos de los autónomos."], "a": 1},
+    {"q": "Según Laura Ferrer, el problema principal es…", "options": ["la idea de compartir.", "la tecnología.", "que las leyes no se han adaptado."], "a": 2}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Cuatro textos",
+   "task": "Lea los textos de cuatro personas que hablan de su experiencia como emprendedores. Indique a qué persona (a, b, c o d) corresponde cada enunciado.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Ramón: Monté mi empresa de muebles reciclados después de quedarme en paro a los cincuenta años. Nadie quería contratarme y decidí arriesgarme. Los primeros dos años apenas gané dinero, pero nunca pensé en abandonar. Hoy tengo seis empleados, todos mayores de cuarenta y cinco, como yo cuando empecé."},
+    {"key": "b", "text": "Sofía: Siempre había soñado con tener mi propia librería. Pedí un préstamo al banco y la abrí en mi barrio. Lo más duro ha sido competir con las ventas por internet. Para sobrevivir, organizo presentaciones, clubes de lectura y talleres para niños. La librería se ha convertido en un punto de encuentro."},
+    {"key": "c", "text": "Diego: Empecé con una aplicación para conectar a agricultores con restaurantes. La idea surgió hablando con mi abuelo, que tenía problemas para vender su fruta. Conseguí inversores muy pronto, quizá demasiado: crecimos tan rápido que perdimos el control y estuvimos a punto de cerrar. Aprendí que crecer despacio también es una virtud."},
+    {"key": "d", "text": "Alba: Yo no tenía ningún plan. Empecé haciendo jabones artesanales como afición y regalándolos a mis amigos. Ellos los compartieron en redes sociales y, de repente, empecé a recibir pedidos de toda España. Tuve que dejar mi trabajo de administrativa para dedicarme a ello por completo."}
+   ],
+   "items": [
+    {"q": "¿Quién empezó su negocio sin intención de que fuera un negocio?", "a": "d"},
+    {"q": "¿Quién tuvo problemas por un crecimiento demasiado rápido?", "a": "c"},
+    {"q": "¿Quién emprendió porque no encontraba trabajo?", "a": "a"},
+    {"q": "¿Quién ha tenido que ofrecer actividades para atraer clientes?", "a": "b"},
+    {"q": "¿Quién se inspiró en las dificultades de un familiar?", "a": "c"},
+    {"q": "¿Quién contrata a personas en una situación parecida a la suya?", "a": "a"}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Texto con huecos",
+   "task": "Lea el texto. Faltan seis fragmentos. Elija entre los fragmentos a–h el que corresponde a cada hueco. Hay dos fragmentos que no tiene que elegir.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "El arte de aburrirse",
+     "body": "Vivimos en una época en la que el aburrimiento parece haber desaparecido. [1] Basta con sacar el móvil para llenar cualquier momento vacío: la cola del supermercado, el trayecto en metro, la espera en la consulta del médico.\n\nSin embargo, varios estudios psicológicos sugieren que este hábito tiene un precio. [2] En un experimento famoso, los participantes que habían realizado una tarea aburrida durante quince minutos propusieron después ideas más originales que el grupo de control.\n\nLa explicación es sencilla. [3] Es en esos momentos cuando la mente empieza a divagar, a establecer conexiones inesperadas entre ideas. Muchos escritores y científicos afirman que sus mejores ideas les llegaron mientras paseaban o se duchaban.\n\n[4] Al eliminar cualquier momento de vacío, nos privamos también de la oportunidad de reflexionar sobre nosotros mismos, de procesar lo que hemos vivido.\n\nAlgunos expertos recomiendan, por eso, reservar momentos del día sin estímulos. [5] Puede ser un paseo sin auriculares o unos minutos mirando por la ventana.\n\n[6] Al fin y al cabo, aburrirse no es perder el tiempo, sino dejar que la mente trabaje a su manera."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Cuando no recibimos estímulos externos, el cerebro busca entretenerse por sí mismo."},
+    {"key": "b", "text": "No se trata de grandes cambios, sino de pequeños gestos cotidianos."},
+    {"key": "c", "text": "Gracias a la tecnología, nunca tenemos que enfrentarnos a la sensación de no tener nada que hacer."},
+    {"key": "d", "text": "El aburrimiento, según ellos, favorece la creatividad."},
+    {"key": "e", "text": "Quizá ha llegado el momento de reconciliarnos con el aburrimiento."},
+    {"key": "f", "text": "Pero las consecuencias no afectan solo a la creatividad."},
+    {"key": "g", "text": "Los teléfonos móviles se inventaron a finales del siglo XX."},
+    {"key": "h", "text": "Por eso, los niños deberían usar más el móvil."}
+   ],
+   "items": [
+    {"q": "Hueco 1", "a": "c"},
+    {"q": "Hueco 2", "a": "d"},
+    {"q": "Hueco 3", "a": "a"},
+    {"q": "Hueco 4", "a": "f"},
+    {"q": "Hueco 5", "a": "b"},
+    {"q": "Hueco 6", "a": "e"}
+   ]
+  },
+  {
+   "title": "Tarea 4 – Gramática y vocabulario",
+   "task": "Lea el texto y elija la opción correcta para cada hueco.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Carta al director",
+     "body": "Señor director:\n\nLe escribo con motivo del artículo publicado el pasado domingo [1] el cierre del mercado municipal de mi barrio. Me sorprende que el ayuntamiento [2] tomado esta decisión sin consultar a los vecinos.\n\nEl mercado no es solo un lugar donde se compra; es un espacio de encuentro, [3] los mayores charlan y los niños conocen los productos frescos. Si el mercado [4] cierra, muchos comerciantes perderán su trabajo.\n\nEntiendo que el edificio necesita reformas, [5] creo que existen otras soluciones. Por ejemplo, se podría renovar por fases, [6] que los puestos siguieran abiertos.\n\nOjalá el ayuntamiento [7] su postura. [8] contrario, los vecinos organizaremos una protesta.\n\nAtentamente,\nCarmen López"
+    }
+   ],
+   "items": [
+    {"q": "Hueco 1", "options": ["sobre", "desde", "hacia"], "a": 0},
+    {"q": "Hueco 2", "options": ["ha", "haya", "habrá"], "a": 1},
+    {"q": "Hueco 3", "options": ["que", "cuyo", "donde"], "a": 2},
+    {"q": "Hueco 4", "options": ["se", "lo", "le"], "a": 0},
+    {"q": "Hueco 5", "options": ["pues", "pero", "así que"], "a": 1},
+    {"q": "Hueco 6", "options": ["sin", "porque", "de modo"], "a": 2},
+    {"q": "Hueco 7", "options": ["reconsidere", "reconsidera", "reconsiderará"], "a": 0},
+    {"q": "Hueco 8", "options": ["En el", "Al", "De lo"], "a": 2}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Tarea 1 – Conversaciones breves",
+   "task": "Va a escuchar seis conversaciones breves. Seleccione la opción correcta: a, b o c. Escuchará cada conversación dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Mujer: ¿Al final aceptaste el puesto en Valencia?\nHombre: Todavía no lo sé. El sueldo es mejor, pero tendría que dejar a mi familia aquí, y eso me pesa mucho.", "q": "¿Qué le impide decidirse al hombre?", "options": ["el sueldo", "separarse de su familia", "el clima de Valencia"], "a": 1},
+    {"audio": "Hombre: ¿Qué te pareció la película?\nMujer: Los actores, magníficos, pero el final me decepcionó. Se notaba que no sabían cómo terminarla.", "q": "¿Qué opina la mujer de la película?", "options": ["El final fue flojo.", "Los actores eran malos.", "Le gustó todo."], "a": 0},
+    {"audio": "Mujer: Doctor, sigo con dolor de espalda.\nHombre: Le recomiendo que haga natación dos veces por semana y que cambie la silla de su oficina. De momento, no le voy a recetar nada más.", "q": "¿Qué le recomienda el médico?", "options": ["tomar más medicamentos", "descansar en cama", "nadar y cambiar de silla"], "a": 2},
+    {"audio": "Hombre: Al final no hicimos la excursión al lago.\nMujer: ¿Por la lluvia?\nHombre: No, qué va, hizo un día precioso. Es que a Pedro se le estropeó el coche a mitad de camino.", "q": "¿Por qué no hicieron la excursión?", "options": ["por el mal tiempo", "por una avería", "porque Pedro estaba enfermo"], "a": 1},
+    {"audio": "Mujer: ¿Te has enterado de que van a construir un centro comercial donde está el parque?\nHombre: Sí, y no me parece mal. Al fin y al cabo, el barrio necesita empleo.\nMujer: Pues yo prefiero el parque.", "q": "¿Qué opina el hombre del proyecto?", "options": ["Está en contra.", "Le parece indiferente.", "Lo ve con buenos ojos."], "a": 2},
+    {"audio": "Hombre: ¿Vienes a la cena de empresa el viernes?\nMujer: Me encantaría, pero ese día es el cumpleaños de mi madre. Intentaré pasarme después, a tomar el postre.", "q": "¿Qué va a hacer la mujer?", "options": ["Irá un rato al final de la cena.", "No irá a la cena.", "Irá con su madre."], "a": 0}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Seis personas",
+   "task": "Va a escuchar a seis personas que hablan sobre el teletrabajo. Relacione a cada persona con un enunciado a–j. Hay cuatro enunciados que no tiene que seleccionar. Escuchará cada audio dos veces.",
+   "type": "match",
+   "plays": 2,
+   "choices": [
+    {"key": "a", "text": "Echa de menos el contacto con sus compañeros."},
+    {"key": "b", "text": "Ha podido mudarse a un lugar más tranquilo."},
+    {"key": "c", "text": "Trabaja más horas que antes."},
+    {"key": "d", "text": "Ahorra dinero en transporte."},
+    {"key": "e", "text": "Su empresa no le permite teletrabajar."},
+    {"key": "f", "text": "Combina días en casa y en la oficina."},
+    {"key": "g", "text": "Le cuesta concentrarse en casa."},
+    {"key": "h", "text": "Ha mejorado su salud."},
+    {"key": "i", "text": "Prefiere trabajar en cafeterías."},
+    {"key": "j", "text": "Ha cambiado de profesión."}
+   ],
+   "items": [
+    {"audio": "Persona 1: Desde que trabajo desde casa, no sé cuándo termina mi jornada. Respondo correos a las diez de la noche y los fines de semana. Antes al salir de la oficina me olvidaba de todo.", "q": "Persona 1", "a": "c"},
+    {"audio": "Persona 2: Me fui de Madrid a un pueblo de la sierra. Ahora, cuando termino, salgo a caminar por el monte. No volvería a la ciudad por nada del mundo.", "q": "Persona 2", "a": "b"},
+    {"audio": "Persona 3: Con dos niños pequeños en casa, es casi imposible. Siempre hay alguien que me interrumpe. Al final, hago las tareas importantes por la noche.", "q": "Persona 3", "a": "g"},
+    {"audio": "Persona 4: Lo que más noto es la soledad. Antes tomaba café con mis compañeros, comentábamos cosas… Ahora solo los veo en una pantalla.", "q": "Persona 4", "a": "a"},
+    {"audio": "Persona 5: Mi empresa ha encontrado un buen equilibrio: los lunes y los viernes estoy en casa, y el resto de la semana voy a la oficina. Así tengo lo mejor de los dos mundos.", "q": "Persona 5", "a": "f"},
+    {"audio": "Persona 6: Antes tenía dolor de espalda constante por las horas en el coche. Ahora hago ejercicio por la mañana, como mejor y duermo más. Me siento otra persona.", "q": "Persona 6", "a": "h"}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Una entrevista",
+   "task": "Va a escuchar una entrevista a una bióloga marina. Seleccione la opción correcta: a, b o c. Escuchará la entrevista dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Periodista: Hoy nos acompaña Marina Cortés, bióloga marina que lleva quince años estudiando las praderas de posidonia en el Mediterráneo. Marina, ¿qué es exactamente la posidonia?\nMarina: Mucha gente cree que es un alga, pero en realidad es una planta, con raíces, hojas e incluso flores. Forma grandes praderas bajo el agua, sobre todo en las Islas Baleares.\nPeriodista: ¿Y por qué es tan importante?\nMarina: Por muchas razones. Produce oxígeno, sirve de refugio a cientos de especies de peces y, además, protege las playas de la erosión: sus hojas muertas, que se acumulan en la orilla, frenan la fuerza de las olas. Por eso pedimos que no se retiren de las playas, aunque a algunos turistas no les guste su aspecto.\nPeriodista: ¿Cuál es la principal amenaza?\nMarina: Las anclas de los barcos de recreo. Cada vez que un barco ancla sobre una pradera, arranca plantas que han tardado siglos en crecer. La posidonia crece apenas un centímetro al año.\nPeriodista: ¿Se están tomando medidas?\nMarina: Sí. En Baleares existe una ley que prohíbe fondear sobre las praderas, y hay vigilantes que controlan la zona en verano. Los resultados son esperanzadores, pero todavía queda mucho por hacer, sobre todo en información: muchos navegantes simplemente no saben lo que hay debajo de su barco.",
+   "items": [
+    {"q": "Según Marina, la posidonia es…", "options": ["un alga.", "una planta.", "un tipo de coral."], "a": 1},
+    {"q": "¿Qué función tienen las hojas muertas en las playas?", "options": ["protegerlas de las olas", "alimentar a los peces", "producir oxígeno"], "a": 0},
+    {"q": "¿Qué piden los científicos respecto a las hojas en las playas?", "options": ["que se retiren cada día", "que se usen como abono", "que se dejen en la orilla"], "a": 2},
+    {"q": "La principal amenaza para la posidonia son…", "options": ["los turistas en la playa.", "las anclas de los barcos.", "los peces."], "a": 1},
+    {"q": "¿Por qué es tan grave el daño causado?", "options": ["Porque la planta crece muy despacio.", "Porque contamina el agua.", "Porque afecta a los pescadores."], "a": 0},
+    {"q": "Según Marina, ¿qué falta todavía?", "options": ["leyes", "vigilantes", "información para los navegantes"], "a": 2}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Tarea 1 – Carta formal",
+   "task": "Usted ha leído en la prensa que el ayuntamiento quiere cerrar la biblioteca de su barrio para ahorrar costes. Escriba una carta al alcalde.",
+   "prompt": "Escriba una carta (entre 150 y 180 palabras). Preséntese, exprese su opinión, explique la importancia de la biblioteca para el barrio y proponga alternativas.",
+   "points": ["presentarse", "su opinión", "la importancia de la biblioteca", "alternativas"],
+   "words": 165,
+   "sample": "Estimado señor alcalde:\n\nMe llamo Burak Kaya y vivo en el barrio de San Isidro desde hace seis años. Le escribo porque he leído en la prensa que el ayuntamiento tiene la intención de cerrar nuestra biblioteca, una decisión que considero un grave error.\n\nLa biblioteca no es solo un lugar para pedir libros prestados. Muchos estudiantes que no tienen un espacio tranquilo en casa van allí a estudiar, los mayores leen el periódico y los niños participan en actividades gratuitas los sábados. Para muchas familias con pocos recursos, es el único acceso a la cultura y a internet.\n\nEntiendo que el ayuntamiento necesita ahorrar, pero creo que hay alternativas. Se podría, por ejemplo, reducir el horario de apertura en verano, compartir el edificio con otras asociaciones del barrio o buscar el patrocinio de empresas locales.\n\nLe ruego que reconsidere esta decisión y que escuche la opinión de los vecinos antes de tomarla.\n\nAtentamente,\nBurak Kaya"
+  },
+  {
+   "title": "Tarea 2 – Artículo de opinión",
+   "task": "Una revista digital publica un debate sobre la pregunta: «¿Deberían los colegios dedicar más horas a la educación emocional?»",
+   "prompt": "Escriba un artículo de opinión (entre 150 y 180 palabras). Exponga su postura, argumente con ejemplos y tenga en cuenta otros puntos de vista.",
+   "points": ["su postura", "argumentos y ejemplos", "otros puntos de vista", "conclusión"],
+   "words": 165,
+   "sample": "Educar también las emociones\n\nEn los últimos años se habla mucho de la necesidad de incluir la educación emocional en los colegios. En mi opinión, es una propuesta no solo razonable, sino urgente.\n\nLos niños pasan gran parte de su tiempo en el colegio, donde no solo aprenden matemáticas o historia, sino también a convivir. Saber gestionar la frustración, expresar lo que sienten o resolver conflictos sin violencia son habilidades que les servirán toda la vida. Además, diversos estudios demuestran que los alumnos con mayor bienestar emocional obtienen mejores resultados académicos.\n\nEs cierto que algunos padres consideran que esta tarea corresponde a la familia y temen que se reste tiempo a las asignaturas tradicionales. Sin embargo, no se trata de sustituir unas materias por otras, sino de integrar estas competencias en la vida escolar, por ejemplo, mediante tutorías o proyectos en grupo.\n\nEn definitiva, una escuela que se preocupa por las emociones de sus alumnos no los distrae del aprendizaje: los prepara mejor para él."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Tarea 1 – Valorar propuestas",
+   "task": "Lea este problema: «En muchas ciudades hay cada vez más contaminación por el tráfico.» Hable durante tres o cuatro minutos sobre al menos cuatro de estas propuestas: peajes en el centro, transporte público gratuito, más carriles bici, días sin coches, impuestos a los coches más contaminantes. Diga cuáles le parecen mejores y por qué.",
+   "cards": ["peajes en el centro", "transporte público gratuito", "carriles bici", "días sin coches", "impuestos a coches contaminantes"],
+   "phrases": ["A mi modo de ver, la propuesta más eficaz es …", "Yo no estoy de acuerdo con … porque …", "Esta medida tendría la ventaja de …", "El inconveniente es que …"],
+   "sample": "A mi modo de ver, la propuesta más eficaz es hacer gratuito el transporte público, porque anima a la gente a dejar el coche sin castigarla. Esta medida tendría la ventaja de beneficiar sobre todo a las personas con menos recursos. El inconveniente es que es muy cara para los ayuntamientos. Los carriles bici también me parecen fundamentales, siempre que sean seguros. En cambio, no estoy de acuerdo con los peajes en el centro, porque convierten la ciudad en un espacio para quien puede pagar. Los días sin coches pueden servir para concienciar, pero su efecto es temporal. En cuanto a los impuestos a los coches más contaminantes, los veo justos, aunque habría que ofrecer ayudas para cambiar de vehículo."
+  },
+  {
+   "title": "Tarea 2 – Describir una situación y conversar",
+   "task": "Imagine una fotografía en la que un grupo de personas mayores asiste a una clase de informática. Describa la situación, imagine qué piensan las personas y converse después con el examinador sobre la relación entre las personas mayores y la tecnología.",
+   "cards": ["las personas y el lugar", "qué sienten", "qué pasará después", "su experiencia"],
+   "phrases": ["Me imagino que …", "Probablemente estén …", "Da la impresión de que …", "En mi familia, por ejemplo, …"],
+   "sample": "Me imagino que es una clase en un centro cultural del barrio. Hay unas ocho personas mayores sentadas delante de ordenadores y una profesora joven que está explicando algo en la pantalla. Una señora parece muy concentrada, mientras que un señor se ríe porque probablemente se ha equivocado. Da la impresión de que hay buen ambiente. Probablemente estén aprendiendo a hacer videollamadas para hablar con sus nietos. En mi familia, por ejemplo, mi abuela aprendió a usar el móvil durante la pandemia y ahora nos manda mensajes todos los días."
+  }
+ ]
+}

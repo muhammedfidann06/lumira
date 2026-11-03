@@ -1,0 +1,152 @@
+{
+ "id": "es-A1-01",
+ "level": "A1",
+ "lang": "es",
+ "title": "Examen de práctica 1",
+ "lesen": [
+  {
+   "title": "Tarea 1 – Un correo",
+   "task": "Lea el correo de Laura y conteste las preguntas. Seleccione la opción correcta: a, b o c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "De: Laura – Asunto: ¡Hola desde Madrid!",
+     "body": "¡Hola, Ana!\n\n¿Qué tal? Yo estoy muy bien. Desde septiembre vivo en Madrid con dos chicas de la universidad. El piso es pequeño, pero tiene mucha luz y está cerca del metro. Estudio Medicina y tengo clases por la mañana. Por la tarde trabajo en una cafetería tres días a la semana.\n\nLos domingos voy al parque del Retiro con mis compañeras. ¡Es muy bonito!\n\n¿Vienes a visitarme en diciembre?\n\nUn beso,\nLaura"
+    }
+   ],
+   "items": [
+    {"q": "Laura vive en Madrid con…", "options": ["su familia.", "dos chicas.", "su novio."], "a": 1},
+    {"q": "¿Cómo es el piso?", "options": ["pequeño y con mucha luz", "grande y oscuro", "lejos del metro"], "a": 0},
+    {"q": "¿Qué estudia Laura?", "options": ["Derecho", "Arte", "Medicina"], "a": 2},
+    {"q": "Laura trabaja en una cafetería…", "options": ["por la mañana.", "tres días a la semana.", "los domingos."], "a": 1},
+    {"q": "¿Qué propone Laura a Ana?", "options": ["visitarla en diciembre", "ir al cine", "estudiar juntas"], "a": 0}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Anuncios",
+   "task": "Lea las frases 1–6 y los anuncios a–h. Relacione cada frase con un anuncio. Hay dos anuncios que no tiene que seleccionar.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Farmacia Sol – abierta 24 horas."},
+    {"key": "b", "text": "Panadería La Espiga – pan recién hecho desde las 7:00."},
+    {"key": "c", "text": "Biblioteca municipal – préstamo de libros gratis."},
+    {"key": "d", "text": "Gimnasio Activo – clases de natación para niños."},
+    {"key": "e", "text": "Restaurante El Puerto – pescado fresco todos los días."},
+    {"key": "f", "text": "Academia Idiomas – cursos de inglés por la tarde."},
+    {"key": "g", "text": "Tienda Moda Joven – rebajas en camisetas y pantalones."},
+    {"key": "h", "text": "Taller Rápido – reparación de bicicletas."}
+   ],
+   "items": [
+    {"q": "Quiere comprar una camiseta barata.", "a": "g"},
+    {"q": "Necesita una medicina a las tres de la mañana.", "a": "a"},
+    {"q": "Su bicicleta está rota.", "a": "h"},
+    {"q": "Quiere aprender otro idioma.", "a": "f"},
+    {"q": "Su hijo quiere aprender a nadar.", "a": "d"},
+    {"q": "Quiere leer un libro sin pagar.", "a": "c"}
+   ]
+  },
+  {
+   "title": "Tarea 3 – Un folleto",
+   "task": "Lea el folleto de un hotel y conteste las preguntas. Seleccione la opción correcta: a, b o c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Hotel Mar Azul – Información para clientes",
+     "body": "Bienvenidos al Hotel Mar Azul.\n\nDesayuno: de 7:30 a 10:30 en el restaurante de la planta baja.\nPiscina: abierta de 9:00 a 20:00. Es necesario llevar gorro.\nWifi: gratis en todo el hotel. La contraseña está en la recepción.\nRecepción: abierta 24 horas.\nSalida: las habitaciones deben quedar libres antes de las 12:00.\n\nExcursiones: los martes y los jueves, excursión en barco a las islas. Precio: 30 euros por persona."
+    }
+   ],
+   "items": [
+    {"q": "¿Dónde se toma el desayuno?", "options": ["en la habitación", "en la planta baja", "en la piscina"], "a": 1},
+    {"q": "Para usar la piscina, es necesario…", "options": ["pagar.", "reservar.", "llevar gorro."], "a": 2},
+    {"q": "El wifi…", "options": ["es gratis.", "cuesta 5 euros.", "solo funciona en la recepción."], "a": 0},
+    {"q": "Hay que dejar la habitación antes de…", "options": ["las 10:30.", "las 12:00.", "las 20:00."], "a": 1},
+    {"q": "La excursión en barco es…", "options": ["todos los días.", "los fines de semana.", "los martes y los jueves."], "a": 2}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Tarea 1 – Conversaciones breves",
+   "task": "Va a escuchar cinco conversaciones breves. Para cada una, seleccione la opción correcta: a, b o c. Escuchará cada conversación dos veces.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Mujer: Perdone, ¿a qué hora sale el autobús para Toledo?\nHombre: A las diez y cuarto, del andén número tres.", "q": "¿A qué hora sale el autobús?", "options": ["a las 10:15", "a las 3:00", "a las 10:45"], "a": 0},
+    {"audio": "Hombre: ¿Qué quieres tomar?\nMujer: Un café con leche, por favor. Y un zumo de naranja para mi hijo.", "q": "¿Qué pide la mujer para ella?", "options": ["un zumo de naranja", "un café con leche", "un té"], "a": 1},
+    {"audio": "Mujer: ¿Dónde están mis llaves?\nHombre: Están en la mesa de la cocina, al lado del teléfono.", "q": "¿Dónde están las llaves?", "options": ["en el dormitorio", "en el coche", "en la cocina"], "a": 2},
+    {"audio": "Hombre: Hola, ¿cuánto cuestan estas manzanas?\nMujer: Dos euros el kilo.\nHombre: Pues un kilo, por favor.", "q": "¿Cuánto cuesta un kilo de manzanas?", "options": ["dos euros", "un euro", "tres euros"], "a": 0},
+    {"audio": "Mujer: ¿Vamos al cine el sábado?\nHombre: El sábado no puedo, trabajo. ¿Qué tal el domingo por la tarde?\nMujer: Perfecto.", "q": "¿Cuándo van al cine?", "options": ["el sábado", "el viernes", "el domingo"], "a": 2}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Mensajes",
+   "task": "Va a escuchar cinco mensajes. Relacione cada mensaje con la información correcta a–h. Hay tres letras que no tiene que seleccionar. Escuchará cada mensaje dos veces.",
+   "type": "match",
+   "plays": 2,
+   "choices": [
+    {"key": "a", "text": "Cambiar la hora de una cita."},
+    {"key": "b", "text": "Comprar pan."},
+    {"key": "c", "text": "Una fiesta de cumpleaños."},
+    {"key": "d", "text": "Un libro olvidado."},
+    {"key": "e", "text": "Un paquete en la oficina de correos."},
+    {"key": "f", "text": "Una clase cancelada."},
+    {"key": "g", "text": "Un viaje en tren."},
+    {"key": "h", "text": "Una reserva en un restaurante."}
+   ],
+   "items": [
+    {"audio": "Mujer: Hola, Pedro. Soy Marta. El sábado es mi cumpleaños y hago una fiesta en mi casa a las nueve. ¿Vienes?", "q": "Mensaje 1", "a": "c"},
+    {"audio": "Hombre: Buenos días, le llamo de la consulta del doctor Ruiz. Su cita del lunes no es a las diez, es a las once y media.", "q": "Mensaje 2", "a": "a"},
+    {"audio": "Mujer: Hola, soy la profesora de yoga. Hoy no hay clase porque estoy enferma. Nos vemos el jueves.", "q": "Mensaje 3", "a": "f"},
+    {"audio": "Hombre: Restaurante Casa Pepe, buenas tardes. Confirmamos su mesa para cuatro personas el viernes a las nueve de la noche.", "q": "Mensaje 4", "a": "h"},
+    {"audio": "Mujer: Carlos, tienes un paquete. Puedes recogerlo en Correos hasta el miércoles. Necesitas tu carné de identidad.", "q": "Mensaje 5", "a": "e"}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Tarea 1 – Formulario",
+   "task": "Usted quiere inscribirse en un curso de cocina. Lea la situación y complete el formulario.",
+   "situation": "Usted se llama Emma Schulz. Es alemana y tiene 31 años. Vive en la calle Mayor, 15, en Valencia. Es enfermera. Quiere hacer el curso de cocina española los sábados por la mañana.",
+   "form": [
+    {"label": "Nombre", "a": "Emma"},
+    {"label": "Apellido", "a": "Schulz"},
+    {"label": "Nacionalidad", "a": "alemana", "alt": ["alemán", "Alemania"]},
+    {"label": "Edad", "a": "31", "alt": ["31 años"]},
+    {"label": "Ciudad", "a": "Valencia"},
+    {"label": "Profesión", "a": "enfermera"},
+    {"label": "Día del curso", "a": "sábado", "alt": ["sábados", "sabado"]}
+   ]
+  },
+  {
+   "title": "Tarea 2 – Un mensaje",
+   "task": "Usted tiene un nuevo amigo español. Escríbale un correo para presentarse.",
+   "prompt": "Escriba un correo (entre 30 y 40 palabras). Hable de usted, de su familia, de su trabajo o estudios y de sus aficiones.",
+   "points": ["usted", "su familia", "trabajo o estudios", "aficiones"],
+   "words": 35,
+   "sample": "¡Hola, Javier!\n\nMe llamo Deniz y tengo veinte años. Soy turco y vivo en Antalya con mis padres y mi hermana. Estudio Turismo en la universidad. Me gusta mucho jugar al fútbol y escuchar música. ¿Y tú?\n\nUn saludo,\nDeniz"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Tarea 1 – Presentación personal",
+   "task": "Preséntese durante uno o dos minutos: nombre, edad, nacionalidad, lugar de residencia, profesión, lenguas que habla y aficiones.",
+   "cards": ["nombre", "edad", "nacionalidad", "residencia", "profesión", "lenguas", "aficiones"],
+   "phrases": ["Me llamo …", "Tengo … años.", "Soy de …", "Vivo en …", "Hablo …", "Me gusta …"],
+   "sample": "Hola, me llamo Zeynep. Tengo veintiséis años y soy de Turquía. Vivo en Bursa, una ciudad cerca de Estambul. Soy profesora de matemáticas en un colegio. Hablo turco, inglés y un poco de español. Me gusta mucho leer, cocinar y pasear con mi perro."
+  },
+  {
+   "title": "Tarea 2 – Exposición de un tema",
+   "task": "Hable de su casa durante dos minutos: dónde está, cómo es, qué habitaciones tiene y qué le gusta de ella.",
+   "cards": ["dónde está", "cómo es", "habitaciones", "lo que le gusta"],
+   "phrases": ["Mi casa está en …", "Es un piso / una casa …", "Tiene … habitaciones.", "Lo que más me gusta es …"],
+   "sample": "Mi casa está en el centro de la ciudad, cerca de un parque. Es un piso bastante grande y luminoso. Tiene tres dormitorios, un salón, una cocina y dos baños. También tiene un balcón pequeño con plantas. Lo que más me gusta es el salón, porque tiene una ventana muy grande y por la tarde entra mucho sol."
+  },
+  {
+   "title": "Tarea 3 – Conversación",
+   "task": "Usted está en una tienda de ropa. Quiere comprar un jersey. Pregunte por la talla, el color y el precio. El examinador es el dependiente.",
+   "cards": ["la talla", "el color", "el precio", "probarse", "pagar"],
+   "phrases": ["Quiero un jersey …", "¿Lo tiene en …?", "¿Cuánto cuesta?", "¿Puedo probármelo?", "¿Puedo pagar con tarjeta?"],
+   "sample": "Buenos días. Quiero comprar un jersey. ¿Lo tiene en la talla M? ¿Y en azul? Sí, este me gusta. ¿Puedo probármelo? ¿Dónde están los probadores? Me queda bien. ¿Cuánto cuesta? Treinta y cinco euros, muy bien. ¿Puedo pagar con tarjeta? Muchas gracias, adiós."
+  }
+ ]
+}

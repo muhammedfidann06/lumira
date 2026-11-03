@@ -4,10 +4,11 @@ import {contextualMeaning} from './_shared/story-meaning.mjs';import {storyWord}
 import {createHash,randomUUID} from 'node:crypto';import catalog from './_shared/story-sources.json' with {type:'json'};
 import{assertAvailable}from'./_shared/maintenance.mjs';
 import {identity,authenticatedIdentity} from './_shared/feature-services.mjs';import {fault} from './_shared/feature-core.mjs';import {withCors} from './_shared/cors.mjs';import {atomic} from './_shared/paddle-events.mjs';import {createWordPool,LANGUAGES,validateOptions,validateStory,tokens} from './_shared/story-core.mjs';import {generateStory} from './_shared/story-providers.mjs';
+import {reserveStory,commitStory,releaseStory,storyAllowance,savedStoryLimit,MAX_SAVED_STORIES} from './_shared/plan-limits.mjs';
 const poolFor=createWordPool(catalog),idOK=id=>typeof id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(id);
-const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.11.18'}});
+const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'private, no-store','X-Lumira-Features-Version':'1.11.20'}});
 export function createStoriesHandler(services={identity,generateStory,wordPool:poolFor},clock=Date.now){return withCors(async request=>{
- if(request.method!=='POST')return reply({error:'method_not_allowed'},405);let lock,owner=randomUUID();
+ if(request.method!=='POST')return reply({error:'method_not_allowed'},405);let lock,owner=randomUUID(),allowance,reserved=null;
  try{const raw=await request.text();if(raw.length>5000)throw fault('invalid_input',413);let body;try{body=JSON.parse(raw);}catch{throw fault('invalid_input');}if(!body||!['pool','generate','list','get','delete','word'].includes(body.action))throw fault('invalid_action');
   // A word lookup needs only the signed-in account, not the badge/billing
   // reconciliation (six reads and possible store API calls) done for stories.
@@ -16,7 +17,7 @@ export function createStoriesHandler(services={identity,generateStory,wordPool:p
   if(body.action!=='delete')await(services.assertAvailable||assertAvailable)(ctx,'stories');
   // Kept for older clients; new clients use the lighter story-word endpoint.
   if(body.action==='word')return reply(await storyWord(ctx,body,{meaning:services.meaning||contextualMeaning,clock}));
-  if(body.action==='list'){const all=(await ctx.db.ref('serverStoryIndex/'+ctx.uid).get()).val()||{};return reply({stories:Object.entries(all).map(([id,s])=>({id,...s})).sort((a,b)=>b.createdAt-a.createdAt).slice(0,20)});}
+  if(body.action==='list'){const[all,used]=await Promise.all([ctx.db.ref('serverStoryIndex/'+ctx.uid).get().then(s=>s.val()||{}),ctx.db.ref('serverStoryAllowance/'+ctx.uid).get().then(s=>s.val())]);return reply({stories:Object.entries(all).map(([id,s])=>({id,...s})).sort((a,b)=>b.createdAt-a.createdAt).slice(0,MAX_SAVED_STORIES),allowance:storyAllowance(used,{tier:ctx.tier,saved:Object.keys(all).length,now:clock()})});}
   if(['get','delete'].includes(body.action)){if(!idOK(body.id))throw fault('invalid_input');const ref=ctx.db.ref(base+body.id),story=(await ref.get()).val();if(!story)throw fault('story_not_found',404);if(body.action==='delete'){await ctx.db.ref().update({[base+body.id]:null,['serverStoryIndex/'+ctx.uid+'/'+body.id]:null,['serverStoryWordMeanings/'+ctx.uid+'/'+body.id]:null});return reply({deleted:true});}return reply({story});}
   if(!LANGUAGES.includes(body.language)||!LANGUAGES.includes(body.native)||body.language===body.native)throw fault('invalid_input',422);
   const [words,notebook]=await Promise.all([ctx.db.ref('progress/'+ctx.uid+'/words').get(),ctx.db.ref('progress/'+ctx.uid+'/notebook').get()]);const pool=(services.wordPool||poolFor)({words:words.val(),notebook:notebook.val()},body.language,body.native);
@@ -24,6 +25,14 @@ export function createStoriesHandler(services={identity,generateStory,wordPool:p
   if(new Set(pool.flatMap(r=>tokens(r.w,body.language))).size<12)throw fault('story_more_words',422);
   const hash=createHash('sha256').update(JSON.stringify(options)).digest('hex');lock=ctx.db.ref('serverStoryRequests/'+ctx.uid+'/'+body.id);const old=(await lock.get()).val();if(old?.hash&&old.hash!==hash)throw fault('invalid_operation',409);if(old?.complete){const story=(await ctx.db.ref(base+body.id).get()).val();if(story)return reply({story});throw fault('story_not_found',404);}
   await atomic(lock,value=>{if(value?.hash&&value.hash!==hash)throw fault('invalid_operation',409);if(value?.complete||value?.until>clock())throw fault('story_busy',409);return{hash,owner,until:clock()+60000};});
+  // Saved-story and creation allowances are checked before any provider call
+  // or story rotation, so a refused request costs nothing.
+  // The creation allowance comes first: deleting a saved story never brings back a used free story.
+  const saved=(await ctx.db.ref('serverStoryIndex/'+ctx.uid).get()).val()||{};
+  const usedLanguage=Object.values(saved).some(row=>row?.options?.language===options.language);
+  allowance=ctx.db.ref('serverStoryAllowance/'+ctx.uid);
+  await atomic(allowance,value=>reserveStory(value,{tier:ctx.tier,id:body.id,language:options.language,now:clock(),usedLanguage}));reserved=body.id;
+  if(Object.keys(saved).length>=savedStoryLimit(ctx.tier))throw fault('story_saved_limit',403);
   await atomic(ctx.db.ref('serverStoryBudget/'+ctx.uid),value=>{const starts=(Array.isArray(value?.starts)?value.starts:[]).filter(t=>Number.isFinite(t)&&t>clock()-60000);if(starts.length>=3)throw fault('story_busy',429);return{starts:[...starts,clock()]};});
   let planIndex=old?.planIndex;
   const rotation=ctx.db.ref('serverStoryRotation/'+ctx.uid+'/'+options.language+'/'+options.genre);
@@ -39,8 +48,9 @@ export function createStoriesHandler(services={identity,generateStory,wordPool:p
   if(recent.some(row=>row.fingerprint===fingerprint))throw fault('story_repeated',502);
   const story={...checked,method:result.method==='reviewed'?'reviewed':'ai',id:body.id,options,themeId:plan.id,planIndex,coverId:plan.id,createdAt:clock(),pool:result.format==='narrative'?checked.focus.map(row=>({w:row.word,meaning:row.meaning})):usedPool},index={title:checked.title,options,themeId:plan.id,fingerprint,createdAt:story.createdAt,wordCount:story.wordCount};
   await ctx.db.ref().update({[base+body.id]:story,['serverStoryIndex/'+ctx.uid+'/'+body.id]:index,['serverStoryRequests/'+ctx.uid+'/'+body.id]:{hash,owner,complete:true}});
-  const all=(await ctx.db.ref('serverStoryIndex/'+ctx.uid).get()).val()||{},expired=Object.entries(all).sort((a,b)=>b[1].createdAt-a[1].createdAt).slice(20);if(expired.length){const remove={};for(const[id]of expired){remove[base+id]=null;remove['serverStoryIndex/'+ctx.uid+'/'+id]=null;remove['serverStoryWordMeanings/'+ctx.uid+'/'+id]=null;}await ctx.db.ref().update(remove);}
+  await atomic(allowance,value=>commitStory(value,{id:body.id,language:options.language,now:clock()}));reserved=null;
+  const all=(await ctx.db.ref('serverStoryIndex/'+ctx.uid).get()).val()||{},expired=Object.entries(all).sort((a,b)=>b[1].createdAt-a[1].createdAt).slice(MAX_SAVED_STORIES);if(expired.length){const remove={};for(const[id]of expired){remove[base+id]=null;remove['serverStoryIndex/'+ctx.uid+'/'+id]=null;remove['serverStoryWordMeanings/'+ctx.uid+'/'+id]=null;}await ctx.db.ref().update(remove);}
   return reply({story});
- }catch(error){return reply({error:error.code||'story_unavailable'},error.status||503);}finally{if(lock)try{await atomic(lock,value=>value?.owner===owner&&!value.complete?{...value,until:0,failed:true}:value);}catch{}}
+ }catch(error){return reply({error:error.code||'story_unavailable'},error.status||503);}finally{if(reserved&&allowance)try{await atomic(allowance,value=>releaseStory(value,{id:reserved}));}catch{}if(lock)try{await atomic(lock,value=>value?.owner===owner&&!value.complete?{...value,until:0,failed:true}:value);}catch{}}
  });}
 export default createStoriesHandler();

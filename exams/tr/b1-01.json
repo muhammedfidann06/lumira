@@ -1,0 +1,131 @@
+{
+ "id": "tr-B1-01",
+ "level": "B1",
+ "lang": "tr",
+ "title": "Deneme Sınavı 1",
+ "lesen": [
+  {
+   "title": "1. Bölüm – Kısa makale",
+   "task": "Metni okuyun. Cümleler doğru mu, yanlış mı?",
+   "type": "rf",
+   "texts": [
+    {
+     "title": "Kitap kafeler",
+     "body": "Son yıllarda Türkiye'nin birçok şehrinde yeni bir tür kafe yaygınlaşıyor: kitap kafeler. Bu kafelerde müşteriler bir fincan kahve sipariş edip raflardan istedikleri kitabı seçebiliyor ve kitap için hiçbir ücret ödemeden sakin bir ortamda okuyabiliyor.\n\nEskişehir'deki «Sayfa» kafenin sahibi Zehra Hanım şöyle anlatıyor: «Bu fikir, gençlerin okumak için sessiz bir yer bulamadığını fark edince aklıma geldi. Halk kütüphaneleri erken kapanıyor, sıradan kafeler ise kalabalık ve gürültülü.» Kafede üç binden fazla kitap var; bunların çoğunu müşteriler bağışlamış.\n\nBu kafeler yalnızca okuma mekânı değil; şiir akşamları, kitap kulüpleri ve yazar buluşmaları da düzenliyor. Yine de bu işletmeler maddi zorluklar yaşıyor, çünkü bazı müşteriler saatlerce oturup sadece bir çay içiyor."
+    }
+   ],
+   "items": [
+    {"q": "Kitap kafeler kafe ile kütüphaneyi birleştiriyor.", "a": true},
+    {"q": "Müşteriler okudukları kitabı satın almak zorunda.", "a": false},
+    {"q": "Zehra Hanım'ın fikri gençlerin sessiz bir yer bulamamasından doğdu.", "a": true},
+    {"q": "Kafedeki bütün kitapları Zehra Hanım satın aldı.", "a": false},
+    {"q": "Kafelerde şiir akşamları düzenleniyor.", "a": true},
+    {"q": "Bu kafeler çok para kazanıyor.", "a": false}
+   ]
+  },
+  {
+   "title": "2. Bölüm – Bilgilendirici metin",
+   "task": "Metni okuyun ve doğru cevabı seçin.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Uzaktan çalışma: Özgürlük mü, yalnızlık mı?",
+     "body": "Pandemiden sonra evden çalışmak milyonlarca çalışanın hayatının bir parçası oldu. İstanbul, Ankara ve İzmir'de bin çalışanla yapılan yeni bir ankette katılımcıların yüzde altmışı haftada en az iki ya da üç gün evden çalışmayı tercih ettiğini söyledi.\n\nDestekçilere göre uzaktan çalışma zamandan ve paradan tasarruf sağlıyor; trafikte saatler harcamaya gerek kalmıyor. İstanbullu yazılım mühendisi Tarık Bey şöyle diyor: «Eskiden her gün yolda üç saat geçiriyordum. Şimdi bu zamanı spor yapmaya ve çocuklarımla oynamaya ayırıyorum.»\n\nAma uzaktan çalışmanın başka bir yüzü de var. Pek çok çalışan kendini yalnız hissediyor ve iş arkadaşlarıyla sohbeti özlüyor. Ayrıca iş ile özel hayat arasındaki sınır bazen kayboluyor; bazıları gece yarısına kadar mesajlara cevap vermeye devam ediyor.\n\nBu nedenle uzmanlar ofis ve evden çalışmayı birleştiren karma bir sistem öneriyor. Bu sistemde çalışanın ulaşılabilir olmak zorunda olmadığı saatlerin açıkça belirlenmesi gerekiyor."
+    }
+   ],
+   "items": [
+    {"q": "Çalışanların yüzde kaçı haftanın bir bölümünde evden çalışmayı tercih ediyor?", "options": ["yüzde otuzu", "yüzde altmışı", "yüzde doksanı"], "a": 1},
+    {"q": "Destekçiler hangi faydadan söz ediyor?", "options": ["zaman ve para tasarrufu", "maaş artışı", "yeni beceriler"], "a": 0},
+    {"q": "Tarık Bey artık zamanını nasıl kullanıyor?", "options": ["daha çok çalışıyor", "üniversitede okuyor", "spor yapıyor ve çocuklarıyla oynuyor"], "a": 2},
+    {"q": "Birçok çalışanın yaşadığı sorun nedir?", "options": ["yalnızlık", "internetin yavaş olması", "iş azlığı"], "a": 0},
+    {"q": "İş ile özel hayat arasındaki sınıra bazen ne oluyor?", "options": ["daha net oluyor", "kayboluyor", "değişmiyor"], "a": 1},
+    {"q": "Uzmanlar ne öneriyor?", "options": ["tamamen ofise dönmeyi", "her zaman evden çalışmayı", "net saatleri olan karma bir sistemi"], "a": 2}
+   ]
+  },
+  {
+   "title": "3. Bölüm – Okuyucu görüşleri",
+   "task": "Dört kişinin seyahat hakkındaki görüşlerini okuyun. Her cümlenin kime ait olduğunu seçin (a–d). Bir kişi birden fazla kez seçilebilir.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "Selma: Tek başıma seyahat etmeyi seviyorum. Yalnızken insanlarla daha kolay tanışıyor, kimseyi beklemeden ne istediğime karar veriyorum. Son gezimde Mardin'de beni evinde ağırlayan bir aileden birkaç Süryanice kelime öğrendim."},
+    {"key": "b", "text": "Mecit: Bence en güzeli aileyle seyahat. Çocuklarla çok plan yapmak gerekiyor, doğru; ama birlikte biriktirdiğimiz anıların değeri ölçülemez. Hep doğanın olduğu, küçükler için etkinliklerin bulunduğu yerleri seçiyoruz."},
+    {"key": "c", "text": "Hale: Uzun yolculukları ve havalimanlarını sevmiyorum. Kendi ülkemi keşfetmeyi tercih ediyorum: dağ köyleri, eski şehirler, yakındaki koylar. Yurt içi seyahat daha ucuz ve yerel ekonomiye de katkı sağlıyor."},
+    {"key": "d", "text": "Yusuf: Genellikle iş için seyahat ediyorum, bu yüzden pek keyif alamıyorum. Sadece havalimanını, oteli ve toplantı salonunu görüyorum. Ama her seferinde en az bir yeri gezebilmek için bir gün fazla kalmaya çalışıyorum."}
+   ],
+   "items": [
+    {"q": "Kim işi nedeniyle seyahat ediyor?", "a": "d"},
+    {"q": "Kim kendi ülkesini gezmeyi tercih ediyor?", "a": "c"},
+    {"q": "Kim yerel bir dilden bir şeyler öğrenmiş?", "a": "a"},
+    {"q": "Kim çocuklara uygun etkinliklere önem veriyor?", "a": "b"},
+    {"q": "Kim zamanı az olsa da bir yeri gezmeye çalışıyor?", "a": "d"},
+    {"q": "Kim kendi seyahat şeklinin daha az masraflı olduğunu söylüyor?", "a": "c"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "1. Bölüm – Diyalog",
+   "task": "Diyaloğu dinleyin ve doğru cevabı seçin. Diyaloğu iki kez dinleyeceksiniz.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Leyla: Merhaba Kerem, Berlin'e taşınacağını duydum!\nKerem: Evet, büyük bir mühendislik şirketinden iş teklifi aldım. Gelecek ay başlıyorum.\nLeyla: Tebrikler! Heyecanlı mısın?\nKerem: Heyecanlıyım ama biraz da endişeliyim. Daha önce hiç ailemden uzakta yaşamadım.\nLeyla: Bu çok normal. Peki ya ev?\nKerem: Şirket bana üç ay boyunca bir daire sağlayacak, sonra kendim ev bulmam gerekiyor.\nLeyla: Benim tavsiyem metroya yakın bir ev bulman. Oradaki toplu taşıma çok rahat, araba ise pahalı.\nKerem: İyi fikir. Sen de Berlin'de iki yıl çalışmadın mı?\nLeyla: Evet, harika bir deneyimdi. Sana arkadaşım Sinem'in numarasını vereyim; şehri çok iyi tanıyor, sana yardım edebilir.",
+   "items": [
+    {"q": "Kerem neden Berlin'e taşınıyor?", "options": ["okumak için", "çalışmak için", "ailesini ziyaret etmek için"], "a": 1},
+    {"q": "Kerem işe ne zaman başlayacak?", "options": ["gelecek ay", "üç ay sonra", "gelecek hafta"], "a": 0},
+    {"q": "Kerem neden endişeli?", "options": ["Almanca bilmiyor.", "İş zor.", "Daha önce ailesinden uzakta yaşamadı."], "a": 2},
+    {"q": "Şirket Kerem'e ne sağlayacak?", "options": ["araba", "üç aylık bir daire", "uçak bileti"], "a": 1},
+    {"q": "Leyla ona ne tavsiye ediyor?", "options": ["metroya yakın oturmasını", "araba almasını", "arkadaşlarıyla oturmasını"], "a": 0},
+    {"q": "Sinem kim?", "options": ["Leyla'nın kız kardeşi", "Kerem'in iş arkadaşı", "Berlin'i iyi tanıyan bir arkadaş"], "a": 2}
+   ]
+  },
+  {
+   "title": "2. Bölüm – Radyo programı",
+   "task": "Bir radyo programından bir bölüm dinleyin ve doğru cevabı seçin. Metni iki kez dinleyeceksiniz.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Sunucu: «Hayatımız» programına hoş geldiniz. Bugünkü konuğumuz diyetisyen Fatih Bey. Fatih Bey, insanlar beslenmede en çok hangi hataları yapıyor?\nFatih Bey: En büyük hata kahvaltıyı atlamak. Birçok kişi hiçbir şey yemeden işe çıkıyor, sonra öğlen çok fazla yiyor. İkinci hata da su yerine gazlı içecek içmek.\nSunucu: Günde kaç bardak suya ihtiyacımız var?\nFatih Bey: Yetişkin bir insanın yaklaşık sekiz bardak suya ihtiyacı var, yazın daha fazla.\nSunucu: Peki geleneksel yemeklerimiz sağlıklı mı?\nFatih Bey: Mutfağımızda çok sağlıklı yemekler var; mercimek çorbası, zeytinyağlı sebzeler, bakliyat gibi. Sorun miktarda; bir de tatlıların ve kızartmaların fazla olmasında.\nSunucu: Dinleyicilerimize son bir tavsiye?\nFatih Bey: Sert diyetlere güvenmeyin. Küçük ama sürekli değişiklikler, kalıcı olmayan büyük değişikliklerden çok daha iyidir.",
+   "items": [
+    {"q": "Fatih Bey'e göre en büyük hata nedir?", "options": ["tatlı yemek", "kahvaltıyı atlamak", "gece yemek"], "a": 1},
+    {"q": "İkinci hata nedir?", "options": ["su yerine gazlı içecek içmek", "kahve içmek", "et yemek"], "a": 0},
+    {"q": "Yetişkin bir insanın yaklaşık kaç bardak suya ihtiyacı var?", "options": ["dört bardak", "beş bardak", "sekiz bardak"], "a": 2},
+    {"q": "Fatih Bey Türk mutfağı hakkında ne düşünüyor?", "options": ["Hiç sağlıklı değil.", "Sağlıklı yemekler var, sorun miktarda.", "Tamamen bırakılmalı."], "a": 1},
+    {"q": "Hangi yiyecekler azaltılmalı?", "options": ["tatlılar ve kızartmalar", "salatalar", "mercimek ve nohut"], "a": 0},
+    {"q": "Son tavsiyesi nedir?", "options": ["sert bir diyet yapmak", "akşam yemeğini atlamak", "küçük ama sürekli değişiklikler yapmak"], "a": 2}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "1. Görev – Resmî mektup",
+   "task": "İnternetten bir elektrikli ev aleti aldınız ve ürün bozuk geldi. Müşteri hizmetlerine bir mektup yazın.",
+   "prompt": "Mektup yazın (100–120 kelime): Ne aldınız ve ne zaman? Sorun ne? Ne talep ediyorsunuz?",
+   "points": ["ne alındı ve ne zaman", "sorun", "talep", "resmî selamlama ve kapanış"],
+   "words": 110,
+   "sample": "Sayın Yetkili,\n\n4567 numaralı siparişimle ilgili olarak size yazıyorum. Ayın onunda sitenizden bir bulaşık makinesi satın aldım ve ürün on beşinde elime ulaştı. Ancak makineyi çalıştırmak istediğimde hiç çalışmadı ve ekranda bir hata mesajı çıktı. Ayrıca kapağın sol tarafının kırık olduğunu fark ettim.\n\nBu ürün için yüksek bir ücret ödedim ve kusursuz, yeni bir ürün bekliyordum. Bu nedenle makinenin en kısa sürede yenisiyle değiştirilmesini rica ediyorum. Bu mümkün değilse ödediğim tutarın tamamının iade edilmesini talep ediyorum.\n\nÜrünün ve faturanın fotoğraflarını ekte gönderiyorum.\n\nGereğini bilgilerinize sunarım.\n\nSaygılarımla,\nJulia Becker"
+  },
+  {
+   "title": "2. Görev – Görüş yazısı",
+   "task": "Üniversite dergisi şu soruyu soruyor: «Öğrenciler üniversite eğitimi sırasında çalışmalı mı?»",
+   "prompt": "Kısa bir yazı yazın (120–150 kelime). Görüşünüzü açıklayın; olumlu ve olumsuz yönleri, örneklerle belirtin.",
+   "points": ["görüşünüz", "olumlu yönler", "olumsuz yönler", "örnek", "sonuç"],
+   "words": 135,
+   "sample": "Bugün birçok öğrenci üniversiteyi okurken bir yandan da çalışıyor. Bence yarı zamanlı olduğu sürece bu çok faydalı.\n\nÇalışmanın pek çok yararı var. Öğrenci harcamalarını tamamen ailesine bağlı kalmadan karşılayabiliyor, zamanını planlamayı ve sorumluluk almayı öğreniyor. Ayrıca mezun olduktan sonra iş bulmasını kolaylaştıracak bir iş deneyimi kazanıyor. Örneğin bir arkadaşım üniversite kütüphanesinde çalıştı ve orada öğrendiği düzenleme becerileri şu anki işinde ona çok yardımcı oluyor.\n\nAncak çalışmanın olumsuz yanları da var. Öğrenci yorulabilir, derslerine yeterince zaman ayıramayabilir ve notları düşebilir. Bazı öğrenciler de kolay kazanılan parayı tercih ederek okulu bırakıyor.\n\nBu yüzden çalışmanın, haftada on beş saati geçmemek ve mümkünse bölümle ilgili bir alanda olmak şartıyla faydalı olduğunu düşünüyorum."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "1. Görev – Bir deneyimi anlatma",
+   "task": "İki üç dakika unutamadığınız bir yolculuğu anlatın: Nereye gittiniz? Ne zaman ve kiminle? Neler yaptınız? Neden unutamıyorsunuz?",
+   "cards": ["yer", "zaman ve kiminle", "neler oldu", "neden önemli"],
+   "phrases": ["… yıl önce … gittim.", "Yanımda … vardı.", "En çok … hoşuma gitti.", "Bu yolculuğu unutamıyorum çünkü …"],
+   "sample": "Üç yıl önce üniversiteden iki arkadaşımla Karadeniz'e gittim. Önce Trabzon'u gezdik, sonra Uzungöl'e ve Ayder Yaylası'na gittik. En çok yayladaki bir gece hoşuma gitti: Ahşap bir pansiyonda kaldık, ev sahibi bize muhlama yaptı ve gece yarısına kadar kemençe dinledik. Bu yolculuğu unutamıyorum çünkü Türkçeyi ilk kez gerçek hayatta, insanlarla saatlerce konuşarak kullandım ve öğrendiğim her şeyin bir anlamı olduğunu hissettim."
+  },
+  {
+   "title": "2. Görev – Tartışma",
+   "task": "Bazı insanlar akıllı telefonların okullarda yasaklanması gerektiğini düşünüyor. Bu görüşü sınav görevlisiyle tartışın ve nedenleriyle birlikte kendi fikrinizi söyleyin.",
+   "cards": ["görüşünüz", "nedenler", "karşı görüş", "orta yol"],
+   "phrases": ["Bence …", "… katılıyorum ama …", "Bir yandan …, öte yandan …", "Belki de çözüm …"],
+   "sample": "Bence telefonları tamamen yasaklamak en iyi çözüm değil. Telefonların derste dikkati dağıttığına ve bazı öğrencilerin teneffüsü arkadaşlarıyla oynamak yerine ekran başında geçirdiğine katılıyorum. Ama öte yandan telefon öğrenmede de kullanılabilir; bilgi aramak ya da sözlüğe bakmak gibi. Ayrıca aileler çocuklarına ulaşmak isteyebilir. Belki de çözüm, öğrencilerin derste telefonlarını bir kutuya koyması ve sadece öğretmen istediğinde kullanmasıdır."
+  }
+ ]
+}

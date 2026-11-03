@@ -1,0 +1,187 @@
+{
+ "id": "en-B1-01",
+ "level": "B1",
+ "lang": "en",
+ "title": "Practice Test 1",
+ "lesen": [
+  {
+   "title": "Part 1",
+   "task": "For each question, read the text and choose the correct answer a, b or c.",
+   "type": "abc",
+   "items": [
+    {"text": "Hi Kate, I've left the keys to the flat with Mrs Brown next door. She'll be in until 5. Text me if you can't get there before then. Joe", "options": ["Kate should collect the keys before 5.", "Mrs Brown will bring the keys to Kate.", "Joe needs the keys back by 5."], "a": 0},
+    {"text": "SCIENCE MUSEUM\nPhotography is allowed in all galleries, but please do not use flash in the Space Gallery.", "options": ["You cannot take photos in the Space Gallery.", "Flash photography is not permitted in one gallery.", "You must pay to take photos in the museum."], "a": 1},
+    {"text": "To all students: The school trip to the theatre has been moved from Thursday to Friday. The coach will now leave at 6.15 pm instead of 6 pm.", "options": ["The trip has been cancelled.", "The coach will leave earlier than planned.", "Both the day and the departure time have changed."], "a": 2},
+    {"text": "FOR SALE: Mountain bike, 2 years old, good condition, new tyres. £120 or nearest offer. Call Sam after 6 pm.", "options": ["Sam might accept a little less than £120.", "The bike needs new tyres.", "You can call Sam at any time."], "a": 0},
+    {"text": "Lisa – Your dentist appointment on Monday is at 10.30, not 9.30 as we told you earlier. Please arrive 10 minutes early to fill in a form.", "options": ["Lisa's appointment is now earlier.", "Lisa should arrive at 10.20.", "Lisa needs to change the day of her appointment."], "a": 1}
+   ]
+  },
+  {
+   "title": "Part 2",
+   "task": "The people below all want to do something in the city this weekend. Read the eight descriptions a–h. Decide which place would be the most suitable for each person or group.",
+   "type": "match",
+   "choices": [
+    {"key": "a", "text": "City Farm Park: Feed the goats, meet the horses and play in our adventure playground. Our café serves fresh food from the farm. Open daily 9–5."},
+    {"key": "b", "text": "The Old Town Museum: Discover life in the city 300 years ago. Free tours with guides in historical costume every hour. Visit our gift shop for books and local crafts."},
+    {"key": "c", "text": "Riverside Climbing Wall: Indoor climbing for beginners and experts. Equipment hire included. Student price: £5, every day of the week."},
+    {"key": "d", "text": "Gallery of Contemporary Art: New exhibition of paintings by young European artists. Open late on Thursdays and Fridays until 9 pm, with talks by the curator at 7 pm."},
+    {"key": "e", "text": "Jazz at The Blue Room: Saturday night concert by the Ellis Quartet. After the show, join the band at the bar for a chat and signed CDs."},
+    {"key": "f", "text": "National Science Centre: Hands-on experiments for all ages and a special exhibition on robots. Café and picnic area. Closed on Mondays."},
+    {"key": "g", "text": "Grand Theatre: This month's musical 'Summer Nights' has been extended. Tickets from £35. Box office open 10–8."},
+    {"key": "h", "text": "Central Sports Centre: Swimming pool, gym and tennis courts. Membership required; day passes cost £25."}
+   ],
+   "items": [
+    {"q": "Hannah", "text": "Hannah loves history and wants to learn how people lived in the past. She'd like a guided tour, and she wants to buy a souvenir to take home.", "a": "b"},
+    {"q": "Tom and Ben", "text": "Tom and Ben are 16 and love sport. They want to try something active together, but they don't have much money to spend.", "a": "c"},
+    {"q": "The Garcia family", "text": "The Garcias have two young children. They want to spend a day outdoors where the children can see animals, and they'd like to have lunch there.", "a": "a"},
+    {"q": "Mr Patel", "text": "Mr Patel is interested in modern art. He wants to go somewhere after work in the evening, and he'd like to hear an expert talk about the works.", "a": "d"},
+    {"q": "Sofia", "text": "Sofia is a music student. She wants to see a live performance this weekend and would like to meet the musicians afterwards.", "a": "e"}
+   ]
+  },
+  {
+   "title": "Part 3",
+   "task": "Read the text and choose the correct answer a, b or c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "A year without a smartphone",
+     "body": "Last January, I made a decision that surprised my friends: I gave my smartphone to my brother and bought a basic phone that can only make calls and send texts. I was spending more than five hours a day on my phone, and I felt that I never had time for the things I really enjoyed.\n\nThe first few weeks were harder than I had expected. I kept reaching for my pocket when I was waiting for the bus, and I felt left out when my friends were sharing photos in group chats. I also had to buy a paper map, because I couldn't find my way around without one!\n\nBut after about a month, things started to change. I began reading on my way to college and finished more books in three months than in the whole previous year. I also started sleeping better, because I no longer looked at a screen before going to bed.\n\nMy friends were not always happy with my experiment. They had to call me instead of sending messages, and sometimes they forgot to tell me about plans. However, the friendships that mattered became stronger, because when we met, we actually talked to each other.\n\nNow the year is over, and I have a smartphone again – I need it for my new job. But I have kept some of my new habits. I don't take my phone into my bedroom, and I switch off notifications for most apps. I would recommend the experiment to anyone, even if only for a month.\n\nLena"
+    }
+   ],
+   "items": [
+    {"q": "Why did Lena decide to stop using a smartphone?", "options": ["Her phone was broken.", "She was using it too much.", "Her brother needed a phone."], "a": 1},
+    {"q": "What was difficult for Lena at the beginning?", "options": ["She missed being part of online conversations.", "She could not make phone calls.", "She lost her paper map."], "a": 0},
+    {"q": "After a month, Lena noticed that she…", "options": ["spent more time with her brother.", "enjoyed college less.", "read more and slept better."], "a": 2},
+    {"q": "How did the experiment affect Lena's friendships?", "options": ["She lost all her friends.", "Her important friendships became stronger.", "Her friends started using basic phones too."], "a": 1},
+    {"q": "What does Lena do now?", "options": ["She uses her smartphone in the same way as before.", "She has given up smartphones completely.", "She limits how she uses her phone."], "a": 2}
+   ]
+  },
+  {
+   "title": "Part 4",
+   "task": "Five sentences have been removed from the text. Choose the sentence a–h that fits each gap. There are three extra sentences which you do not need to use.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Bees in the city",
+     "body": "Ten years ago, very few people in London kept bees. Today, there are more than 5,000 hives in the city, on rooftops, in gardens and even on top of famous hotels. [1]\n\nOne reason for this is that cities can actually be good places for bees. [2] Parks, gardens and balconies are full of different flowers that bloom at different times of the year.\n\nMany companies now have hives on their office roofs. [3] Some also give the honey to their staff or use it in their restaurants.\n\nHowever, not everyone thinks this trend is positive. [4] Experts say that too many hives in one area can make it difficult for wild bees to find enough food.\n\nSo what can ordinary people do to help? [5] Planting flowers that bees like, such as lavender, is a simple way to support all kinds of bees."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "They say it helps them show customers that they care about the environment."},
+    {"key": "b", "text": "Bees are only active for a few weeks in summer."},
+    {"key": "c", "text": "Beekeeping has become one of the city's most popular hobbies."},
+    {"key": "d", "text": "You don't need to keep bees yourself."},
+    {"key": "e", "text": "Unlike the countryside, where farmers often grow only one type of crop, the city offers a wide variety of plants."},
+    {"key": "f", "text": "That is why many cities have banned beekeeping."},
+    {"key": "g", "text": "Honeybees compete with other insects for flowers."},
+    {"key": "h", "text": "Most hotels in London now sell their own honey."}
+   ],
+   "items": [
+    {"q": "Gap 1", "a": "c"},
+    {"q": "Gap 2", "a": "e"},
+    {"q": "Gap 3", "a": "a"},
+    {"q": "Gap 4", "a": "g"},
+    {"q": "Gap 5", "a": "d"}
+   ]
+  },
+  {
+   "title": "Part 5",
+   "task": "Read the text and choose the correct word a, b or c for each gap.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "The Town of Books",
+     "body": "In the small town of Hay-on-Wye, on the border between England and Wales, there are more than twenty bookshops – a lot [1] a town of only 1,500 people. The town's love of books began in 1962, when a young man [2] Richard Booth opened a second-hand bookshop there. He bought thousands of books from libraries that were closing and [3] the town as the 'Town of Books'.\n\nToday, Hay-on-Wye is famous for its literature festival, which [4] place every summer. Writers from all over the world come to talk about their work, and visitors can [5] part in workshops. If you are a book lover, it is [6] worth a visit."
+    }
+   ],
+   "items": [
+    {"q": "Gap 1", "options": ["for", "to", "with"], "a": 0},
+    {"q": "Gap 2", "options": ["known", "called", "named after"], "a": 1},
+    {"q": "Gap 3", "options": ["announced", "explained", "advertised"], "a": 2},
+    {"q": "Gap 4", "options": ["takes", "makes", "has"], "a": 0},
+    {"q": "Gap 5", "options": ["make", "take", "give"], "a": 1},
+    {"q": "Gap 6", "options": ["much", "more", "really"], "a": 2}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "Part 1",
+   "task": "For each question, listen and choose the correct answer a, b or c. You will hear each recording twice.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Woman: Did you remember to buy milk?\nMan: Yes, and I got some bread too. But the shop had run out of eggs, so I'll go to the market tomorrow.", "q": "What will the man buy tomorrow?", "options": ["milk", "bread", "eggs"], "a": 2},
+    {"audio": "Man: What time does the film start?\nWoman: The website says seven forty-five, but there are about twenty minutes of adverts first, so the film itself begins at around five past eight.", "q": "When does the film itself begin?", "options": ["7.45", "8.05", "8.20"], "a": 1},
+    {"audio": "Girl: How are you getting to the concert?\nBoy: I was going to cycle, but it's going to rain, so my dad's giving me a lift. I'll take the bus home.", "q": "How will the boy get to the concert?", "options": ["by bike", "by car", "by bus"], "a": 1},
+    {"audio": "Woman: I'm looking for a jacket for walking. Something light but waterproof.\nShop assistant: This green one is very popular. It's light and it folds into a small bag.\nWoman: I prefer the blue one, actually. And it's cheaper.", "q": "Which jacket does the woman prefer?", "options": ["the blue one", "the green one", "the black one"], "a": 0},
+    {"audio": "Man: Our team meeting is usually on Monday, but next week Monday is a holiday, so we'll have it on Tuesday instead. Someone suggested Wednesday, but the room is booked that day.", "q": "When is next week's meeting?", "options": ["Tuesday", "Monday", "Wednesday"], "a": 0},
+    {"audio": "Woman: How was the weather on your camping trip?\nMan: Cold at night, but the days were warm and sunny. We only had one shower of rain on the last afternoon.", "q": "What was the weather like during the day?", "options": ["cold and windy", "rainy", "warm and sunny"], "a": 2},
+    {"audio": "Boy: What are you doing for your project?\nGirl: I wanted to write about volcanoes, but someone else chose that. So I'm doing earthquakes. Maybe I'll do something on tsunamis next term.", "q": "What is the girl's project about?", "options": ["volcanoes", "tsunamis", "earthquakes"], "a": 2}
+   ]
+  },
+  {
+   "title": "Part 2",
+   "task": "For each question, you will hear a short conversation. Choose the correct answer a, b or c. You will hear each conversation twice.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Man: So, what did you think of the new Italian restaurant?\nWoman: The pizza was lovely, but we waited almost an hour for it. I don't think I'll go back.", "q": "What does the woman think about the restaurant?", "options": ["The food was disappointing.", "The service was too slow.", "It was too expensive."], "a": 1},
+    {"audio": "Girl: Are you nervous about your driving test?\nBoy: Not really. I've had lots of lessons and my instructor thinks I'm ready. I just hope I don't have to park between two cars!", "q": "How does the boy feel about his driving test?", "options": ["fairly confident", "very worried", "bored"], "a": 0},
+    {"audio": "Woman: Did you enjoy the book I lent you?\nMan: The story was a bit slow at the start, but the ending was brilliant. I couldn't stop reading.", "q": "What did the man like most about the book?", "options": ["the beginning", "the characters", "the ending"], "a": 2},
+    {"audio": "Man: How's your new flat?\nWoman: It's smaller than my old one, but it's right in the centre, so I can walk everywhere. I don't miss the long bus journeys at all.", "q": "What does the woman like about her new flat?", "options": ["its size", "its location", "its price"], "a": 1},
+    {"audio": "Boy: Why didn't you come to the party?\nGirl: I wanted to, but my grandparents arrived unexpectedly, so I stayed at home with them. Next time!", "q": "Why didn't the girl go to the party?", "options": ["She had family visitors.", "She was ill.", "She forgot about it."], "a": 0},
+    {"audio": "Woman: What do you think of the new sports centre?\nMan: The pool is great, but they've made the gym much smaller. And there aren't enough machines when it's busy.", "q": "What does the man complain about?", "options": ["the swimming pool", "the opening hours", "the gym"], "a": 2}
+   ]
+  },
+  {
+   "title": "Part 3",
+   "task": "You will hear a radio interview with Ruby Clarke, who runs her own café. For each question, choose the correct answer a, b or c. You will hear the interview twice.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Presenter: Today I'm talking to Ruby Clarke, who opened her own café at the age of twenty-two. Ruby, how did it all start?\nRuby: Well, I always loved cooking, but I actually studied business at university. During my studies I worked part-time in a bakery, and that's when I realised that food was what I really wanted to do.\nPresenter: Was it difficult to open the café?\nRuby: Very! The hardest part was finding the money. Banks didn't want to lend money to someone so young, so in the end my family and some friends helped me. I paid them all back within three years.\nPresenter: What makes your café special?\nRuby: Everything we sell is made that morning, and we only use ingredients from farms within fifty kilometres. Customers can taste the difference. We also have a pay-what-you-can table on Fridays for people who don't have much money.\nPresenter: What's a typical day like for you?\nRuby: I start at five in the morning, baking bread with my assistant. The café opens at seven and it's busy until about two. In the afternoons I do the accounts and plan the menu for the next week.\nPresenter: Any advice for young people who want to start a business?\nRuby: Don't be afraid to ask for help, and be ready to work very hard. But most importantly, choose something you really love – otherwise the long hours will feel impossible.",
+   "items": [
+    {"q": "What did Ruby study at university?", "options": ["cooking", "business", "farming"], "a": 1},
+    {"q": "Ruby realised she wanted to work with food when she…", "options": ["had a part-time job.", "travelled abroad.", "finished university."], "a": 0},
+    {"q": "Who gave Ruby the money to start her café?", "options": ["a bank", "people she knew", "the government"], "a": 1},
+    {"q": "What is special about the food in Ruby's café?", "options": ["It is all vegetarian.", "It is cheaper than in other cafés.", "It uses local ingredients."], "a": 2},
+    {"q": "What does Ruby do in the afternoons?", "options": ["She bakes bread.", "She serves customers.", "She does paperwork and planning."], "a": 2},
+    {"q": "Ruby's most important advice is to…", "options": ["choose something you love.", "ask a bank for money.", "start when you are young."], "a": 0}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Part 1 – Email",
+   "task": "Read this email from your English-speaking friend Sam: \"Hi! I'm coming to visit your town next month for three days. What's the best time of year to visit? What should I see? Can you recommend a place to stay? Sam\"",
+   "prompt": "Write your email to Sam. Write about 100 words and include all the points below.",
+   "points": ["say when the best time to visit is", "suggest two places to see", "recommend somewhere to stay", "offer to meet Sam"],
+   "words": 100,
+   "sample": "Hi Sam,\n\nGreat news that you're coming! The best time to visit is in late spring, because it's warm but not too hot, and there are fewer tourists than in summer.\n\nYou should definitely see the old castle on the hill – the view from the top is amazing. I'd also recommend the fish market by the harbour, especially early in the morning.\n\nFor a place to stay, try the Harbour Guesthouse. It's small and friendly, and it isn't expensive.\n\nI'd love to meet you while you're here. Shall we have dinner together on your first evening?\n\nSee you soon,\nEmre"
+  },
+  {
+   "title": "Part 2 – Article",
+   "task": "You see this announcement in an English-language magazine: \"Articles wanted! My favourite way to relax. What do you do to relax? Why does it help you? Write an article and tell us!\"",
+   "prompt": "Write your article in about 100 words and answer all the questions below.",
+   "points": ["what you do to relax", "when and where you do it", "why it helps you"],
+   "words": 100,
+   "sample": "Nothing relaxes me more than baking bread.\n\nEvery Sunday morning, before the rest of my family wakes up, I go into the kitchen, turn on some quiet music and start mixing flour, water and yeast. Then I wait for the dough to rise, which takes about an hour.\n\nWhy does it help? First of all, I can't look at my phone because my hands are covered in flour! I have to concentrate on what I'm doing, so I forget about school and stress. And at the end, the whole house smells wonderful and everyone has fresh bread for breakfast. Try it – you'll be surprised!"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Part 1 – Describe a scene",
+   "task": "Imagine you are looking at this photo: a family is having a picnic next to a lake on a sunny day. Describe what you can see: the people, the place, what they are doing and what the weather is like. Speak for about one minute.",
+   "cards": ["the people and their clothes", "the place", "what they are doing", "the weather and the atmosphere"],
+   "phrases": ["In this photo I can see …", "In the foreground / background there is …", "It looks like they are …", "I think it's probably …"],
+   "sample": "In this photo I can see a family having a picnic next to a lake. There are two parents and two children, and they are sitting on a big red blanket on the grass. The father is cutting some bread, and the mother is pouring drinks. The children are laughing – I think they are playing a game. In the background there are some trees and a small boat on the water. The weather looks warm and sunny, so it's probably summer. Everyone seems relaxed and happy. It looks like a perfect day out."
+  },
+  {
+   "title": "Part 2 – Discussion",
+   "task": "A friend wants to start a new hobby. Talk together about these ideas – learning an instrument, joining a sports club, painting, photography and cooking – and decide which would be the best for your friend.",
+   "cards": ["learning an instrument", "joining a sports club", "painting", "photography", "cooking"],
+   "phrases": ["Let's start with …", "That's a good point, but …", "I'd say … because …", "What about …?", "So, shall we agree on …?"],
+   "sample": "A: Let's start with learning an instrument. It's a great hobby, but it takes a long time to get good.\nB: That's a good point. Joining a sports club might be better, because your friend could meet new people and keep fit.\nA: True, but it can be expensive. What about photography? You only need your phone to start.\nB: I like that idea. And cooking is useful too – you can use it every day.\nA: Yes, but our friend already cooks a lot. I'd say photography, because it gets you outside and it's creative.\nB: OK, shall we agree on photography, then?\nA: Yes, let's do that."
+  }
+ ]
+}

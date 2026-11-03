@@ -1,0 +1,149 @@
+{
+ "id": "tr-B2-01",
+ "level": "B2",
+ "lang": "tr",
+ "title": "Deneme Sınavı 1",
+ "lesen": [
+  {
+   "title": "1. Bölüm – Makale",
+   "task": "Makaleyi okuyun ve doğru cevabı seçin.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Şehirlerin görünmez sorunu: Isı adaları",
+     "body": "Yaz aylarında şehir merkezinde yaşayanlar, şehrin dışındaki köylere göre çok daha fazla sıcaklık hisseder. Bu, yalnızca bir his değil; bilim insanlarının «kentsel ısı adası» adını verdiği ölçülebilir bir olgu. Yapılan ölçümlere göre büyük şehirlerin merkezi, çevresindeki kırsal alanlardan gece saatlerinde beş ila yedi derece daha sıcak olabiliyor.\n\nBu durumun temel nedeni, şehirleri oluşturan malzemeler. Asfalt ve beton gün boyunca güneş ışığını emiyor, depoladığı ısıyı da geceleri yavaş yavaş havaya bırakıyor. Buna yeşil alanların azlığı, sıkışık yapılaşma ve klimalardan çıkan sıcak hava da ekleniyor.\n\nIsı adalarının etkileri sanıldığından ciddi. Sıcak hava dalgaları sırasında özellikle yaşlılar ve kronik hastalığı olanlar risk altında. Ayrıca serinlemek için kullanılan klimalar enerji tüketimini artırıyor, bu da daha fazla sera gazı salımına ve dolayısıyla daha fazla ısınmaya yol açıyor.\n\nÇözüm önerileri ise şaşırtıcı derecede basit. Çatıların açık renge boyanması, binaların üzerinde bitki örtüsü oluşturulması ve sokaklara ağaç dikilmesi sıcaklığı belirgin şekilde düşürebiliyor. Uzmanlara göre asıl zorluk teknik değil; şehir planlamasında bu önlemlerin kâr hesaplarının önüne konulabilmesi."
+    }
+   ],
+   "items": [
+    {"q": "Metne göre «kentsel ısı adası» nedir?", "options": ["şehir merkezlerinin çevresinden daha sıcak olması", "denizdeki sıcak bir bölge", "yazın kırsalın daha sıcak olması"], "a": 0},
+    {"q": "Şehir merkezi gece saatlerinde ne kadar daha sıcak olabiliyor?", "options": ["bir iki derece", "beş ila yedi derece", "on beş derece"], "a": 1},
+    {"q": "Asfalt ve betonun etkisi nedir?", "options": ["Havayı serinletirler.", "Yağmuru emerler.", "Isıyı depolayıp geceleri bırakırlar."], "a": 2},
+    {"q": "Sıcak hava dalgalarında en çok kim risk altında?", "options": ["yaşlılar ve kronik hastalar", "çocuklar ve gençler", "sporcular"], "a": 0},
+    {"q": "Klimaların kullanımı neden bir kısır döngü yaratıyor?", "options": ["Çok gürültü yaptıkları için", "Enerji tüketimini ve dolayısıyla ısınmayı artırdıkları için", "Pahalı oldukları için"], "a": 1},
+    {"q": "Uzmanlara göre asıl zorluk nedir?", "options": ["teknik bilgi eksikliği", "ağaç bulmanın zorluğu", "önlemlerin kâr hesaplarının önüne konulması"], "a": 2}
+   ]
+  },
+  {
+   "title": "2. Bölüm – Başlıklar",
+   "task": "Paragrafları (1–6) okuyun ve her paragraf için uygun başlığı seçin (a–h). İki başlık fazladır.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Gönüllülük: Gençlerin deneyimleri",
+     "body": "1. Türkiye'de birçok sivil toplum kuruluşu, yaz tatilinde gençlere iki hafta ile iki ay arasında süren kısa gönüllülük programları sunmaya başladı.\n\n2. Katılımcılar, kazandıkları en önemli şeyin sertifika değil; ekip çalışması, sorun çözme ve farklı geçmişlerden insanlarla iletişim kurma gibi beceriler olduğunu söylüyor.\n\n3. Pek çok şirket artık iş başvurularında adaylara gönüllülük deneyimlerini soruyor ve bunu girişkenliğin ve sorumluluk duygusunun bir göstergesi olarak görüyor.\n\n4. Ne var ki bazı gönüllüler, kuruluşların kendilerine yeterli eğitim vermediğinden yakınıyor; nasıl yapacaklarını bilmedikleri görevlerle baş başa kalıyorlar.\n\n5. Uzmanlar ayrıca «gönüllülük turizmi» konusunda uyarıyor: Varlıklı ülkelerden gelen gençler kısa projelere katılmak için yüksek ücretler ödüyor; bu projeler yerel topluluklardan çok katılımcıların imajına yarıyor.\n\n6. Herkesin birleştiği nokta şu: Başarılı gönüllülük, toplumun gerçek ihtiyaçlarından yola çıkan ve gönüllüler gittikten sonra da etkisi süren gönüllülüktür."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "İş dünyasında gönüllülüğün değeri"},
+    {"key": "b", "text": "Çeşitli yaz programları"},
+    {"key": "c", "text": "Gerçek başarının koşulu"},
+    {"key": "d", "text": "Kâğıdın ötesinde beceriler"},
+    {"key": "e", "text": "Hazırlıktaki eksiklikler"},
+    {"key": "f", "text": "Gönüllülük ticarete dönüşünce"},
+    {"key": "g", "text": "Hayırseverliğin tarihi"},
+    {"key": "h", "text": "İnternet üzerinden gönüllülük"}
+   ],
+   "items": [
+    {"q": "Paragraf 1", "a": "b"},
+    {"q": "Paragraf 2", "a": "d"},
+    {"q": "Paragraf 3", "a": "a"},
+    {"q": "Paragraf 4", "a": "e"},
+    {"q": "Paragraf 5", "a": "f"},
+    {"q": "Paragraf 6", "a": "c"}
+   ]
+  },
+  {
+   "title": "3. Bölüm – Eksik cümleler",
+   "task": "Metinden altı cümle çıkarılmıştır. Her boşluk için uygun cümleyi seçin (a–g). Bir cümle fazladır.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "El sanatlarının geri dönüşü",
+     "body": "Gaziantep'in eski çarşısında Bakırcı İsmail Usta, elli yılı aşkın süredir aynı tezgâhın başında oturuyor. [1] Ama bir gün üniversiteli gençlerin kapısını çalıp zanaatı öğrenmek isteyeceğini hiç düşünmemişti.\n\n[2] Yeni bir tasarımcı kuşağı geleneksel el sanatlarını yeniden keşfediyor ve onları çağdaş fikirlerle harmanlıyor. [3]\n\nOtuz yaşındaki tasarımcı Selin anlatıyor: «Bu zanaatların geçmişte kaldığını sanıyorduk. [4]» Selin, arkadaşlarıyla birlikte ustaların ürünlerini internet üzerinden Avrupa ve Amerika'daki müşterilere satan bir girişim kurdu.\n\n[5] Bazı ustalar emeklerinin sömürülmesinden ya da zanaatın ticari bir ürüne dönüşürken ruhunu kaybetmesinden endişe ediyor.\n\nYine de İsmail Usta iyimser görünüyor. [6]"
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Bütün bu yıllar boyunca zanaatın gerilediğini, atölyelerin birer birer kapandığını gördü."},
+    {"key": "b", "text": "Ancak bu yeni ilgi gerilimsiz değil."},
+    {"key": "c", "text": "Oysa bu zanaatlar bir tarih ve kimlik taşıyor; insanlar da bugün özgünlük arıyor."},
+    {"key": "d", "text": "Gaziantep'te yaşananlar tek örnek değil."},
+    {"key": "e", "text": "Gülümseyerek şöyle diyor: «Önemli olan tezgâhın çalışmaya devam etmesi ve bilginin bizden sonrakilere geçmesi.»"},
+    {"key": "f", "text": "Bugün geleneksel dokunuşlar taşıyan modern çantalar, mobilyalar ve giysiler görüyoruz."},
+    {"key": "g", "text": "Gaziantep, mutfağıyla UNESCO listesinde yer alıyor."}
+   ],
+   "items": [
+    {"q": "Boşluk 1", "a": "a"},
+    {"q": "Boşluk 2", "a": "d"},
+    {"q": "Boşluk 3", "a": "f"},
+    {"q": "Boşluk 4", "a": "c"},
+    {"q": "Boşluk 5", "a": "b"},
+    {"q": "Boşluk 6", "a": "e"}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "1. Bölüm – Röportaj",
+   "task": "Röportajı dinleyin ve doğru cevabı seçin. Röportajı iki kez dinleyeceksiniz.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Sunucu: Bugünkü konuğumuz, plastik atıkları yapı malzemesine dönüştüren bir girişimin kurucusu mühendis Ece Yılmaz. Ece Hanım, fikir nasıl doğdu?\nEce Hanım: İnşaat mühendisliği okurken başladı. Bir yandan sahillerde ve derelerde plastik yığınları görüyordum, bir yandan da yapı malzemelerinin fiyatlarının sürekli arttığını. Kendime sordum: Neden iki sorunu birlikte çözmüyoruz?\nSunucu: Tam olarak ne üretiyorsunuz?\nEce Hanım: Kaldırım taşı ve hafif tuğla üretiyoruz. Öğütülmüş plastiği kumla karıştırıyoruz; normal betondan daha dayanıklı ve daha hafif bir malzeme elde ediyoruz.\nSunucu: Karşılaştığınız en büyük zorluk neydi?\nEce Hanım: Başta finansman, elbette. Ama en zoru insanları ikna etmekti. Birçok kişi atıktan yapılan bir malzemenin kalitesinden şüphe ediyordu. Bu yüzden üniversite laboratuvarlarında testler yaptırdık ve sonuçları yayımladık.\nSunucu: Plastiği nereden temin ediyorsunuz?\nEce Hanım: Belediyelerle ve köylerdeki kadın kooperatifleriyle çalışıyoruz. Plastiği onlar topluyor, biz de onlardan satın alıyoruz; böylece düzenli bir gelirleri oluyor.\nSunucu: Gelecek planlarınız neler?\nEce Hanım: İki yıl içinde güneyde ikinci bir fabrika açmak ve ürünlerimizi komşu ülkelere ihraç etmek istiyoruz.",
+   "items": [
+    {"q": "Ece Hanım'ın şirketi ne yapıyor?", "options": ["plastiği yapı malzemesine dönüştürüyor", "sahilleri temizliyor", "çimento satıyor"], "a": 0},
+    {"q": "Fikir ne zaman doğdu?", "options": ["mezuniyetten on yıl sonra", "üniversitede okurken", "belediyede çalışırken"], "a": 1},
+    {"q": "Ürettikleri malzemenin özelliği nedir?", "options": ["tahtadan ucuz", "rengi değişiyor", "normal betondan dayanıklı ve hafif"], "a": 2},
+    {"q": "Ece Hanım'a göre en büyük zorluk neydi?", "options": ["insanları malzemenin kalitesine ikna etmek", "işçi bulmak", "plastik temin etmek"], "a": 0},
+    {"q": "Köylerdeki kadınlar projeden nasıl yararlanıyor?", "options": ["fabrikada çalışıyorlar", "plastik satarak gelir elde ediyorlar", "mühendislik öğreniyorlar"], "a": 1},
+    {"q": "Şirketin gelecek planı nedir?", "options": ["ilk fabrikayı kapatmak", "faaliyet alanını değiştirmek", "ikinci bir fabrika açmak ve ihracat yapmak"], "a": 2}
+   ]
+  },
+  {
+   "title": "2. Bölüm – Kısa haberler",
+   "task": "Kısa haberleri dinleyin ve doğru cevabı seçin. Her haberi bir kez dinleyeceksiniz.",
+   "type": "abc",
+   "plays": 1,
+   "items": [
+    {"audio": "Spiker: Millî Eğitim Bakanlığı, ülke genelinde etkili olan aşırı sıcaklar nedeniyle okulların açılışını bir hafta erteledi. Kaybedilen günlerin dönem sonunda telafi edileceği açıklandı.", "q": "Okulların açılışı neden ertelendi?", "options": ["aşırı sıcaklar nedeniyle", "öğretmen grevi nedeniyle", "bakım çalışmaları nedeniyle"], "a": 0},
+    {"audio": "Spiker: Bölgenin en büyük bilim müzesi dün açıldı. Müzede çocuklar ve yetişkinler için iki yüzden fazla etkileşimli deney bulunuyor. İlk ay giriş ücretsiz olacak.", "q": "Yeni müzenin özelliği nedir?", "options": ["eski tablolar sergiliyor", "çok sayıda etkileşimli deney var", "sadece yetişkinlere açık"], "a": 1},
+    {"audio": "Spiker: Yeni bir araştırmaya göre haberleri basılı gazetelerden okuyan gençlerin oranı yüzde onun altına düştü; gençlerin çoğunluğu sosyal medyayı tercih ediyor.", "q": "Gençlerin çoğu haberlere nereden ulaşıyor?", "options": ["basılı gazetelerden", "televizyondan", "sosyal medyadan"], "a": 2},
+    {"audio": "Spiker: Büyükşehir Belediyesi önümüzdeki üç yıl içinde mahallelere on bin ağaç dikmeye karar verdi. Çalışmalara okullardan ve üniversitelerden gönüllüler katılacak.", "q": "Ağaç dikimine kimler katılacak?", "options": ["özel şirketler", "okul ve üniversitelerden gönüllüler", "yabancı işçiler"], "a": 1},
+    {"audio": "Spiker: Bu hafta pazarlarda sebze fiyatları yüzde on beş arttı. Esnaf, artışın nedenini bu mevsim yağışların az olmasına bağlıyor.", "q": "Esnafa göre fiyat artışının nedeni nedir?", "options": ["yağışların az olması", "akaryakıt zamları", "talebin artması"], "a": 0},
+    {"audio": "Spiker: Hentbol millî takımımız, son maçını iki gol farkla kazanarak Avrupa şampiyonasını üçüncü sırada tamamladı. Takım yarın havalimanında taraftarlarca karşılanacak.", "q": "Millî takım kaçıncı oldu?", "options": ["birinci", "ikinci", "üçüncü"], "a": 2}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "1. Görev – Yetkiliye mektup",
+   "task": "Belediye, mahallenizdeki parkı otoparka dönüştürmeyi planlıyor. Belediye başkanına bir mektup yazın.",
+   "prompt": "Resmî bir mektup yazın (150–180 kelime): Görüşünüzü belirtin, parkın mahalle sakinleri için önemini açıklayın ve alternatif çözümler önerin.",
+   "points": ["kendinizi tanıtma", "görüşünüz", "parkın önemi", "alternatif çözümler", "resmî kapanış"],
+   "words": 165,
+   "sample": "Sayın Belediye Başkanı,\n\nAdım Laura Rossi; on yıldır Yasemin Mahallesi'nde oturuyorum. Belediyenin mahallemizdeki parkı otoparka dönüştürmeyi planladığını öğrendim ve bu projeye kesinlikle karşı olduğumu bildirmek istiyorum.\n\nPark, mahallemizdeki tek yeşil alan. Çocuklar burada oynuyor, yaşlılar yürüyüş yapıp dinleniyor, aileler yaz akşamlarını burada geçiriyor. Parktaki büyük ağaçlar havanın sıcaklığını azaltıyor ve kirliliği hafifletiyor. Park ortadan kalkarsa mahalle sakinleri dinlenmek ve bir araya gelmek için temel bir mekânı kaybedecek.\n\nOtopark sorununun gerçek olduğunu anlıyorum; ancak başka çözümler önermek istiyorum. Örneğin pazar yerinin yanındaki boş arsaya katlı bir otopark yapılabilir ya da mahalledeki araç sayısını azaltmak için otobüs seferleri artırılabilir.\n\nBu kararı yeniden değerlendirmenizi ve karar vermeden önce mahalle sakinlerinin görüşünü almanızı rica ediyorum.\n\nSaygılarımla,\nLaura Rossi"
+  },
+  {
+   "title": "2. Görev – Görüş yazısı",
+   "task": "Bir haber sitesi şu soru üzerine bir yazı dizisi yayımlıyor: «Sosyal medya sosyal ilişkilerimizi olumsuz etkiliyor mu?»",
+   "prompt": "Bir görüş yazısı yazın (150–180 kelime). Tutumunuzu açıkça belirtin, gerekçeler ve örneklerle destekleyin, karşıt görüşü tartışın.",
+   "points": ["tutumunuz", "gerekçeler", "örnekler", "karşıt görüş", "sonuç"],
+   "words": 165,
+   "sample": "Sosyal medya: Köprü mü, duvar mı?\n\nSosyal medyanın iletişim biçimimizi kökten değiştirdiğine şüphe yok. Bana kalırsa sosyal medya ilişkilerimizi tek başına olumsuz etkilemiyor; etkisini belirleyen, onu nasıl kullandığımız.\n\nBir yandan bu araçlar uzakta yaşayan arkadaşlarımız ve akrabalarımızla bağımızı korumamızı sağladı. Örneğin ben Kanada'da yaşayan kuzenimle her gün konuşuyorum; bu uygulamalar olmasa ilişkimiz çok zayıflardı.\n\nÖte yandan birçok kişi, sanal «arkadaşlarımız» çok olsa da yalnızlaştığımızı, ailemizle aynı masada otururken herkesin kendi telefonuna baktığını söylüyor. Bu büyük ölçüde doğru; ancak bu durum teknolojinin kendisindeki bir kusurdan çok dengenin kaybolduğunu gösteriyor.\n\nBu nedenle çözümün sosyal medyayı tamamen bırakmak değil, kullanımına sınır koymak olduğunu düşünüyorum; yemeklerde ve aile buluşmalarında telefonları bir kenara bırakmak gibi. Teknoloji bir köprü de olabilir bir duvar da; seçim sonunda bizim elimizde."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "1. Görev – Sunum",
+   "task": "Üç dakikalık bir sunum yapın: «Uzaktan eğitim geleneksel eğitimin yerini alabilir mi?» Olumlu ve olumsuz yönleri ve kendi görüşünüzü belirtin.",
+   "cards": ["giriş", "olumlu yönler", "olumsuz yönler", "görüşünüz", "sonuç"],
+   "phrases": ["Bugün … hakkında konuşacağım.", "… en önemli avantajlarından biri …", "Buna karşılık …", "Bana göre …", "Sonuç olarak …"],
+   "sample": "Bugün son yıllarda hızla yaygınlaşan uzaktan eğitim hakkında konuşacağım. Uzaktan eğitimin en önemli avantajlarından biri her yerden ve her zaman öğrenmeyi mümkün kılması. Ayrıca barınma ve ulaşım masraflarını azaltıyor, öğrencinin kendi hızında ilerlemesine izin veriyor. Buna karşılık bu eğitim türünde öğrenci ile öğretmen arasındaki doğrudan etkileşim eksik kalıyor ve öğrenciden yüksek bir öz disiplin bekleniyor. Üstelik birçok öğrencinin iyi bir cihazı ya da hızlı internet bağlantısı yok. Bana göre uzaktan eğitim, özellikle ilk yıllarda, geleneksel eğitimin yerini tamamen alamaz; ama onu çok iyi tamamlayabilir. Sonuç olarak en iyi model ikisini birleştiren modeldir."
+  },
+  {
+   "title": "2. Görev – Sınav görevlisiyle tartışma",
+   "task": "Sınav görevlisi sunumunuzla ilgili sorular soruyor ve bazı fikirlerinize itiraz ediyor. Görüşünüzü savunun, fikirlerinizi açıklayın ve çözüm önerin.",
+   "cards": ["açıklama", "görüşü savunma", "karşı tarafın haklı olduğu noktalar", "çözüm önerisi"],
+   "phrases": ["Demek istediğim şu: …", "Bakış açınızı anlıyorum ama …", "… konusunda haklısınız, yine de …", "Belki çözüm … olabilir."],
+   "sample": "Bakış açınızı anlıyorum: Uzaktan eğitim, uzak bölgelerdeki öğrencilere ulaştığı için daha adil olabilir. Bu konuda haklısınız, yine de aynı bölgeler çoğu zaman zayıf internet sorunu yaşıyor, böylece çözüm yeniden adaletsiz hâle geliyor. Demek istediğim şu: Teknoloji tek başına yeterli değil. Belki çözüm, devletin önce altyapıya yatırım yapması, ihtiyacı olan öğrencilere cihaz sağlaması ve uzaktan eğitimi destekleyici bir araç olarak kullanması olabilir."
+  }
+ ]
+}

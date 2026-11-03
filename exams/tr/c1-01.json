@@ -1,0 +1,145 @@
+{
+ "id": "tr-C1-01",
+ "level": "C1",
+ "lang": "tr",
+ "title": "Deneme Sınavı 1",
+ "lesen": [
+  {
+   "title": "1. Bölüm – Düşünce yazısı",
+   "task": "Metni okuyun ve doğru cevabı seçin.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Şehirlerin belleği",
+     "body": "Bir şehri yalnızca binalarından, caddelerinden ve meydanlarından ibaret saymak, bir insanı yalnızca bedeninden ibaret saymaya benzer. Şehirlerin de bir belleği vardır: Eski bir çeşmenin başında buluşan mahalleliler, kapanmış bir sinemanın önünden geçerken ilk filmini hatırlayan yaşlılar, adı değişse de herkesin hâlâ eski adıyla andığı sokaklar... Bu bellek, taş ve harçta olduğu kadar insanların ortak hatıralarında da yaşar.\n\nSon yarım yüzyılda Türkiye'nin pek çok şehri hızlı ve çoğu zaman plansız bir dönüşüm geçirdi. Göçle büyüyen nüfusa konut yetiştirme kaygısı, tarihî dokunun korunması gibi \"lüks\" sayılan konuları arka plana itti. Ahşap konakların yerini birbirinin tıpkısı apartmanlar aldı; çarşılar alışveriş merkezlerine, bostanlar otoparklara dönüştü.\n\nBu dönüşümü yalnızca nostaljik bir yakınma konusu olarak görmek yanıltıcı olur. Pek çok insan, rutubetli ve depreme dayanıksız eski evlerden modern dairelere taşınarak yaşam koşullarını gerçekten iyileştirdi. Sorun dönüşümün kendisinde değil, bu dönüşümün geçmişle her bağı koparırcasına gerçekleştirilmesinde yatıyor.\n\nKimi şehirler bu konuda umut verici örnekler sunuyor. Restorasyon projeleriyle eski evlerin özgün cepheleri korunurken iç mekânları çağdaş ihtiyaçlara uyarlanıyor; terk edilmiş fabrikalar kültür merkezlerine dönüştürülüyor. Bu projelerin ortak noktası, mahalle sakinlerini sürecin dışında bırakmamaları.\n\nŞehir belleğini korumak, bir müzeyi korumak gibi değildir; çünkü şehir yaşayan bir varlıktır. Amaç onu dondurmak değil, değişirken kendini hatırlamasını sağlamaktır. Kendi geçmişini unutan bir şehir, bir süre sonra orada yaşayanların da aidiyet duygusunu aşındırır."
+    }
+   ],
+   "items": [
+    {"q": "Yazar ilk paragrafta şehri neye benzetiyor?", "options": ["bir müzeye", "bedeni ve belleği olan bir insana", "bir makineye"], "a": 1},
+    {"q": "Yazara göre şehir belleği nerede yaşar?", "options": ["hem yapılarda hem de insanların ortak hatıralarında", "yalnızca tarihî binalarda", "yalnızca arşivlerde"], "a": 0},
+    {"q": "Tarihî dokunun korunması neden arka plana itildi?", "options": ["yeterli uzman olmadığı için", "turistler ilgilenmediği için", "artan nüfusa konut yetiştirme kaygısı yüzünden"], "a": 2},
+    {"q": "Yazar dönüşümü yalnızca nostaljik bir yakınma olarak görmenin neden yanıltıcı olduğunu düşünüyor?", "options": ["Eski evler daha güzel olduğu için", "Birçok insanın yaşam koşulları gerçekten iyileştiği için", "Dönüşüm henüz başlamadığı için"], "a": 1},
+    {"q": "Yazara göre asıl sorun nedir?", "options": ["dönüşümün geçmişle bütün bağları koparması", "modern dairelerin pahalı olması", "restorasyonun yavaş ilerlemesi"], "a": 0},
+    {"q": "Umut verici projelerin ortak noktası nedir?", "options": ["devlet tarafından finanse edilmeleri", "yalnızca fabrikaları kapsamaları", "mahalle sakinlerini sürece dâhil etmeleri"], "a": 2},
+    {"q": "Yazarın son paragraftaki temel düşüncesi nedir?", "options": ["Şehirler hiç değişmemelidir.", "Şehir değişirken geçmişini hatırlamalıdır.", "Şehirler müzeye dönüştürülmelidir."], "a": 1}
+   ]
+  },
+  {
+   "title": "2. Bölüm – Eksik cümleler",
+   "task": "Metinden altı cümle çıkarılmıştır. Her boşluk için uygun cümleyi seçin (a–g). Bir cümle fazladır.",
+   "type": "match",
+   "texts": [
+    {
+     "title": "Yavaşlığa övgü",
+     "body": "Hızı kutsayan bir çağda yaşıyoruz. [1] Boş zamanlarımız bile planlı etkinliklerle dolduruluyor; sanki boş kalan her an kefaret ödenmesi gereken bir günahmış gibi.\n\nGeçen yüzyılın seksenlerinde İtalya'da, Roma'nın göbeğinde bir hızlı yemek restoranının açılmasına tepki olarak «yavaş yemek» hareketi doğdu. [2] Bu hareketten «yavaş şehirler», «yavaş eğitim» ve «yavaş seyahat» gibi başka akımlar da filizlendi.\n\n[3] Yavaşlık savunucuları tembelliği ya da teknolojik ilerlemeyi reddetmeyi önermiyor. Önerdikleri, insanın kendi ritmini bilinçli olarak seçmesi: gerektiğinde hızlanması, değdiğinde ağırdan alması.\n\nPsikoloji araştırmaları da bu fikri destekliyor. [4] Üstelik yaratıcılık çoğu zaman zihnin görevlerin peşinden koşmayı bıraktığı dalgınlık anlarında doğuyor.\n\n[5] Herkesin yavaşlama lüksü yok; geçimini sağlamak için birden fazla işte çalışan pek çok insan hayatının ritmini seçebilecek durumda değil.\n\n[6] Belki de ondan öğrenebileceğimiz en değerli şey, hayatın bir bitiş çizgisine doğru yarış değil, manzarasına dönüp bakmaya değer bir yolculuk olduğudur."
+    }
+   ],
+   "choices": [
+    {"key": "a", "text": "Ama yavaşlık, ilk akla gelen anlama gelmiyor."},
+    {"key": "b", "text": "Ne var ki bu çağrı haklı bir eleştiriyle de karşılaşıyor."},
+    {"key": "c", "text": "Yine de yavaşlık, yeniden keşfetmeye değer bir değer olarak kalıyor."},
+    {"key": "d", "text": "Daha hızlı varmak, daha çok iş bitirmek, bilgiyi durmaksızın tüketmek istiyoruz."},
+    {"key": "e", "text": "İtalya, makarna çeşitleriyle de ünlüdür."},
+    {"key": "f", "text": "Fikir kısa sürede sofranın çok ötesine geçen bir yaşam felsefesine dönüştü."},
+    {"key": "g", "text": "Tek bir işe derinlemesine odaklanmak işin kalitesini artırıyor ve stresi azaltıyor."}
+   ],
+   "items": [
+    {"q": "Boşluk 1", "a": "d"},
+    {"q": "Boşluk 2", "a": "f"},
+    {"q": "Boşluk 3", "a": "a"},
+    {"q": "Boşluk 4", "a": "g"},
+    {"q": "Boşluk 5", "a": "b"},
+    {"q": "Boşluk 6", "a": "c"}
+   ]
+  },
+  {
+   "title": "3. Bölüm – Edebî metin",
+   "task": "Metni okuyun ve doğru cevabı seçin.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Saatçi",
+     "body": "Nuri Efendi'nin dükkânı, çarşının en dar sokağında, bir fırınla bir aktarın arasına sıkışmıştı. Kırk yıldır her sabah yedide kepengi kaldırır, tezgâhının üzerindeki büyüteçli gözlüğü takar ve akşam ezanına kadar başını kaldırmadan çalışırdı. Duvarları, her biri ayrı bir saati gösteren onlarca saatle kaplıydı; ama Nuri Efendi hiçbirini düzeltmezdi. «Her saatin kendi zamanı vardır,» derdi meraklı müşterilere.\n\nBir sonbahar sabahı dükkâna genç bir kadın girdi. Elinde, kayışı yıpranmış eski bir kol saati vardı. «Dedemindi,» dedi, «yıllardır çalışmıyor. Tamir edilebilir mi?» Nuri Efendi saati avucuna aldı, çevirdi, arkasını açtı. Uzun süre sustu. Saatin kapağının iç yüzüne kazınmış harfleri tanımıştı: Kendi ustalık yıllarında, ilk kez tek başına yaptığı saatti bu.\n\nGenç kadına bir şey söylemedi. Üç gün boyunca dükkânı kimseye açmadı. Çarşı esnafı meraklandı; fırıncı kapıyı çaldı, aktar pencereden seslendi. Nuri Efendi ise, kırk yıl önce aynı saatin üzerine eğildiği o geceki gibi, sabırla çarkları temizledi, yayı değiştirdi, akrebi ve yelkovanı yerine oturttu.\n\nDördüncü gün genç kadın geldiğinde saat tıkırdıyordu. «Borcum ne kadar?» diye sordu. Nuri Efendi gülümsedi: «Bu saatin parası çoktan ödendi kızım.» Kadın anlamadı, ısrar etti; usta ise yalnızca başını salladı.\n\nKadın gittikten sonra Nuri Efendi duvardaki saatlere uzun uzun baktı. Sonra, kırk yıldır ilk kez, hepsini tek tek aynı saate ayarladı."
+    }
+   ],
+   "items": [
+    {"q": "Nuri Efendi'nin dükkânı nerede?", "options": ["çarşının en dar sokağında", "ana caddenin üzerinde", "şehrin dışında"], "a": 0},
+    {"q": "Nuri Efendi duvardaki saatleri neden düzeltmezdi?", "options": ["Vakti olmadığı için", "Her saatin kendi zamanı olduğuna inandığı için", "Saatler bozuk olduğu için"], "a": 1},
+    {"q": "Nuri Efendi saatin içindeki harfleri görünce ne anladı?", "options": ["saatin çalıntı olduğunu", "saatin çok değerli olduğunu", "saati kendisinin yaptığını"], "a": 2},
+    {"q": "Nuri Efendi üç gün boyunca ne yaptı?", "options": ["Tatile çıktı.", "Dükkânı kapatıp saati sabırla tamir etti.", "Saatin sahibini aradı."], "a": 1},
+    {"q": "«Bu saatin parası çoktan ödendi» sözüyle ne kastediliyor?", "options": ["Saatin, yıllar önce onu yaptıran kişi tarafından ödendiği", "Kadının parayı önceden yatırdığı", "Tamirin ücretsiz bir kampanya olduğu"], "a": 0},
+    {"q": "Esnafın tepkisi neydi?", "options": ["Kayıtsız kaldılar.", "Nuri Efendi'ye kızdılar.", "Merak edip onu yoklamaya çalıştılar."], "a": 2},
+    {"q": "Son cümledeki davranış neyi simgeliyor olabilir?", "options": ["Nuri Efendi'nin dükkânı kapatacağını", "Geçmişle şimdinin onun için buluştuğunu", "Saatlerin bozulduğunu"], "a": 1},
+    {"q": "Metnin ana teması nedir?", "options": ["zaman, emek ve geçmişle yüzleşme", "çarşı esnafının rekabeti", "modern teknolojinin üstünlüğü"], "a": 0}
+   ]
+  }
+ ],
+ "hoeren": [
+  {
+   "title": "1. Bölüm – Panel",
+   "task": "Bir panelden bir bölüm dinleyin ve doğru cevabı seçin. Metni bir kez dinleyeceksiniz.",
+   "type": "abc",
+   "plays": 1,
+   "audio": "Moderatör: Panelimize hoş geldiniz. Konuğumuz şehir plancısı Doç. Dr. Elif Aksoy ve bisiklet derneği başkanı Mert Kaya. Konumuz: Büyük şehirlerimiz bisiklete hazır mı? Elif Hanım, sizinle başlayalım.\nElif Hanım: Kısa cevap: Hayır, henüz değil. Son yıllarda pek çok şehirde bisiklet yolu yapıldı, bu sevindirici. Ama bu yolların önemli bir kısmı birbirine bağlanmayan kısa parçalardan oluşuyor. Bir bisikletli iki kilometre güvenle ilerleyip sonra kendini ana caddenin trafiğinin ortasında bulabiliyor. Ağ oluşturmayan bir altyapı, insanları bisiklete teşvik etmiyor.\nMert Bey: Elif Hanım'a katılıyorum, ama bir şey eklemek istiyorum: Altyapı kadar zihniyet de önemli. Bizde bisiklet hâlâ ya spor ya da çocuk oyuncağı olarak görülüyor, bir ulaşım aracı olarak değil. Sürücülerin bisikletlilere karşı tutumu da çoğu zaman düşmanca.\nModeratör: Peki eğim sorunu? Birçok şehrimiz tepelik.\nMert Bey: Bu meşru bir itiraz, ama elektrikli bisikletler bu engeli büyük ölçüde ortadan kaldırdı. Üstelik toplu taşımayla bütünleşme sağlanırsa, örneğin bisikletler metroya alınabilirse, yokuşlar aşılabilir.\nElif Hanım: Ben bir noktaya dikkat çekmek istiyorum: Bisiklet politikaları yalnızca merkezdeki varlıklı semtlere yönelirse eşitsizliği derinleştirir. Asıl bisiklete ihtiyacı olan, işine ucuz ve hızlı ulaşmak isteyen dar gelirli çalışanlar.\nModeratör: Son olarak birer öneri alalım.\nMert Bey: Okullarda bisiklet eğitimi. Çocukken öğrenilen alışkanlık kalıcı olur.\nElif Hanım: Bütünleşik bir planlama. Bisiklet yolu, otobüs hattı ve yaya yolu ayrı ayrı değil, tek bir sistemin parçaları olarak düşünülmeli.",
+   "items": [
+    {"q": "Elif Hanım'a göre mevcut bisiklet yollarının temel sorunu nedir?", "options": ["çok dar olmaları", "birbirine bağlanmayan kısa parçalardan oluşmaları", "çok pahalı olmaları"], "a": 1},
+    {"q": "Mert Bey altyapının yanı sıra neyin önemli olduğunu söylüyor?", "options": ["zihniyetin", "hava koşullarının", "bisiklet fiyatlarının"], "a": 0},
+    {"q": "Mert Bey'e göre toplumda bisiklet genellikle nasıl görülüyor?", "options": ["ciddi bir ulaşım aracı olarak", "lüks bir ürün olarak", "spor ya da çocuk oyuncağı olarak"], "a": 2},
+    {"q": "Eğim sorununa Mert Bey hangi çözümü öneriyor?", "options": ["tepelik semtlerde bisikleti yasaklamak", "elektrikli bisiklet ve toplu taşımayla bütünleşme", "yeni tüneller açmak"], "a": 1},
+    {"q": "Elif Hanım hangi riske dikkat çekiyor?", "options": ["bisiklet politikalarının eşitsizliği derinleştirmesi", "kazaların artması", "turistlerin azalması"], "a": 0},
+    {"q": "Mert Bey'in son önerisi nedir?", "options": ["bisiklet vergisini kaldırmak", "daha çok otopark yapmak", "okullarda bisiklet eğitimi"], "a": 2},
+    {"q": "Elif Hanım'ın «bütünleşik planlama» önerisi ne anlama geliyor?", "options": ["Bisiklet yollarının ayrı bir kurum tarafından yapılması", "Farklı ulaşım türlerinin tek bir sistem olarak düşünülmesi", "Bütün yolların bisiklete ayrılması"], "a": 1}
+   ]
+  },
+  {
+   "title": "2. Bölüm – Konferans",
+   "task": "Bir konferanstan bir bölüm dinleyin ve doğru cevabı seçin. Metni iki kez dinleyeceksiniz.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Konuşmacı: Değerli katılımcılar, bugün hepimizin hayatının yaklaşık üçte birini kaplayan ama çoğu zaman ihmal ettiğimiz bir konudan söz edeceğim: uykudan. Uzun yıllar boyunca uyku, beynin dinlenmek için kendini kapattığı pasif bir süreç olarak görüldü. Oysa son yirmi yılın araştırmaları bunun tam tersini gösteriyor: Uyku sırasında beyin son derece aktif.\nUykunun en önemli işlevlerinden biri öğrenmeyle ilgili. Gün içinde edindiğimiz bilgiler, uyku sırasında kısa süreli bellekten uzun süreli belleğe aktarılıyor. Yapılan deneylerde, yeni bir beceri öğrendikten sonra iyi uyuyan katılımcıların ertesi gün, uykusuz kalanlara göre belirgin biçimde daha başarılı olduğu görüldü.\nİkinci önemli işlev bir tür temizlik. Uyku sırasında beyindeki sıvı dolaşımı hızlanıyor ve gün boyunca biriken atık maddeler temizleniyor. Bilim insanları, bu sürecin aksamasının bazı nörolojik hastalıklarla ilişkili olabileceğini düşünüyor.\nBütün bunlara rağmen modern yaşam uykumuzu giderek kısaltıyor. Ekranlardan yayılan ışık, uykuya geçişi sağlayan hormonun salgılanmasını geciktiriyor; uzun çalışma saatleri ve bitmeyen bildirimler de cabası. Toplumda uykusuzluk neredeyse bir başarı göstergesi gibi sunuluyor: «Günde dört saat uyuyup her şeye yetişen» insanlar örnek gösteriliyor.\nBence asıl değişmesi gereken bu kültürel tutum. Uyku, verimliliğin düşmanı değil, ön koşulu. Ona ayırdığımız zaman kayıp değil, en akıllıca yatırımlarımızdan biri.",
+   "items": [
+    {"q": "Uzun yıllar boyunca uyku nasıl görülüyordu?", "options": ["beynin en aktif olduğu dönem olarak", "pasif bir dinlenme süreci olarak", "gereksiz bir alışkanlık olarak"], "a": 1},
+    {"q": "Son yirmi yılın araştırmaları ne gösteriyor?", "options": ["Uyku sırasında beyin çok aktiftir.", "Uyku süresi önemli değildir.", "İnsanlar eskisinden çok uyuyor."], "a": 0},
+    {"q": "Uyku ile öğrenme arasındaki ilişki nedir?", "options": ["Uyku öğrenmeyi yavaşlatır.", "Öğrenme uykuyu bozar.", "Bilgiler uykuda uzun süreli belleğe aktarılır."], "a": 2},
+    {"q": "Deneylerde iyi uyuyan katılımcılar…", "options": ["ertesi gün daha başarısız oldu.", "ertesi gün belirgin biçimde daha başarılı oldu.", "uykusuzlarla aynı sonucu aldı."], "a": 1},
+    {"q": "Uykunun «temizlik» işlevi neyi ifade ediyor?", "options": ["beyindeki atık maddelerin temizlenmesini", "vücut ısısının düşmesini", "rüyaların silinmesini"], "a": 0},
+    {"q": "Konuşmacıya göre ekran ışığı uykuyu nasıl etkiliyor?", "options": ["uykuyu derinleştiriyor", "hiç etkilemiyor", "uykuya geçişi sağlayan hormonu geciktiriyor"], "a": 2},
+    {"q": "Konuşmacının ana mesajı nedir?", "options": ["Dört saat uyku yeterlidir.", "Uyku, verimliliğin ön koşuludur ve buna göre değer görmelidir.", "Uyku ilaçları yaygınlaşmalıdır."], "a": 1}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "1. Görev – Özet ve değerlendirme",
+   "task": "Şehirlerde bisiklet ulaşımı üzerine bir panel dinlediniz: Bir konuşmacı altyapının parçalı olduğunu ve politikaların eşitsizliği derinleştirebileceğini, diğeri ise zihniyetin ve eğitimin önemini vurguladı.",
+   "prompt": "Panelde dile getirilen görüşleri nesnel biçimde özetleyen, ardından bunları değerlendirip kendi tutumunuzu ortaya koyan bir metin yazın (200–250 kelime).",
+   "points": ["görüşlerin özeti", "karşılaştırma", "değerlendirme", "kendi tutumunuz", "sonuç"],
+   "words": 220,
+   "sample": "Bisiklet: Altyapı mı, zihniyet mi?\n\nPanelde büyük şehirlerimizin bisiklet ulaşımına ne ölçüde hazır olduğu tartışıldı. Konuşmacılar mevcut durumun yetersiz olduğu konusunda hemfikirdi; ancak sorunun kaynağına farklı açılardan yaklaştılar.\n\nŞehir plancısı Elif Aksoy, son yıllarda yapılan bisiklet yollarının birbirine bağlanmayan kısa parçalardan oluştuğunu, dolayısıyla güvenli bir ağ oluşturmadığını vurguladı. Ayrıca bisiklet politikalarının yalnızca merkezdeki varlıklı semtlere yönelmesi hâlinde eşitsizliği derinleştireceği uyarısında bulundu. Çözüm olarak farklı ulaşım türlerinin tek bir sistem içinde ele alındığı bütünleşik bir planlama önerdi.\n\nBisiklet derneği başkanı Mert Kaya ise altyapının yanı sıra zihniyetin de belirleyici olduğunu savundu. Ona göre bisiklet toplumda hâlâ bir ulaşım aracı olarak görülmüyor; sürücülerin tutumu da çoğu zaman olumsuz. Eğim sorununa karşı elektrikli bisikletleri ve toplu taşımayla bütünleşmeyi işaret eden Kaya, okullarda bisiklet eğitimini önerdi.\n\nBence iki görüş birbirini dışlamıyor, tamamlıyor. Güvenli bir ağ olmadan zihniyetin değişmesini beklemek gerçekçi değil; zihniyet değişmeden yapılan yollar ise boş kalmaya mahkûm. Yine de Aksoy'un eşitsizlik uyarısını panelin en önemli katkısı olarak görüyorum; çünkü bisikleti bir yaşam tarzı aksesuarı olmaktan çıkarıp gerçek bir ulaşım hakkı olarak ele almayı gerektiriyor.\n\nSonuç olarak bisiklet ulaşımını yaygınlaştırmak için önce dar gelirli semtleri merkeze bağlayan kesintisiz bir ağ kurulmalı, bu çaba eğitim ve farkındalık çalışmalarıyla desteklenmelidir."
+  },
+  {
+   "title": "2. Görev – Tartışmacı deneme",
+   "task": "Bir kültür dergisi şu soru üzerine bir deneme yarışması düzenliyor: «Tarihî mahallelerin korunması, şehirlerin modernleşmesinin önünde bir engel midir?»",
+   "prompt": "Konuyu farklı yönleriyle ele alan, açık bir tutum ortaya koyup bunu kanıtlarla destekleyen tartışmacı bir deneme yazın (220–270 kelime).",
+   "points": ["giriş", "koruma lehine görüşler", "modernleşme lehine görüşler", "tutumunuz ve kanıtlar", "sonuç"],
+   "words": 240,
+   "sample": "Geçmişi korumak, geleceği kurmak\n\nŞehirlerimiz büyüdükçe tarihî mahallelerin geleceği de giderek daha sık tartışılıyor. Kimilerine göre bu mahalleler modernleşmenin önünde bir engel; kimilerine göre ise şehrin ruhunu taşıyan, vazgeçilmez bir miras.\n\nModernleşme taraftarlarının gerekçeleri göz ardı edilemez. Eski yapıların önemli bir kısmı depreme dayanıksız; altyapıları yetersiz, sokakları dar. Bu mahallelerde yaşayanların sağlıklı ve güvenli konutlara kavuşma hakkı, estetik ya da tarihî kaygılardan önce gelmelidir. Üstelik koruma kararları kimi zaman mülk sahiplerinin elini kolunu bağlayan bürokratik engellere dönüşebiliyor.\n\nÖte yandan koruma savunucuları, tarihî dokunun yalnızca bir görüntü değil, kuşaklar boyu biriken bir kimlik olduğunu hatırlatıyor. Birbirinin aynı yapılarla dolan şehirler, kendilerine özgü karakterlerini yitiriyor; bu da hem orada yaşayanların aidiyet duygusunu hem de şehrin turizm potansiyelini zayıflatıyor.\n\nBence bu ikilem büyük ölçüde yapay. Koruma ile modernleşme ancak birbirine karşıt biçimde kurgulandığında çatışıyor. Nitekim pek çok örnek, özgün cepheleri korunan evlerin içlerinin depreme dayanıklı ve çağdaş konfora uygun biçimde yenilenebildiğini gösteriyor. Sorun teknik değil, iradeyle ilgili: Kısa vadeli kâr yerine uzun vadeli kamu yararını gözeten bir planlama anlayışı gerekiyor.\n\nSonuç olarak tarihî mahalleler, doğru yaklaşımla modernleşmenin engeli değil, ona yön veren bir pusula olabilir. Geçmişini silerek yenilenen bir şehir ilerleyebilir belki; ama nereden geldiğini hatırlayan bir şehir, nereye gittiğini de daha iyi bilir."
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "1. Görev – Yapılandırılmış sunum",
+   "task": "Dört beş dakikalık bir sunum yapın: «Kitle turizmi: Ekonomik bir fırsat mı, mirasa yönelik bir tehdit mi?» Sorunu tanımlayın, açık başlıklar altında tartışın ve görüşünüzle bitirin.",
+   "cards": ["sorunun tanımı", "ilk başlık", "ikinci başlık", "örnekler", "sonuç ve görüş"],
+   "phrases": ["Sorun şu soru etrafında şekilleniyor: …", "Konuyu iki açıdan ele alacağım: …", "Buna en çarpıcı örnek …", "Bununla birlikte şunu belirtmek gerekir: …", "Sonuç olarak …"],
+   "sample": "Sorun şu soru etrafında şekilleniyor: Turizmin ekonomik faydaları ile tarihî ve doğal alanların korunması nasıl bağdaştırılabilir? Konuyu iki açıdan ele alacağım: ekonomik ve kültürel-çevresel. Ekonomik açıdan turizm, Türkiye gibi ülkeler için önemli bir gelir ve istihdam kaynağı; yerel zanaatlara da hayat veriyor. Öte yandan milyonlarca ziyaretçinin akını kırılgan alanları tehdit ediyor. Buna en çarpıcı örnek, Kapadokya'daki peri bacalarının ve kaya kiliselerinin artan ziyaretçi baskısıyla yıpranması. Bununla birlikte şunu belirtmek gerekir: Sorun turizmin kendisi değil, plansızlık. Sonuç olarak çözümün, hassas alanlarda ziyaretçi sayısını sınırlamaktan, ziyaretçileri daha az bilinen yerlere yönlendirmekten ve gelirin bir kısmını bakım çalışmalarına ayırmaktan geçtiğini düşünüyorum."
+  },
+  {
+   "title": "2. Görev – Sınav görevlisiyle tartışma",
+   "task": "Sınav görevlisi sunumunuzu tartışıyor, bazı noktaları açmanızı istiyor ve görüşlerinize itiraz ediyor. Tutumunuzu sağlam gerekçelerle savunun; gerektiğinde görüşünüzü yumuşatın ya da gözden geçirin.",
+   "cards": ["açıklama", "savunma", "kısmi kabul", "yeniden ifade"],
+   "phrases": ["Sizi doğru anladıysam …", "Şunu açıklamama izin verin: …", "Bu yerinde bir itiraz, ama … gerçeğini değiştirmiyor.", "Hâlâ … düşünüyorum."],
+   "sample": "Sizi doğru anladıysam, ziyaretçi sayısını sınırlamanın yerel ekonomiye zarar vereceğini düşünüyorsunuz. Bu yerinde bir itiraz, ama alanın tahrip olması durumunda turizmin tamamen sona ereceği gerçeğini değiştirmiyor. Şunu açıklamama izin verin: Ülkedeki toplam turist sayısını azaltmayı değil, ziyaretçileri daha akıllıca dağıtmayı öneriyorum; yoğun saatlerde giriş ücretini artırmak gibi yöntemlerle gelir de düşmez. Hâlâ sürdürülebilirliğin ekonominin önünde bir engel değil, sürekliliğinin şartı olduğunu düşünüyorum."
+  }
+ ]
+}

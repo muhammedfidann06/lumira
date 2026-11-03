@@ -1,0 +1,133 @@
+{
+ "id": "fr-A2-01",
+ "level": "A2",
+ "lang": "fr",
+ "title": "Épreuve d'entraînement 1",
+ "hoeren": [
+  {
+   "title": "Exercice 1 – Courts documents",
+   "task": "Vous allez entendre six courts documents. Pour chaque document, choisissez la bonne réponse a, b ou c. Vous allez entendre chaque document deux fois.",
+   "type": "abc",
+   "plays": 2,
+   "items": [
+    {"audio": "Femme: Allô, Paul ? C'est Martine. Je suis désolée, je suis malade et je ne peux pas venir à la réunion demain matin. Tu peux prendre des notes pour moi ? Merci !", "q": "Pourquoi Martine ne va pas à la réunion ?", "options": ["Elle est en vacances.", "Elle est malade.", "Elle a un autre rendez-vous."], "a": 1},
+    {"audio": "Annonce: Votre attention, s'il vous plaît. Le vol AF 342 à destination de Montréal est retardé d'une heure. Embarquement prévu à 15 h 30, porte 12.", "q": "Le vol pour Montréal…", "options": ["est annulé.", "part plus tôt.", "a une heure de retard."], "a": 2},
+    {"audio": "Homme: Bonjour, je vous appelle pour la chambre. Je voudrais une chambre double, avec une salle de bains, pour trois nuits, du 10 au 13 mai.", "q": "L'homme réserve une chambre pour combien de nuits ?", "options": ["trois", "deux", "dix"], "a": 0},
+    {"audio": "Radio: Ce week-end, à Bordeaux, c'est la fête du vin ! Concerts gratuits sur les quais samedi et dimanche, de 14 heures à minuit.", "q": "Les concerts sont…", "options": ["payants.", "le vendredi soir.", "gratuits."], "a": 2},
+    {"audio": "Femme: Monsieur, pour aller à la gare, vous continuez tout droit, puis vous prenez la deuxième rue à gauche. La gare est en face de la poste.", "q": "Où se trouve la gare ?", "options": ["en face de la poste", "à côté de l'école", "derrière le marché"], "a": 0},
+    {"audio": "Homme: Chérie, n'oublie pas d'acheter du lait et des œufs en rentrant. Je fais une omelette ce soir. Le pain, je l'ai déjà acheté.", "q": "Qu'est-ce que la femme doit acheter ?", "options": ["du pain et du lait", "du lait et des œufs", "des œufs et du fromage"], "a": 1}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Une conversation",
+   "task": "Vous allez entendre une conversation entre deux amis. Lisez les questions, écoutez et choisissez la bonne réponse a, b ou c. Vous allez entendre le document deux fois.",
+   "type": "abc",
+   "plays": 2,
+   "audio": "Lucas: Salut Inès ! Tu as trouvé un appartement ?\nInès: Oui, enfin ! Il est dans le quartier de la gare. Il a deux pièces et un petit balcon.\nLucas: Super ! Et le loyer ?\nInès: Six cent cinquante euros par mois. C'est un peu cher, mais il est très lumineux.\nLucas: Tu déménages quand ?\nInès: Le 15 juin. Tu peux m'aider ? J'ai beaucoup de cartons.\nLucas: Bien sûr ! Je peux venir le matin, mais l'après-midi, je travaille.\nInès: Parfait. Après, je t'invite au restaurant pour te remercier.",
+   "items": [
+    {"q": "L'appartement d'Inès se trouve…", "options": ["dans le centre-ville.", "près de la gare.", "à la campagne."], "a": 1},
+    {"q": "Qu'est-ce qu'il y a dans l'appartement ?", "options": ["un balcon", "un jardin", "un garage"], "a": 0},
+    {"q": "Le loyer est de…", "options": ["550 euros.", "600 euros.", "650 euros."], "a": 2},
+    {"q": "Inès déménage le…", "options": ["15 juin.", "5 juin.", "15 juillet."], "a": 0},
+    {"q": "Lucas peut aider Inès…", "options": ["toute la journée.", "l'après-midi.", "le matin."], "a": 2}
+   ]
+  }
+ ],
+ "lesen": [
+  {
+   "title": "Exercice 1 – Choisir une activité",
+   "task": "Vous cherchez une activité pour le week-end. Lisez le programme et répondez aux questions.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Le week-end au centre culturel",
+     "body": "Atelier cuisine – samedi 10 h–12 h. Apprenez à préparer une tarte aux fruits. 25 €, ingrédients compris. Inscription obligatoire.\n\nCinéma en plein air – samedi 21 h. Film pour toute la famille dans le parc. Gratuit. Apportez votre couverture !\n\nRandonnée – dimanche 9 h. Promenade de 12 km en forêt avec un guide. 8 €. Rendez-vous devant le centre culturel.\n\nConcert de jazz – dimanche 18 h. Salle Molière. 15 €, 10 € pour les étudiants."
+    }
+   ],
+   "items": [
+    {"q": "Vous voulez apprendre à cuisiner. Quel jour ?", "options": ["samedi matin", "samedi soir", "dimanche matin"], "a": 0},
+    {"q": "Quelle activité ne coûte rien ?", "options": ["le concert", "le cinéma en plein air", "la randonnée"], "a": 1},
+    {"q": "Pour le cinéma, il faut apporter…", "options": ["une couverture.", "un ticket.", "de l'argent."], "a": 0},
+    {"q": "Où commence la randonnée ?", "options": ["dans le parc", "à la gare", "devant le centre culturel"], "a": 2},
+    {"q": "Combien paie un étudiant pour le concert ?", "options": ["15 €", "8 €", "10 €"], "a": 2}
+   ]
+  },
+  {
+   "title": "Exercice 2 – Un article",
+   "task": "Lisez cet article et choisissez la bonne réponse a, b ou c.",
+   "type": "abc",
+   "texts": [
+    {
+     "title": "Un café pas comme les autres",
+     "body": "À Nantes, un nouveau café a ouvert ses portes le mois dernier. Sa particularité ? Les clients ne paient pas leur boisson, mais le temps qu'ils passent sur place : cinq euros la première heure, puis trois euros l'heure suivante. Le café, le thé et les biscuits sont à volonté.\n\nLe lieu attire surtout des étudiants et des personnes qui travaillent à domicile. « Ici, je peux travailler tranquillement et rencontrer des gens », explique Léa, graphiste. Le café propose aussi des jeux de société et organise des soirées d'échange de langues le jeudi."
+    }
+   ],
+   "items": [
+    {"q": "Le café a ouvert…", "options": ["il y a un an.", "le mois dernier.", "la semaine dernière."], "a": 1},
+    {"q": "Dans ce café, on paie…", "options": ["le temps passé sur place.", "chaque boisson.", "un abonnement mensuel."], "a": 0},
+    {"q": "La première heure coûte…", "options": ["trois euros.", "huit euros.", "cinq euros."], "a": 2},
+    {"q": "Qui vient surtout dans ce café ?", "options": ["des touristes", "des étudiants et des travailleurs à domicile", "des familles avec enfants"], "a": 1},
+    {"q": "Le jeudi, il y a…", "options": ["des soirées d'échange de langues.", "des concerts.", "des cours de cuisine."], "a": 0}
+   ]
+  },
+  {
+   "title": "Exercice 3 – Vrai ou faux",
+   "task": "Lisez ce message et dites si les affirmations sont vraies ou fausses.",
+   "type": "rf",
+   "texts": [
+    {
+     "title": "Message de Julien à ses voisins",
+     "body": "Chers voisins,\n\nSamedi prochain, je fête mes 30 ans dans mon appartement (2e étage). Il y aura de la musique jusqu'à une heure du matin environ. Je m'excuse d'avance pour le bruit ! Si vous voulez, vous êtes les bienvenus : la fête commence à 20 heures. Pas besoin d'apporter quelque chose.\n\nPour tout problème, vous pouvez sonner chez moi ou m'appeler au 06 12 34 56 78.\n\nJulien"
+    }
+   ],
+   "items": [
+    {"q": "Julien fête son anniversaire.", "a": true},
+    {"q": "Julien habite au premier étage.", "a": false},
+    {"q": "La musique s'arrête vers une heure du matin.", "a": true},
+    {"q": "Les voisins doivent apporter à manger.", "a": false},
+    {"q": "Julien invite ses voisins à la fête.", "a": true}
+   ]
+  }
+ ],
+ "schreiben": [
+  {
+   "title": "Exercice 1 – Raconter un événement",
+   "task": "Vous avez passé un week-end dans une ville que vous ne connaissiez pas. Vous écrivez à un ami pour lui raconter.",
+   "prompt": "Racontez votre week-end (60 à 80 mots) : où vous êtes allé(e), avec qui, ce que vous avez fait et ce que vous avez aimé.",
+   "points": ["le lieu", "avec qui", "vos activités", "vos impressions"],
+   "words": 70,
+   "sample": "Salut Hugo,\n\nLe week-end dernier, je suis allée à Strasbourg avec ma cousine. Nous avons pris le train vendredi soir. Samedi, nous avons visité la cathédrale et nous nous sommes promenées dans le quartier de la Petite France. C'est magnifique ! Le soir, nous avons mangé une tarte flambée dans un petit restaurant. Dimanche, il a plu, alors nous sommes allées au musée. J'ai adoré cette ville, je veux y retourner !\n\nBises,\nSelin"
+  },
+  {
+   "title": "Exercice 2 – Répondre à une invitation",
+   "task": "Vous recevez ce message de votre collègue Nathalie : « Je pars en retraite et j'organise un repas vendredi soir au restaurant Le Jardin. Tu viens ? »",
+   "prompt": "Répondez à Nathalie (60 à 80 mots). Vous ne pouvez pas venir : remerciez-la, expliquez pourquoi et proposez une autre solution.",
+   "points": ["remercier", "refuser et expliquer", "proposer autre chose"],
+   "words": 70,
+   "sample": "Chère Nathalie,\n\nMerci beaucoup pour ton invitation, c'est très gentil ! Malheureusement, je ne peux pas venir vendredi soir parce que je suis à Marseille pour le mariage de mon frère. Je suis vraiment désolé de ne pas être avec toi pour cette belle soirée. Est-ce que je peux t'inviter à déjeuner la semaine prochaine ? Mardi ou mercredi, par exemple ? Je te souhaite une très bonne retraite !\n\nAmitiés,\nKaan"
+  }
+ ],
+ "sprechen": [
+  {
+   "title": "Partie 1 – Entretien dirigé",
+   "task": "Présentez-vous à l'examinateur : parlez de vous, de votre famille, de vos goûts et de votre quotidien. L'examinateur vous pose ensuite des questions.",
+   "cards": ["vous et votre famille", "votre quotidien", "vos goûts", "vos projets"],
+   "phrases": ["Je m'appelle …", "Dans ma famille, il y a …", "D'habitude, je …", "Ce que j'aime, c'est …", "L'année prochaine, je vais …"],
+   "sample": "Je m'appelle Murat, j'ai trente-deux ans et je suis ingénieur. Je suis marié et j'ai une fille de cinq ans. D'habitude, je me lève à sept heures et je vais au travail en métro. Le soir, je joue avec ma fille ou je fais la cuisine. J'aime beaucoup voyager et découvrir de nouvelles cultures. L'année prochaine, je vais visiter la France avec ma famille, c'est pourquoi j'apprends le français."
+  },
+  {
+   "title": "Partie 2 – Monologue suivi",
+   "task": "Parlez de votre fête préférée. Qu'est-ce que vous faites ce jour-là ? Avec qui ? Pourquoi aimez-vous cette fête ?",
+   "cards": ["la fête", "ce que vous faites", "avec qui", "pourquoi vous l'aimez"],
+   "phrases": ["Ma fête préférée, c'est …", "Ce jour-là, nous …", "Je passe cette fête avec …", "J'aime cette fête parce que …"],
+   "sample": "Ma fête préférée, c'est le Nouvel An. Ce jour-là, toute ma famille se réunit chez mes grands-parents. Nous préparons un grand repas avec beaucoup de plats traditionnels. À minuit, nous regardons les feux d'artifice et nous nous souhaitons une bonne année. J'aime cette fête parce que c'est un moment joyeux et parce que je vois tous mes cousins."
+  },
+  {
+   "title": "Partie 3 – Exercice en interaction",
+   "task": "Vous êtes en France et vous voulez louer un vélo pour deux jours. Vous allez dans un magasin de location. Vous demandez les prix, les horaires et les conditions. L'examinateur joue le rôle du vendeur.",
+   "cards": ["prix", "durée", "horaires", "casque", "paiement"],
+   "phrases": ["Je voudrais louer …", "Combien coûte …?", "Est-ce qu'il faut …?", "À quelle heure est-ce que je dois …?", "Je peux payer …?"],
+   "sample": "Bonjour monsieur, je voudrais louer un vélo pour deux jours, samedi et dimanche. Combien ça coûte ? Quinze euros par jour, d'accord. Est-ce que le casque est compris ? Et à quelle heure est-ce que je dois rapporter le vélo dimanche ? Avant dix-huit heures, très bien. Est-ce qu'il faut laisser une caution ? Je peux payer par carte ? Parfait, merci beaucoup !"
+  }
+ ]
+}
