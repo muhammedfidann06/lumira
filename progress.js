@@ -948,7 +948,7 @@
     const dueBtn = document.getElementById('pmDueBtn');
     if(dueBtn) dueBtn.onclick = startDailyReview;
     /* Goethe denemelerinin özeti: seviye başına ortalama, en zayıf bölüm ve sıradaki deneme. */
-    try{ window.LUMIRA_GOETHE?.mountSummary(document.getElementById('pmGoetheSummary'), { learningGerman: (window.TARGET_LANG||activeLang)==='de', open: target => window.PM_openGoethe(target) }); }catch(e){}
+    try{ window.LUMIRA_GOETHE?.mountSummary(document.getElementById('pmGoetheSummary'), { language: window.TARGET_LANG||activeLang, open: target => window.PM_openGoethe(target) }); }catch(e){}
 
     if(window.LB_getTotalSeconds){
       window.LB_getTotalSeconds(currentName, (secs)=>{

@@ -169,6 +169,13 @@ details.ge-sample-box[open]>summary{margin-bottom:10px}
 .ge-sum-top strong{color:#eef4ff}
 .ge-summary button.ge-sum-cta,.pm-root .ge-summary button.ge-sum-cta{width:100%;margin:12px 0 0}
 .ge-ai .ge-ring{background:radial-gradient(closest-side,#151a37 78%,transparent 79%),conic-gradient(var(--ring,#4fe8ff) calc(var(--p)*1%),#24364d 0)}
+/* Ücretsiz deneme ve kilit */
+.ge-free-note{margin:-6px 0 16px;padding:10px 13px;border-radius:13px;border:1px solid #3dffa044;background:#3dffa00d;color:#c6ffe3;font-size:12.5px;line-height:1.65}
+.ge-lock{margin:0 0 14px;padding:16px;border:1px solid #ffbe5a66;border-radius:19px;background:linear-gradient(150deg,#2a2232f0,#141d33f0)}
+.ge-lock strong{display:block;font-size:16px;color:#ffe2b8}
+.ge-lock p{margin:6px 0 0;color:#d7e3f5;font-size:13.5px;line-height:1.65}
+.ge-test.is-locked{opacity:.72}
+.ge-test.is-locked small{color:#ffd59a}
 /* Tam sınav */
 .ge-full{margin:0 0 14px;padding:17px 16px;border:1px solid #9b7bff66;border-radius:20px;background:linear-gradient(150deg,#1d1a44f0,#10203af0);box-shadow:0 10px 30px #05081655}
 .ge-full-head{display:flex;gap:13px;align-items:flex-start}
@@ -205,4 +212,6 @@ details.ge-sample-box[open]>summary{margin-bottom:10px}
 .ge-cert .ge-ring{background:radial-gradient(closest-side,#121c36 78%,transparent 79%),conic-gradient(var(--ring,#4fe8ff) calc(var(--p)*1%),#24364d 0)}
 @media(max-width:480px){.ge-cert-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ge-cert{padding:17px 13px 14px}.ge-full{padding:15px 13px}}
 @media(max-width:480px){.ge-tests{grid-template-columns:minmax(0,1fr)}.ge-level{grid-template-columns:48px minmax(0,1fr) 14px;padding:15px 13px}.ge-level-id{height:48px;font-size:17px}.ge-teil{padding:15px 12px}.ge-text{padding:13px}.ge-bar-title{font-size:12.5px}.ge-break-row{grid-template-columns:minmax(60px,auto) minmax(0,1fr) 40px}}
+.ge-family-flag{font-size:28px;font-weight:400;letter-spacing:0;line-height:1}
+@media(max-width:480px){.ge-family-flag{font-size:25px}}
 @media(prefers-reduced-motion:reduce){.ge-progress>span{transition:none}.ge-rec.is-active{animation:none}}

@@ -4,6 +4,26 @@ const tiers=[{amount:1,badge:'👍',minutes:60,count:25},{amount:5,badge:'☕',m
 let active=null;
 const create=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const name=amount=>amount?T('names')[tiers.findIndex(t=>t.amount===amount)]:T('none');
+// Hangi sınıra takıldıysa kartlar o özelliğin rozet başına hakkını gösterir.
+const GROUPS={convo_limit:'convo',practice_limit:'practice',story_badge_required:'stories',story_limit:'stories',story_saved_limit:'stories',notes_free_limit:'notes',notes_limit:'notes',goethe_badge_required:'goethe'};
+const GROUP_LINES={convo:['convo'],practice:['practice'],stories:['stories'],notes:['notes'],goethe:['goethe','writing']};
+const SUBS={convo_limit:'convoSub',practice_limit:'practiceSub',story_badge_required:'storyFreeSub',story_limit:'storyDailySub',story_saved_limit:'storySavedSub',notes_free_limit:'notesFreeSub',notes_limit:'notesDailySub',goethe_badge_required:'goetheSub'};
+const BADGE_REASONS=['story_badge_required','notes_free_limit','goethe_badge_required'];
+function line(kind,amount){
+ const limits=window.LUMIRA_LIMITS,table=limits?.TABLE,item=tiers.find(t=>t.amount===amount)||{minutes:20,count:10};
+ if(kind==='live')return T(item.minutes===null?'liveUnlimited':'live',{n:item.minutes});
+ if(kind==='writing')return T(item.count===null?'writingUnlimited':'writing',{n:item.count});
+ // Rozetsiz planda PDF ve çevrim dışı erişim yoktur.
+ if(kind==='pdf')return amount?T(amount===1?'pdfTotal':'pdfUnlimited'):'';
+ if(kind==='offline')return amount?T('offline'):'';
+ if(!table)return '';
+ if(kind==='convo')return T(item.minutes===null?'convoUnlimited':'convo',{n:item.minutes});
+ if(kind==='practice'){const n=table.practice[amount];return T(n===null?'practiceUnlimited':'practice',{n});}
+ if(kind==='stories')return amount?T('stories',{n:table.storyDaily[amount],s:table.storySaved[amount]}):T('freeStories');
+ if(kind==='notes')return amount?(table.notesDaily[amount]===null?T('notesUnlimited'):T('notes',{n:table.notesDaily[amount]})):T('freeNotes',{n:limits.FREE_NOTES});
+ if(kind==='goethe')return amount?T('goethe'):T('freeGoethe');
+ return '';
+}
 function close(){
  if(!active)return;const state=active;active=null;
  state.root.remove();document.body.style.overflow=state.overflow;
@@ -25,18 +45,18 @@ function open(reason,quota){
  brand.innerHTML='<svg viewBox="0 0 64 48" aria-hidden="true"><path fill="#4fe8ff" d="M30 22C25 2 2-2 6 13c3 9 13 13 24 12C12 22 9 39 20 40c9 1 11-10 12-14Z"/><path fill="#aa87ff" d="M34 22C39 2 62-2 58 13c-3 9-13 13-24 12 18-3 21 14 10 15-9 1-11-10-12-14Z"/></svg><span>LUMIRA</span>';
  const x=create('button','la-x','×');x.type='button';x.setAttribute('aria-label',T('close'));x.onclick=close;
  top.append(brand,x);panel.append(top);
- const title=create('h2','la-title',T(shop?'shopTitle':benefits?'accessTitle':'limitTitle'));title.id='la-title';panel.append(title,create('p','la-sub',T(shop?'shopSub':benefits && !current?'accessSub':'limitSub')),create('p','la-lifetime',native?T('lifetime'):T('webCheckout')),create('p','la-period',T(benefits?'offlineIntro':'period')));
+ const group=GROUPS[reason]&&window.LUMIRA_LIMITS?GROUPS[reason]:null;
+ const kinds=shop?['live','convo','writing','practice','stories','notes','goethe','pdf','offline']:benefits?['pdf','offline']:group?GROUP_LINES[group]:['live','writing'];
+ const title=create('h2','la-title',T(shop?'shopTitle':benefits?'accessTitle':group&&BADGE_REASONS.includes(reason)?'badgeTitle':'limitTitle'));title.id='la-title';panel.append(title,create('p','la-sub',T(shop?'shopSub':benefits && !current?'accessSub':group?SUBS[reason]:'limitSub',{n:window.LUMIRA_LIMITS?.FREE_NOTES||50})),create('p','la-lifetime',native?T('lifetime'):T('webCheckout')),create('p','la-period',T(benefits?'offlineIntro':'period')));
  const plan=create('div','la-current');plan.append(create('strong','',T('current')+': '+name(current)));
- const item=tiers.find(t=>t.amount===current) || {minutes:20,count:10};
- plan.append(create('span','',benefits?(current?(T(current===1?'pdf':'pdfUnlimited')+' · '+T('offline')):T('needBadge')):(T(item.minutes===null?'liveUnlimited':'live',{n:item.minutes})+' · '+T(item.count===null?'writingUnlimited':'writing',{n:item.count}))));panel.append(plan);
+ plan.append(create('span','',benefits?(current?(T(current===1?'pdf':'pdfUnlimited')+' · '+T('offline')):T('needBadge')):kinds.map(kind=>line(kind,current)).filter(Boolean).join(' · ')));panel.append(plan);
  const grid=create('div','la-grid');let selected=tiers.find(t=>t.amount>current)?.amount || null;
  const cards=[];const badgeFiles=['1f44d','2615','2764','1f49b','2b50','1f451'];
  tiers.forEach((tier,index)=>{
   const card=create('button','la-card');card.type='button';card.dataset.tier=tier.amount;card.disabled=false;
   const heading=create('span','la-card-head');const badge=create('img','la-badge');badge.src='./vendor/badges/'+badgeFiles[index]+'.svg';badge.alt='';badge.width=28;badge.height=28;heading.append(badge,create('strong','',T('names')[index]));
   const check=create('span','la-check','✓');check.setAttribute('aria-hidden','true');heading.append(check);card.append(heading);
-  const liveLines=[T(tier.minutes===null?'liveUnlimited':'live',{n:tier.minutes}),T(tier.count===null?'writingUnlimited':'writing',{n:tier.count})],otherLines=[T(tier.amount===1?'pdfTotal':'pdfUnlimited'),T('offline')];
-  const lines=shop?liveLines.concat(otherLines):benefits?otherLines:liveLines;
+  const lines=kinds.map(kind=>line(kind,tier.amount)).filter(Boolean);
   lines.forEach(line=>{const row=create('span','la-benefit');const icon=create('span','la-benefit-icon','✓');icon.setAttribute('aria-hidden','true');row.append(icon,create('span','',line));card.append(row);});
   const price=create('span','la-price',native?window.LUMIRA_PLAY.text(0):T('loadingPrices'));price.dataset.storePrice='';card.append(price);
   if(card.disabled)card.append(create('span','la-owned',T('owned')));

@@ -2060,7 +2060,10 @@ function nbRender(){
         alert(t('nb_duplicate_word'));
         return;
       }
+      const limit = window.LUMIRA_LIMITS?.notesCheck(Object.keys(nbWords||{}).length, 1);
+      if(limit){ nbToast(t(limit), 'bad'); window.LUMIRA_LIMITS.upgrade(limit); return; }
       db.ref('progress/'+uid2+'/notebook').push({ w, tr, ex, exTr, cat, level, meaningLang, lang: nbSelectedAddLang, ts: Date.now() });
+      window.LUMIRA_LIMITS?.notesUsed(1);
     }
     nbSelectedAddLang = null;
     nbPrefill = null;
@@ -2278,6 +2281,8 @@ async function nbSetFavorite(word, desired){
   const on=desired===undefined?!existing?.isFavorite:!!desired;
   if(existing && !!existing.isFavorite===on) return true;
   if(!existing && !on) return true;
+  /* Yeni kayıt: rozetsizler toplam 50, rozetliler 24 saatte rozete göre (usage-limits.js). */
+  if(!existing){const limit=window.LUMIRA_LIMITS?.notesCheck(Object.keys(nbWords||{}).length,1);if(limit){window.LUMIRA_LIMITS.upgrade(limit);throw new Error(limit);}}
   const writeKey=uid+'/'+favId;
   if(nbFavoriteWrites.has(writeKey)) return false;
   nbFavoriteWrites.add(writeKey);
@@ -2287,7 +2292,7 @@ async function nbSetFavorite(word, desired){
   nbUpdateFavStar();nbRenderIfOpen();window.dispatchEvent(new Event('lumira:notebookchange'));
   try{
     if(existing) await db.ref('progress/'+uid+'/notebook/'+favId).update({isFavorite:on});
-    else await db.ref('progress/'+uid+'/notebook/'+favId).set(payload);
+    else{await db.ref('progress/'+uid+'/notebook/'+favId).set(payload);window.LUMIRA_LIMITS?.notesUsed(1);}
     return true;
   }catch(error){
     if(nbSyncedUid===uid){
@@ -2305,7 +2310,7 @@ async function nbToggleFavorite(silent){
     const saved=await nbSetFavorite(v);
     if(saved && !silent) nbToast(t(wasFavorite?'nb_fav_removed':'nb_fav_added'));
     return saved;
-  }catch(error){if(!silent)nbToast(t(error.message==='nb_fav_login_required'?error.message:(wasFavorite?'nb_fav_remove_failed':'nb_fav_add_failed')),'bad');return false;}
+  }catch(error){if(!silent)nbToast(t(error.message==='nb_fav_login_required'||window.LUMIRA_LIMITS?.ERRORS.includes(error.message)?error.message:(wasFavorite?'nb_fav_remove_failed':'nb_fav_add_failed')),'bad');return false;}
 }
 ['favStarFront','favStarBack'].forEach(id=>{
   const el=document.getElementById(id);

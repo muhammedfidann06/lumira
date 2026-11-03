@@ -82,6 +82,8 @@ function mountConvo(){
  s.pair={top,bottom};s.auto=!!(saved&&saved.auto);s.speak=!!(saved&&saved.speak);s.keep=!(saved&&saved.keep===false);
  s.entries={top:[],bottom:[]};s.draft={top:'',bottom:''};s.notice='';s.noticeBad=false;s.view='convo';s.convoId=newConvoId();
  shell();watch(host);
+ let signedIn=false;try{signedIn=!!root.firebase?.auth?.().currentUser;}catch(e){}
+ if(signedIn&&navigator.onLine!==false)F()?.api?.('status').then(()=>{if(s.view==='convo')paintQuota();}).catch(()=>{});
 }
 function savePrefs(){prefs.set('lumira_convo_v1',{top:s.pair.top,bottom:s.pair.bottom,auto:s.auto,speak:s.speak,keep:s.keep});}
 /* Yeni bir konuşma: önceki konuşma geçmişe yazılır, ekran temizlenir. */
@@ -175,7 +177,11 @@ function paintControls(){
 }
 function paintQuota(){
  const line=q('.lc-quota');if(!line)return;
- if(s.phase!=='listening'||s.remaining===undefined){line.textContent='';return;}
+ if(s.phase!=='listening'||s.remaining===undefined){
+  // Dinleme başlamadan da bugünkü kalan süre görünür.
+  const c=s.phase==='idle'?F()?.getQuota?.()?.convo:null,L=root.LUMIRA_LIMITS;
+  line.textContent=c&&L?(c.limitSeconds===null?L.text('convoUnlimited'):L.text('convoLeft',{n:Math.floor((c.remainingSeconds||0)/60),limit:Math.round(c.limitSeconds/60)})):'';return;
+ }
  if(s.remaining===null){line.textContent=T('unlimited');return;}
  const left=Math.max(0,s.remaining-(performance.now()-s.remainingAt)/1000);
  line.textContent=T('remaining',{n:Math.max(0,Math.ceil(left/60))});
@@ -204,13 +210,14 @@ async function begin(side){
   stream.getTracks().forEach(track=>track.addEventListener('ended',()=>{if(generation===s.generation)end('microphone_unavailable',true);},{once:true}));
   const status=await F().api('status');
   if(generation!==s.generation)return;
-  const data=await F().api('liveStart',{id,provider:'local'});
-  if(generation!==s.generation){F().api('liveStop',{id}).catch(()=>{});return;}
+  // Karşılıklı Çeviri'nin süresi Canlı Çeviri'den ayrı bir havuzdan düşer (aynı miktar).
+  const data=await F().api('liveStart',{id,provider:'local',pool:'convo'});
+  if(generation!==s.generation){F().api('liveStop',{id,pool:'convo'}).catch(()=>{});return;}
   applyLease(data,generation);heartbeat(generation,id);
   const azure=(status.providers||[]).includes('azure')||status.speechConfigured===true;
   if(azure){
    try{await startAzure(generation);return;}
-   catch(e){if(generation!==s.generation)return;if(['login_required','live_limit','usage_unavailable','live_already_active','maintenance'].includes(e.featureCode))throw e;releaseRecognizer();}
+   catch(e){if(generation!==s.generation)return;if(['login_required','live_limit','convo_limit','usage_unavailable','live_already_active','maintenance'].includes(e.featureCode))throw e;releaseRecognizer();}
   }
   if(browserSupported()){
    if(s.auto){s.auto=false;savePrefs();notify('browserMode');}
@@ -335,7 +342,7 @@ function translateRow(row,from,to){
  const generation=s.generation;
  translateText(row.original,from,to,{id:s.sessionId,signal:s.abort?.signal}).then(text=>{if(generation!==s.generation)return;row.translated=text;row.state='done';paintPanels();scheduleSave();speakRow(row,to);},error=>{
   if(generation!==s.generation)return;
-  if(['login_required','live_limit','session_expired'].includes(error?.featureCode)){end(error.featureCode,true);return;}
+  if(['login_required','live_limit','convo_limit','session_expired'].includes(error?.featureCode)){end(error.featureCode,true);return;}
   row.state='failed';paintPanels();scheduleSave();
  });
 }
@@ -407,7 +414,7 @@ function startBrowser(generation,side){
   },
   onError:(error,entry)=>{
    if(generation!==s.generation||s.browser!==session)return;
-   if(entry&&!['login_required','live_limit','session_expired','maintenance'].includes(error.featureCode)){const rows=entry.rows||(entry.row?[entry.row]:[]);rows.forEach(row=>{row.state='failed';});paintPanels();scheduleSave();return;}
+   if(entry&&!['login_required','live_limit','convo_limit','session_expired','maintenance'].includes(error.featureCode)){const rows=entry.rows||(entry.row?[entry.row]:[]);rows.forEach(row=>{row.state='failed';});paintPanels();scheduleSave();return;}
    end(error.featureCode||'browser_speech_unavailable',true);
   }});
  s.browser=session;
@@ -425,13 +432,13 @@ function switchSide(side){
 function applyLease(data,generation){
  if(generation!==s.generation)return;
  const now=performance.now();
- s.remaining=data.quota?.live?.remainingSeconds??null;s.remainingAt=now;
+ s.remaining=data.quota?.convo?.remainingSeconds??null;s.remainingAt=now;
  const wait=Math.max(0,(data.session?.until||0)-(data.quota?.serverNow||Date.now()));
  clearTimeout(s.deadlineTimer);
  s.deadlineTimer=setTimeout(()=>{
   if(generation!==s.generation)return;
   const exhausted=s.remaining!==null&&s.remaining-(performance.now()-s.remainingAt)/1000<=.1;
-  end(exhausted?'live_limit':'usage_unavailable',true);
+  end(exhausted?'convo_limit':'usage_unavailable',true);
  },wait);
  if(data.speech){s.speech=data.speech;s.tokenDeadline=now+data.speech.expiresAt-(data.quota?.serverNow||Date.now());if(s.recognizer)s.recognizer.authorizationToken=data.speech.token;}
  paintQuota();
@@ -445,9 +452,9 @@ async function renew(generation,id){
  s.renewPending=true;
  try{
   let data;
-  try{data=await F().api('liveRenew',{id,provider:'local'},{timeoutMs:6000});}
-  catch(e){if(generation!==s.generation)return;if(e.featureCode!=='session_expired')throw e;data=await F().api('liveStart',{id,provider:'local'},{timeoutMs:6000});}
-  if(generation!==s.generation){F().api('liveStop',{id}).catch(()=>{});return;}
+  try{data=await F().api('liveRenew',{id,provider:'local',pool:'convo'},{timeoutMs:6000});}
+  catch(e){if(generation!==s.generation)return;if(e.featureCode!=='session_expired')throw e;data=await F().api('liveStart',{id,provider:'local',pool:'convo'},{timeoutMs:6000});}
+  if(generation!==s.generation){F().api('liveStop',{id,pool:'convo'}).catch(()=>{});return;}
   applyLease(data,generation);
   if(s.engine==='azure'&&s.tokenDeadline-performance.now()<60000){
    const token=await F().api('liveConnect',{id,provider:'azure',target:s.pair.bottom,source:s.auto?'auto':s.pair[s.side||'top']},{timeoutMs:6500}).catch(()=>null);
@@ -455,7 +462,7 @@ async function renew(generation,id){
   }
  }catch(e){
   if(generation!==s.generation)return;
-  if(['login_required','live_limit','maintenance','live_already_active'].includes(e.featureCode)){end(e.featureCode,true);return;}
+  if(['login_required','live_limit','convo_limit','maintenance','live_already_active'].includes(e.featureCode)){end(e.featureCode,true);return;}
  }finally{s.renewPending=false;}
 }
 function holdScreen(generation){
@@ -476,10 +483,10 @@ function end(message,bad){
  clearInterval(s.renewTimer);clearTimeout(s.deadlineTimer);s.renewPending=false;
  s.browser?.stop();s.browser=null;releaseRecognizer();stopTracks(s.stream);s.stream=null;s.speech=null;
  if(s.wakeLock){s.wakeLock.release().catch(()=>{});s.wakeLock=null;}
- if(id)F()?.api('liveStop',{id},{keepalive:true}).catch(()=>{});
+ if(id)F()?.api('liveStop',{id,pool:'convo'},{keepalive:true}).catch(()=>{});
  flushHistory();
  if(bad&&message)notify(message,true);else if(wasActive)notify('');
- if(message==='live_limit')root.LUMIRA_ACCESS?.open('live_limit');
+ if(message==='live_limit'||message==='convo_limit')root.LUMIRA_ACCESS?.open(message);
  paintAll();
 }
 function unmountConvo(){if(s.view==='convo'){end('stopped');flushHistory();}}
@@ -727,7 +734,7 @@ function openWords(record,back){
       const ok=await root.NB_saveFavorite({lang:st.learn,meaningLang:native,w,tr:r.meaning.value.trim(),ex:r.item.ex||'',exTr:r.item.exTr||'',cat:r.cat||'Genel',level:r.level||''});
       if(ok!==false){count++;st.picked.delete(r.item.key);}
      }
-    }catch(error){status.textContent=error?.message==='nb_fav_login_required'?T('wordsLogin'):T('wordsFailed');}
+    }catch(error){const code=error?.message;status.textContent=code==='nb_fav_login_required'?T('wordsLogin'):root.LUMIRA_LIMITS?.ERRORS.includes(code)&&typeof root.t==='function'?root.t(code):T('wordsFailed');}
     busy=false;
     if(count)toast(T('wordsSaved',{n:count}));
     if(!status.textContent)pick();else paintSave();
