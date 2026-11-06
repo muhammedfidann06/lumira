@@ -31,11 +31,15 @@ const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className
 const button=(text,cls,fn)=>{const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;};
 const other=side=>side==='top'?'bottom':'top';
 const stopTracks=stream=>{try{stream?.getTracks().forEach(track=>track.stop());}catch(e){}};
+// Konuşma tanıma ayarları: duraklama süresi Canlı Çeviri'deki değerle aynıdır.
+const SEGMENT_SILENCE_MS='800',REPEAT_WINDOW_MS=3000,ECHO_TAIL_MS=2500,LEASE_GRACE_MS=7000,CONTEXT_LINES=3,CONTEXT_CHARS=240;
+const hasWords=text=>/[\p{L}\p{N}]/u.test(String(text||''));
+const plainWords=text=>String(text||'').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const prefs={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
 
 const s={host:null,view:null,observer:null,pair:{top:'de',bottom:'tr'},auto:false,speak:false,keep:true,convoId:'',saveTimer:null,entries:{top:[],bottom:[]},draft:{top:'',bottom:''},
  phase:'idle',side:null,generation:0,sessionId:null,stream:null,engine:'',recognizer:null,audio:null,input:null,browser:null,SDK:null,speech:null,tokenDeadline:0,
- renewTimer:null,deadlineTimer:null,renewPending:false,remaining:null,remainingAt:0,wakeLock:null,mutedUntil:0,seen:new Set(),notice:'',noticeBad:false,sdkPromise:null,abort:null};
+ renewTimer:null,deadlineTimer:null,renewPending:false,remaining:null,remainingAt:0,wakeLock:null,mutedUntil:0,echoOffset:null,echoHeard:false,plainSpeech:false,connectedAt:0,leaseGrace:false,seen:new Set(),notice:'',noticeBad:false,sdkPromise:null,abort:null};
 
 /* ------------------------------------------------------------- seçim ekranı */
 function open(host){
@@ -201,17 +205,17 @@ async function begin(side){
  if(root.LUMIRA_LIVE?.isActive?.()){try{root.LUMIRA_LIVE.stop();}catch(e){}}
  if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){notify('browser_unsupported',true);return;}
  const generation=++s.generation,id=F().id();
- s.sessionId=id;s.phase='starting';s.side=side||null;s.notice='';s.seen=new Set();s.abort=new AbortController();paintAll();
+ s.sessionId=id;s.phase='starting';s.side=side||null;s.notice='';s.plainSpeech=false;s.seen=new Set();s.abort=new AbortController();paintAll();
  root.VOICE_stop?.();
  try{
   const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
   if(generation!==s.generation){stopTracks(stream);return;}
   s.stream=stream;
   stream.getTracks().forEach(track=>track.addEventListener('ended',()=>{if(generation===s.generation)end('microphone_unavailable',true);},{once:true}));
-  const status=await F().api('status');
+  const status=await oneRetry(()=>F().api('status'),generation);
   if(generation!==s.generation)return;
   // Karşılıklı Çeviri'nin süresi Canlı Çeviri'den ayrı bir havuzdan düşer (aynı miktar).
-  const data=await F().api('liveStart',{id,provider:'local',pool:'convo'});
+  const data=await oneRetry(()=>F().api('liveStart',{id,provider:'local',pool:'convo'}),generation);
   if(generation!==s.generation){F().api('liveStop',{id,pool:'convo'}).catch(()=>{});return;}
   applyLease(data,generation);heartbeat(generation,id);
   const azure=(status.providers||[]).includes('azure')||status.speechConfigured===true;
@@ -229,6 +233,16 @@ async function begin(side){
   const code=e.featureCode||(['NotAllowedError','PermissionDeniedError'].includes(e.name)?'microphone_denied':['NotFoundError','NotReadableError'].includes(e.name)?'microphone_unavailable':'speech_unavailable');
   root.PWA?.logError?.({message:'Conversation start: '+String(code).replace(/[^a-z_]/gi,'').slice(0,60),stack:''});
   end(code,true);
+ }
+}
+// Sunucudaki kısa bir aksama oturumu başlatmayı engellemesin; aynı kimlikle yeniden istemek güvenlidir.
+async function oneRetry(call,generation){
+ try{return await call();}
+ catch(e){
+  if(e.featureCode!=='usage_unavailable')throw e;
+  await new Promise(resolve=>setTimeout(resolve,900));
+  if(generation!==s.generation)throw fail('recognizer_replaced');
+  return call();
  }
 }
 function browserSupported(){return typeof(root.SpeechRecognition||root.webkitSpeechRecognition)==='function';}
@@ -251,29 +265,37 @@ async function startAzure(generation){
  s.SDK=SDK;s.speech=data.speech;s.tokenDeadline=performance.now()+Math.max(0,data.speech.expiresAt-Date.now());s.engine='azure';
  try{await connectRecognizer(generation);}
  catch(e){
-  // Continuous language detection can be refused by the service: fall back
-  // to taking turns with a fixed language per side, which always works.
-  if(s.auto&&e.featureCode!=='recognizer_replaced'&&generation===s.generation){s.auto=false;s.side=s.side||'top';savePrefs();await connectRecognizer(generation);notify('autoFallback');return;}
-  throw e;
+  if(e.featureCode==='recognizer_replaced'||generation!==s.generation)throw e;
+  // Ayar reddedilirse önce servisin varsayılanlarıyla yeniden dene.
+  s.plainSpeech=true;
+  try{await connectRecognizer(generation);}
+  catch(retry){
+   // Continuous language detection can be refused by the service: fall back
+   // to taking turns with a fixed language per side, which always works.
+   if(s.auto&&retry.featureCode!=='recognizer_replaced'&&generation===s.generation){s.auto=false;s.side=s.side||'top';savePrefs();await connectRecognizer(generation);notify('autoFallback');return;}
+   throw retry;
+  }
  }
 }
+// Cümle içindeki kısa duraklamalar konuşmayı bölmesin: kısa parçalarda dil de çeviri de daha sık yanılır.
+function tune(SDK,config){if(!s.plainSpeech&&SDK.PropertyId.Speech_SegmentationSilenceTimeoutMs!==undefined)config.setProperty(SDK.PropertyId.Speech_SegmentationSilenceTimeoutMs,SEGMENT_SILENCE_MS);}
 function connectRecognizer(generation){
  releaseRecognizer();
  const SDK=s.SDK,speech=s.speech;
  if(!SDK||!speech||!s.stream||generation!==s.generation)return Promise.reject(fail('recognizer_replaced'));
- s.input=s.stream.clone();s.audio=SDK.AudioConfig.fromStreamInput(s.input);
+ s.input=s.stream.clone();s.audio=SDK.AudioConfig.fromStreamInput(s.input);s.echoOffset=null;
  let recognizer;
  if(s.auto){
   const config=SDK.SpeechConfig.fromAuthorizationToken(speech.token,speech.region);
   config.setProperty(SDK.PropertyId.SpeechServiceConnection_Endpoint,'wss://'+speech.region+'.stt.speech.microsoft.com/speech/universal/v2');
-  config.setProperty(SDK.PropertyId.SpeechServiceConnection_LanguageIdMode,'Continuous');
+  config.setProperty(SDK.PropertyId.SpeechServiceConnection_LanguageIdMode,'Continuous');tune(SDK,config);
   const detect=SDK.AutoDetectSourceLanguageConfig.fromLanguages([LOCALES[s.pair.top],LOCALES[s.pair.bottom]]);
   if(SDK.LanguageIdMode?.Continuous!==undefined)detect.mode=SDK.LanguageIdMode.Continuous;
   recognizer=SDK.SpeechRecognizer.FromConfig(config,detect,s.audio);recognizer.lumiraAuto=true;
  }else{
   const side=s.side||'top',from=s.pair[side],to=s.pair[other(side)];
   const config=SDK.SpeechTranslationConfig.fromAuthorizationToken(speech.token,speech.region);
-  config.speechRecognitionLanguage=LOCALES[from];config.addTargetLanguage(azureTarget(to));
+  config.speechRecognitionLanguage=LOCALES[from];config.addTargetLanguage(azureTarget(to));tune(SDK,config);
   recognizer=new SDK.TranslationRecognizer(config,s.audio);recognizer.lumiraSide=side;
  }
  s.recognizer=recognizer;
@@ -292,12 +314,14 @@ function connectRecognizer(generation){
   let settled=false;const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);error?reject(error):resolve();};
   const timer=setTimeout(()=>finish(fail('speech_unavailable')),10000);
   try{recognizer.startContinuousRecognitionAsync(()=>finish(),()=>finish(fail('speech_unavailable')));}catch(e){finish(fail('speech_unavailable'));}
- }).then(()=>{if(!current())throw fail('recognizer_replaced');if(recognizer.lumiraCanceled)throw fail('speech_unavailable');s.phase='listening';holdScreen(generation);paintAll();});
+ }).then(()=>{if(!current())throw fail('recognizer_replaced');if(recognizer.lumiraCanceled)throw fail('speech_unavailable');s.phase='listening';s.connectedAt=performance.now();holdScreen(generation);paintAll();});
 }
 let recovering=0;
 async function recover(generation){
  if(generation!==s.generation||recovering)return;
  recovering=Date.now();
+ // Bağlanır bağlanmaz kopuyorsa ayar reddedilmiş olabilir: servisin varsayılanlarına dön.
+ if(performance.now()-s.connectedAt<8000)s.plainSpeech=true;
  try{
   releaseRecognizer();
   await new Promise(resolve=>setTimeout(resolve,600));
@@ -313,8 +337,13 @@ async function recover(generation){
 }
 function azureResult(recognizer,r,final){
  const SDK=s.SDK;
+ // Biten parça canlı yazıyı da bitirir; metin çıkmasa ya da diğer dile atansa bile ekranda takılı kalmaz.
+ if(final&&(s.draft.top||s.draft.bottom)){s.draft={top:'',bottom:''};paintPanels();}
  if(!r||typeof r.text!=='string'||!r.text.trim()||r.text.length>4000)return;
- if(performance.now()<s.mutedUntil)return;
+ // Telefonun okuduğu çeviri mikrofona geri gelir. Okuma sırasında başlayan parçanın
+ // sonucu okuma bittikten sonra gelse de konuşma sayılmaz.
+ if(performance.now()<s.mutedUntil){if(Number.isFinite(r.offset))s.echoOffset=r.offset;return;}
+ if(Number.isFinite(r.offset)&&r.offset===s.echoOffset)return;
  let side;
  if(recognizer.lumiraAuto){
   if(final&&r.reason!==SDK.ResultReason.RecognizedSpeech)return;
@@ -324,13 +353,14 @@ function azureResult(recognizer,r,final){
   side=code===s.pair.top?'top':code===s.pair.bottom?'bottom':null;
   if(!side)return;
  }else{
-  if(final&&r.reason!==SDK.ResultReason.TranslatedSpeech)return;
+  // Çevirisi gelmeyen konuşma kaybolmaz; aşağıda metin çevirisine gider.
+  if(final&&r.reason!==SDK.ResultReason.TranslatedSpeech&&r.reason!==SDK.ResultReason.RecognizedSpeech)return;
   side=recognizer.lumiraSide;
  }
- if(!final){s.draft[side]=r.text;paintPanels();return;}
+ if(!final){if(recognizer.lumiraAuto)s.draft[other(side)]='';s.draft[side]=r.text;paintPanels();return;}
+ if(!hasWords(r.text))return;
  const key=Number.isFinite(r.offset)?[r.offset,r.duration,side].join(':'):null;
  if(key&&s.seen.has(key))return;if(key){s.seen.add(key);if(s.seen.size>400)s.seen.delete(s.seen.values().next().value);}
- s.draft[side]='';
  const to=s.pair[other(side)];
  let translated='';if(!recognizer.lumiraAuto){try{translated=r.translations.get(azureTarget(to))||'';}catch(e){}}
  const row={original:r.text.trim(),translated:translated.trim(),state:translated.trim()?'done':'pending'};
@@ -338,9 +368,15 @@ function azureResult(recognizer,r,final){
  if(row.state==='pending')translateRow(row,s.pair[side],to);else speakRow(row,to);
 }
 function push(side,row){row.at=Date.now();row.from=s.pair[side];row.to=s.pair[other(side)];s.entries[side].push(row);if(s.entries[side].length>60)s.entries[side].shift();paintPanels();scheduleSave();}
+// Çeviri önceki cümleleri görünce zamiri, cinsiyeti ve hitap şeklini doğru seçer. Yalnızca son satırlar gider.
+function recentLines(row){
+ if(!row)return [];
+ return [...s.entries.top,...s.entries.bottom].filter(other=>other!==row&&other.at<=row.at).sort((a,b)=>a.at-b.at).slice(-CONTEXT_LINES)
+  .map(other=>(other.from===row.from?'A: ':'B: ')+String(other.original).slice(0,CONTEXT_CHARS));
+}
 function translateRow(row,from,to){
  const generation=s.generation;
- translateText(row.original,from,to,{id:s.sessionId,signal:s.abort?.signal}).then(text=>{if(generation!==s.generation)return;row.translated=text;row.state='done';paintPanels();scheduleSave();speakRow(row,to);},error=>{
+ translateText(row.original,from,to,{id:s.sessionId,signal:s.abort?.signal,context:recentLines(row)}).then(text=>{if(generation!==s.generation)return;row.translated=text;row.state='done';paintPanels();scheduleSave();speakRow(row,to);},error=>{
   if(generation!==s.generation)return;
   if(['login_required','live_limit','convo_limit','session_expired'].includes(error?.featureCode)){end(error.featureCode,true);return;}
   row.state='failed';paintPanels();scheduleSave();
@@ -349,12 +385,12 @@ function translateRow(row,from,to){
 /* Metin çevirisi: CORE çiftleri mevcut yolu (LUMIRA_TEXT) olduğu gibi kullanır.
    Diğer diller önce sunucudaki sağlayıcılarla, sonra anonim MyMemory ile çevrilir. */
 function plainText(html){const field=document.createElement('textarea');field.innerHTML=html;return field.value.replace(/<[^>]*>/gu,'').trim();}
-async function translateText(text,from,to,{id,signal}={}){
- if(CORE.includes(from)&&CORE.includes(to)&&root.LUMIRA_TEXT)return root.LUMIRA_TEXT.translate(text,from,to,{id,signal});
+async function translateText(text,from,to,{id,signal,context}={}){
+ if(!context&&CORE.includes(from)&&CORE.includes(to)&&root.LUMIRA_TEXT)return root.LUMIRA_TEXT.translate(text,from,to,{id,signal});
  if(typeof text!=='string'||!text.trim()||text.length>4000||!LANGS.includes(from)||!LANGS.includes(to))throw fail('invalid_input');
  if(from===to)return text;
  if(signal?.aborted)throw fail('recognizer_replaced');
- if(id&&F())try{const result=await F().api('liveText',{id,text,source:from,target:to},{signal,timeoutMs:9000});if(typeof result?.translated==='string'&&result.translated.trim())return result.translated.trim();}catch(error){if(['login_required','live_limit','session_expired','maintenance','usage_unavailable'].includes(error.featureCode)||signal?.aborted)throw error;}
+ if(id&&F())try{const result=await F().api('liveText',{id,text,source:from,target:to,...(context?{context}:{})},{signal,timeoutMs:9000});if(typeof result?.translated==='string'&&result.translated.trim())return result.translated.trim();}catch(error){if(['login_required','live_limit','session_expired','maintenance','usage_unavailable'].includes(error.featureCode)||signal?.aborted)throw error;}
  const parts=root.LUMIRA_TEXT?.segments?root.LUMIRA_TEXT.segments(text):[text],out=[];
  for(const part of parts){
   const controller=new AbortController(),stop=()=>controller.abort();signal?.addEventListener('abort',stop,{once:true});if(signal?.aborted)controller.abort();const timer=setTimeout(stop,12000);
@@ -371,20 +407,29 @@ async function translateText(text,from,to,{id,signal}={}){
  return out.join(' ');
 }
 /* Tarayıcı konuşma tanıması yedeği: LUMIRA_BROWSER ile aynı arayüz, ama her
-   dilin kendi yerel ayarı ve yukarıdaki çeviri yolu kullanılır. */
+   dilin kendi yerel ayarı ve yukarıdaki çeviri yolu kullanılır. Yok sayılan
+   sonuçlar çeviri kuyruğuna hiç girmez. */
+// Android Chrome aynı konuşmayı yineleyerek ya da büyüterek birkaç kez son sonuç diye verebilir.
+function repeatOf(last,text,now=Date.now()){
+ if(!last||now-last.at>REPEAT_WINDOW_MS)return '';
+ const before=plainWords(last.original),after=plainWords(text);
+ if(!before||!after)return '';
+ if(after===before||before.startsWith(after+' '))return 'same';
+ return after.startsWith(before+' ')?'longer':'';
+}
 class ConvoBrowser{
- constructor({id,source,target,onReady,onDraft,onFinal,onResult,onError}){Object.assign(this,{id,source,target,onReady,onDraft,onFinal,onResult,onError});this.attempt=0;this.queue=[];this.abort=new AbortController();}
+ constructor({id,source,target,context,onReady,onDraft,onFinal,onResult,onError}){Object.assign(this,{id,source,target,context,onReady,onDraft,onFinal,onResult,onError});this.attempt=0;this.queue=[];this.abort=new AbortController();}
  start(){
   const Recognition=root.SpeechRecognition||root.webkitSpeechRecognition;if(typeof Recognition!=='function')throw fail('browser_speech_unsupported');
   this.closed=false;const rec=this.rec=new Recognition();rec.lang=LOCALES[this.source];rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
   rec.onstart=()=>{if(!this.closed)this.onReady?.();};
   rec.onresult=event=>{if(this.closed)return;const results=event?.results;if(!results)return;let draft='';for(let k=Math.max(0,event.resultIndex||0);k<results.length&&!this.closed;k++){const text=String(results[k]?.[0]?.transcript||'').trim().slice(0,4000);if(!text)continue;if(results[k].isFinal){const row=this.onFinal?.(text);if(row)this.enqueue({original:text,row});}else draft=(draft+text+' ').slice(-4000);}this.attempt=0;if(!this.closed)this.onDraft?.(draft.trim());};
   rec.onerror=event=>{if(this.closed)return;const code=String(event?.error||'');if(['not-allowed','service-not-allowed','audio-capture','language-not-supported'].includes(code)){this.stop();this.onError?.(fail(code==='audio-capture'?'microphone_unavailable':code==='language-not-supported'?'browser_speech_unsupported':'microphone_denied'));}else if(!['no-speech','aborted'].includes(code)&&++this.attempt>=3){this.stop();this.onError?.(fail('browser_speech_unavailable'));}};
-  rec.onend=()=>{if(this.closed)return;clearTimeout(this.timer);this.timer=setTimeout(()=>{if(this.closed)return;try{rec.start();}catch(e){if(++this.attempt>=3){this.stop();this.onError?.(fail('browser_speech_unavailable'));}else rec.onend();}},400+this.attempt*300);};
+  rec.onend=()=>{if(this.closed)return;clearTimeout(this.timer);this.timer=setTimeout(()=>{if(this.closed)return;try{rec.start();}catch(e){if(++this.attempt>=3){this.stop();this.onError?.(fail('browser_speech_unavailable'));}else rec.onend();}},150+this.attempt*300);};
   try{rec.start();}catch(e){this.stop();throw fail('browser_speech_unavailable');}
  }
  enqueue(entry){if(this.closed)return;this.queue.push(entry);this.pump();}
- async pump(){if(this.running)return;this.running=true;try{while(this.queue.length&&!this.closed){const entry=this.queue.shift();try{const translated=await translateText(entry.original,this.source,this.target,{id:this.id,signal:this.abort.signal});if(!this.closed)this.onResult?.({...entry,translated});}catch(error){if(!this.closed)this.onError?.(error,entry);}}}finally{this.running=false;}}
+ async pump(){if(this.running)return;this.running=true;try{while(this.queue.length&&!this.closed){const entry=this.queue.shift();try{const translated=await translateText(entry.original,this.source,this.target,{id:this.id,signal:this.abort.signal,context:this.context?.(entry)});if(!this.closed)this.onResult?.({...entry,translated});}catch(error){if(!this.closed)this.onError?.(error,entry);}}}finally{this.running=false;}}
  stop(){this.closed=true;clearTimeout(this.timer);this.queue=[];this.abort.abort();if(this.rec){this.rec.onresult=this.rec.onerror=this.rec.onend=this.rec.onstart=null;try{this.rec.abort();}catch(e){}this.rec=null;}}
 }
 function speakRow(row,lang){
@@ -399,13 +444,22 @@ function startBrowser(generation,side){
  s.browser?.stop();s.browser=null;
  if(!browserSupported())throw fail('browser_speech_unsupported');
  stopTracks(s.stream);s.stream=null; // the browser recogniser opens its own capture
- s.engine='browser';s.side=side;
+ s.engine='browser';s.side=side;s.echoHeard=false;
  const from=s.pair[side],to=s.pair[other(side)];
- const Session=CORE.includes(from)&&CORE.includes(to)&&root.LUMIRA_BROWSER&&root.LUMIRA_TEXT&&root.LUMIRA_SOURCE?root.LUMIRA_BROWSER.BrowserSession:ConvoBrowser;
- const session=new Session({id:s.sessionId,source:from,target:to,
+ // Tarayıcı parça numarası vermez: okuma sırasında duyulan parçanın sonucu, okuma bittikten
+ // kısa süre sonra gelirse de telefonun kendi sesi sayılır.
+ const echo=()=>{if(performance.now()<s.mutedUntil){s.echoHeard=true;return true;}return s.echoHeard&&performance.now()<s.mutedUntil+ECHO_TAIL_MS;};
+ const session=new ConvoBrowser({id:s.sessionId,source:from,target:to,context:entry=>recentLines(entry.row),
   onReady:()=>{if(generation===s.generation&&s.browser===session){s.phase='listening';holdScreen(generation);paintAll();}},
-  onDraft:text=>{if(generation===s.generation&&s.browser===session&&performance.now()>=s.mutedUntil){s.draft[side]=text;paintPanels();}},
-  onFinal:text=>{if(generation!==s.generation||s.browser!==session||performance.now()<s.mutedUntil)return null;s.draft[side]='';const row={original:text,translated:'',state:'pending'};push(side,row);return row;},
+  onDraft:text=>{if(generation===s.generation&&s.browser===session&&!echo()){s.draft[side]=text;paintPanels();}},
+  onFinal:text=>{
+   if(generation!==s.generation||s.browser!==session)return null;
+   const heard=echo(),rows=s.entries[side],repeat=repeatOf(rows[rows.length-1],text);
+   s.echoHeard=false;s.draft[side]='';
+   if(heard||!hasWords(text)||repeat==='same'){paintPanels();return null;}
+   if(repeat==='longer')rows.pop();
+   const row={original:text,translated:'',state:'pending'};push(side,row);return row;
+  },
   onResult:entry=>{
    if(generation!==s.generation||s.browser!==session)return;
    const rows=(entry.rows||(entry.row?[entry.row]:[])).filter(row=>s.entries[side].includes(row));
@@ -434,14 +488,20 @@ function applyLease(data,generation){
  const now=performance.now();
  s.remaining=data.quota?.convo?.remainingSeconds??null;s.remainingAt=now;
  const wait=Math.max(0,(data.session?.until||0)-(data.quota?.serverNow||Date.now()));
- clearTimeout(s.deadlineTimer);
- s.deadlineTimer=setTimeout(()=>{
-  if(generation!==s.generation)return;
-  const exhausted=s.remaining!==null&&s.remaining-(performance.now()-s.remainingAt)/1000<=.1;
-  end(exhausted?'convo_limit':'usage_unavailable',true);
- },wait);
+ clearTimeout(s.deadlineTimer);s.leaseGrace=false;
+ s.deadlineTimer=setTimeout(()=>leaseEnded(generation),wait);
  if(data.speech){s.speech=data.speech;s.tokenDeadline=now+data.speech.expiresAt-(data.quota?.serverNow||Date.now());if(s.recognizer)s.recognizer.authorizationToken=data.speech.token;}
  paintQuota();
+}
+// Uygulama arka plandayken ya da ağ takılınca yenileme gecikebilir (örneğin başka uygulamada
+// müzik açıkken). Süre gerçekten bitmediyse oturumu kapatmadan önce sunucuya bir kez daha sorulur.
+function leaseEnded(generation){
+ if(generation!==s.generation)return;
+ const exhausted=s.remaining!==null&&s.remaining-(performance.now()-s.remainingAt)/1000<=.1;
+ if(exhausted||s.leaseGrace){end(exhausted?'convo_limit':'usage_unavailable',true);return;}
+ s.leaseGrace=true;
+ s.deadlineTimer=setTimeout(()=>leaseEnded(generation),LEASE_GRACE_MS);
+ renew(generation,s.sessionId);
 }
 function heartbeat(generation,id){
  clearInterval(s.renewTimer);
@@ -754,6 +814,7 @@ root.addEventListener('lumira:localechange',()=>setTimeout(refreshLocale,0));
 root.addEventListener('pagehide',()=>{if(s.phase!=='idle')end('paused');else flushHistory();});
 root.addEventListener('lumira:featureauthchange',()=>{if(s.phase!=='idle')end('login_required',true);});
 root.LUMIRA_LIVE_MODES={open,isMounted:()=>!!(s.host&&s.host.isConnected&&s.host.querySelector('[data-live-modes],[data-convo]')),unmount:()=>{unmountConvo();s.view=null;s.observer?.disconnect();},refreshLocale,
- _state:()=>({phase:s.phase,side:s.side,engine:s.engine,auto:s.auto,keep:s.keep,pair:{...s.pair},entries:{top:s.entries.top.length,bottom:s.entries.bottom.length}}),
+ _state:()=>({phase:s.phase,side:s.side,engine:s.engine,auto:s.auto,keep:s.keep,pair:{...s.pair},entries:{top:s.entries.top.length,bottom:s.entries.bottom.length},draft:{...s.draft}}),
+ _hear:(recognizer,result,final,setup)=>{Object.assign(s,setup||{});azureResult(recognizer,result,final);},_listen:(side,setup)=>{Object.assign(s,setup||{});startBrowser(s.generation,side);return s.browser;},_rows:side=>s.entries[side].map(row=>row.original),_repeatOf:repeatOf,_hasWords:hasWords,_oneRetry:oneRetry,_lease:(data,setup)=>{Object.assign(s,setup||{});applyLease(data,s.generation);},
  _push:(side,original,translated)=>{if(s.view!=='convo')return;push(side,{original,translated:translated||'',state:translated?'done':'failed'});},_flush:flushHistory,_history:readHistory,_plain:plainTranscript,_words:wordsList,_learn:learnCandidates,openWords:()=>openWords(null),LANGS,CORE};
 })(window);
