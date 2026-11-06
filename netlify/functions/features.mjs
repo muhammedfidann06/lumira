@@ -8,7 +8,7 @@ import{assertAvailable}from'./_shared/maintenance.mjs';
 import {PLAY_PRODUCTS} from './_shared/play-billing.mjs';
 import {playCatalog} from './_shared/play-catalog.mjs';
 
-const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.20' };
+const HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Lumira-Features-Version': '1.11.21' };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: HEADERS });
 const operationId = id => typeof id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(id);
 // Dependency injection lets tests exercise the actual endpoint without real accounts.
@@ -71,7 +71,9 @@ export function createHandler(services = { identity, liveIdentity, speechToken, 
       if(body.action==='liveText'){
         if(typeof body.text!=='string'||!body.text.trim()||body.text.length>4000||!CONVERSATION_LANGUAGES.includes(body.source)||!CONVERSATION_LANGUAGES.includes(body.target))throw fault('invalid_input',422);
         await mutate('liveText',{id:body.id});
-        return reply(await(services.translateText||translateText)(body.text,body.source,body.target));
+        // Only face-to-face translation sends earlier lines; they are kept short and stay plain text.
+        const context=Array.isArray(body.context)?body.context.filter(line=>typeof line==='string'&&line.trim()).slice(-3).map(line=>line.trim().slice(0,260)):null;
+        return reply(await(services.translateText||translateText)(body.text,body.source,body.target,...(context?[{context}]:[])));
       }
       if (body.action === 'liveConnect') {
         await mutate('liveConnect', { id: body.id });

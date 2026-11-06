@@ -11,7 +11,7 @@ test('face-to-face offers 24 languages while the live lesson keeps its seven',as
  const source=await read('live-conversation.js');
  for(const code of CONVERSATION_LANGUAGES){assert(new RegExp("\\b"+code+":'[a-z]{2}-[A-Z]{2}'").test(source),code+' locale');assert(source.includes(code+":'"),code+' flag');}
  assert(source.includes("config.addTargetLanguage(azureTarget(to))")&&source.includes("r.translations.get(azureTarget(to))"),'Azure target codes are mapped both ways');
- assert(source.includes("if(CORE.includes(from)&&CORE.includes(to)&&root.LUMIRA_TEXT)return root.LUMIRA_TEXT.translate("),'core pairs keep the existing translation path');
+ assert(source.includes("if(!context&&CORE.includes(from)&&CORE.includes(to)&&root.LUMIRA_TEXT)return root.LUMIRA_TEXT.translate("),'core pairs keep the existing translation path unless earlier lines are sent');
  const live=await read('live-text.js');assert(live.includes("const languages=['tr','de','en','ar','fr','es','ru']"),'shared live helpers are untouched');
 });
 
