@@ -270,7 +270,7 @@
     while(keys.length > 30){ delete meta.dailyCounts[keys.shift()]; }
   }
   function checkBadges(){
-    const known = Object.values(wordProgress).filter(r=>r.known).length;
+    const known = studyRecords().filter(r=>r.known).length;
     BADGE_THRESHOLDS.forEach(t=>{
       if(known>=t && !(meta.badges && meta.badges[t])){
         meta.badges = meta.badges || {};
@@ -373,7 +373,9 @@
     return groups;
   }
 
-  function poolForActiveLang(){ return (window.basePool ? window.basePool() : VOCAB.filter(v => v.lang === activeLang)); }
+  // Kalıp cümleler Kişisel çalışmaya girmez: ilerleme, desteler, kategori seçimi, günlük tekrar
+  // ve seviye testi yalnızca kelimelerle yapılır. Kartlar ve Quiz sekmeleri onları göstermeye devam eder.
+  function poolForActiveLang(){ return (window.basePool ? window.basePool() : VOCAB.filter(v => v.lang === activeLang)).filter(v=>v.cat!=='Kalıp Cümleler'); }
   function poolForActiveFilter(){
     return (activeLevel === 'TUMU' || activeLevel === 'TÜMÜ') ? poolForActiveLang() : poolForActiveLang().filter(v=>v.level===activeLevel);
   }
@@ -391,18 +393,20 @@
   function knownCountIn(list){
     return list.filter(v=>{ const r=getRecord(v); return r && r.known; }).length;
   }
+  // Daha önce çalışılmış kalıp cümle kayıtları silinmez; yalnızca Kişisel istatistiklere katılmaz.
+  function studyRecords(){ return Object.values(wordProgress).filter(r=>r && r.cat!=='Kalıp Cümleler'); }
   function totalStudiedCount(){
-    return Object.values(wordProgress).filter(r=>(r.seen||0) > 0).length;
+    return studyRecords().filter(r=>(r.seen||0) > 0).length;
   }
   function accuracyOverall(){
     let c=0,w=0;
-    Object.values(wordProgress).forEach(r=>{ c+=r.correct||0; w+=r.wrong||0; });
+    studyRecords().forEach(r=>{ c+=r.correct||0; w+=r.wrong||0; });
     const tot = c+w;
     return tot>0 ? Math.round((c/tot)*100) : null;
   }
   function categoryAccuracy(){
     const byCat = {};
-    Object.values(wordProgress).forEach(r=>{
+    studyRecords().forEach(r=>{
       const cat = r.cat || '-';
       byCat[cat] = byCat[cat] || {c:0,w:0};
       byCat[cat].c += r.correct||0; byCat[cat].w += r.wrong||0;
