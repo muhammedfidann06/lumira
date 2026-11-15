@@ -49,7 +49,7 @@
         ['💳', 'Paddle bağlantısı', 'Mevcut ürünleri, fiyatları ve abonelik bağlantısını hazırla', ()=>window.LUMIRA_BILLING.setup()],
         ['💛', 'Destek rozeti ver',       'Satın alma gibi açar (PDF vb. + XP)',    openGiveSupport],
         ['🗑️', window.LUMIRA_ADMIN_BADGES.text('title'), window.LUMIRA_ADMIN_BADGES.text('sub'), window.LUMIRA_ADMIN_BADGES.open],
-        ['🎓', 'Seviye aktar',            'Bir seviyenin tüm kelimelerini bilinene ekle', openTransferLevel],
+        ['🎓', 'Seviye aktar',            'Bir seviyenin tamamını ya da seçtiğin kategorilerini (ör. A1 · Sayılar) bilinene ekle', openTransferLevel],
         ['🚫', 'Kullanıcı yasakla',       'Hesabı kapat, ilerlemesini kaldır',      openBan],
         ['✅', 'Yasağı kaldır',           'Hesabı aç, ilerlemesini geri getir',     openUnban]
       ];
@@ -322,12 +322,62 @@
   }
 
   /* ======================================= 2.4) SEVİYE AKTAR (bilinene ekle)
-     Admin, seçtiği dil+seviyedeki TÜM kelimeleri, seçtiği kullanıcının
-     "bilinen kelimeler" listesine tek seferde ekler. Akış: Kişi Seç →
-     Dil Seç → Seviye Seç → Bilinen Kelimelere Aktar. */
+     Admin, seçtiği dil+seviyedeki kelimeleri — ister seviyenin tamamını,
+     ister yalnızca seçtiği kategorileri (ör. A1 · Sayılar) — seçtiği
+     kullanıcının "bilinen kelimeler" listesine ekler.
+     Akış: Kişi Seç → Dil Seç → Seviye Seç → Kategori Seç → Aktar. */
+  var TRANSFER = {
+    /* progress.js ile BİREBİR aynı anahtar (vocab-identity.js). Eski yerel
+       kopya Arapça/Rusça harfleri '_' yapıyordu; yüzlerce kelime aynı
+       anahtara düşüyor ve kullanıcıda "bilinmiyor" görünüyordu. */
+    key: function (v) { return window.LUMIRA_VOCAB_ID.key(v); },
+    categories: function (vocab, lang, level) {
+      var counts = {}, order = [];
+      (vocab || []).forEach(function (v) {
+        if (v.lang !== lang || v.level !== level || !v.cat) return;
+        if (!counts[v.cat]) { counts[v.cat] = 0; order.push(v.cat); }
+        counts[v.cat]++;
+      });
+      return order.map(function (c) { return { cat: c, count: counts[c] }; });
+    },
+    pool: function (vocab, lang, level, cats) {
+      return (vocab || []).filter(function (v) {
+        return v.lang === lang && v.level === level && (!cats || !cats.length || cats.indexOf(v.cat) > -1);
+      });
+    },
+    /* Kullanıcının mevcut kaydı korunur (görme/doğru/yanlış sayıları); yalnızca
+       "bilinen" yapılır. Zaten bilinen kelimeye dokunulmaz. lastSeen, kişinin
+       cihazındaki eski yerel kaydın bu aktarımı geri almasını önler. */
+    updates: function (uid, pool, words, vocab, today, now) {
+      var ID = window.LUMIRA_VOCAB_ID, out = {}, added = 0, already = 0;
+      words = words || {};
+      pool.forEach(function (v) {
+        var key = TRANSFER.key(v), old = ID.legacy(v);
+        var cur = words[key] || (old !== key && words[old] && ID.unambiguous(v, vocab) ? words[old] : null);
+        if (cur && cur.known === true) { already++; return; }
+        var rec = Object.assign({}, cur || {});
+        delete rec._legacyKey;
+        rec.known = true;
+        rec.learnedDate = today;
+        rec.lastSeen = now;
+        rec.retryAfterSession = null;
+        rec.seen = Math.max(1, rec.seen || 0);
+        rec.correct = Math.max(1, rec.correct || 0);
+        rec.lang = v.lang; rec.level = v.level; rec.cat = v.cat || null;
+        out['progress/' + uid + '/words/' + key] = rec;
+        added++;
+      });
+      return { updates: out, added: added, already: already };
+    },
+    label: function (level, cats) {
+      if (!cats || !cats.length) return level;
+      return level + ' · ' + (cats.length === 1 ? cats[0] : cats.length + ' kategori');
+    }
+  };
+
   function openTransferLevel() {
     if (!sheet()) return;
-    window.PWA.sheet('🎓 Seviye Aktar', 'Seçtiğin dil+seviyedeki tüm kelimeler, seçtiğin kişinin bilinen listesine eklenir.', function (b) {
+    window.PWA.sheet('🎓 Seviye Aktar', 'Seçtiğin seviyenin tamamı ya da yalnızca seçtiğin kategoriler, seçtiğin kişinin bilinen listesine eklenir.', function (b) {
       var d = db();
       if (!d) { b.innerHTML = '<div class="pwa-empty">Bağlantı yok.</div>'; return; }
 
@@ -335,19 +385,22 @@
 
       var LANGS_ = [['de','🇩🇪 Almanca'],['en','🇬🇧 İngilizce'],['ar','🇸🇦 Arapça'],['fr','🇫🇷 Fransızca'],['es','🇪🇸 İspanyolca'],['ru','🇷🇺 Rusça']];
       var LEVELS_ = ['A1','A2','B1','B2'];
-      var chosenLang = null, chosenLevel = null;
+      var chosenLang = null, chosenLevel = null, chosenCats = [], loadRun = 0;
+      var OFF = 'rgba(255,255,255,.12)', OFF_BG = 'rgba(255,255,255,.03)', ON = 'rgba(255,210,59,.7)', ON_BG = 'rgba(255,210,59,.12)';
+      function mark(cell, on) { cell.style.borderColor = on ? ON : OFF; cell.style.background = on ? ON_BG : OFF_BG; }
+      function vocab() { return typeof VOCAB !== 'undefined' ? VOCAB : []; }
 
       b.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:10px 2px 6px">Dil seç</p>');
       var langGrid = document.createElement('div');
       langGrid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px';
       LANGS_.forEach(function (L) {
         var cell = document.createElement('button'); cell.type = 'button';
-        cell.style.cssText = 'padding:10px 4px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);color:#e8eef7;font-size:12px;cursor:pointer';
+        cell.style.cssText = 'padding:10px 4px;border:1px solid ' + OFF + ';border-radius:12px;background:' + OFF_BG + ';color:#e8eef7;font-size:12px;cursor:pointer';
         cell.textContent = L[1];
         cell.onclick = function () {
-          chosenLang = L[0];
-          Array.prototype.forEach.call(langGrid.children, function (c) { c.style.borderColor = 'rgba(255,255,255,.12)'; c.style.background = 'rgba(255,255,255,.03)'; });
-          cell.style.borderColor = 'rgba(255,210,59,.7)'; cell.style.background = 'rgba(255,210,59,.12)';
+          chosenLang = L[0]; chosenCats = [];
+          Array.prototype.forEach.call(langGrid.children, function (c) { mark(c, c === cell); });
+          loadCats();
         };
         langGrid.appendChild(cell);
       });
@@ -358,64 +411,128 @@
       lvGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px';
       LEVELS_.forEach(function (lv) {
         var cell = document.createElement('button'); cell.type = 'button';
-        cell.style.cssText = 'padding:10px 4px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);color:#e8eef7;font-size:13px;font-weight:700;cursor:pointer';
+        cell.style.cssText = 'padding:10px 4px;border:1px solid ' + OFF + ';border-radius:12px;background:' + OFF_BG + ';color:#e8eef7;font-size:13px;font-weight:700;cursor:pointer';
         cell.textContent = lv;
         cell.onclick = function () {
-          chosenLevel = lv;
-          Array.prototype.forEach.call(lvGrid.children, function (c) { c.style.borderColor = 'rgba(255,255,255,.12)'; c.style.background = 'rgba(255,255,255,.03)'; });
-          cell.style.borderColor = 'rgba(255,210,59,.7)'; cell.style.background = 'rgba(255,210,59,.12)';
+          chosenLevel = lv; chosenCats = [];
+          Array.prototype.forEach.call(lvGrid.children, function (c) { mark(c, c === cell); });
+          loadCats();
         };
         lvGrid.appendChild(cell);
       });
       b.appendChild(lvGrid);
 
-      /* progress.js'teki wordKeyFor ile BİREBİR aynı anahtar üretimi —
-         tutarsız olursa kullanıcının cihazında kelime "bilinmiyor" görünür. */
-      function wordKeyFor(v) {
-        var raw = v.lang + '_' + v.level + '_' + v.w;
-        return raw.toLowerCase()
-          .replace(/[.#$\[\]\/\s]+/g, '_')
-          .replace(/[^a-z0-9_aoubcdefghijklmnopqrstuvwxyz]/gi, '_')
-          .slice(0, 120);
+      /* Kategori seçimi: varsayılan "Tüm kategoriler" (seviyenin tamamı).
+         Bir ya da birkaç kategori seçilirse yalnızca onlar aktarılır. */
+      var catBox = document.createElement('div');
+      catBox.setAttribute('data-transfer-cats', '');
+      catBox.style.cssText = 'margin-bottom:14px';
+      b.appendChild(catBox);
+
+      function loadCats() {
+        if (!chosenLang || !chosenLevel) {
+          catBox.innerHTML = '<p class="pwa-note" style="margin:2px 2px 6px">Kategori seç</p><div class="pwa-empty">Önce dil ve seviye seç.</div>';
+          return;
+        }
+        var run = ++loadRun;
+        catBox.innerHTML = '<p class="pwa-note" style="margin:2px 2px 6px">Kategori seç</p><div class="pwa-empty">Kategoriler yükleniyor…</div>';
+        var ready = window.ensureVocab ? window.ensureVocab(chosenLang) : Promise.resolve();
+        Promise.resolve(ready).then(function () { if (run === loadRun) drawCats(); }).catch(function () {
+          if (run === loadRun) catBox.innerHTML = '<div class="pwa-empty">Dil verisi yüklenemedi.</div>';
+        });
       }
 
+      function drawCats() {
+        var cats = TRANSFER.categories(vocab(), chosenLang, chosenLevel);
+        catBox.innerHTML = '';
+        catBox.insertAdjacentHTML('beforeend', '<p class="pwa-note" style="margin:2px 2px 6px">Kategori seç <span style="opacity:.7">(birden fazla seçebilirsin)</span></p>');
+        if (!cats.length) { catBox.insertAdjacentHTML('beforeend', '<div class="pwa-empty">Bu seviyede kelime yok.</div>'); return; }
+        var search = mkInput('Kategori ara', 'text', 'ör. Sayılar');
+        search.style.marginBottom = '8px';
+        catBox.appendChild(search);
+        var chips = document.createElement('div');
+        chips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;max-height:230px;overflow-y:auto;padding:2px';
+        catBox.appendChild(chips);
+        var summary = document.createElement('p');
+        summary.className = 'pwa-note';
+        summary.setAttribute('data-transfer-summary', '');
+        summary.style.cssText = 'margin:8px 2px 0';
+        catBox.appendChild(summary);
+
+        var total = cats.reduce(function (n, c) { return n + c.count; }, 0);
+        function chip(text, count, on, onClick) {
+          var cell = document.createElement('button'); cell.type = 'button';
+          cell.style.cssText = 'padding:7px 10px;border:1px solid ' + OFF + ';border-radius:999px;background:' + OFF_BG + ';color:#e8eef7;font-size:12px;cursor:pointer';
+          cell.textContent = text + ' (' + count + ')';
+          mark(cell, on);
+          cell.onclick = onClick;
+          return cell;
+        }
+        function draw() {
+          var q = search.querySelector('input').value.trim().toLocaleLowerCase('tr');
+          chips.innerHTML = '';
+          if (!q) chips.appendChild(chip('Tüm kategoriler', total, !chosenCats.length, function () { chosenCats = []; draw(); }));
+          cats.forEach(function (c) {
+            if (q && c.cat.toLocaleLowerCase('tr').indexOf(q) < 0) return;
+            chips.appendChild(chip(c.cat, c.count, chosenCats.indexOf(c.cat) > -1, function () {
+              var i = chosenCats.indexOf(c.cat);
+              if (i > -1) chosenCats.splice(i, 1); else chosenCats.push(c.cat);
+              draw();
+            }));
+          });
+          if (!chips.children.length) chips.innerHTML = '<div class="pwa-empty" style="width:100%">Eşleşen kategori yok.</div>';
+          var n = TRANSFER.pool(vocab(), chosenLang, chosenLevel, chosenCats).length;
+          summary.innerHTML = 'Aktarılacak: <b>' + n + ' kelime</b> · ' + esc(TRANSFER.label(chosenLevel, chosenCats));
+        }
+        search.querySelector('input').addEventListener('input', draw);
+        draw();
+      }
+      loadCats();
+
       var send = mkBtn('Bilinen Kelimelere Aktar');
+      function idle() { send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar'; }
       send.onclick = function () {
         var u = picker.get();
         if (!u) { toast('Önce bir kişi seç', { kind: 'bad' }); return; }
         if (!chosenLang) { toast('Önce bir dil seç', { kind: 'bad' }); return; }
         if (!chosenLevel) { toast('Önce bir seviye seç', { kind: 'bad' }); return; }
+        if (!window.LUMIRA_VOCAB_ID) { toast('Kelime kimliği yüklenemedi, sayfayı yenile', { kind: 'bad' }); return; }
         send.disabled = true; send.textContent = 'Yükleniyor…';
+        var lang = chosenLang, level = chosenLevel, cats = chosenCats.slice(), label = TRANSFER.label(level, cats);
 
         var proceed = function () {
-          var pool = (typeof VOCAB !== 'undefined' ? VOCAB : []).filter(function (v) { return v.lang === chosenLang && v.level === chosenLevel; });
-          if (!pool.length) {
-            send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar';
-            toast('Bu seçimde kelime bulunamadı', { kind: 'bad' }); return;
-          }
-          send.textContent = 'Aktarılıyor… (' + pool.length + ' kelime)';
-          var today = (function () { var dd = new Date(); var p = function (n) { return String(n).padStart(2, '0'); }; return dd.getFullYear() + '-' + p(dd.getMonth() + 1) + '-' + p(dd.getDate()); })();
-          var updates = {};
-          pool.forEach(function (v) {
-            var key = wordKeyFor(v);
-            updates['progress/' + u.uid + '/words/' + key] = {
-              known: true, learnedDate: today, seen: 1, correct: 1,
-              lang: v.lang, level: v.level, cat: v.cat || null
-            };
-          });
-          d.ref().update(updates).then(function () {
-            send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar';
-            toast('✅ ' + pool.length + ' kelime (' + chosenLevel + ') ' + u.name + '\'in bilinenlerine eklendi', { kind: 'good', duration: 7000 });
+          var pool = TRANSFER.pool(vocab(), lang, level, cats);
+          if (!pool.length) { idle(); toast('Bu seçimde kelime bulunamadı', { kind: 'bad' }); return; }
+          send.textContent = 'Kontrol ediliyor…';
+          return d.ref('progress/' + u.uid + '/words').once('value').then(function (sn) {
+            var plan = TRANSFER.updates(u.uid, pool, sn.val() || {}, vocab(), dayKey(0), Date.now());
+            if (!plan.added) {
+              idle();
+              toast(esc(u.name) + ': bu kelimelerin hepsi (' + label + ') zaten biliniyor', { kind: 'good', duration: 6000 });
+              return;
+            }
+            send.textContent = 'Aktarılıyor… (' + plan.added + ' kelime)';
+            return d.ref().update(plan.updates).then(function () {
+              idle();
+              var m = me();
+              var extra = plan.already ? ' · ' + plan.already + ' tanesi zaten biliniyordu' : '';
+              if (m && m.uid === u.uid) {
+                toast('✅ ' + plan.added + ' kelime (' + label + ') eklendi' + extra + ' — yenileniyor…', { kind: 'good' });
+                setTimeout(function () { location.reload(); }, 1500);
+              } else {
+                toast('✅ ' + esc(u.name) + ': ' + plan.added + ' kelime (' + label + ') bilinenlere eklendi' + extra, { kind: 'good', duration: 7000 });
+              }
+            });
           }).catch(function (e) {
-            send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar';
+            idle();
             toast('Aktarılamadı: ' + ((e && e.code) || 'izin yok'), { kind: 'bad', duration: 8000 });
           });
         };
 
         /* Seçilen dilin kelime verisi bu oturumda yüklenmemiş olabilir
            (diller ihtiyaç anında yükleniyor) — önce garanti altına al. */
-        if (window.ensureVocab) { window.ensureVocab(chosenLang).then(proceed).catch(function () {
-          send.disabled = false; send.textContent = 'Bilinen Kelimelere Aktar';
+        if (window.ensureVocab) { window.ensureVocab(lang).then(proceed).catch(function () {
+          idle();
           toast('Dil verisi yüklenemedi', { kind: 'bad' });
         }); } else { proceed(); }
       };
